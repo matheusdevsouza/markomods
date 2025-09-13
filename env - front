@@ -5,23 +5,22 @@
 # =====================================================
 # API E BACKEND
 # =====================================================
-VITE_API_URL=
-VITE_FRONTEND_URL=
-VITE_BACKEND_URL=
+VITE_API_URL=https://mods.eumarko.com/api
+VITE_FRONTEND_URL=https://mods.eumarko.com
+VITE_BACKEND_URL=https://mods.eumarko.com/api
 
 # =====================================================
 # AMBIENTE E BUILD
 # =====================================================
-NODE_ENV=production
 VITE_BUILD_TARGET=production
-VITE_SOURCE_MAP=true
-VITE_MINIFY=false
+VITE_SOURCE_MAP=false
+VITE_MINIFY=true
 
 # =====================================================
 # SEGURANÇA
 # =====================================================
-VITE_HTTPS_ONLY=false
-VITE_SECURE_COOKIES=false
+VITE_HTTPS_ONLY=true
+VITE_SECURE_COOKIES=true
 
 # =====================================================
 # ANALYTICS E ANÚNCIOS
@@ -41,8 +40,8 @@ VITE_ENABLE_DOWNLOADS=true
 # =====================================================
 # DEBUG E LOGGING
 # =====================================================
-VITE_DEBUG=true
-VITE_VERBOSE_LOGGING=true
+VITE_DEBUG=false
+VITE_VERBOSE_LOGGING=false
 
 # =====================================================
 # CONFIGURAÇÕES ESPECÍFICAS DO PROJETO
@@ -52,7 +51,7 @@ VITE_PROJECT_VERSION=1.0.0
 VITE_PROJECT_DESCRIPTION=Plataforma de Mods para Minecraft
 
 # =====================================================
-# CONFIGURAÇÕES DE DESENVOLVIMENTO
+# CONFIGURAÇÕES DE PRODUÇÃO
 # =====================================================
 VITE_DEV_MODE=false
 VITE_SKIP_EMAIL_VERIFICATION=false
