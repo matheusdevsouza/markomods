@@ -1,0 +1,1346 @@
+{
+      "nav": {
+      "home": "Início",
+      "mods": "Mods",
+      "addons": "Addons",
+      "about": "Sobre",
+      "contact": "Contato",
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "profile": "Perfil",
+    "logout": "Sair",
+    "admin": "Administração",
+    "dashboard": "Painel",
+    "users": "Usuários",
+    "favorites": "Mods Favoritos",
+    "downloads": "Meus Downloads",
+    "adminPanel": "Painel Admin",
+    "changelog": "Novidades",
+    "contact": "Contato",
+    "faq": "FAQ",
+    "dashboardDesc": "Gerencie sua conta",
+    "favoritesDesc": "Seus mods salvos",
+    "downloadsDesc": "Histórico de downloads",
+    "adminPanelDesc": "Gerencie a plataforma",
+    "changelogDesc": "O que mudou na plataforma",
+    "contactDesc": "Entre em contato conosco",
+    "faqDesc": "Perguntas frequentes",
+    "logoutDesc": "Encerrar sessão"
+  },
+  "home": {
+    "hero": {
+      "title": "Bem-vindo ao ModPortal",
+      "subtitle": "Explore uma coleção incrível de mods para Minecraft. Baixe, instale e transforme sua experiência de jogo!",
+      "cta": "Explorar Mods"
+    },
+    "featured": {
+      "title": "Mods em Destaque"
+    },
+    "popular": {
+      "title": "Mods Populares"
+    },
+    "recent": {
+      "title": "Mods Recentes"
+    },
+    "stats": {
+      "downloads": "Downloads",
+      "mods": "Mods",
+      "users": "Usuários"
+    },
+    "noModsFound": "Nenhum mod encontrado!",
+    "noModsMessage": "Parece que ainda não há mods por aqui. Volte mais tarde ou adicione alguns na área de Admin!",
+    "viewDetails": "Ver Detalhes",
+    "download": "Baixar",
+    "author": "Autor:",
+    "published": "Publicado:",
+    "viewAll": "Ver Todos",
+    "adAreaEmpty": "Área de Anúncio (Vazia)",
+    "addAdToSeparateSections": "Adicione um anúncio para separar as seções",
+    "adArea": "Área de Anúncio",
+    "googleAdsOrSponsor": "(Google Ads ou Patrocinador)",
+    "modOfTheWeek": "Mod da Semana",
+    "viewMod": "Ver Mod",
+    "totalDownloadsOnPlatform": "Downloads Totais na Plataforma",
+    "latestModsAdded": "Últimos Mods Adicionados",
+    "noRecentModsFound": "Nenhum mod recente encontrado.",
+    "mostDownloadedMods": "Mods Mais Baixados",
+    "noPopularModsFound": "Nenhum mod popular encontrado."
+  },
+  "header": {
+    "creatorName": "Nome do Criador",
+    "creatorBio": "Bio do criador.",
+    "contactMe": "Entrar em Contato",
+    "viewAllContacts": "Ver todos os contatos",
+    "nav": {
+      "home": "Início",
+      "mods": "Mods",
+      "contact": "Contato",
+      "about": "Sobre"
+    }
+  },
+  "footer": {
+    "brandName": "Eu, Marko! Mods",
+    "brandDescription": "Confira já todos os nossos mods!",
+    "quickLinks": "Links Rápidos",
+    "home": "Início",
+    "exploreMods": "Explorar Mods",
+    "favorites": "Favoritos",
+    "downloads": "Downloads",
+    "community": "Comunidade",
+    "guidelines": "Diretrizes",
+    "partners": "Parceiros",
+    "support": "Suporte",
+    "helpCenter": "Central de Ajuda",
+    "contact": "Contato",
+    "faq": "FAQ",
+    "backToTop": "Voltar ao Topo",
+    "allRightsReserved": "Todos os direitos reservados"
+  },
+  "mods": {
+    "search": {
+      "placeholder": "Buscar mods..."
+    },
+    "filters": {
+      "title": "Filtros",
+      "category": "Categoria",
+      "loader": "Mod Loader",
+      "version": "Versão do Minecraft",
+      "sort": "Ordenar por"
+    },
+    "sort": {
+      "popular": "Mais Populares",
+      "recent": "Mais Recentes",
+      "downloads": "Mais Baixados",
+      "rating": "Melhor Avaliados"
+    },
+    "loading": "Carregando mods...",
+    "noResults": "Nenhum mod encontrado",
+    "noDescription": "Descrição não disponível",
+    "viewDetails": "Ver Detalhes",
+    "download": "Baixar",
+    "favorite": "Favoritar",
+    "share": "Compartilhar",
+    "downloads": "Downloads",
+    "favorites": "Favoritos"
+  },
+  "modDetail": {
+    "backToMods": "Voltar para Mods",
+    "backToAddons": "Voltar para Addons",
+    "description": "Descrição",
+    "details": "Detalhes",
+    "downloads": "Downloads",
+    "statistics": "Estatísticas",
+    "categories": "Categorias",
+    "modLoader": "Mod Loader",
+    "technicalInfo": "Informações Técnicas",
+    "author": "Autor",
+    "unknown": "Autor desconhecido",
+    "modCreator": "Criador do Mod",
+    "addonCreator": "Criador do Addon",
+    "information": "Informações",
+    "version": "Versão",
+    "minecraftVersion": "Versão do Minecraft",
+    "fileSize": "Tamanho do arquivo",
+    "createdAt": "Criado em",
+    "lastUpdated": "Última atualização",
+    "downloadCount": "Total de Downloads",
+    "viewCount": "Visualizações",
+    "likeCount": "Favoritos",
+    "directDownload": "Download Direto",
+    "modDownloadDescription": "Baixe o arquivo .jar do mod para Minecraft Java Edition",
+    "addonDownloadDescription": "Baixe o arquivo do addon para Minecraft Bedrock Edition",
+    "downloadNow": "Baixar Agora",
+    "downloadNotAvailable": "Download não disponível",
+    "installationInstructions": "Instruções de Instalação",
+    "modStep1": "Baixe o arquivo .jar do mod",
+    "modStep2": "Coloque o arquivo na pasta mods",
+    "modStep3": "Reinicie o Minecraft com {{loader}}",
+    "addonStep1": "Baixe o arquivo do addon",
+    "addonStep2": "Coloque o arquivo na pasta behavior_packs",
+    "addonStep3": "Ative o addon no Minecraft Bedrock",
+    "step4": "Divirta-se!",
+    "requirements": "Requisitos",
+    "modLoaderRequired": "Mod Loader necessário",
+    "minecraftVersionRequired": "Versão do Minecraft necessária",
+    "forgeRequired": "Forge necessário",
+    "fabricRequired": "Fabric necessário",
+    "quiltRequired": "Quilt necessário",
+    "neoforgeRequired": "NeoForge necessário",
+    "compatibility": "Compatibilidade",
+    "compatibleWith": "Compatível com",
+    "notCompatibleWith": "Não compatível com",
+    "testedWith": "Testado com",
+    "reportedIssues": "Problemas reportados",
+    "noIssues": "Nenhum problema reportado",
+    "knownIssues": "Problemas conhecidos",
+    "solutions": "Soluções",
+    "workarounds": "Alternativas",
+    "support": "Suporte",
+    "getHelp": "Obter ajuda",
+    "reportIssue": "Reportar problema",
+    "suggestFeature": "Sugerir funcionalidade",
+    "donate": "Doar",
+    "supportAuthor": "Apoiar o autor",
+    "becomePatron": "Tornar-se patrono",
+    "buyCoffee": "Comprar um café",
+    "relatedMods": "Mods relacionados",
+    "similarMods": "Mods similares",
+    "recommendedMods": "Mods recomendados",
+    "requiredMods": "Mods necessários",
+    "optionalMods": "Mods opcionais",
+    "incompatibleMods": "Mods incompatíveis",
+    "modPacks": "Pacotes de mods",
+    "modPacksContaining": "Pacotes contendo este mod",
+    "modPacksRecommended": "Pacotes recomendados",
+    "modPacksPopular": "Pacotes populares",
+    "modPacksRecent": "Pacotes recentes",
+    "modPacksFeatured": "Pacotes em destaque",
+    "modPacksTrending": "Pacotes em tendência",
+    "modPacksTop": "Pacotes top",
+    "modPacksBest": "Melhores pacotes",
+    "modPacksNew": "Novos pacotes",
+    "modPacksUpdated": "Pacotes atualizados",
+    "modPacksVerified": "Pacotes verificados",
+    "modPacksOfficial": "Pacotes oficiais",
+    "modPacksCommunity": "Pacotes da comunidade",
+    "modPacksCurated": "Pacotes curados",
+    "modPacksPremium": "Pacotes premium",
+    "modPacksFree": "Pacotes gratuitos",
+    "modPacksPaid": "Pacotes pagos",
+    "modPacksTrial": "Pacotes de teste",
+    "modPacksDemo": "Pacotes demo",
+    "modPacksBeta": "Pacotes beta",
+    "modPacksAlpha": "Pacotes alpha",
+    "modPacksSnapshot": "Pacotes snapshot",
+    "modPacksRelease": "Pacotes de lançamento",
+    "modPacksStable": "Pacotes estáveis",
+    "modPacksUnstable": "Pacotes instáveis",
+    "modPacksExperimental": "Pacotes experimentais",
+    "modPacksDeprecated": "Pacotes obsoletos",
+    "modPacksLegacy": "Pacotes legados",
+    "modPacksModern": "Pacotes modernos",
+    "modPacksClassic": "Pacotes clássicos",
+    "modPacksRetro": "Pacotes retrô",
+    "modPacksNostalgic": "Pacotes nostálgicos",
+    "modPacksFuturistic": "Pacotes futuristas",
+    "modPacksFantasy": "Pacotes de fantasia",
+    "modPacksSciFi": "Pacotes de ficção científica",
+    "modPacksHorror": "Pacotes de terror",
+    "modPacksAdventure": "Pacotes de aventura",
+    "modPacksRPG": "Pacotes de RPG",
+    "modPacksStrategy": "Pacotes de estratégia",
+    "modPacksSimulation": "Pacotes de simulação",
+    "modPacksSports": "Pacotes de esportes",
+    "modPacksRacing": "Pacotes de corrida",
+    "modPacksFighting": "Pacotes de luta",
+    "modPacksShooter": "Pacotes de tiro",
+    "modPacksStealth": "Pacotes de furtividade",
+    "modPacksSurvival": "Pacotes de sobrevivência",
+    "modPacksCreative": "Pacotes criativos",
+    "modPacksBuilding": "Pacotes de construção",
+    "modPacksRedstone": "Pacotes de redstone",
+    "modPacksMagic": "Pacotes de magia",
+    "modPacksTechnology": "Pacotes de tecnologia",
+    "modPacksAgriculture": "Pacotes de agricultura",
+    "modPacksCooking": "Pacotes de culinária",
+    "modPacksFarming": "Pacotes de fazenda",
+    "modPacksMining": "Pacotes de mineração",
+    "modPacksCombat": "Pacotes de combate",
+    "modPacksExploration": "Pacotes de exploração",
+    "modPacksTransportation": "Pacotes de transporte",
+    "modPacksEnergy": "Pacotes de energia",
+    "modPacksFluids": "Pacotes de fluidos",
+    "modPacksItems": "Pacotes de itens",
+    "modPacksBlocks": "Pacotes de blocos",
+    "modPacksEntities": "Pacotes de entidades",
+    "modPacksDimensions": "Pacotes de dimensões",
+    "modPacksBiomes": "Pacotes de biomas",
+    "modPacksStructures": "Pacotes de estruturas",
+    "modPacksDungeons": "Pacotes de masmorras",
+    "modPacksVillages": "Pacotes de vilas",
+    "modPacksCities": "Pacotes de cidades",
+    "modPacksCastles": "Pacotes de castelos",
+    "modPacksTemples": "Pacotes de templos",
+    "modPacksRuins": "Pacotes de ruínas",
+    "modPacksTreasure": "Pacotes de tesouros",
+    "modPacksQuests": "Pacotes de missões",
+    "modPacksAchievements": "Pacotes de conquistas",
+    "modPacksAdvancements": "Pacotes de progressos",
+    "modPacksRecipes": "Pacotes de receitas",
+    "modPacksCrafting": "Pacotes de crafting",
+    "modPacksSmelting": "Pacotes de fundição",
+    "modPacksBrewing": "Pacotes de preparo",
+    "modPacksEnchanting": "Pacotes de encantamentos",
+    "modPacksAnvil": "Pacotes de bigorna",
+    "modPacksGrindstone": "Pacotes de rebolo",
+    "modPacksLoom": "Pacotes de tear",
+    "modPacksStonecutter": "Pacotes de cortador de pedra",
+    "modPacksSmithing": "Pacotes de ferraria",
+    "modPacksCarpentry": "Pacotes de carpintaria",
+    "modPacksMasonry": "Pacotes de alvenaria",
+    "modPacksPottery": "Pacotes de cerâmica",
+    "modPacksGlassblowing": "Pacotes de sopro de vidro",
+    "modPacksBlacksmithing": "Pacotes de ferraria",
+    "modPacksArmoring": "Pacotes de armadura",
+    "modPacksWeaponry": "Pacotes de armas",
+    "modPacksArchery": "Pacotes de arco e flecha",
+    "modPacksAlchemy": "Pacotes de alquimia",
+    "modPacksHerbalism": "Pacotes de herbalismo",
+    "modPacksBeekeeping": "Pacotes de apicultura",
+    "modPacksFishing": "Pacotes de pesca",
+    "modPacksHunting": "Pacotes de caça",
+    "modPacksGathering": "Pacotes de coleta",
+    "modPacksCooking": "Pacotes de culinária",
+    "modPacksBaking": "Pacotes de panificação",
+    "modPacksBrewing": "Pacotes de preparo",
+    "modPacksDistilling": "Pacotes de destilação",
+    "modPacksFermenting": "Pacotes de fermentação",
+    "modPacksPickling": "Pacotes de conserva",
+    "modPacksCanning": "Pacotes de enlatamento",
+    "modPacksDrying": "Pacotes de secagem",
+    "modPacksSmoking": "Pacotes de defumação",
+    "modPacksCuring": "Pacotes de cura",
+    "modPacksAging": "Pacotes de envelhecimento",
+    "modPacksRefining": "Pacotes de refino",
+    "modPacksProcessing": "Pacotes de processamento",
+    "modPacksManufacturing": "Pacotes de manufatura",
+    "modPacksAssembly": "Pacotes de montagem",
+    "modPacksPackaging": "Pacotes de embalagem",
+    "modPacksShipping": "Pacotes de envio",
+    "modPacksLogistics": "Pacotes de logística",
+    "modPacksSupplyChain": "Pacotes de cadeia de suprimentos",
+    "modPacksTrade": "Pacotes de comércio",
+    "modPacksEconomy": "Pacotes de economia",
+    "modPacksPolitics": "Pacotes de política",
+    "modPacksDiplomacy": "Pacotes de diplomacia",
+    "modPacksWarfare": "Pacotes de guerra",
+    "modPacksPeace": "Pacotes de paz",
+    "modPacksAlliance": "Pacotes de aliança",
+    "modPacksTreaty": "Pacotes de tratado",
+    "modPacksContract": "Pacotes de contrato",
+    "modPacksAgreement": "Pacotes de acordo",
+    "modPacksPartnership": "Pacotes de parceria",
+    "modPacksCollaboration": "Pacotes de colaboração",
+    "modPacksCooperation": "Pacotes de cooperação",
+    "modPacksCompetition": "Pacotes de competição",
+    "modPacksConflict": "Pacotes de conflito",
+    "modPacksResolution": "Pacotes de resolução",
+    "modPacksMediation": "Pacotes de mediação",
+    "modPacksArbitration": "Pacotes de arbitragem",
+    "modPacksNegotiation": "Pacotes de negociação",
+    "modPacksBargaining": "Pacotes de barganha",
+    "modPacksHaggling": "Pacotes de pechincha",
+    "modPacksAuction": "Pacotes de leilão",
+    "modPacksBidding": "Pacotes de licitação",
+    "modPacksTendering": "Pacotes de concorrência",
+    "modPacksProcurement": "Pacotes de aquisição",
+    "modPacksSourcing": "Pacotes de fornecimento",
+    "modPacksVendor": "Pacotes de fornecedor",
+    "modPacksSupplier": "Pacotes de fornecedor",
+    "modPacksManufacturer": "Pacotes de fabricante",
+    "modPacksProducer": "Pacotes de produtor",
+    "modPacksDistributor": "Pacotes de distribuidor",
+    "modPacksRetailer": "Pacotes de varejista",
+    "modPacksWholesaler": "Pacotes de atacadista",
+    "modPacksBroker": "Pacotes de corretor",
+    "modPacksAgent": "Pacotes de agente",
+    "modPacksRepresentative": "Pacotes de representante",
+    "modPacksConsultant": "Pacotes de consultor",
+    "modPacksAdvisor": "Pacotes de conselheiro",
+    "modPacksExpert": "Pacotes de especialista",
+    "modPacksSpecialist": "Pacotes de especialista",
+    "modPacksProfessional": "Pacotes de profissional",
+    "modPacksMaster": "Pacotes de mestre",
+    "modPacksApprentice": "Pacotes de aprendiz",
+    "modPacksStudent": "Pacotes de estudante",
+    "modPacksTeacher": "Pacotes de professor",
+    "modPacksInstructor": "Pacotes de instrutor",
+    "modPacksTrainer": "Pacotes de treinador",
+    "modPacksCoach": "Pacotes de treinador",
+    "modPacksMentor": "Pacotes de mentor",
+    "modPacksGuide": "Pacotes de guia",
+    "modPacksLeader": "Pacotes de líder",
+    "modPacksManager": "Pacotes de gerente",
+    "modPacksSupervisor": "Pacotes de supervisor",
+    "modPacksDirector": "Pacotes de diretor",
+    "modPacksExecutive": "Pacotes de executivo",
+    "modPacksOfficer": "Pacotes de oficial",
+    "modPacksAdministrator": "Pacotes de administrador",
+    "modPacksCoordinator": "Pacotes de coordenador",
+    "modPacksOrganizer": "Pacotes de organizador",
+    "modPacksPlanner": "Pacotes de planejador",
+    "modPacksScheduler": "Pacotes de programador",
+    "modPacksDispatcher": "Pacotes de despachante",
+    "modPacksController": "Pacotes de controlador",
+    "modPacksRegulator": "Pacotes de regulador",
+    "modPacksMonitor": "Pacotes de monitor",
+    "modPacksInspector": "Pacotes de inspetor",
+    "modPacksAuditor": "Pacotes de auditor",
+    "modPacksReviewer": "Pacotes de revisor",
+    "modPacksEvaluator": "Pacotes de avaliador",
+    "modPacksAssessor": "Pacotes de avaliador",
+    "modPacksAppraiser": "Pacotes de avaliador",
+    "modPacksEstimator": "Pacotes de estimador",
+    "modPacksCalculator": "Pacotes de calculadora",
+    "modPacksComputer": "Pacotes de computador",
+    "modPacksProcessor": "Pacotes de processador",
+    "modPacksMemory": "Pacotes de memória",
+    "modPacksStorage": "Pacotes de armazenamento",
+    "modPacksNetwork": "Pacotes de rede",
+    "modPacksInternet": "Pacotes de internet",
+    "modPacksWeb": "Pacotes de web",
+    "modPacksMobile": "Pacotes de mobile",
+    "modPacksDesktop": "Pacotes de desktop",
+    "modPacksLaptop": "Pacotes de laptop",
+    "modPacksTablet": "Pacotes de tablet",
+    "modPacksPhone": "Pacotes de telefone",
+    "modPacksSmartphone": "Pacotes de smartphone",
+    "modPacksFeature": "Pacotes de funcionalidade",
+    "modPacksFunction": "Pacotes de função",
+    "modPacksCapability": "Pacotes de capacidade",
+    "modPacksAbility": "Pacotes de habilidade",
+    "modPacksSkill": "Pacotes de habilidade",
+    "modPacksTalent": "Pacotes de talento",
+    "modPacksGift": "Pacotes de dom",
+    "modPacksEndowment": "Pacotes de dotação",
+    "modPacksInheritance": "Pacotes de herança",
+    "modPacksLegacy": "Pacotes de legado",
+    "modPacksHeritage": "Pacotes de herança",
+    "modPacksTradition": "Pacotes de tradição",
+    "modPacksCustom": "Pacotes de costume",
+    "modPacksHabit": "Pacotes de hábito",
+    "modPacksRoutine": "Pacotes de rotina",
+    "modPacksPattern": "Pacotes de padrão",
+    "modPacksModel": "Pacotes de modelo",
+    "modPacksTemplate": "Pacotes de modelo",
+    "modPacksBlueprint": "Pacotes de planta",
+    "modPacksDesign": "Pacotes de design",
+    "modPacksLayout": "Pacotes de layout",
+    "modPacksStructure": "Pacotes de estrutura",
+    "modPacksFramework": "Pacotes de framework",
+    "modPacksArchitecture": "Pacotes de arquitetura",
+    "modPacksSystem": "Pacotes de sistema",
+    "modPacksPlatform": "Pacotes de plataforma",
+    "modPacksInfrastructure": "Pacotes de infraestrutura",
+    "modPacksFoundation": "Pacotes de fundação",
+    "modPacksBase": "Pacotes de base",
+    "modPacksCore": "Pacotes de núcleo",
+    "modPacksCenter": "Pacotes de centro",
+    "modPacksHub": "Pacotes de hub",
+    "modPacksNode": "Pacotes de nó",
+    "modPacksPoint": "Pacotes de ponto",
+    "modPacksLocation": "Pacotes de localização",
+    "modPacksPosition": "Pacotes de posição",
+    "modPacksPlace": "Pacotes de lugar",
+    "modPacksSpot": "Pacotes de lugar",
+    "modPacksArea": "Pacotes de área",
+    "modPacksRegion": "Pacotes de região",
+    "modPacksZone": "Pacotes de zona",
+    "modPacksTerritory": "Pacotes de território",
+    "modPacksDomain": "Pacotes de domínio",
+    "modPacksRealm": "Pacotes de reino",
+    "modPacksWorld": "Pacotes de mundo",
+    "modPacksUniverse": "Pacotes de universo",
+    "modPacksCosmos": "Pacotes de cosmos",
+    "modPacksSpace": "Pacotes de espaço",
+    "modPacksTime": "Pacotes de tempo",
+    "modPacksDimension": "Pacotes de dimensão",
+    "modPacksPlane": "Pacotes de plano",
+    "modPacksLevel": "Pacotes de nível",
+    "modPacksStage": "Pacotes de estágio",
+    "modPacksPhase": "Pacotes de fase",
+    "modPacksStep": "Pacotes de passo",
+    "modPacksProcess": "Pacotes de processo",
+    "modPacksProcedure": "Pacotes de procedimento",
+    "modPacksMethod": "Pacotes de método",
+    "modPacksTechnique": "Pacotes de técnica",
+    "modPacksApproach": "Pacotes de abordagem",
+    "modPacksStrategy": "Pacotes de estratégia",
+    "modPacksPlan": "Pacotes de plano",
+    "modPacksScheme": "Pacotes de esquema",
+    "modPacksProject": "Pacotes de projeto",
+    "modPacksInitiative": "Pacotes de iniciativa",
+    "modPacksCampaign": "Pacotes de campanha",
+    "modPacksMission": "Pacotes de missão",
+    "modPacksGoal": "Pacotes de objetivo",
+    "modPacksTarget": "Pacotes de alvo",
+    "modPacksAim": "Pacotes de mira",
+    "modPacksPurpose": "Pacotes de propósito",
+    "modPacksIntent": "Pacotes de intenção",
+    "modPacksObjective": "Pacotes de objetivo",
+    "modPacksSubjective": "Pacotes de subjetivo",
+    "modPacksPersonal": "Pacotes de pessoal",
+    "modPacksIndividual": "Pacotes de individual",
+    "modPacksPrivate": "Pacotes de privado",
+    "modPacksPublic": "Pacotes de público",
+    "modPacksCommon": "Pacotes de comum",
+    "modPacksGeneral": "Pacotes de geral",
+    "modPacksUniversal": "Pacotes de universal",
+    "modPacksGlobal": "Pacotes de global",
+    "modPacksLocal": "Pacotes de local",
+    "modPacksRegional": "Pacotes de regional",
+    "modPacksNational": "Pacotes de nacional",
+    "modPacksInternational": "Pacotes de internacional",
+    "modPacksContinental": "Pacotes de continental",
+    "modPacksIntercontinental": "Pacotes de intercontinental",
+    "modPacksTranscontinental": "Pacotes de transcontinental",
+    "modPacksCrossContinental": "Pacotes de transcontinental",
+    "modPacksMultiContinental": "Pacotes de multicontinental",
+    "modPacksPanContinental": "Pacotes de pancontinental",
+    "modPacksSubContinental": "Pacotes de subcontinental",
+    "modPacksMicroContinental": "Pacotes de microcontinental",
+    "modPacksMegaContinental": "Pacotes de megacontinental",
+    "modPacksGigaContinental": "Pacotes de gigacontinental",
+    "modPacksTeraContinental": "Pacotes de teracontinental",
+    "modPacksPetaContinental": "Pacotes de petacontinental",
+    "modPacksExaContinental": "Pacotes de exacontinental",
+    "modPacksZettaContinental": "Pacotes de zettacontinental",
+    "modPacksYottaContinental": "Pacotes de yottacontinental",
+    "modPacksRonnaContinental": "Pacotes de ronnacontinental",
+    "modPacksQuettaContinental": "Pacotes de quettacontinental",
+    "modPacksHectoContinental": "Pacotes de hectocontinental",
+    "modPacksDecaContinental": "Pacotes de decacontinental",
+    "modPacksDeciContinental": "Pacotes de decicontinental",
+    "modPacksCentiContinental": "Pacotes de centicontinental",
+    "modPacksMilliContinental": "Pacotes de millicontinental",
+    "modPacksMicroContinental": "Pacotes de microcontinental",
+    "modPacksNanoContinental": "Pacotes de nanocontinental",
+    "modPacksPicoContinental": "Pacotes de picocontinental",
+    "modPacksFemtoContinental": "Pacotes de femtocontinental",
+    "modPacksAttoContinental": "Pacotes de attocontinental",
+    "modPacksZeptoContinental": "Pacotes de zeptocontinental",
+    "modPacksYoctoContinental": "Pacotes de yoctocontinental",
+    "modPacksRontoContinental": "Pacotes de rontocontinental",
+    "modPacksQuectoContinental": "Pacotes de quectocontinental",
+    "modPacksHectoContinental": "Pacotes de hectocontinental",
+    "modPacksDecaContinental": "Pacotes de decacontinental",
+    "modPacksDeciContinental": "Pacotes de decicontinental",
+    "modPacksCentiContinental": "Pacotes de centicontinental",
+    "modPacksMilliContinental": "Pacotes de millicontinental",
+    "modPacksMicroContinental": "Pacotes de microcontinental",
+    "modPacksNanoContinental": "Pacotes de nanocontinental",
+    "modPacksPicoContinental": "Pacotes de picocontinental",
+    "modPacksFemtoContinental": "Pacotes de femtocontinental",
+    "modPacksAttoContinental": "Pacotes de attocontinental",
+    "modPacksZeptoContinental": "Pacotes de zeptocontinental",
+    "modPacksYoctoContinental": "Pacotes de yoctocontinental",
+    "modPacksRontoContinental": "Pacotes de rontocontinental",
+    "modPacksQuectoContinental": "Pacotes de quectocontinental"
+  },
+  "auth": {
+    "login": {
+      "title": "Entrar na Conta",
+      "email": "E-mail",
+      "password": "Senha",
+      "submit": "Entrar",
+      "forgotPassword": "Esqueceu a senha?",
+      "noAccount": "Não tem uma conta?",
+      "signUp": "Cadastre-se"
+    },
+    "register": {
+      "title": "Criar Conta",
+      "name": "Nome completo",
+      "email": "E-mail",
+      "password": "Senha",
+      "confirmPassword": "Confirmar senha",
+      "submit": "Cadastrar",
+      "haveAccount": "Já tem uma conta?",
+      "signIn": "Entrar"
+    },
+    "logout": {
+      "confirm": "Tem certeza que deseja sair?"
+    }
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "edit": "Editar Perfil",
+    "save": "Salvar Alterações",
+    "cancel": "Cancelar",
+    "personalInfo": "Informações Pessoais",
+    "displayName": "Nome de exibição",
+    "bio": "Biografia",
+    "avatar": "Avatar",
+    "changeAvatar": "Alterar Avatar",
+    "removeAvatar": "Remover Avatar"
+  },
+  "admin": {
+    "title": "Painel Administrativo",
+    "mods": {
+      "title": "Gerenciar Mods",
+      "create": "Criar Novo Mod",
+      "edit": "Editar Mod",
+      "delete": "Excluir Mod",
+      "approve": "Aprovar Mod",
+      "reject": "Rejeitar Mod",
+      "feature": "Destacar Mod",
+      "unfeature": "Remover Destaque"
+    },
+    "users": {
+      "title": "Gerenciar Usuários"
+    }
+  },
+  "message": {
+    "success": "Sucesso!",
+    "error": "Erro!",
+    "warning": "Aviso!",
+    "info": "Informação",
+    "loading": "Carregando...",
+    "saving": "Salvando...",
+    "deleting": "Excluindo...",
+    "confirmDelete": "Tem certeza que deseja excluir?",
+    "operationSuccess": "Operação realizada com sucesso!",
+    "operationError": "Erro ao realizar operação",
+    "networkError": "Erro de conexão",
+    "unauthorized": "Acesso não autorizado",
+    "forbidden": "Acesso negado",
+    "notFound": "Página não encontrada",
+    "serverError": "Erro interno do servidor"
+  },
+  "validation": {
+    "required": "Este campo é obrigatório",
+    "email": "E-mail inválido",
+    "minLength": "Mínimo de {min} caracteres",
+    "maxLength": "Máximo de {max} caracteres",
+    "passwordMatch": "As senhas não coincidem",
+    "strongPassword": "A senha deve conter pelo menos 8 caracteres, incluindo maiúsculas, minúsculas e números"
+  },
+  "common": {
+    "yes": "Sim",
+    "no": "Não",
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "save": "Salvar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "loading": "Carregando...",
+    "noData": "Nenhum dado encontrado",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "info": "Informação"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "language": {
+    "title": "Idioma",
+    "auto": "Automático",
+    "americas": "Américas",
+    "europe": "Europa",
+    "asia": "Ásia",
+    "detected": "Detectado",
+    "selected": "Idioma selecionado"
+  },
+  "search": {
+    "advancedSearch": "Busca Avançada",
+    "showFilters": "Mostrar Filtros",
+    "hideFilters": "Ocultar Filtros",
+    "whatAreYouLookingFor": "O que você está procurando?",
+    "modNameDescriptionTags": "Nome, descrição ou tags do mod...",
+    "search": "Buscar",
+    "applyFilters": "Aplicar Filtros",
+    "clearAll": "Limpar Tudo",
+    "searchResults": "Resultados da Busca",
+    "searchError": "Erro na busca",
+    "tryAgain": "Tentar Novamente",
+    "clearFilters": "Limpar Filtros",
+    "noModsFound": "Nenhum mod encontrado",
+    "tryAdjustingSearch": "Tente ajustar seus termos de busca ou filtros.",
+    "typeToSearch": "Digite algo para buscar",
+    "useFiltersAbove": "Use os filtros acima para encontrar os mods que você procura."
+  },
+  "contact": {
+    "title": "Entre em Contato",
+    "subtitle": "Tem alguma dúvida ou sugestão? Entre em contato conosco!",
+    "form": {
+      "title": "Envie uma Mensagem",
+      "description": "Preencha o formulário abaixo e entraremos em contato em breve",
+      "name": "Nome",
+      "namePlaceholder": "Seu nome completo",
+      "email": "E-mail",
+      "emailPlaceholder": "seu@email.com",
+      "subject": "Assunto",
+      "subjectPlaceholder": "Qual é o assunto da sua mensagem?",
+      "message": "Mensagem",
+      "messagePlaceholder": "Descreva sua dúvida ou sugestão...",
+      "submit": "Enviar Mensagem",
+      "sending": "Enviando...",
+      "success": "Mensagem enviada com sucesso!",
+      "error": "Erro ao enviar mensagem. Tente novamente."
+    },
+    "methods": {
+      "email": {
+        "title": "Email de Suporte",
+        "description": "Envie-nos um email para suporte técnico"
+      },
+      "discord": {
+        "title": "Discord",
+        "description": "Junte-se à nossa comunidade no Discord",
+        "server": "Discord Server"
+      }
+    },
+    "info": {
+      "title": "Outras Formas de Contato",
+      "description": "Escolha a forma mais conveniente para você"
+    },
+    "additional": {
+      "title": "Informações Importantes",
+      "responseTime": "Respondemos em até 24 horas",
+      "support": "Suporte técnico gratuito",
+      "community": "Comunidade ativa no Discord"
+    },
+    "faq": {
+      "title": "Perguntas Frequentes",
+      "subtitle": "Encontre respostas para as dúvidas mais comuns",
+      "whatIsEuMarkoMods": {
+        "title": "O que é o Eu, Marko! Mods?",
+        "content": "O Eu, Marko! Mods é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores."
+      },
+      "howToRegister": {
+        "title": "Como me registrar?",
+        "content": "Para se registrar, clique no botão \"Registrar\" no canto superior direito da página. Preencha o formulário com seu nome de usuário, email e senha. Após confirmar seu email, você terá acesso completo à plataforma."
+      },
+      "howToDownload": {
+        "title": "Como baixar mods?",
+        "content": "Navegue pela nossa biblioteca de mods, encontre o que você gosta e clique no botão \"Baixar\". Você precisa estar logado para baixar mods. Após o download, siga as instruções de instalação específicas de cada mod."
+      },
+      "howToInstall": {
+        "title": "Como instalar mods?",
+        "content": "A instalação varia dependendo do mod e do mod loader (Forge, Fabric, etc.). Geralmente, você precisa: 1) Instalar o mod loader apropriado, 2) Baixar o mod, 3) Colocar o arquivo .jar na pasta \"mods\" do seu Minecraft."
+      },
+      "favoriteMods": {
+        "title": "Como favoritar mods?",
+        "content": "Para favoritar um mod, clique no ícone de coração no card do mod ou na página de detalhes. Mods favoritados aparecem na sua seção \"Favoritos\" no dashboard, facilitando o acesso posterior."
+      },
+      "resetPassword": {
+        "title": "Como redefinir minha senha?",
+        "content": "Na página de login, clique em \"Esqueci minha senha\". Digite seu email e você receberá um link para redefinir sua senha. Siga as instruções no email para criar uma nova senha segura."
+      },
+      "modCompatibility": {
+        "title": "Como verificar compatibilidade de mods?",
+        "content": "Cada mod tem informações detalhadas sobre compatibilidade, incluindo versão do Minecraft, mod loader necessário e dependências. Sempre verifique essas informações antes de instalar para evitar conflitos."
+      },
+      "systemRequirements": {
+        "title": "Quais são os requisitos do sistema?",
+        "content": "Para usar o Eu, Marko! Mods, você precisa de: Minecraft Java Edition, Java 8 ou superior, conexão com internet e um navegador moderno. Para mods específicos, consulte os requisitos individuais de cada mod."
+      },
+      "modIssues": {
+        "title": "O que fazer se um mod não funcionar?",
+        "content": "Primeiro, verifique se você tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte a seção de comentários do mod ou entre em contato conosco."
+      },
+      "communityGuidelines": {
+        "title": "Quais são as diretrizes da comunidade?",
+        "content": "Nossa comunidade valoriza respeito, colaboração e criatividade. Seja respeitoso com outros usuários, compartilhe conteúdo apropriado, dê crédito aos criadores e ajude outros membros. Violações podem resultar em suspensão da conta."
+      }
+    },
+    "stillNeedHelp": {
+      "title": "Ainda está com dúvidas?",
+      "description": "Nossa equipe de suporte está aqui para ajudar. Entre em contato conosco através dos canais acima ou consulte nossa documentação completa.",
+      "contactSupport": "Contatar Suporte",
+      "viewDocumentation": "Ver Documentação"
+    }
+  },
+  "faq": {
+    "title": "Perguntas Frequentes",
+    "subtitle": "Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko! Mods",
+    "searchPlaceholder": "Pesquisar nas perguntas frequentes...",
+    "categories": {
+      "all": "Todas",
+      "general": "Geral",
+      "account": "Conta",
+      "mods": "Mods",
+      "technical": "Técnico",
+      "community": "Comunidade"
+    },
+    "whatIsMarkoMods": {
+      "title": "O que é o Eu, Marko! Mods?",
+      "content": "O Eu, Marko! Mods é uma plataforma dedicada a mods para Minecraft, onde você pode descobrir, baixar e compartilhar mods incríveis. Nossa missão é facilitar o acesso a mods de qualidade e criar uma comunidade vibrante de jogadores e desenvolvedores."
+    },
+    "howToStart": {
+      "title": "Como começar a usar o Eu, Marko! Mods?",
+      "content": "Para começar:\n\n1) Crie uma conta gratuita\n2) Explore nossa biblioteca de mods\n3) Baixe mods que te interessam\n4) Instale seguindo nossas instruções\n\nÉ simples e gratuito!"
+    },
+    "isFree": {
+      "title": "O Eu, Marko! Mods é gratuito?",
+      "content": "Sim! O Eu, Marko! Mods é completamente gratuito. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum."
+    },
+    "howToRegister": {
+      "title": "Como me registrar?",
+      "content": "Clique em \"Registrar\" no canto superior direito, preencha o formulário com seu nome, email e senha. Após confirmar seu email, você terá acesso completo à plataforma."
+    },
+    "resetPassword": {
+      "title": "Como redefinir minha senha?",
+      "content": "Na página de login, clique em \"Esqueci minha senha\". Digite seu email e você receberá um link para redefinir sua senha. Siga as instruções no email."
+    },
+    "updateProfile": {
+      "title": "Como atualizar meu perfil?",
+      "content": "Acesse seu dashboard clicando no seu avatar. Na seção \"Perfil\", você pode atualizar suas informações pessoais, foto e preferências."
+    },
+    "howToDownload": {
+      "title": "Como baixar mods?",
+      "content": "Navegue pela biblioteca, encontre mods que te interessam e clique em \"Baixar\". Você precisa estar logado. Após o download, siga as instruções de instalação."
+    },
+    "howToInstall": {
+      "title": "Como instalar mods?",
+      "content": "A instalação varia por mod e mod loader (Forge, Fabric, etc.).\n\nGeralmente:\n\n1) Instale o mod loader apropriado\n2) Baixe o mod\n3) Coloque o arquivo .jar na pasta \"mods\" do Minecraft"
+    },
+    "favoriteMods": {
+      "title": "Como favoritar mods?",
+      "content": "Clique no ícone de coração no card do mod ou na página de detalhes. Mods favoritados aparecem na sua seção \"Favoritos\" no dashboard."
+    },
+    "findMods": {
+      "title": "Como encontrar mods específicos?",
+      "content": "Use nossa barra de pesquisa para buscar por nome, categoria ou palavras-chave. Você também pode filtrar por versão do Minecraft, mod loader ou popularidade."
+    },
+    "modCompatibility": {
+      "title": "Como verificar compatibilidade?",
+      "content": "Cada mod tem informações detalhadas sobre compatibilidade, incluindo versão do Minecraft, mod loader necessário e dependências. Sempre verifique antes de instalar."
+    },
+    "systemRequirements": {
+      "title": "Quais são os requisitos do sistema?",
+      "content": "Para usar o Eu, Marko! Mods: Minecraft Java Edition, Java 8 ou superior, conexão com internet e navegador moderno. Para mods específicos, consulte os requisitos individuais."
+    },
+    "modIssues": {
+      "title": "O que fazer se um mod não funcionar?",
+      "content": "Primeiro, verifique se você tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte os comentários do mod ou entre em contato."
+    },
+    "modLoader": {
+      "title": "Qual mod loader usar?",
+      "content": "A escolha depende do mod. Forge é o mais popular e compatível com a maioria dos mods. Fabric é mais moderno e performático. Quilt é uma alternativa ao Fabric. Verifique qual o recomendado para o mod desejado."
+    },
+    "communityGuidelines": {
+      "title": "Quais são as diretrizes da comunidade?",
+      "content": "Nossa comunidade valoriza respeito, colaboração e criatividade. Seja respeitoso com outros usuários, compartilhe conteúdo apropriado, dê crédito aos criadores e ajude outros membros."
+    },
+    "reportMod": {
+      "title": "Como reportar um mod problemático?",
+      "content": "Use o botão \"Reportar\" na página do mod. Nossa equipe de moderação analisará o caso e tomará as medidas apropriadas."
+    },
+    "stillNeedHelp": {
+      "title": "Não encontrou sua resposta?",
+      "description": "Nossa equipe de suporte está aqui para ajudar. Entre em contato conosco através dos canais abaixo.",
+      "email": "Enviar Email",
+      "discord": "Discord"
+    }
+  },
+  "achievements": {
+    "title": "Conquistas",
+    "subtitle": "Desbloqueie conquistas ao usar a plataforma",
+    "unlocked": "Desbloqueado",
+    "locked": "Bloqueado",
+    "progress": "Progresso",
+    "categories": {
+      "explorer": "Explorador",
+      "creator": "Criador",
+      "community": "Comunidade",
+      "special": "Especial"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "markAllRead": "Marcar todas como lidas",
+    "noNotifications": "Nenhuma notificação",
+    "types": {
+      "modUpdate": "Atualização de Mod",
+      "newMod": "Novo Mod",
+      "comment": "Novo Comentário",
+      "system": "Sistema"
+    }
+  },
+  "dashboard": {
+    "loading": "Carregando seu dashboard...",
+    "restrictedAccess": "Acesso Restrito",
+    "loginRequired": "Faça login para acessar seu dashboard pessoal",
+    "login": "Fazer Login",
+    "memberSince": "Membro desde",
+    "lastLogin": "Último login:",
+    "dateNotAvailable": "Data não disponível",
+    "editProfile": "Editar Perfil",
+    "stats": {
+      "totalDownloads": "Total de Downloads",
+      "downloadsPerformed": "Downloads realizados",
+      "favoriteMods": "Mods Favoritos",
+      "modsSaved": "Mods salvos",
+      "comments": "COMENTÁRIOS",
+      "recentInteractions": "Interações recentes"
+    },
+    "favoriteMods": {
+      "title": "Mods Favoritos",
+      "description": "Seus mods favoritos para fácil acesso",
+      "noFavorites": "Nenhum mod favorito ainda",
+      "noFavoritesDescription": "Explore nossa biblioteca de mods e marque seus favoritos para encontrá-los facilmente aqui",
+      "exploreMods": "Explorar Mods",
+      "viewDetails": "Ver Detalhes"
+    },
+    "downloadHistory": {
+      "title": "Histórico de Downloads",
+      "description": "Seus mods baixados recentemente",
+      "noDownloads": "Nenhum download ainda",
+      "noDownloadsDescription": "Comece a baixar mods para ver seu histórico de downloads aqui",
+      "exploreMods": "Explorar Mods",
+      "viewMod": "Ver Mod",
+      "downloads": "downloads"
+    },
+    "roles": {
+      "superAdmin": "Super Admin",
+      "admin": "Admin",
+      "moderator": "Moderador"
+    }
+  },
+  "editProfile": {
+    "title": "Editar Perfil",
+    "subtitle": "Gerencie suas informações pessoais e configurações",
+    "avatar": {
+      "title": "Foto de Perfil",
+      "description": "Faça upload de uma nova foto de perfil. Formatos aceitos: JPG, PNG, GIF, WebP (máx. 5MB)",
+      "currentAvatar": "Avatar Atual",
+      "newAvatar": "Novo Avatar",
+      "currentDisplayName": "Nome de exibição atual",
+      "selectImage": "Selecionar Imagem",
+      "clear": "Limpar",
+      "saving": "Enviando...",
+      "save": "Salvar Avatar"
+    },
+    "identity": {
+      "title": "Identificação e Contato",
+      "description": "Configure como você será identificado na plataforma e como outros usuários te verão",
+      "username": "Nome de Usuário",
+      "unique": "ÚNICO",
+      "usernamePlaceholder": "ex: marko_gamer2024",
+      "usernameHelp": "Usado para fazer login. Deve ser único e não pode ser alterado facilmente.",
+      "email": "Email",
+      "displayName": "Nome de Exibição",
+      "public": "PÚBLICO",
+      "displayNamePlaceholder": "ex: Marko, o Criador de Mods",
+      "displayNameHelp": "Nome que aparece para outros usuários. Pode ser alterado livremente.",
+      "saving": "Salvando...",
+      "save": "Salvar Alterações"
+    },
+    "password": {
+      "title": "Alterar Senha",
+      "description": "Altere sua senha de acesso à plataforma",
+      "current": "Senha Atual",
+      "placeholderCurrent": "Digite sua senha atual",
+      "new": "Nova Senha",
+      "placeholderNew": "Digite a nova senha",
+      "confirm": "Confirmar Nova Senha",
+      "placeholderConfirm": "Confirme a nova senha",
+      "changing": "Alterando...",
+      "change": "Alterar Senha",
+      "strength": {
+        "veryWeak": "Muito fraca",
+        "weak": "Fraca",
+        "medium": "Média",
+        "strong": "Forte"
+      }
+    },
+    "delete": {
+      "title": "Excluir Conta",
+      "description": "Esta ação é irreversível. Todos os seus dados serão perdidos permanentemente.",
+      "warningTitle": "ATENÇÃO: Esta ação é PERMANENTE e IRREVERSÍVEL",
+      "warnings": {
+        "1": "Todos os seus mods favoritos serão perdidos",
+        "2": "Seu histórico de downloads será apagado",
+        "3": "Seus comentários serão removidos permanentemente",
+        "4": "Suas estatísticas e atividades serão apagadas",
+        "5": "Sua conta será COMPLETAMENTE removida do sistema",
+        "6": "NÃO será possível recuperar nenhum dado"
+      },
+      "passwordLabel": "Confirme sua senha",
+      "passwordPlaceholder": "Digite sua senha para confirmar",
+      "confirmLabel": "Digite {{word}} para confirmar",
+      "confirmWordUppercase": "DELETAR",
+      "confirmPlaceholder": "Digite {{word}}",
+      "deleting": "Excluindo...",
+      "deletePermanently": "Deletar Conta"
+    },
+    "validation": {
+      "usernameLength": "Nome de usuário deve ter entre 3 e 50 caracteres",
+      "usernameChars": "Nome de usuário pode conter apenas letras, números, hífens e underscores",
+      "emailInvalid": "Email inválido",
+      "displayNameMax": "Nome de exibição deve ter no máximo 100 caracteres",
+      "currentPasswordRequired": "Senha atual é obrigatória",
+      "newPasswordRequired": "Nova senha é obrigatória",
+      "newPasswordMin": "Nova senha deve ter pelo menos 8 caracteres",
+      "newPasswordPattern": "Senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número",
+      "confirmPasswordRequired": "Confirmação de senha é obrigatória",
+      "passwordsDontMatch": "Senhas não coincidem",
+      "passwordDifferentFromCurrent": "A nova senha deve ser diferente da senha atual",
+      "deletePasswordRequired": "Senha é obrigatória",
+      "confirmTextRequired": "Digite {{word}} para confirmar"
+    },
+    "toast": {
+      "profileUpdated": {
+        "title": "Perfil Atualizado",
+        "desc": "Seu perfil foi atualizado com sucesso!"
+      },
+      "updateError": {
+        "title": "Erro ao Atualizar",
+        "desc": "Erro ao atualizar perfil"
+      },
+      "avatarUpdated": {
+        "title": "Avatar Atualizado",
+        "desc": "Seu avatar foi atualizado com sucesso!"
+      },
+      "avatarUpdateError": {
+        "title": "Erro ao Atualizar Avatar",
+        "desc": "Erro ao atualizar avatar"
+      },
+      "passwordChanged": {
+        "title": "Senha Alterada",
+        "desc": "Sua senha foi alterada com sucesso!"
+      },
+      "passwordChangeError": {
+        "title": "Erro ao Alterar Senha",
+        "desc": "Erro ao alterar senha"
+      },
+      "accountDeleted": {
+        "title": "Conta Deletada",
+        "desc": "Sua conta foi deletada com sucesso"
+      },
+      "deleteAccountError": {
+        "title": "Erro ao Deletar Conta",
+        "desc": "Erro ao deletar conta"
+      },
+      "networkError": {
+        "title": "Erro",
+        "desc": "Erro ao conectar com o servidor"
+      },
+      "fileTooLarge": {
+        "title": "Arquivo Muito Grande",
+        "desc": "O arquivo deve ter menos de 5MB"
+      }
+    }
+  },
+  "favorites": {
+    "title": "Meus Mods Favoritos",
+    "subtitle": "Seus mods salvos e mais baixados em um só lugar",
+    "loading": "Carregando seus favoritos...",
+    "restrictedAccess": "Acesso Restrito",
+    "loginRequired": "Faça login para ver seus mods favoritos",
+    "login": "Fazer Login",
+    "search": {
+      "placeholder": "Buscar nos favoritos..."
+    },
+    "filters": {
+      "allCategories": "Todas as Categorias"
+    },
+    "stats": {
+      "totalFavorites": "Total de Favoritos",
+      "totalDownloads": "Downloads Totais",
+      "averageRating": "Avaliação Média"
+    },
+    "results": {
+      "count": "{{count}} mod encontrado",
+      "count_plural": "{{count}} mods encontrados",
+      "noResults": "Nenhum resultado encontrado",
+      "noResultsDescription": "Tente ajustar os filtros ou termos de busca"
+    },
+    "actions": {
+      "viewDetails": "Ver Detalhes"
+    },
+    "empty": {
+      "title": "Nenhum mod favorito ainda",
+      "description": "Explore nossa biblioteca de mods e marque seus favoritos para encontrá-los facilmente aqui",
+      "exploreMods": "Explorar Mods"
+    },
+    "toast": {
+      "removed": {
+        "title": "Mod removido dos favoritos",
+        "desc": "O mod foi removido da sua lista de favoritos"
+      }
+    }
+  },
+  "downloads": {
+    "title": "Meus Downloads",
+    "subtitle": "Histórico completo de todos os mods que você baixou",
+    "loading": "Carregando seu histórico...",
+    "restrictedAccess": "Acesso Restrito",
+    "loginRequired": "Faça login para ver seu histórico de downloads",
+    "login": "Fazer Login",
+    "search": {
+      "placeholder": "Buscar nos downloads..."
+    },
+    "filters": {
+      "periods": {
+        "all": "Todo o Período",
+        "today": "Hoje",
+        "week": "Última Semana",
+        "month": "Último Mês"
+      },
+      "types": {
+        "all": "Todos os Tipos",
+        "public": "Públicos",
+        "premium": "Premium"
+      }
+    },
+    "stats": {
+      "totalDownloads": "Total de Downloads",
+      "totalSize": "Tamanho Total",
+      "premiumDownloads": "Downloads Premium"
+    },
+    "results": {
+      "count": "{{count}} download encontrado",
+      "count_plural": "{{count}} downloads encontrados",
+      "noResults": "Nenhum resultado encontrado",
+      "noResultsDescription": "Tente ajustar os filtros ou termos de busca"
+    },
+    "actions": {
+      "refresh": "Atualizar",
+      "viewMod": "Ver Mod",
+      "downloadAgain": "Baixar Novamente"
+    },
+    "types": {
+      "premium": "Premium",
+      "public": "Público"
+    },
+    "metadata": {
+      "dateNotAvailable": "Data não disponível",
+      "timeNotAvailable": "Hora não disponível",
+      "sizeNotAvailable": "Tamanho não disponível",
+      "statusNotAvailable": "Status não disponível"
+    },
+    "empty": {
+      "title": "Nenhum download ainda",
+      "description": "Comece a baixar mods para ver seu histórico aqui",
+      "exploreMods": "Explorar Mods"
+    },
+    "toast": {
+      "updated": {
+        "title": "Histórico atualizado",
+        "desc": "Seus downloads foram atualizados"
+      }
+    }
+  },
+  "modDetail": {
+    "description": "Descrição",
+    "information": "Informações", 
+    "categories": "Categorias",
+    "author": "Autor",
+    "download": "Download",
+    "directDownload": "Download Direto",
+    "modDownloadDescription": "Baixe o arquivo .jar do mod para Minecraft Java Edition",
+    "addonDownloadDescription": "Baixe o arquivo do addon para Minecraft Bedrock Edition",
+    "downloadNow": "Baixar Agora",
+    "downloadNotAvailable": "Download não disponível",
+    "modStep1": "Baixe o arquivo .jar do mod",
+    "modStep2": "Coloque o arquivo na pasta mods",
+    "modStep3": "Reinicie o Minecraft com {{loader}}",
+    "addonStep1": "Baixe o arquivo do addon",
+    "addonStep2": "Coloque o arquivo na pasta behavior_packs",
+    "addonStep3": "Ative o addon no Minecraft Bedrock",
+    "step4": "Use o arquivo correto para sua versão do Minecraft",
+    "installationInstructions": "Instruções de Instalação",
+    "technicalInfo": "Informações Técnicas",
+    "version": "Versão",
+    "minecraftVersion": "Versão do Minecraft",
+    "modLoader": "Mod Loader",
+    "fileSize": "Tamanho do arquivo",
+    "unknown": "Desconhecido",
+    "modCreator": "Criador do Mod",
+    "addonCreator": "Criador do Addon",
+    "backToMods": "Voltar para Mods",
+    "backToAddons": "Voltar para Addons",
+    "comments": "Comentários",
+    "shareOpinion": "Compartilhe sua opinião sobre este mod...",
+    "beRespectful": "Seja respeitoso",
+    "shareExperience": "Compartilhe sua experiência",
+    "commentsCount": "comentários",
+    "officialReply": "Resposta Oficial",
+    "replyDeletedSuccess": "Resposta excluída com sucesso!",
+    "replySentSuccess": "Resposta enviada com sucesso!",
+    "officialAdminReply": "Resposta oficial do administrador",
+    "yourReply": "Sua Resposta",
+    "sending": "Enviando...",
+    "sendReply": "Enviar Resposta",
+    "loginToComment": "Faça login para comentar",
+    "loginToShareOpinion": "Entre na sua conta para compartilhar sua opinião sobre este mod",
+    "login": "Fazer Login"
+  },
+  "downloadPage": {
+    "title": "Download: {{modName}}",
+    "preparingDownload": "Preparando Download...",
+    "downloadWillStart": "O download será iniciado automaticamente em:",
+    "downloadAvailable": "Download Disponível!",
+    "clickToDownload": "Clique no link abaixo para iniciar o download:",
+    "downloadLink": "Link de Download:",
+    "linkOpened": "O link foi aberto em uma nova aba. Você pode continuar navegando no site.",
+    "clickLinkAbove": "Clique no link acima para abrir o download em uma nova aba.",
+    "backToMod": "Voltar ao Mod",
+    "exploreOtherMods": "Explorar Outros Mods",
+    "modInformation": "Informações do Mod",
+    "title": "Título:",
+    "author": "Autor:",
+    "version": "Versão:",
+    "minecraft": "Minecraft:",
+    "loader": "Loader:",
+    "views": "Visualizações:",
+    "downloads": "Downloads:",
+    "size": "Tamanho:",
+    "type": "Tipo:",
+    "date": "Data:",
+    "modType": "Mod",
+    "addonType": "Addon",
+    "unknown": "Desconhecido",
+    "notAvailable": "N/A",
+    "error": {
+      "modNotFound": "Mod não encontrado",
+      "loadError": "Erro ao carregar mod",
+      "connectionError": "Erro de conexão",
+      "downloadNotAvailable": "URL de download não disponível",
+      "downloadError": "Erro ao iniciar download"
+    },
+    "toast": {
+      "downloadRegistered": "Download registrado com sucesso!",
+      "linkOpened": "Link de download aberto em nova aba!",
+      "downloadError": "Erro ao iniciar download"
+    }
+  },
+  "notFound": {
+    "title": "Oops! Página não encontrada",
+    "description": {
+      "line1": "Você caiu da ilha do The End? Bem-vindo ao abismo do vazio.",
+      "line2": "E para sair daqui...",
+      "solution": "AGORA SÓ TEM UMA SOLUÇÃO"
+    },
+    "actions": {
+      "backToHome": "Voltar ao Início"
+    },
+    "easterEgg": {
+      "title": "Easter Egg: Mini-Game"
+    },
+    "game": {
+      "active": "Mini-Game Ativo!",
+      "instructions": "Clique nos endermans que aparecem na tela para ganhar pontos!",
+      "points": "Pontos",
+      "seconds": "Segundos",
+      "finished": "Jogo Finalizado!",
+      "totalScore": "Pontuação Total",
+      "messages": {
+        "tryAgain": "Tente novamente! 🎯",
+        "goodTry": "Boa tentativa! 🚀",
+        "excellent": "Excelente! ⭐",
+        "master": "Incrível! Você é um mestre! 👑"
+      },
+      "actions": {
+        "playAgain": "Jogar Novamente",
+        "stopGame": "Parar Jogo"
+      }
+    }
+  },
+  "modsListing": {
+    "title": {
+      "mods": "Todos os Mods",
+      "addons": "Todos os Addons"
+    },
+    "results": {
+      "count": "{{count}} mod encontrado",
+      "count_plural": "{{count}} mods encontrados",
+      "addonsCount": "{{count}} addon encontrado",
+      "addonsCount_plural": "{{count}} addons encontrados"
+    },
+    "search": {
+      "placeholder": "Buscar por nome, descrição..."
+    },
+    "navigation": {
+      "mods": "Mods",
+      "addons": "Addons"
+    },
+    "viewOptions": {
+      "grid": "Grid",
+      "list": "Lista"
+    },
+    "filters": {
+      "title": "Filtros",
+      "sortBy": {
+        "title": "Ordenar por",
+        "mostRecent": "Mais Recentes",
+        "oldest": "Mais Antigos",
+        "mostDownloaded": "Mais Baixados",
+        "leastDownloaded": "Menos Baixados"
+      },
+      "gameVersion": {
+        "title": "Game version",
+        "allVersions": "Todas as versões"
+      },
+      "loader": {
+        "title": "Loader",
+        "allLoaders": "Todos os loaders"
+      },
+      "categories": {
+        "title": "Categories",
+        "allCategories": "Todas as categorias"
+      },
+      "clearFilters": "Limpar Filtros"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próxima"
+    },
+    "empty": {
+      "title": "Nenhum mod encontrado",
+      "description": "Tente ajustar os filtros ou usar termos de busca diferentes."
+    }
+  },
+  "addonsListing": {
+    "title": {
+      "addons": "Todos os Addons"
+    },
+    "results": {
+      "count": "{{count}} addon encontrado",
+      "count_plural": "{{count}} addons encontrados"
+    },
+    "search": {
+      "placeholder": "Buscar por nome, descrição..."
+    },
+    "navigation": {
+      "mods": "Mods",
+      "addons": "Addons"
+    },
+    "viewOptions": {
+      "grid": "Grid",
+      "list": "Lista"
+    },
+    "filters": {
+      "title": "Filtros",
+      "clearFilters": "Limpar Filtros",
+      "sortBy": {
+        "title": "Ordenar por",
+        "mostRecent": "Mais Recentes",
+        "oldest": "Mais Antigos",
+        "mostDownloaded": "Mais Baixados",
+        "leastDownloaded": "Menos Baixados"
+      },
+      "gameVersion": {
+        "title": "Versão do Minecraft",
+        "allVersions": "Todas as versões"
+      },
+      "loader": {
+        "title": "Loader",
+        "allLoaders": "Todos os loaders"
+      },
+      "categories": {
+        "title": "Categorias",
+        "allCategories": "Todas as categorias"
+      }
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Próxima"
+    },
+    "empty": {
+      "title": "Nenhum addon encontrado",
+      "description": "Ainda não há addons disponíveis. Volte mais tarde!"
+    }
+  }
+}

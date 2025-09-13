@@ -1,0 +1,151 @@
+/* Estilos para o editor de texto rico */
+.rich-text-editor .ProseMirror {
+  min-height: 200px;
+  outline: none;
+  white-space: pre-wrap; /* PRESERVAR QUEBRAS DE LINHA E ESPAÇOS */
+}
+
+.rich-text-editor .ProseMirror p {
+  margin: 0.5rem 0;
+  min-height: 1.5rem;
+}
+
+.rich-text-editor .ProseMirror p:empty {
+  min-height: 1.5rem;
+  display: block;
+}
+
+.rich-text-editor .ProseMirror p:empty::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 1.5rem;
+}
+
+/* Garantir que parágrafos vazios sejam preservados */
+.rich-text-editor .ProseMirror p:empty:not(:first-child) {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* PRESERVAR QUEBRAS DE LINHA MÚLTIPLAS */
+.rich-text-editor .ProseMirror p:empty {
+  white-space: pre-wrap;
+  min-height: 1.5rem;
+  display: block;
+}
+
+/* Garantir que espaços em branco sejam preservados */
+.rich-text-editor .ProseMirror {
+  white-space: pre-wrap !important;
+}
+
+/* FORÇAR VISUALIZAÇÃO DE QUEBRAS DE LINHA */
+.rich-text-editor .ProseMirror br {
+  display: block !important;
+  margin: 0.5rem 0 !important;
+  line-height: 1.5rem !important;
+  height: 1.5rem !important;
+  content: "" !important;
+  background: rgba(139, 92, 246, 0.1) !important;
+  border-left: 2px solid rgba(139, 92, 246, 0.3) !important;
+  padding-left: 4px !important;
+}
+
+/* Garantir que quebras de linha sejam sempre visíveis */
+.rich-text-editor .ProseMirror br:after {
+  content: "↵" !important;
+  display: inline-block !important;
+  color: rgba(139, 92, 246, 0.6) !important;
+  font-size: 12px !important;
+  margin-left: 4px !important;
+}
+
+/* Garantir que parágrafos vazios sejam visíveis */
+.rich-text-editor .ProseMirror p:empty {
+  min-height: 1.5rem !important;
+  display: block !important;
+  margin: 0.5rem 0 !important;
+}
+
+/* Forçar espaçamento entre elementos */
+.rich-text-editor .ProseMirror p + p {
+  margin-top: 0.5rem !important;
+}
+
+/* Estilo para quebras de linha hard */
+.rich-text-editor .ProseMirror .hard-break {
+  display: block;
+  margin: 0.5rem 0;
+  height: 1.5rem;
+}
+
+/* Estilização visual para bordas de imagem - SEM interferir no redimensionamento */
+.rich-text-editor .ProseMirror img {
+  position: relative;
+  /* NÃO alterar max-width, height ou outras propriedades que afetam o redimensionamento */
+  /* Drop shadow roxo apenas nas bordas da imagem */
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3), 0 2px 4px rgba(139, 92, 246, 0.2);
+  transition: box-shadow 0.2s ease;
+  border-radius: 4px;
+}
+
+/* Borda pontilhada visual - apenas para indicar as bordas */
+.rich-text-editor .ProseMirror img::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px dashed rgba(139, 92, 246, 0.6);
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+  /* Garantir que o elemento ::after não tenha shadow */
+  box-shadow: none;
+}
+
+/* Mostrar bordas no hover */
+.rich-text-editor .ProseMirror img:hover::after {
+  opacity: 1;
+}
+
+/* Intensificar drop shadow no hover */
+.rich-text-editor .ProseMirror img:hover {
+  box-shadow: 0 6px 12px rgba(139, 92, 246, 0.4), 0 3px 6px rgba(139, 92, 246, 0.3);
+}
+
+/* Indicador de redimensionamento nos cantos */
+.rich-text-editor .ProseMirror img::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 0;
+  /* Garantir que o elemento ::before não tenha shadow */
+  box-shadow: none;
+}
+
+.rich-text-editor .ProseMirror img:hover::before {
+  opacity: 0.8;
+}
+
+/* Garantir que elementos de controle não tenham shadow */
+.rich-text-editor .ProseMirror [style*="cursor: nwse-resize"] {
+  box-shadow: none !important;
+}
+
+/* Garantir que containers de imagem não tenham shadow duplicado */
+.rich-text-editor .ProseMirror div[style*="display: inline-block"] {
+  box-shadow: none !important;
+}
