@@ -1,0 +1,400 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Download, Eye, Tags, Heart } from 'lucide-react';
+import { buildThumbnailUrl } from '@/utils/urls';
+import { useTranslation } from '@/hooks/useTranslation';
+import { toast } from 'sonner';
+
+const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showStats = true }) => {
+  const { t } = useTranslation();
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [viewCount, setViewCount] = useState(mod.view_count || 0);
+  const [downloadCount, setDownloadCount] = useState(mod.download_count || 0);
+  const [favoriteCount, setFavoriteCount] = useState(mod.like_count || 0);
+  
+  // Verificar status de favorito ao carregar
+  useEffect(() => {
+    checkFavoriteStatus();
+  }, [mod.id]);
+
+  // Verificar se o mod é favorito para o usuário atual
+  const checkFavoriteStatus = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+
+      const response = await fetch(`/api/mods/${mod.id}/favorite`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsFavorited(data.data.isFavorite);
+      }
+    } catch (error) {
+      console.error('❌ Erro ao verificar favorito:', error);
+    }
+  };
+
+  const handleViewDetailsClick = () => {
+    // Registrar visualização ao clicar no card
+    registerView();
+  };
+  
+  const handleFavoriteClick = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        toast.error('Faça login para favoritar mods');
+        return;
+      }
+
+      console.log('🔍 ModCard: Alternando favorito para mod:', mod.id);
+      
+      const response = await fetch(`/api/mods/${mod.id}/favorite`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('🔍 ModCard: Resposta da API:', response.status, response.statusText);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('🔍 ModCard: Dados da resposta:', data);
+        
+        setIsFavorited(data.data.isFavorite);
+        
+        // Atualizar contador de favoritos
+        if (data.data.isFavorite) {
+          setFavoriteCount(prev => prev + 1);
+          toast.success('Mod adicionado aos favoritos!');
+        } else {
+          setFavoriteCount(prev => Math.max(prev - 1, 0));
+          toast.success('Mod removido dos favoritos!');
+        }
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('❌ ModCard: Erro na resposta da API:', errorData);
+        toast.error(errorData.message || 'Erro ao favoritar mod');
+      }
+    } catch (error) {
+      console.error('❌ ModCard: Erro ao alternar favorito:', error);
+      toast.error('Erro ao favoritar mod');
+    }
+  };
+  
+  const handleDownloadClick = async (e) => {
+    e.stopPropagation();
+    
+    try {
+      // Registrar download
+      const token = localStorage.getItem('authToken');
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`/api/mods/${mod.id}/download`, {
+        method: 'POST',
+        headers
+      });
+
+      if (response.ok) {
+        // Atualizar contador de downloads
+        setDownloadCount(prev => prev + 1);
+        toast.success('Download registrado!');
+
+        // Salvar histórico local + atualizar total local para refletir imediatamente no dashboard
+        try {
+          const historyKey = 'userDownloadHistory';
+          const raw = localStorage.getItem(historyKey);
+          const list = raw ? JSON.parse(raw) : [];
+          const entry = {
+            modId: mod.id,
+            id: mod.id,
+            name: mod.title || mod.name,
+            title: mod.title || mod.name,
+            thumbnail_url: mod.thumbnail_url,
+            minecraft_version: mod.minecraft_version,
+            short_description: mod.short_description,
+            saved_at: new Date().toISOString()
+          };
+          const dedup = [entry, ...list.filter(i => i.modId !== mod.id)].slice(0, 20);
+          localStorage.setItem(historyKey, JSON.stringify(dedup));
+          localStorage.setItem('downloadsUpdated', String(Date.now()));
+
+          const totalKey = 'userDownloadTotalLocal';
+          const prev = parseInt(localStorage.getItem(totalKey) || '0', 10);
+          localStorage.setItem(totalKey, String(prev + 1));
+        } catch {}
+
+        // Redirecionar para a URL de download se existir
+        const url = mod.download_url_pc || mod.download_url || mod.download_url_mobile;
+        if (url) {
+          window.open(url, '_blank');
+        }
+      }
+    } catch (error) {
+      console.error('❌ Erro ao registrar download:', error);
+    }
+  };
+
+  // Registrar visualização do mod
+  const registerView = async () => {
+    try {
+      const response = await fetch(`/api/mods/${mod.id}/view`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('👁️ Visualização registrada:', data.message);
+        
+        // Atualizar contador de visualizações
+        setViewCount(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('❌ Erro ao registrar visualização:', error);
+    }
+  };
+
+  if (compact) {
+    return (
+      <motion.div variants={variants} className="h-full">
+        <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
+          {/* Imagem no topo */}
+          <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick} className="block relative">
+            <div className="relative overflow-hidden mod-image-container h-32 w-full">
+              <img 
+                src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 
+                alt={`Thumbnail de ${mod.title || mod.name}`} 
+                className="mod-image w-full h-full object-cover" 
+                style={{ objectPosition: 'center' }}
+              />
+              <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-minecraft-ten border border-border/30 shadow-lg">
+                {mod.minecraft_version}
+              </div>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="absolute top-2 right-2 h-8 w-8 p-0 bg-background/90 backdrop-blur-sm hover:bg-background/80 border border-border/30"
+                onClick={handleFavoriteClick}
+              >
+                <Heart 
+                  size={16} 
+                  className={isFavorited ? 'text-red-500 fill-red-500' : 'text-muted-foreground hover:text-red-500'} 
+                />
+              </Button>
+            </div>
+          </Link>
+          
+          {/* Conteúdo do card */}
+          <div className="flex-1 flex flex-col justify-between p-4">
+            <div>
+              {/* Título e Visualizações - MESMA DIV */}
+              <div className="flex items-start justify-between gap-3 mb-1">
+                {/* Título com limite */}
+                <div className="flex-1 min-w-0">
+                  <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick}>
+                    <CardTitle className="text-lg font-minecraft text-primary group-hover:text-primary/80 transition-colors duration-300 leading-tight line-clamp-1">
+                      {mod.title || mod.name}
+                    </CardTitle>
+                  </Link>
+                </div>
+                
+                {/* Visualizações - Lado direito do título */}
+                {showStats && (
+                  <div className="flex items-center space-x-2 flex-shrink-0 bg-muted/20 rounded-lg px-2 py-1 border border-border/30">
+                    <Eye size={14} className="text-primary" />
+                    <span className="text-sm font-medium text-muted-foreground">{viewCount}</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Categorias/Tags - DIV SEPARADA, MESMA POSIÇÃO */}
+              <div className="flex flex-wrap gap-1 mb-2 w-full">
+                {(mod.category ? [mod.category] : []).slice(0, 3).map((tag, index) => (
+                  <span 
+                    key={index} 
+                    className="bg-secondary/80 text-secondary-foreground px-2 py-1 text-xs rounded-md font-minecraft-ten border border-secondary/30 hover:bg-secondary/60 transition-colors duration-200"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              
+              {/* Descrição */}
+              <CardDescription className="text-muted-foreground line-clamp-2 text-sm leading-relaxed mb-3">
+                {mod.short_description || t('mods.noDescription')}
+              </CardDescription>
+            </div>
+            
+            {/* Estatísticas e botão */}
+            <div className="space-y-3">
+              {/* Estatísticas lado a lado */}
+              {showStats && (
+                <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground bg-muted/20 rounded-lg py-2 px-3 border border-border/30">
+                  <div className="flex flex-col items-center space-y-0.5">
+                    <span className="flex items-center space-x-2">
+                      <Download size={14} className="text-primary" />
+                      <span className="font-medium">{downloadCount}</span>
+                    </span>
+                    <span className="text-xs opacity-70">{t('mods.downloads')}</span>
+                  </div>
+                  <div className="flex flex-col items-center space-y-0.5">
+                    <span className="flex items-center space-x-2">
+                      <Heart size={14} className="text-primary" />
+                      <span className="font-medium">{favoriteCount}</span>
+                    </span>
+                    <span className="text-xs opacity-70">{t('mods.favorites')}</span>
+                  </div>
+                </div>
+              )}
+              
+              {/* Botão */}
+              <Button asChild className="w-full minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-200 h-10 shadow-lg shadow-primary/25">
+                <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick}>
+                  <Eye size={16} className="mr-2" /> 
+                  <span className="text-sm font-medium">{t('mods.viewDetails')}</span>
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div variants={variants} className="h-full">
+      <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
+        <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick} className="block">
+          <div className={`relative overflow-hidden mod-image-container ${
+            imageSize === 'stretched' ? 'h-48 w-full' : 'h-48 w-full'
+          }`}>
+                           <img 
+                 src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 
+                 alt={`Thumbnail de ${mod.title || mod.name}`} 
+                 className={`mod-image ${
+                   imageSize === 'stretched' 
+                     ? 'object-cover' 
+                     : 'object-cover'
+                 }`} 
+                 style={{ objectPosition: 'center' }}
+               />
+            
+            {/* Badge de versão - Canto superior esquerdo */}
+            <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-minecraft-ten border border-border/30 shadow-lg z-10">
+              {mod.minecraft_version || 'N/A'}
+            </div>
+            
+            {/* Botão de favoritar - Canto superior direito */}
+            <button 
+              onClick={handleFavoriteClick}
+              className="absolute top-2 right-2 bg-background/90 backdrop-blur-sm p-1.5 rounded-md border border-border/30 shadow-lg hover:bg-background/70 transition-colors duration-200 z-10"
+            >
+              <Heart 
+                size={14} 
+                className={`transition-colors duration-200 ${isFavorited ? 'text-red-500 fill-red-500' : 'text-primary hover:text-red-500'}`}
+              />
+            </button>
+            
+            {/* Overlay sutil no hover */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </div>
+        </Link>
+        <CardHeader className="pb-3 pt-4">
+          {/* Título e Visualizações - MESMA DIV, SEM TAGS */}
+          <div className="flex items-start justify-between gap-3 mb-1">
+            <div className="flex-1 min-w-0">
+              <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick}>
+                <CardTitle className="text-xl font-minecraft text-primary line-clamp-2 group-hover:text-primary/80 transition-colors duration-300">{mod.title || mod.name}</CardTitle>
+              </Link>
+            </div>
+            
+            {/* Visualizações - Lado direito do título, SEMPRE FIXAS */}
+            {showStats && (
+              <div className="flex items-center space-x-2 flex-shrink-0 bg-muted/20 rounded-lg px-2 py-1 border border-border/30">
+                <Eye size={14} className="text-primary" />
+                <span className="text-sm font-medium text-muted-foreground">{viewCount}</span>
+              </div>
+            )}
+          </div>
+          
+          {/* Categorias/Tags - DIV SEPARADA, NÃO INTERFERE COM VISUALIZAÇÕES */}
+          {mod.tags && Array.isArray(mod.tags) && mod.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-3 w-full">
+              {mod.tags.slice(0, 3).map((tag, index) => (
+                <span 
+                  key={index} 
+                  className="bg-secondary/80 text-secondary-foreground px-2 py-1 text-xs rounded-md font-minecraft-ten border border-secondary/30 hover:bg-secondary/60 transition-colors duration-200 whitespace-nowrap"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          
+          {/* Descrição em linha separada para ocupar toda a largura */}
+          <CardDescription className="text-muted-foreground line-clamp-2 h-10 text-sm leading-relaxed w-full">
+            {mod.short_description || t('mods.noDescription')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-grow flex flex-col justify-between pt-2">
+          {/* Espaçador flexível para empurrar elementos para baixo */}
+          <div className="flex-grow"></div>
+          
+          {/* Estatísticas lado a lado - Layout horizontal - SEMPRE acima do botão */}
+          {showStats && (
+            <div className="flex items-center justify-center space-x-8 text-sm text-muted-foreground mb-4 bg-muted/20 rounded-lg py-1 px-3 border border-border/30">
+              <div className="flex flex-col items-center space-y-0.5">
+                <span className="flex items-center space-x-2">
+                  <Download size={14} className="text-primary" />
+                  <span className="font-medium">{downloadCount}</span>
+                </span>
+                <span className="text-xs opacity-70">{t('mods.downloads')}</span>
+              </div>
+              <div className="flex flex-col items-center space-y-0.5">
+                <span className="flex items-center space-x-2">
+                  <Heart size={14} className="text-primary" />
+                  <span className="font-medium">{favoriteCount}</span>
+                </span>
+                <span className="text-xs opacity-70">{t('mods.favorites')}</span>
+              </div>
+            </div>
+          )}
+          
+          {/* Botão - SEMPRE na parte mais baixa */}
+          <div className="flex-shrink-0">
+            <Button asChild className="w-full minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-200 h-10 shadow-lg shadow-primary/25">
+              <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick}>
+                <Eye size={16} className="mr-2" /> 
+                <span className="text-sm font-medium">{t('mods.viewDetails')}</span>
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
+
+export default ModCard;

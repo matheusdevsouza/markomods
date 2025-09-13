@@ -1,0 +1,764 @@
+{
+  "nav": {
+    "home": "Início",
+    "mods": "Mods",
+    "about": "Sobre",
+    "contact": "Contacto",
+    "login": "Entrar",
+    "register": "Registar",
+    "profile": "Perfil",
+    "logout": "Sair",
+    "admin": "Administração",
+    "dashboard": "Painel",
+    "users": "Utilizadores",
+    "favorites": "Mods Favoritos",
+    "downloads": "Os Meus Downloads",
+    "adminPanel": "Painel Admin",
+    "help": "Centro de Ajuda",
+    "changelog": "Novidades",
+    "dashboardDesc": "Gerir a sua conta",
+    "favoritesDesc": "Os seus mods guardados",
+    "downloadsDesc": "Histórico de downloads",
+    "adminPanelDesc": "Gerir a plataforma",
+    "settingsDesc": "Editar o seu perfil",
+    "helpDesc": "Suporte e tutoriais",
+    "changelogDesc": "O que mudou na plataforma",
+    "logoutDesc": "Terminar sessão",
+    "config": "Configurações"
+  },
+  "home": {
+    "hero": {
+      "title": "Bem-vindo ao ModPortal",
+      "subtitle": "Explore uma coleção incrível de mods para Minecraft. Transfira, instale e transforme a sua experiência de jogo!",
+      "cta": "Explorar Mods"
+    },
+    "featured": {
+      "title": "Mods em Destaque"
+    },
+    "popular": {
+      "title": "Mods Populares"
+    },
+    "recent": {
+      "title": "Mods Recentes"
+    },
+    "stats": {
+      "downloads": "Downloads",
+      "mods": "Mods",
+      "users": "Utilizadores"
+    },
+    "noModsFound": "Nenhum mod encontrado!",
+    "noModsMessage": "Parece que ainda não há mods por aqui. Volte mais tarde ou adicione alguns na área de Admin!",
+    "viewDetails": "Ver Detalhes",
+    "download": "Transferir",
+    "author": "Autor:",
+    "published": "Publicado:",
+    "viewAll": "Ver Todos",
+    "adAreaEmpty": "Área de Anúncio (Vazia)",
+    "addAdToSeparateSections": "Adicione um anúncio para separar as secções",
+    "adArea": "Área de Anúncio",
+    "googleAdsOrSponsor": "(Google Ads ou Patrocinador)",
+    "modOfTheWeek": "Mod da Semana",
+    "viewMod": "Ver Mod",
+    "totalDownloadsOnPlatform": "Downloads Totais na Plataforma",
+    "latestModsAdded": "Últimos Mods Adicionados",
+    "noRecentModsFound": "Nenhum mod recente encontrado.",
+    "mostDownloadedMods": "Mods Mais Transferidos",
+    "noPopularModsFound": "Nenhum mod popular encontrado."
+  },
+  "header": {
+    "creatorName": "Nome do Criador",
+    "creatorBio": "Bio do criador.",
+    "contactMe": "Entrar em Contacto",
+    "viewAllContacts": "Ver todos os contactos",
+    "nav": {
+      "home": "Início",
+      "mods": "Mods",
+      "contact": "Contacto",
+      "about": "Sobre"
+    }
+  },
+  "footer": {
+    "brandName": "Eu, Marko! Mods",
+    "brandDescription": "Confira já todos os nossos mods!",
+    "quickLinks": "Links Rápidos",
+    "home": "Início",
+    "exploreMods": "Explorar Mods",
+    "favorites": "Favoritos",
+    "downloads": "Downloads",
+    "community": "Comunidade",
+    "guidelines": "Diretrizes",
+    "partners": "Parceiros",
+    "support": "Suporte",
+    "helpCenter": "Centro de Ajuda",
+    "contact": "Contacto",
+    "faq": "FAQ",
+    "backToTop": "Voltar ao Topo",
+    "allRightsReserved": "Todos os direitos reservados"
+  },
+  "mods": {
+    "search": {
+      "placeholder": "Procurar mods..."
+    },
+    "filters": {
+      "title": "Filtros",
+      "category": "Categoria",
+      "loader": "Mod Loader",
+      "version": "Versão do Minecraft",
+      "sort": "Ordenar por"
+    },
+    "sort": {
+      "popular": "Mais Populares",
+      "recent": "Mais Recentes",
+      "downloads": "Mais Transferidos",
+      "rating": "Melhor Avaliados"
+    },
+    "loading": "A carregar mods...",
+    "noResults": "Nenhum mod encontrado",
+    "noDescription": "Descrição não disponível",
+    "viewDetails": "Ver Detalhes",
+    "download": "Transferir",
+    "favorite": "Favorito",
+    "share": "Partilhar",
+    "downloads": "Downloads",
+    "favorites": "Favoritos"
+  },
+  "modDetail": {
+    "backToMods": "Voltar para Mods",
+    "description": "Descrição",
+    "details": "Detalhes",
+    "downloads": "Downloads",
+    "statistics": "Estatísticas",
+    "categories": "Categorias",
+    "modLoader": "Mod Loader",
+    "technicalInfo": "Informações Técnicas",
+    "author": "Autor",
+    "information": "Informações",
+    "version": "Versão",
+    "minecraftVersion": "Versão do Minecraft",
+    "fileSize": "Tamanho do ficheiro",
+    "createdAt": "Criado em",
+    "lastUpdated": "Última atualização",
+    "downloadCount": "Total de Downloads",
+    "viewCount": "Visualizações",
+    "likeCount": "Favoritos",
+    "recommendedDownload": "Download Recomendado para",
+    "alternativeDownload": "Download Alternativo",
+    "installationInstructions": "Instruções de Instalação",
+    "step1": "Transfira o ficheiro .jar do mod",
+    "step2": "Coloque o ficheiro na pasta mods do seu Minecraft",
+    "step3": "Certifique-se de que tem o {loader} instalado",
+    "step4": "Inicie o Minecraft com o perfil correto",
+    "downloadFor": "Transferir para",
+    "downloadNotAvailable": "Download não disponível para",
+    "creator": "Criador do mod",
+    "modCreator": "Criador do Mod",
+    "addonCreator": "Criador do Addon",
+    "unknown": "Desconhecido"
+  },
+  "auth": {
+    "login": {
+      "title": "Entrar na Conta",
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "submit": "Entrar",
+      "forgotPassword": "Esqueceu-se da palavra-passe?",
+      "noAccount": "Não tem uma conta?",
+      "signUp": "Registe-se"
+    },
+    "register": {
+      "title": "Criar Conta",
+      "name": "Nome completo",
+      "email": "E-mail",
+      "password": "Palavra-passe",
+      "confirmPassword": "Confirmar palavra-passe",
+      "submit": "Registar",
+      "haveAccount": "Já tem uma conta?",
+      "signIn": "Entrar"
+    },
+    "logout": {
+      "confirm": "Tem a certeza de que quer sair?"
+    }
+  },
+  "profile": {
+    "title": "O Meu Perfil",
+    "edit": "Editar Perfil",
+    "save": "Guardar Alterações",
+    "cancel": "Cancelar",
+    "personalInfo": "Informações Pessoais",
+    "displayName": "Nome de exibição",
+    "bio": "Biografia",
+    "avatar": "Avatar",
+    "changeAvatar": "Alterar Avatar",
+    "removeAvatar": "Remover Avatar"
+  },
+  "admin": {
+    "title": "Painel Administrativo",
+    "mods": {
+      "title": "Gerir Mods",
+      "create": "Criar Novo Mod",
+      "edit": "Editar Mod",
+      "delete": "Eliminar Mod",
+      "approve": "Aprovar Mod",
+      "reject": "Rejeitar Mod",
+      "feature": "Destacar Mod",
+      "unfeature": "Remover Destaque"
+    },
+    "users": {
+      "title": "Gerir Utilizadores"
+    }
+  },
+  "message": {
+    "success": "Sucesso!",
+    "error": "Erro!",
+    "warning": "Aviso!",
+    "info": "Informação",
+    "loading": "A carregar...",
+    "saving": "A guardar...",
+    "deleting": "A eliminar...",
+    "confirmDelete": "Tem a certeza de que quer eliminar?",
+    "operationSuccess": "Operação realizada com sucesso!",
+    "operationError": "Erro ao realizar operação",
+    "networkError": "Erro de ligação",
+    "unauthorized": "Acesso não autorizado",
+    "forbidden": "Acesso negado",
+    "notFound": "Página não encontrada",
+    "serverError": "Erro interno do servidor"
+  },
+  "validation": {
+    "required": "Este campo é obrigatório",
+    "email": "E-mail inválido",
+    "minLength": "Mínimo de {min} caracteres",
+    "maxLength": "Máximo de {max} caracteres",
+    "passwordMatch": "As palavras-passe não coincidem",
+    "strongPassword": "A palavra-passe deve conter pelo menos 8 caracteres, incluindo maiúsculas, minúsculas e números"
+  },
+  "common": {
+    "yes": "Sim",
+    "no": "Não",
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "save": "Guardar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "search": "Procurar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "loading": "A carregar...",
+    "noData": "Nenhuns dados encontrados",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "info": "Informação"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "language": {
+    "title": "Idioma",
+    "auto": "Automático",
+    "americas": "Américas",
+    "europe": "Europa",
+    "asia": "Ásia",
+    "detected": "Detetado",
+    "selected": "Idioma selecionado"
+  },
+  "search": {
+    "advancedSearch": "Pesquisa Avançada",
+    "showFilters": "Mostrar Filtros",
+    "hideFilters": "Ocultar Filtros",
+    "whatAreYouLookingFor": "O que está a procurar?",
+    "modNameDescriptionTags": "Nome, descrição ou etiquetas do mod...",
+    "search": "Procurar",
+    "applyFilters": "Aplicar Filtros",
+    "clearAll": "Limpar Tudo",
+    "searchResults": "Resultados da Pesquisa",
+    "searchError": "Erro na Pesquisa",
+    "tryAgain": "Tentar Novamente",
+    "clearFilters": "Limpar Filtros",
+    "noModsFound": "Nenhum mod encontrado",
+    "tryAdjustingSearch": "Tente ajustar os seus termos de pesquisa ou filtros.",
+    "typeToSearch": "Digite algo para procurar",
+    "useFiltersAbove": "Use os filtros acima para encontrar os mods que procura."
+  },
+
+  "contact": {
+    "title": "Entre em Contacto",
+    "subtitle": "Tem alguma dúvida ou sugestão? Entre em contacto connosco!",
+    "form": {
+      "name": "Nome",
+      "email": "E-mail",
+      "subject": "Assunto",
+      "message": "Mensagem",
+      "submit": "Enviar Mensagem",
+      "sending": "A enviar...",
+      "success": "Mensagem enviada com sucesso!",
+      "error": "Erro ao enviar mensagem. Tente novamente."
+    }
+  },
+  "achievements": {
+    "title": "Conquistas",
+    "subtitle": "Desbloqueie conquistas ao usar a plataforma",
+    "unlocked": "Desbloqueado",
+    "locked": "Bloqueado",
+    "progress": "Progresso",
+    "categories": {
+      "explorer": "Explorador",
+      "creator": "Criador",
+      "community": "Comunidade",
+      "special": "Especial"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "markAllRead": "Marcar todas como lidas",
+    "noNotifications": "Nenhuma notificação",
+    "types": {
+      "modUpdate": "Atualização de Mod",
+      "newMod": "Novo Mod",
+      "comment": "Novo Comentário",
+      "system": "Sistema"
+    }
+  },
+  "dashboard": {
+    "loading": "A carregar o seu painel...",
+    "restrictedAccess": "Acesso Restrito",
+    "loginRequired": "Faça login para aceder ao seu painel pessoal",
+    "login": "Fazer Login",
+    "memberSince": "Membro desde",
+    "lastLogin": "Último login:",
+    "dateNotAvailable": "Data não disponível",
+    "editProfile": "Editar Perfil",
+    "stats": {
+      "totalDownloads": "Total de Transferências",
+      "downloadsPerformed": "Transferências realizadas",
+      "favoriteMods": "Mods Favoritos",
+      "modsSaved": "Mods guardados",
+      "comments": "COMENTÁRIOS",
+      "recentInteractions": "Interações recentes"
+    },
+    "favoriteMods": {
+      "title": "Mods Favoritos",
+      "description": "Os seus mods favoritos para fácil acesso",
+      "noFavorites": "Ainda não há mods favoritos",
+      "noFavoritesDescription": "Explore a nossa biblioteca de mods e marque os seus favoritos para os encontrar facilmente aqui",
+      "exploreMods": "Explorar Mods",
+      "viewDetails": "Ver Detalhes"
+    },
+    "downloadHistory": {
+      "title": "Histórico de Transferências",
+      "description": "Os seus mods transferidos recentemente",
+      "noDownloads": "Ainda não há transferências",
+      "noDownloadsDescription": "Comece a transferir mods para ver o seu histórico de transferências aqui",
+      "exploreMods": "Explorar Mods",
+      "viewMod": "Ver Mod",
+      "downloads": "transferências"
+    },
+    "roles": {
+      "superAdmin": "Super Admin",
+      "admin": "Admin",
+      "moderator": "Moderador"
+    }
+  },
+  "editProfile": {
+    "title": "Editar Perfil",
+    "subtitle": "Gerencie as suas informações pessoais e configurações",
+    "avatar": {
+      "title": "Foto de Perfil",
+      "description": "Faça upload de uma nova foto de perfil. Formatos aceites: JPG, PNG, GIF, WebP (máx. 5MB)",
+      "currentAvatar": "Avatar Atual",
+      "newAvatar": "Novo Avatar",
+      "currentDisplayName": "Nome de exibição atual",
+      "selectImage": "Selecionar Imagem",
+      "clear": "Limpar",
+      "saving": "A guardar...",
+      "save": "Guardar Avatar"
+    },
+    "identity": {
+      "title": "Identificação e Contacto",
+      "description": "Configure como será identificado na plataforma e como outros utilizadores o verão",
+      "username": "Nome de Utilizador",
+      "unique": "ÚNICO",
+      "usernamePlaceholder": "ex: marko_gamer2024",
+      "usernameHelp": "Usado para fazer login. Deve ser único e não pode ser alterado facilmente.",
+      "email": "Email",
+      "displayName": "Nome de Exibição",
+      "public": "PÚBLICO",
+      "displayNamePlaceholder": "ex: Marko, o Criador de Mods",
+      "displayNameHelp": "Nome que aparece para outros utilizadores. Pode ser alterado livremente.",
+      "saving": "A guardar...",
+      "save": "Guardar Alterações"
+    },
+    "password": {
+      "title": "Alterar Palavra-passe",
+      "description": "Altere a sua palavra-passe de acesso à plataforma",
+      "current": "Palavra-passe Atual",
+      "placeholderCurrent": "Digite a sua palavra-passe atual",
+      "new": "Nova Palavra-passe",
+      "placeholderNew": "Digite a nova palavra-passe",
+      "confirm": "Confirmar Nova Palavra-passe",
+      "placeholderConfirm": "Confirme a nova palavra-passe",
+      "changing": "A alterar...",
+      "change": "Alterar Palavra-passe",
+      "strength": {
+        "veryWeak": "Muito fraca",
+        "weak": "Fraca",
+        "medium": "Média",
+        "strong": "Forte"
+      }
+    },
+    "delete": {
+      "title": "Eliminar Conta",
+      "description": "Esta ação é irreversível. Todos os seus dados serão perdidos permanentemente.",
+      "warningTitle": "ATENÇÃO: Esta ação é PERMANENTE e IRREVERSÍVEL",
+      "warnings": {
+        "1": "Todos os seus mods favoritos serão perdidos",
+        "2": "O seu histórico de transferências será apagado",
+        "3": "Os seus comentários serão removidos permanentemente",
+        "4": "As suas estatísticas e atividades serão apagadas",
+        "5": "A sua conta será COMPLETAMENTE removida do sistema",
+        "6": "NÃO será possível recuperar nenhum dado"
+      },
+      "passwordLabel": "Confirme a sua palavra-passe",
+      "passwordPlaceholder": "Digite a sua palavra-passe para confirmar",
+      "confirmLabel": "Digite {{word}} para confirmar",
+      "confirmWordUppercase": "ELIMINAR",
+      "confirmPlaceholder": "Digite {{word}}",
+      "deleting": "A eliminar...",
+      "deletePermanently": "Eliminar Conta Permanentemente"
+    },
+    "validation": {
+      "usernameLength": "O nome de utilizador deve ter entre 3 e 50 caracteres",
+      "usernameChars": "O nome de utilizador pode conter apenas letras, números, hífens e underscores",
+      "emailInvalid": "Email inválido",
+      "displayNameMax": "O nome de exibição deve ter no máximo 100 caracteres",
+      "currentPasswordRequired": "A palavra-passe atual é obrigatória",
+      "newPasswordRequired": "A nova palavra-passe é obrigatória",
+      "newPasswordMin": "A nova palavra-passe deve ter pelo menos 8 caracteres",
+      "newPasswordPattern": "A palavra-passe deve conter pelo menos uma letra maiúscula, uma minúscula e um número",
+      "confirmPasswordRequired": "A confirmação da palavra-passe é obrigatória",
+      "passwordsDontMatch": "As palavras-passe não coincidem",
+      "passwordDifferentFromCurrent": "A nova palavra-passe deve ser diferente da palavra-passe atual",
+      "deletePasswordRequired": "A palavra-passe é obrigatória",
+      "confirmTextRequired": "Digite {{word}} para confirmar"
+    },
+    "toast": {
+      "profileUpdated": {
+        "title": "Perfil Atualizado",
+        "desc": "O seu perfil foi atualizado com sucesso!"
+      },
+      "updateError": {
+        "title": "Erro ao Atualizar",
+        "desc": "Erro ao atualizar perfil"
+      },
+      "avatarUpdated": {
+        "title": "Avatar Atualizado",
+        "desc": "O seu avatar foi atualizado com sucesso!"
+      },
+      "avatarUpdateError": {
+        "title": "Erro ao Atualizar Avatar",
+        "desc": "Erro ao atualizar avatar"
+      },
+      "passwordChanged": {
+        "title": "Palavra-passe Alterada",
+        "desc": "A sua palavra-passe foi alterada com sucesso!"
+      },
+      "passwordChangeError": {
+        "title": "Erro ao Alterar Palavra-passe",
+        "desc": "Erro ao alterar palavra-passe"
+      },
+      "accountDeleted": {
+        "title": "Conta Eliminada",
+        "desc": "A sua conta foi eliminada com sucesso"
+      },
+      "deleteAccountError": {
+        "title": "Erro ao Eliminar Conta",
+        "desc": "Erro ao eliminar conta"
+      },
+      "networkError": {
+        "title": "Erro",
+        "desc": "Erro ao conectar com o servidor"
+      },
+      "fileTooLarge": {
+        "title": "Ficheiro Muito Grande",
+        "desc": "O ficheiro deve ter menos de 5MB"
+      }
+    }
+  },
+  "favorites": {
+    "title": "Os Meus Mods Favoritos",
+    "subtitle": "Os vossos mods guardados e mais descarregados num só local",
+    "loading": "A carregar os vossos favoritos...",
+    "restrictedAccess": "Acesso Restrito",
+    "loginRequired": "Faça login para ver os vossos mods favoritos",
+    "login": "Fazer Login",
+    "search": {
+      "placeholder": "Pesquisar nos favoritos..."
+    },
+    "filters": {
+      "allCategories": "Todas as Categorias"
+    },
+    "stats": {
+      "totalFavorites": "Total de Favoritos",
+      "totalDownloads": "Descargas Totais",
+      "averageRating": "Classificação Média"
+    },
+    "results": {
+      "count": "{{count}} mod encontrado",
+      "count_plural": "{{count}} mods encontrados",
+      "noResults": "Nenhum resultado encontrado",
+      "noResultsDescription": "Tente ajustar os filtros ou termos de pesquisa"
+    },
+    "actions": {
+      "viewDetails": "Ver Detalhes"
+    },
+    "empty": {
+      "title": "Ainda não tem mods favoritos",
+      "description": "Explore a nossa biblioteca de mods e marque os vossos favoritos para os encontrar facilmente aqui",
+      "exploreMods": "Explorar Mods"
+    },
+    "toast": {
+      "removed": {
+        "title": "Mod removido dos favoritos",
+        "desc": "O mod foi removido da vossa lista de favoritos"
+      }
+    }
+  },
+  "downloads": {
+    "title": "Os Meus Descarregamentos",
+    "subtitle": "Histórico completo de todos os mods que descarregou",
+    "loading": "A carregar o seu histórico...",
+    "restrictedAccess": "Acesso Restrito",
+    "loginRequired": "Faça login para ver o seu histórico de descarregamentos",
+    "login": "Fazer Login",
+    "search": {
+      "placeholder": "Pesquisar nos descarregamentos..."
+    },
+    "filters": {
+      "periods": {
+        "all": "Todo o Período",
+        "today": "Hoje",
+        "week": "Última Semana",
+        "month": "Último Mês"
+      },
+      "types": {
+        "all": "Todos os Tipos",
+        "public": "Públicos",
+        "premium": "Premium"
+      }
+    },
+    "stats": {
+      "totalDownloads": "Total de Descarregamentos",
+      "totalSize": "Tamanho Total",
+      "premiumDownloads": "Descarregamentos Premium"
+    },
+    "results": {
+      "count": "{{count}} descarregamento encontrado",
+      "count_plural": "{{count}} descarregamentos encontrados",
+      "noResults": "Nenhum resultado encontrado",
+      "noResultsDescription": "Tente ajustar os filtros ou termos de pesquisa"
+    },
+    "actions": {
+      "refresh": "Atualizar",
+      "viewMod": "Ver Mod",
+      "downloadAgain": "Descarregar Novamente"
+    },
+    "types": {
+      "premium": "Premium",
+      "public": "Público"
+    },
+    "metadata": {
+      "dateNotAvailable": "Data não disponível",
+      "timeNotAvailable": "Hora não disponível",
+      "sizeNotAvailable": "Tamanho não disponível",
+      "statusNotAvailable": "Estado não disponível"
+    },
+    "empty": {
+      "title": "Ainda não há descarregamentos",
+      "description": "Comece a descarregar mods para ver o seu histórico aqui",
+      "exploreMods": "Explorar Mods"
+    },
+    "toast": {
+      "updated": {
+        "title": "Histórico atualizado",
+        "desc": "Os seus descarregamentos foram atualizados"
+      }
+    }
+  },
+  "modDetail": {
+    "description": "Descrição",
+    "information": "Informações", 
+    "categories": "Categorias",
+    "author": "Autor",
+    "download": "Descarregamento",
+    "directDownload": "Descarregamento Direto",
+    "modDownloadDescription": "Descarregue o ficheiro .jar do mod para Minecraft Java Edition",
+    "addonDownloadDescription": "Descarregue o ficheiro do addon para Minecraft Bedrock Edition",
+    "downloadNow": "Descarregar Agora",
+    "downloadNotAvailable": "Descarregamento não disponível",
+    "modStep1": "Descarregue o ficheiro .jar do mod",
+    "modStep2": "Coloque o ficheiro na pasta mods",
+    "modStep3": "Reinicie o Minecraft com {{loader}}",
+    "addonStep1": "Descarregue o ficheiro do addon",
+    "addonStep2": "Coloque o ficheiro na pasta behavior_packs",
+    "addonStep3": "Ative o addon no Minecraft Bedrock",
+    "step4": "Use o ficheiro correto para a sua versão do Minecraft",
+    "installationInstructions": "Instruções de Instalação",
+    "technicalInfo": "Informações Técnicas",
+    "version": "Versão",
+    "minecraftVersion": "Versão do Minecraft",
+    "modLoader": "Carregador de Mods",
+    "fileSize": "Tamanho do ficheiro",
+    "unknown": "Desconhecido",
+    "modCreator": "Criador do Mod",
+    "addonCreator": "Criador do Addon",
+    "backToMods": "Voltar aos Mods",
+    "backToAddons": "Voltar aos Addons",
+    "comments": "Comentários",
+    "shareOpinion": "Partilhe a sua opinião sobre este mod...",
+    "beRespectful": "Seja respeitoso",
+    "shareExperience": "Partilhe a sua experiência",
+    "commentsCount": "comentários",
+    "officialReply": "Resposta Oficial",
+    "replyDeletedSuccess": "Resposta eliminada com sucesso!",
+    "replySentSuccess": "Resposta enviada com sucesso!",
+    "officialAdminReply": "Resposta oficial do administrador",
+    "yourReply": "A Sua Resposta",
+    "sending": "A enviar...",
+    "sendReply": "Enviar Resposta",
+    "loginToComment": "Faça login para comentar",
+    "loginToShareOpinion": "Entre na sua conta para partilhar a sua opinião sobre este mod",
+    "login": "Fazer Login"
+  },
+  "downloadPage": {
+    "title": "Descarregamento: {{modName}}",
+    "preparingDownload": "A Preparar Descarregamento...",
+    "downloadWillStart": "O descarregamento será iniciado automaticamente em:",
+    "downloadAvailable": "Descarregamento Disponível!",
+    "clickToDownload": "Clique no link abaixo para iniciar o descarregamento:",
+    "downloadLink": "Link de Descarregamento:",
+    "linkOpened": "O link foi aberto numa nova aba. Pode continuar a navegar no site.",
+    "clickLinkAbove": "Clique no link acima para abrir o descarregamento numa nova aba.",
+    "backToMod": "Voltar ao Mod",
+    "exploreOtherMods": "Explorar Outros Mods",
+    "modInformation": "Informações do Mod",
+    "title": "Título:",
+    "author": "Autor:",
+    "version": "Versão:",
+    "minecraft": "Minecraft:",
+    "loader": "Carregador:",
+    "views": "Visualizações:",
+    "downloads": "Descarregamentos:",
+    "size": "Tamanho:",
+    "type": "Tipo:",
+    "date": "Data:",
+    "modType": "Mod",
+    "addonType": "Addon",
+    "unknown": "Desconhecido",
+    "notAvailable": "N/A",
+    "error": {
+      "modNotFound": "Mod não encontrado",
+      "loadError": "Erro ao carregar mod",
+      "connectionError": "Erro de ligação",
+      "downloadNotAvailable": "URL de descarregamento não disponível",
+      "downloadError": "Erro ao iniciar descarregamento"
+    },
+    "toast": {
+      "downloadRegistered": "Descarregamento registado com sucesso!",
+      "linkOpened": "Link de descarregamento aberto numa nova aba!",
+      "downloadError": "Erro ao iniciar descarregamento"
+    }
+  },
+  "notFound": {
+    "title": "Ups! Página não encontrada",
+    "description": {
+      "line1": "Caiu da ilha do The End? Bem-vindo ao abismo do vazio.",
+      "line2": "E para sair daqui...",
+      "solution": "AGORA SÓ HÁ UMA SOLUÇÃO"
+    },
+    "actions": {
+      "backToHome": "Voltar ao Início"
+    },
+    "easterEgg": {
+      "title": "Ovo de Páscoa: Mini-Jogo"
+    },
+    "game": {
+      "active": "Mini-Jogo Ativo!",
+      "instructions": "Clique nos endermans que aparecem no ecrã para ganhar pontos!",
+      "points": "Pontos",
+      "seconds": "Segundos",
+      "finished": "Jogo Terminado!",
+      "totalScore": "Pontuação Total",
+      "messages": {
+        "tryAgain": "Tente novamente! 🎯",
+        "goodTry": "Boa tentativa! 🚀",
+        "excellent": "Excelente! ⭐",
+        "master": "Incrível! É um mestre! 👑"
+      },
+      "actions": {
+        "playAgain": "Jogar Novamente",
+        "stopGame": "Parar Jogo"
+      }
+    }
+  },
+  "modsListing": {
+    "title": {
+      "mods": "Todos os Mods",
+      "addons": "Todos os Addons"
+    },
+    "results": {
+      "count": "{{count}} mod encontrado",
+      "count_plural": "{{count}} mods encontrados",
+      "addonsCount": "{{count}} addon encontrado",
+      "addonsCount_plural": "{{count}} addons encontrados"
+    },
+    "search": {
+      "placeholder": "Pesquisar por nome, descrição..."
+    },
+    "tabs": {
+      "mods": "Mods",
+      "addons": "Addons"
+    },
+    "viewOptions": {
+      "grid": "Grelha",
+      "list": "Lista"
+    },
+    "filters": {
+      "title": "Filtros",
+      "sortBy": {
+        "title": "Ordenar por",
+        "mostRecent": "Mais Recentes",
+        "oldest": "Mais Antigos",
+        "mostDownloaded": "Mais Descarregados",
+        "leastDownloaded": "Menos Descarregados"
+      },
+      "gameVersion": {
+        "title": "Versão do jogo",
+        "allVersions": "Todas as versões"
+      },
+      "loader": {
+        "title": "Carregador",
+        "allLoaders": "Todos os carregadores"
+      },
+      "categories": {
+        "title": "Categorias",
+        "allCategories": "Todas as categorias"
+      },
+      "clearFilters": "Limpar Filtros"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Seguinte"
+    },
+    "empty": {
+      "title": "Nenhum mod encontrado",
+      "description": "Tente ajustar os filtros ou usar termos de pesquisa diferentes."
+    }
+  }
+}

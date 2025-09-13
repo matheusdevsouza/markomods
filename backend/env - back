@@ -1,0 +1,158 @@
+# =====================================================
+# EU, MARKO!
+# =====================================================
+
+# =====================================================
+# AMBIENTE E SERVIDOR
+# =====================================================
+NODE_ENV=production
+PORT=3001
+HOST=localhost
+
+# =====================================================
+# BANCO DE DADOS MYSQL
+# =====================================================
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+DB_PORT=3306
+
+# Pool de conexões
+DB_CONNECTION_LIMIT=5
+DB_ACQUIRE_TIMEOUT=30000
+DB_TIMEOUT=30000
+DB_POOL_MIN=1
+DB_POOL_MAX=5
+DB_POOL_IDLE=5000
+
+# =====================================================
+# JWT E AUTENTICAÇÃO
+# =====================================================
+JWT_SECRET=
+JWT_REFRESH_SECRET=
+JWT_EXPIRES_IN=24h
+JWT_ACCESS_EXPIRES_IN=1h
+JWT_REFRESH_EXPIRES_IN=7d
+
+# =====================================================
+# EMAIL E SMTP
+# =====================================================
+SMTP_HOST=
+SMTP_PORT=
+SMTP_SECURE=
+SMTP_USER=
+SMTP_PASS=
+SMTP_FROM=
+SMTP_FROM_NAME=
+SMTP_FROM_EMAIL=
+
+# Verificação de e-mail
+EMAIL_VERIFICATION_EXPIRES_HOURS=24
+
+# =====================================================
+# URLS E CORS
+# =====================================================
+FRONTEND_URL=
+FRONTEND_BASE_URL=
+BACKEND_URL=
+API_BASE_URL=
+
+# CORS permitidas
+CORS_ORIGIN=
+CORS_ORIGINS=
+
+# =====================================================
+# RATE LIMITING
+# =====================================================
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=1000
+RATE_LIMIT_AUTH_MAX=50
+RATE_LIMIT_UPLOAD_MAX=100
+RATE_LIMIT_COMMENT_MAX=30
+
+# API Rate Limiting
+API_RATE_LIMIT_AUTH=50
+API_RATE_LIMIT_UPLOAD=100
+API_RATE_LIMIT_COMMENT=30
+API_RATE_LIMIT_GENERAL=1000
+
+# =====================================================
+# UPLOAD DE ARQUIVOS
+# =====================================================
+MAX_FILE_SIZE=10485760
+ALLOWED_FILE_TYPES=image/jpeg,image/jpg,image/png,image/webp,image/gif
+UPLOAD_PATH=./uploads
+
+# =====================================================
+# LOGS E MONITORAMENTO
+# =====================================================
+LOG_LEVEL=debug
+LOG_FILE=./logs/app.log
+LOG_FILE_PATH=./logs
+LOG_MAX_SIZE=5m
+LOG_MAX_FILES=3
+
+# Monitoramento de segurança 
+SECURITY_LOG_ENABLED=false
+SECURITY_LOG_LEVEL=
+SECURITY_ALERT_EMAIL=
+
+# =====================================================
+# BACKUP 
+# =====================================================
+BACKUP_PATH=./backups
+BACKUP_RETENTION_DAYS=7
+BACKUP_SCHEDULE=0 2 * * *
+AUTO_BACKUP_ENABLED=false
+BACKUP_FREQUENCY=daily
+BACKUP_COMPRESSION=false
+
+# =====================================================
+# SEGURANÇA 
+# =====================================================
+HELMET_CSP_ENABLED=false
+HELMET_HSTS_ENABLED=false
+SESSION_SECRET=
+SESSION_COOKIE_SECURE=false
+SESSION_COOKIE_HTTP_ONLY=true
+SESSION_COOKIE_SAME_SITE=lax
+
+# =====================================================
+# COMPRESSÃO E CACHE 
+# =====================================================
+COMPRESSION_ENABLED=false
+COMPRESSION_LEVEL=1
+CACHE_TTL=300
+CACHE_MAX_SIZE=50
+ENABLE_GZIP=false
+ENABLE_BROTLI=false
+ENABLE_CACHE_HEADERS=false
+
+# =====================================================
+# HEALTH CHECK E MÉTRICAS
+# =====================================================
+HEALTH_CHECK_ENABLED=true
+HEALTH_CHECK_INTERVAL=60000
+METRICS_ENABLED=false
+METRICS_PORT=9090
+
+# =====================================================
+# WEBHOOK E NOTIFICAÇÕES
+# =====================================================
+ERROR_WEBHOOK_URL=
+ADMIN_EMAIL=
+
+# =====================================================
+# CONFIGURAÇÕES ADICIONAIS
+# =====================================================
+# Configurações específicas do projeto
+PROJECT_NAME=Eu Marko Mods
+PROJECT_VERSION=1.0.0
+PROJECT_DESCRIPTION=Plataforma de Mods para Minecraft
+
+# Configurações de desenvolvimento
+DEV_MODE=true
+SKIP_EMAIL_VERIFICATION=true
+SKIP_RATE_LIMITING=false
+ENABLE_DEBUG_ROUTES=true
