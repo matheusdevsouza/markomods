@@ -1,0 +1,13 @@
+-- Adicionar colunas de configurações na tabela users
+ALTER TABLE users 
+ADD COLUMN IF NOT EXISTS first_name VARCHAR(100),
+ADD COLUMN IF NOT EXISTS last_name VARCHAR(100),
+ADD COLUMN IF NOT EXISTS bio TEXT,
+ADD COLUMN IF NOT EXISTS website VARCHAR(255),
+ADD COLUMN IF NOT EXISTS location VARCHAR(100),
+ADD COLUMN IF NOT EXISTS privacy_settings JSON,
+ADD COLUMN IF NOT EXISTS notification_settings JSON,
+ADD COLUMN IF NOT EXISTS theme_settings JSON,
+ADD COLUMN IF NOT EXISTS language_settings JSON,
+ADD COLUMN IF NOT EXISTS account_settings JSON;
+

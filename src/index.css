@@ -1,0 +1,266 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos customizados para notificações Sonner */
+[data-sonner-toaster] {
+  position: fixed !important;
+  bottom: 16px !important;
+  right: 16px !important;
+  top: auto !important;
+  left: auto !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+[data-sonner-toast] {
+  margin: 0 !important;
+  position: relative !important;
+  transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Garantir que todas as notificações sejam visíveis */
+[data-sonner-toast][data-mounted="true"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+/* Garantir que as notificações se empilhem verticalmente */
+[data-sonner-toaster] [data-sonner-toast] {
+  position: relative !important;
+  transform: none !important;
+  margin-bottom: 0 !important;
+}
+
+@layer base {
+  :root {
+    --font-headings-primary: 'Inter', sans-serif;
+    --font-headings-secondary: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-buttons-tags: 'Inter', sans-serif;
+
+    /* Light Mode (padrão) - Ajustado com tom roxo mais sutil */
+    --background: 260 25% 95%; /* Branco com tom roxo mais pronunciado */
+    --foreground: 260 25% 15%; /* Texto escuro com tom roxo sutil */
+
+    --card: 260 25% 92%; /* Cards com tom roxo mais sutil */
+    --card-foreground: 260 25% 18%; /* Texto dos cards */
+
+    --popover: 260 25% 94%; /* Popovers com tom roxo sutil */
+    --popover-foreground: 260 25% 18%; /* Texto dos popovers */
+
+    --primary: 262 50% 58%; /* Roxo principal */
+    --primary-foreground: 0 0% 98%; /* Texto sobre roxo */
+
+    --secondary: 260 25% 88%; /* Secundário com tom roxo mais pronunciado */
+    --secondary-foreground: 260 25% 28%; /* Texto sobre secundário */
+
+    --muted: 260 25% 85%; /* Mudo com tom roxo mais pronunciado */
+    --muted-foreground: 260 25% 48%; /* Texto mudo */
+
+    --accent: 262 50% 58%; /* Roxo de destaque */
+    --accent-foreground: 260 25% 15%; /* Texto sobre destaque */
+
+    --destructive: 0 84.2% 60.2%; /* Vermelho destrutivo */
+    --destructive-foreground: 0 0% 98%; /* Texto sobre vermelho */
+
+    --border: 260 25% 80%; /* Bordas com tom roxo mais pronunciado */
+    --input: 260 25% 90%; /* Inputs com tom roxo sutil */
+    --ring: 262 50% 58%; /* Anel de foco roxo */
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --font-headings-primary: 'Inter', sans-serif;
+    --font-headings-secondary: 'Inter', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-buttons-tags: 'Inter', sans-serif;
+
+    /* Dark Mode */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 10%;
+    --card-foreground: 0 0% 90%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 262 50% 58%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 10% 15%; 
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 10% 15%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 262 50% 58%;
+    --accent-foreground: 240 10% 3.9%;
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 10% 20%;
+    --input: 240 10% 12%;
+    --ring: 262 50% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden; /* Evitar scrollbar horizontal */
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headings-primary);
+  }
+
+  .font-headings-secondary {
+    font-family: var(--font-headings-secondary);
+  }
+  
+  .font-buttons-tags {
+     font-family: var(--font-buttons-tags);
+  }
+
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/50;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/70;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary;
+  }
+}
+
+.minecraft-btn {
+  @apply text-xs shadow-md transition-all duration-150 ease-in-out transform active:scale-95;
+  font-family: var(--font-buttons-tags);
+  border-style: solid;
+  border-width: 2px;
+  border-color: hsl(var(--border) / 0.7);
+  box-shadow: inset 0px -3px 0px 0px hsl(var(--border) / 0.9);
+}
+.minecraft-btn:hover {
+  box-shadow: inset 0px -2px 0px 0px hsl(var(--border) / 0.9);
+  transform: translateY(-1px);
+}
+.minecraft-btn:active {
+  box-shadow: inset 0px 1px 0px 0px hsl(var(--border) / 0.9);
+  transform: translateY(1px);
+}
+.minecraft-btn.bg-primary {
+  border-color: hsl(var(--primary-foreground) / 0.2);
+  box-shadow: inset 0px -3px 0px 0px hsl(var(--primary-foreground) / 0.4);
+}
+
+
+.minecraft-card {
+  @apply bg-card/80 backdrop-blur-sm border-2 border-border shadow-lg rounded-lg;
+}
+
+/* Estilos específicos para imagens dos mods */
+.mod-image-container {
+  @apply flex items-center justify-center;
+  background: linear-gradient(135deg, hsl(var(--muted) / 0.5) 0%, hsl(var(--muted) / 0.2) 100%);
+  min-height: 100%;
+  width: 100%;
+  overflow: visible;
+}
+
+.mod-image {
+  @apply transition-all duration-300 ease-in-out;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.mod-image:hover {
+  @apply scale-105;
+}
+
+.gradient-text-minecraft {
+  @apply bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-purple-500 to-purple-600;
+}
+
+.glass-effect {
+  @apply bg-card/60 backdrop-blur-lg border border-white/10 shadow-xl;
+}
+
+.minecraft-input {
+  @apply bg-input border-2 border-border focus:border-primary focus:ring-primary rounded-none shadow-inner;
+  font-family: var(--font-body);
+}
+
+/* Para títulos de card, etc. */
+.card-title-font {
+  font-family: var(--font-headings-secondary);
+}
+
+/* Classes utilitárias para cores roxas */
+@layer utilities {
+  .text-purple-primary {
+    color: #6A50BE;
+  }
+  
+  .text-purple-secondary {
+    color: #523E96;
+  }
+  
+  .bg-purple-primary {
+    background-color: #6A50BE;
+  }
+  
+  .bg-purple-secondary {
+    background-color: #523E96;
+  }
+  
+  .border-purple-primary {
+    border-color: #6A50BE;
+  }
+  
+  .border-purple-secondary {
+    border-color: #523E96;
+  }
+  
+  .bg-gradient-purple {
+    background: linear-gradient(135deg, #6A50BE 0%, #523E96 100%);
+  }
+  
+  .bg-gradient-purple-hover:hover {
+    background: linear-gradient(135deg, #7A60CE 0%, #624EA6 100%);
+  }
+  
+  .shadow-purple {
+    box-shadow: 0 4px 14px 0 rgba(106, 80, 190, 0.39);
+  }
+  
+  .shadow-purple-lg {
+    box-shadow: 0 10px 25px -3px rgba(106, 80, 190, 0.4), 0 4px 6px -2px rgba(106, 80, 190, 0.2);
+  }
+  
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(106, 80, 190, 0.5);
+  }
+  
+  .glow-purple-hover:hover {
+    box-shadow: 0 0 30px rgba(106, 80, 190, 0.7);
+  }
+}

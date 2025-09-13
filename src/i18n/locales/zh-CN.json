@@ -1,0 +1,764 @@
+{
+  "nav": {
+    "home": "首页",
+    "mods": "模组",
+    "about": "关于",
+    "contact": "联系",
+    "login": "登录",
+    "register": "注册",
+    "profile": "个人资料",
+    "logout": "退出",
+    "admin": "管理",
+    "dashboard": "仪表板",
+    "users": "用户",
+    "favorites": "收藏模组",
+    "downloads": "我的下载",
+    "adminPanel": "管理面板",
+    "help": "帮助中心",
+    "changelog": "更新日志",
+    "dashboardDesc": "管理您的账户",
+    "favoritesDesc": "您保存的模组",
+    "downloadsDesc": "下载历史",
+    "adminPanelDesc": "管理平台",
+    "settingsDesc": "编辑您的个人资料",
+    "helpDesc": "支持和教程",
+    "changelogDesc": "平台上有什么变化",
+    "logoutDesc": "结束会话",
+    "config": "设置"
+  },
+  "home": {
+    "hero": {
+      "title": "欢迎来到模组门户",
+      "subtitle": "探索令人惊叹的我的世界模组收藏。下载、安装并改变您的游戏体验！",
+      "cta": "探索模组"
+    },
+    "featured": {
+      "title": "精选模组"
+    },
+    "popular": {
+      "title": "热门模组"
+    },
+    "recent": {
+      "title": "最新模组"
+    },
+    "stats": {
+      "downloads": "下载",
+      "mods": "模组",
+      "users": "用户"
+    },
+    "noModsFound": "未找到模组！",
+    "noModsMessage": "看起来这里还没有模组。稍后再来或在管理员区域添加一些！",
+    "viewDetails": "查看详情",
+    "download": "下载",
+    "author": "作者：",
+    "published": "发布时间：",
+    "viewAll": "查看全部",
+    "adAreaEmpty": "广告区域（空）",
+    "addAdToSeparateSections": "添加广告以分隔部分",
+    "adArea": "广告区域",
+    "googleAdsOrSponsor": "（Google广告或赞助商）",
+    "modOfTheWeek": "本周模组",
+    "viewMod": "查看模组",
+    "totalDownloadsOnPlatform": "平台总下载量",
+    "latestModsAdded": "最新添加的模组",
+    "noRecentModsFound": "未找到最近的模组。",
+    "mostDownloadedMods": "下载最多的模组",
+    "noPopularModsFound": "未找到热门模组。"
+  },
+  "header": {
+    "creatorName": "创作者姓名",
+    "creatorBio": "创作者简介。",
+    "contactMe": "联系我",
+    "viewAllContacts": "查看所有联系方式",
+    "nav": {
+      "home": "首页",
+      "mods": "模组",
+      "contact": "联系",
+      "about": "关于"
+    }
+  },
+  "footer": {
+    "brandName": "我，Marko！模组",
+    "brandDescription": "立即查看我们所有的模组！",
+    "quickLinks": "快速链接",
+    "home": "首页",
+    "exploreMods": "探索模组",
+    "favorites": "收藏",
+    "downloads": "下载",
+    "community": "社区",
+    "guidelines": "指导原则",
+    "partners": "合作伙伴",
+    "support": "支持",
+    "helpCenter": "帮助中心",
+    "contact": "联系",
+    "faq": "常见问题",
+    "backToTop": "返回顶部",
+    "allRightsReserved": "版权所有"
+  },
+  "mods": {
+    "search": {
+      "placeholder": "搜索模组..."
+    },
+    "filters": {
+      "title": "筛选",
+      "category": "类别",
+      "loader": "模组加载器",
+      "version": "我的世界版本",
+      "sort": "排序方式"
+    },
+    "sort": {
+      "popular": "最受欢迎",
+      "recent": "最新",
+      "downloads": "下载最多",
+      "rating": "评分最高"
+    },
+    "loading": "加载模组中...",
+    "noResults": "未找到模组",
+    "noDescription": "描述不可用",
+    "viewDetails": "查看详情",
+    "download": "下载",
+    "favorite": "收藏",
+    "share": "分享",
+    "downloads": "下载",
+    "favorites": "收藏"
+  },
+  "modDetail": {
+    "backToMods": "返回模组",
+    "description": "描述",
+    "details": "详情",
+    "downloads": "下载",
+    "statistics": "统计",
+    "categories": "类别",
+    "modLoader": "模组加载器",
+    "technicalInfo": "技术信息",
+    "author": "作者",
+    "information": "信息",
+    "version": "版本",
+    "minecraftVersion": "我的世界版本",
+    "fileSize": "文件大小",
+    "createdAt": "创建时间",
+    "lastUpdated": "最后更新",
+    "downloadCount": "总下载量",
+    "viewCount": "查看次数",
+    "likeCount": "收藏数",
+    "recommendedDownload": "推荐下载",
+    "alternativeDownload": "替代下载",
+    "installationInstructions": "安装说明",
+    "step1": "下载模组的.jar文件",
+    "step2": "将文件放在您的我的世界mods文件夹中",
+    "step3": "确保您已安装{loader}",
+    "step4": "使用正确的配置文件启动我的世界",
+    "downloadFor": "下载适用于",
+    "downloadNotAvailable": "下载不可用于",
+    "creator": "模组创建者",
+    "modCreator": "模组创建者",
+    "addonCreator": "插件创建者",
+    "unknown": "未知"
+  },
+  "auth": {
+    "login": {
+      "title": "登录账户",
+      "email": "电子邮件",
+      "password": "密码",
+      "submit": "登录",
+      "forgotPassword": "忘记密码？",
+      "noAccount": "没有账户？",
+      "signUp": "注册"
+    },
+    "register": {
+      "title": "创建账户",
+      "name": "全名",
+      "email": "电子邮件",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "submit": "注册",
+      "haveAccount": "已有账户？",
+      "signIn": "登录"
+    },
+    "logout": {
+      "confirm": "您确定要退出吗？"
+    }
+  },
+  "profile": {
+    "title": "我的个人资料",
+    "edit": "编辑个人资料",
+    "save": "保存更改",
+    "cancel": "取消",
+    "personalInfo": "个人信息",
+    "displayName": "显示名称",
+    "bio": "个人简介",
+    "avatar": "头像",
+    "changeAvatar": "更改头像",
+    "removeAvatar": "删除头像"
+  },
+  "admin": {
+    "title": "管理仪表板",
+    "mods": {
+      "title": "管理模组",
+      "create": "创建新模组",
+      "edit": "编辑模组",
+      "delete": "删除模组",
+      "approve": "批准模组",
+      "reject": "拒绝模组",
+      "feature": "特色模组",
+      "unfeature": "取消特色"
+    },
+    "users": {
+      "title": "管理用户"
+    }
+  },
+  "message": {
+    "success": "成功！",
+    "error": "错误！",
+    "warning": "警告！",
+    "info": "信息",
+    "loading": "加载中...",
+    "saving": "保存中...",
+    "deleting": "删除中...",
+    "confirmDelete": "您确定要删除吗？",
+    "operationSuccess": "操作成功完成！",
+    "operationError": "执行操作时出错",
+    "networkError": "连接错误",
+    "unauthorized": "未授权访问",
+    "forbidden": "访问被拒绝",
+    "notFound": "页面未找到",
+    "serverError": "内部服务器错误"
+  },
+  "validation": {
+    "required": "此字段为必填项",
+    "email": "无效的电子邮件",
+    "minLength": "最少{min}个字符",
+    "maxLength": "最多{max}个字符",
+    "passwordMatch": "密码不匹配",
+    "strongPassword": "密码必须包含至少8个字符，包括大写字母、小写字母和数字"
+  },
+  "common": {
+    "yes": "是",
+    "no": "否",
+    "ok": "确定",
+    "cancel": "取消",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "save": "保存",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "loading": "加载中...",
+    "noData": "未找到数据",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息"
+  },
+  "theme": {
+    "light": "浅色",
+    "dark": "深色",
+    "system": "系统"
+  },
+  "language": {
+    "title": "语言",
+    "auto": "自动",
+    "americas": "美洲",
+    "europe": "欧洲",
+    "asia": "亚洲",
+    "detected": "检测到",
+    "selected": "选择的语言"
+  },
+  "search": {
+    "advancedSearch": "高级搜索",
+    "showFilters": "显示筛选器",
+    "hideFilters": "隐藏筛选器",
+    "whatAreYouLookingFor": "您在寻找什么？",
+    "modNameDescriptionTags": "模组名称、描述或标签...",
+    "search": "搜索",
+    "applyFilters": "应用筛选器",
+    "clearAll": "清除全部",
+    "searchResults": "搜索结果",
+    "searchError": "搜索错误",
+    "tryAgain": "重试",
+    "clearFilters": "清除筛选器",
+    "noModsFound": "未找到模组",
+    "tryAdjustingSearch": "尝试调整您的搜索词或筛选器。",
+    "typeToSearch": "输入内容进行搜索",
+    "useFiltersAbove": "使用上面的筛选器找到您要寻找的模组。"
+  },
+
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "有疑问或建议？请联系我们！",
+    "form": {
+      "name": "姓名",
+      "email": "电子邮件",
+      "subject": "主题",
+      "message": "消息",
+      "submit": "发送消息",
+      "sending": "发送中...",
+      "success": "消息发送成功！",
+      "error": "发送消息时出错。请重试。"
+    }
+  },
+  "achievements": {
+    "title": "成就",
+    "subtitle": "通过使用平台解锁成就",
+    "unlocked": "已解锁",
+    "locked": "已锁定",
+    "progress": "进度",
+    "categories": {
+      "explorer": "探索者",
+      "creator": "创造者",
+      "community": "社区",
+      "special": "特殊"
+    }
+  },
+  "notifications": {
+    "title": "通知",
+    "markAllRead": "全部标记为已读",
+    "noNotifications": "无通知",
+    "types": {
+      "modUpdate": "模组更新",
+      "newMod": "新模组",
+      "comment": "新评论",
+      "system": "系统"
+    }
+  },
+  "dashboard": {
+    "loading": "正在加载您的仪表板...",
+    "restrictedAccess": "访问受限",
+    "loginRequired": "请登录以访问您的个人仪表板",
+    "login": "登录",
+    "memberSince": "会员自",
+    "lastLogin": "最后登录:",
+    "dateNotAvailable": "日期不可用",
+    "editProfile": "编辑个人资料",
+    "stats": {
+      "totalDownloads": "总下载量",
+      "downloadsPerformed": "已执行下载",
+      "favoriteMods": "收藏的模组",
+      "modsSaved": "已保存模组",
+      "comments": "评论",
+      "recentInteractions": "最近的互动"
+    },
+    "favoriteMods": {
+      "title": "收藏的模组",
+      "description": "您收藏的模组，方便访问",
+      "noFavorites": "还没有收藏的模组",
+      "noFavoritesDescription": "探索我们的模组库并标记您的最爱，在这里轻松找到它们",
+      "exploreMods": "探索模组",
+      "viewDetails": "查看详情"
+    },
+    "downloadHistory": {
+      "title": "下载历史",
+      "description": "您最近下载的模组",
+      "noDownloads": "还没有下载",
+      "noDownloadsDescription": "开始下载模组以在此处查看您的下载历史",
+      "exploreMods": "探索模组",
+      "viewMod": "查看模组",
+      "downloads": "下载"
+    },
+    "roles": {
+      "superAdmin": "超级管理员",
+      "admin": "管理员",
+      "moderator": "版主"
+    }
+  },
+  "editProfile": {
+    "title": "编辑个人资料",
+    "subtitle": "管理您的个人信息和设置",
+    "avatar": {
+      "title": "个人头像",
+      "description": "上传新的个人头像。接受的格式：JPG、PNG、GIF、WebP（最大5MB）",
+      "currentAvatar": "当前头像",
+      "newAvatar": "新头像",
+      "currentDisplayName": "当前显示名称",
+      "selectImage": "选择图片",
+      "clear": "清除",
+      "saving": "保存中...",
+      "save": "保存头像"
+    },
+    "identity": {
+      "title": "身份和联系",
+      "description": "配置您如何在平台上被识别以及其他用户如何看到您",
+      "username": "用户名",
+      "unique": "唯一",
+      "usernamePlaceholder": "例如：marko_gamer2024",
+      "usernameHelp": "用于登录。必须是唯一的，不能轻易更改。",
+      "email": "邮箱",
+      "displayName": "显示名称",
+      "public": "公开",
+      "displayNamePlaceholder": "例如：Marko，模组创作者",
+      "displayNameHelp": "对其他用户显示的名称。可以自由更改。",
+      "saving": "保存中...",
+      "save": "保存更改"
+    },
+    "password": {
+      "title": "更改密码",
+      "description": "更改您的平台访问密码",
+      "current": "当前密码",
+      "placeholderCurrent": "输入您当前的密码",
+      "new": "新密码",
+      "placeholderNew": "输入新密码",
+      "confirm": "确认新密码",
+      "placeholderConfirm": "确认新密码",
+      "changing": "更改中...",
+      "change": "更改密码",
+      "strength": {
+        "veryWeak": "非常弱",
+        "weak": "弱",
+        "medium": "中等",
+        "strong": "强"
+      }
+    },
+    "delete": {
+      "title": "删除账户",
+      "description": "此操作不可逆。您的所有数据将永久丢失。",
+      "warningTitle": "注意：此操作是永久且不可逆的",
+      "warnings": {
+        "1": "您所有收藏的模组将丢失",
+        "2": "您的下载历史将被删除",
+        "3": "您的评论将被永久删除",
+        "4": "您的统计数据和活动将被删除",
+        "5": "您的账户将从系统中完全删除",
+        "6": "无法恢复任何数据"
+      },
+      "passwordLabel": "确认您的密码",
+      "passwordPlaceholder": "输入您的密码以确认",
+      "confirmLabel": "输入{{word}}以确认",
+      "confirmWordUppercase": "删除",
+      "confirmPlaceholder": "输入{{word}}",
+      "deleting": "删除中...",
+      "deletePermanently": "永久删除账户"
+    },
+    "validation": {
+      "usernameLength": "用户名必须在3到50个字符之间",
+      "usernameChars": "用户名只能包含字母、数字、连字符和下划线",
+      "emailInvalid": "邮箱无效",
+      "displayNameMax": "显示名称最多100个字符",
+      "currentPasswordRequired": "当前密码是必需的",
+      "newPasswordRequired": "新密码是必需的",
+      "newPasswordMin": "新密码必须至少8个字符",
+      "newPasswordPattern": "密码必须包含至少一个大写字母、一个小写字母和一个数字",
+      "confirmPasswordRequired": "密码确认是必需的",
+      "passwordsDontMatch": "密码不匹配",
+      "passwordDifferentFromCurrent": "新密码必须与当前密码不同",
+      "deletePasswordRequired": "密码是必需的",
+      "confirmTextRequired": "输入{{word}}以确认"
+    },
+    "toast": {
+      "profileUpdated": {
+        "title": "个人资料已更新",
+        "desc": "您的个人资料已成功更新！"
+      },
+      "updateError": {
+        "title": "更新错误",
+        "desc": "更新个人资料时出错"
+      },
+      "avatarUpdated": {
+        "title": "头像已更新",
+        "desc": "您的头像已成功更新！"
+      },
+      "avatarUpdateError": {
+        "title": "头像更新错误",
+        "desc": "更新头像时出错"
+      },
+      "passwordChanged": {
+        "title": "密码已更改",
+        "desc": "您的密码已成功更改！"
+      },
+      "passwordChangeError": {
+        "title": "密码更改错误",
+        "desc": "更改密码时出错"
+      },
+      "accountDeleted": {
+        "title": "账户已删除",
+        "desc": "您的账户已成功删除"
+      },
+      "deleteAccountError": {
+        "title": "删除账户错误",
+        "desc": "删除账户时出错"
+      },
+      "networkError": {
+        "title": "错误",
+        "desc": "连接服务器时出错"
+      },
+      "fileTooLarge": {
+        "title": "文件过大",
+        "desc": "文件必须小于5MB"
+      }
+    }
+  },
+  "favorites": {
+    "title": "我的收藏模组",
+    "subtitle": "您保存和下载最多的模组都在这里",
+    "loading": "正在加载您的收藏...",
+    "restrictedAccess": "访问受限",
+    "loginRequired": "登录以查看您的收藏模组",
+    "login": "登录",
+    "search": {
+      "placeholder": "在收藏中搜索..."
+    },
+    "filters": {
+      "allCategories": "所有分类"
+    },
+    "stats": {
+      "totalFavorites": "收藏总数",
+      "totalDownloads": "总下载量",
+      "averageRating": "平均评分"
+    },
+    "results": {
+      "count": "找到 {{count}} 个模组",
+      "count_plural": "找到 {{count}} 个模组",
+      "noResults": "未找到结果",
+      "noResultsDescription": "尝试调整筛选条件或搜索关键词"
+    },
+    "actions": {
+      "viewDetails": "查看详情"
+    },
+    "empty": {
+      "title": "还没有收藏的模组",
+      "description": "浏览我们的模组库，收藏您喜欢的模组以便在这里轻松找到",
+      "exploreMods": "浏览模组"
+    },
+    "toast": {
+      "removed": {
+        "title": "模组已从收藏中移除",
+        "desc": "该模组已从您的收藏列表中移除"
+      }
+    }
+  },
+  "downloads": {
+    "title": "我的下载",
+    "subtitle": "您下载的所有模组的完整历史记录",
+    "loading": "正在加载您的历史记录...",
+    "restrictedAccess": "访问受限",
+    "loginRequired": "登录以查看您的下载历史记录",
+    "login": "登录",
+    "search": {
+      "placeholder": "在下载中搜索..."
+    },
+    "filters": {
+      "periods": {
+        "all": "所有时期",
+        "today": "今天",
+        "week": "上周",
+        "month": "上月"
+      },
+      "types": {
+        "all": "所有类型",
+        "public": "公开",
+        "premium": "高级"
+      }
+    },
+    "stats": {
+      "totalDownloads": "总下载量",
+      "totalSize": "总大小",
+      "premiumDownloads": "高级下载"
+    },
+    "results": {
+      "count": "找到 {{count}} 个下载",
+      "count_plural": "找到 {{count}} 个下载",
+      "noResults": "未找到结果",
+      "noResultsDescription": "尝试调整筛选条件或搜索关键词"
+    },
+    "actions": {
+      "refresh": "刷新",
+      "viewMod": "查看模组",
+      "downloadAgain": "重新下载"
+    },
+    "types": {
+      "premium": "高级",
+      "public": "公开"
+    },
+    "metadata": {
+      "dateNotAvailable": "日期不可用",
+      "timeNotAvailable": "时间不可用",
+      "sizeNotAvailable": "大小不可用",
+      "statusNotAvailable": "状态不可用"
+    },
+    "empty": {
+      "title": "还没有下载",
+      "description": "开始下载模组以在此处查看您的历史记录",
+      "exploreMods": "浏览模组"
+    },
+    "toast": {
+      "updated": {
+        "title": "历史记录已更新",
+        "desc": "您的下载已更新"
+      }
+    }
+  },
+  "modDetail": {
+    "description": "描述",
+    "information": "信息", 
+    "categories": "分类",
+    "author": "作者",
+    "download": "下载",
+    "directDownload": "直接下载",
+    "modDownloadDescription": "下载模组的.jar文件用于Minecraft Java版",
+    "addonDownloadDescription": "下载插件文件用于Minecraft Bedrock版",
+    "downloadNow": "立即下载",
+    "downloadNotAvailable": "下载不可用",
+    "modStep1": "下载模组.jar文件",
+    "modStep2": "将文件放入mods文件夹",
+    "modStep3": "使用{{loader}}重启Minecraft",
+    "addonStep1": "下载插件文件",
+    "addonStep2": "将文件放入behavior_packs文件夹",
+    "addonStep3": "在Minecraft Bedrock中激活插件",
+    "step4": "使用适合您Minecraft版本的正确文件",
+    "installationInstructions": "安装说明",
+    "technicalInfo": "技术信息",
+    "version": "版本",
+    "minecraftVersion": "Minecraft版本",
+    "modLoader": "模组加载器",
+    "fileSize": "文件大小",
+    "unknown": "未知",
+    "modCreator": "模组创作者",
+    "addonCreator": "插件创作者",
+    "backToMods": "返回模组",
+    "backToAddons": "返回插件",
+    "comments": "评论",
+    "shareOpinion": "分享您对这个模组的看法...",
+    "beRespectful": "请保持尊重",
+    "shareExperience": "分享您的体验",
+    "commentsCount": "评论",
+    "officialReply": "官方回复",
+    "replyDeletedSuccess": "回复删除成功！",
+    "replySentSuccess": "回复发送成功！",
+    "officialAdminReply": "管理员官方回复",
+    "yourReply": "您的回复",
+    "sending": "发送中...",
+    "sendReply": "发送回复",
+    "loginToComment": "登录以评论",
+    "loginToShareOpinion": "登录您的账户以分享您对此模组的看法",
+    "login": "登录"
+  },
+  "downloadPage": {
+    "title": "下载: {{modName}}",
+    "preparingDownload": "准备下载...",
+    "downloadWillStart": "下载将在以下时间自动开始:",
+    "downloadAvailable": "下载可用!",
+    "clickToDownload": "点击下面的链接开始下载:",
+    "downloadLink": "下载链接:",
+    "linkOpened": "链接已在新标签页中打开。您可以继续浏览网站。",
+    "clickLinkAbove": "点击上面的链接在新标签页中打开下载。",
+    "backToMod": "返回模组",
+    "exploreOtherMods": "浏览其他模组",
+    "modInformation": "模组信息",
+    "title": "标题:",
+    "author": "作者:",
+    "version": "版本:",
+    "minecraft": "我的世界:",
+    "loader": "加载器:",
+    "views": "浏览量:",
+    "downloads": "下载量:",
+    "size": "大小:",
+    "type": "类型:",
+    "date": "日期:",
+    "modType": "模组",
+    "addonType": "插件",
+    "unknown": "未知",
+    "notAvailable": "不可用",
+    "error": {
+      "modNotFound": "未找到模组",
+      "loadError": "加载模组时出错",
+      "connectionError": "连接错误",
+      "downloadNotAvailable": "下载链接不可用",
+      "downloadError": "启动下载时出错"
+    },
+    "toast": {
+      "downloadRegistered": "下载注册成功!",
+      "linkOpened": "下载链接已在新标签页中打开!",
+      "downloadError": "启动下载时出错"
+    }
+  },
+  "notFound": {
+    "title": "哎呀！页面未找到",
+    "description": {
+      "line1": "你从末地岛掉下来了吗？欢迎来到虚空深渊。",
+      "line2": "而要离开这里...",
+      "solution": "现在只有一个解决方案"
+    },
+    "actions": {
+      "backToHome": "返回首页"
+    },
+    "easterEgg": {
+      "title": "彩蛋：小游戏"
+    },
+    "game": {
+      "active": "小游戏激活！",
+      "instructions": "点击屏幕上出现的末影人来获得分数！",
+      "points": "分数",
+      "seconds": "秒",
+      "finished": "游戏结束！",
+      "totalScore": "总分",
+      "messages": {
+        "tryAgain": "再试一次！🎯",
+        "goodTry": "不错的尝试！🚀",
+        "excellent": "优秀！⭐",
+        "master": "太棒了！你是大师！👑"
+      },
+      "actions": {
+        "playAgain": "再玩一次",
+        "stopGame": "停止游戏"
+      }
+    }
+  },
+  "modsListing": {
+    "title": {
+      "mods": "所有模组",
+      "addons": "所有插件"
+    },
+    "results": {
+      "count": "找到 {{count}} 个模组",
+      "count_plural": "找到 {{count}} 个模组",
+      "addonsCount": "找到 {{count}} 个插件",
+      "addonsCount_plural": "找到 {{count}} 个插件"
+    },
+    "search": {
+      "placeholder": "按名称、描述搜索..."
+    },
+    "tabs": {
+      "mods": "模组",
+      "addons": "插件"
+    },
+    "viewOptions": {
+      "grid": "网格",
+      "list": "列表"
+    },
+    "filters": {
+      "title": "筛选",
+      "sortBy": {
+        "title": "排序方式",
+        "mostRecent": "最新",
+        "oldest": "最旧",
+        "mostDownloaded": "下载最多",
+        "leastDownloaded": "下载最少"
+      },
+      "gameVersion": {
+        "title": "游戏版本",
+        "allVersions": "所有版本"
+      },
+      "loader": {
+        "title": "加载器",
+        "allLoaders": "所有加载器"
+      },
+      "categories": {
+        "title": "分类",
+        "allCategories": "所有分类"
+      },
+      "clearFilters": "清除筛选"
+    },
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页"
+    },
+    "empty": {
+      "title": "未找到模组",
+      "description": "尝试调整筛选条件或使用不同的搜索词。"
+    }
+  }
+}
