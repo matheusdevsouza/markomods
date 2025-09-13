@@ -22,14 +22,18 @@ const dbConfig = {
   timezone: '+00:00',
   connectionLimit: 10,
   multipleStatements: true,
-  acquireTimeout: 60000,
-  timeout: 60000,
-  reconnect: true,
-  ssl: false
+  waitForConnections: true,
+  queueLimit: 0
 };
 
-// Criar pool de conexões
-const pool = mysql.createPool(dbConfig);
+// Criar pool de conexões (apenas se não for produção)
+let pool;
+if (process.env.NODE_ENV === 'production') {
+  // Em produção, usar conexão direta para evitar problemas de permissão
+  pool = null;
+} else {
+  pool = mysql.createPool(dbConfig);
+}
 
 // Testar conexão
 export const testConnection = async () => {
@@ -37,15 +41,25 @@ export const testConnection = async () => {
     console.log('🔍 Tentando conectar com MySQL...');
     console.log(`📊 Configuração: ${dbConfig.user}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`);
     
-    const connection = await pool.getConnection();
-    console.log('✅ Conexão com MySQL estabelecida com sucesso!');
-    console.log(`📊 Banco: ${dbConfig.database} em ${dbConfig.host}:${dbConfig.port}`);
+    // Tentar conexão direta primeiro
+    const directConnection = await mysql.createConnection(dbConfig);
+    console.log('✅ Conexão direta estabelecida!');
     
     // Testar uma query simples
-    const [rows] = await connection.execute('SELECT 1 as test');
+    const [rows] = await directConnection.execute('SELECT 1 as test');
     console.log('✅ Query de teste executada com sucesso:', rows);
     
-    connection.release();
+    await directConnection.end();
+    
+    // Testar o pool apenas se não for produção
+    if (pool) {
+      const connection = await pool.getConnection();
+      console.log('✅ Pool de conexões funcionando!');
+      connection.release();
+    } else {
+      console.log('✅ Modo produção: usando conexões diretas');
+    }
+    
     return true;
   } catch (error) {
     console.error('❌ Erro ao conectar com MySQL:', error.message);
@@ -62,11 +76,9 @@ export const testConnection = async () => {
       console.log('🔄 Tentando conexão alternativa com 127.0.0.1...');
       try {
         const altConfig = { ...dbConfig, host: '127.0.0.1' };
-        const altPool = mysql.createPool(altConfig);
-        const altConnection = await altPool.getConnection();
+        const altConnection = await mysql.createConnection(altConfig);
         console.log('✅ Conexão alternativa com 127.0.0.1 estabelecida!');
-        altConnection.release();
-        altPool.end();
+        await altConnection.end();
         return true;
       } catch (altError) {
         console.error('❌ Conexão alternativa também falhou:', altError.message);
@@ -77,11 +89,19 @@ export const testConnection = async () => {
   }
 };
 
-// Executar query com pool
+// Executar query com pool ou conexão direta
 export const executeQuery = async (sql, params = []) => {
   try {
-    const [rows] = await pool.execute(sql, params);
-    return rows;
+    if (pool) {
+      const [rows] = await pool.execute(sql, params);
+      return rows;
+    } else {
+      // Em produção, usar conexão direta
+      const connection = await mysql.createConnection(dbConfig);
+      const [rows] = await connection.execute(sql, params);
+      await connection.end();
+      return rows;
+    }
   } catch (error) {
     console.error('❌ Erro na query:', error.message);
     throw new Error(`Erro no banco de dados: ${error.message}`);
@@ -90,7 +110,7 @@ export const executeQuery = async (sql, params = []) => {
 
 // Executar query com transação
 export const executeTransaction = async (queries) => {
-  const connection = await pool.getConnection();
+  const connection = pool ? await pool.getConnection() : await mysql.createConnection(dbConfig);
   try {
     await connection.beginTransaction();
     
@@ -106,11 +126,21 @@ export const executeTransaction = async (queries) => {
     await connection.rollback();
     throw error;
   } finally {
-    connection.release();
+    if (pool) {
+      connection.release();
+    } else {
+      await connection.end();
+    }
   }
 };
 
 // Obter conexão individual (para casos específicos)
-export const getConnection = () => pool.getConnection();
+export const getConnection = () => {
+  if (pool) {
+    return pool.getConnection();
+  } else {
+    return mysql.createConnection(dbConfig);
+  }
+};
 
 export default pool;
