@@ -689,8 +689,8 @@ const AdminCommentsModerationPage = () => {
           </DialogHeader>
           
           <div className="space-y-4">
-            <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-              <p className="text-sm text-foreground break-words overflow-wrap-anywhere">
+            <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg max-w-full overflow-hidden">
+              <p className="text-sm text-foreground break-all overflow-wrap-anywhere word-break-break-all hyphens-auto">
                 <strong>Comentário:</strong> {selectedComment?.content}
               </p>
             </div>
@@ -740,11 +740,11 @@ const AdminCommentsModerationPage = () => {
           </DialogHeader>
           
           <div className="space-y-4">
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-              <p className="text-sm text-foreground break-words overflow-wrap-anywhere">
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg max-w-full overflow-hidden">
+              <p className="text-sm text-foreground break-all overflow-wrap-anywhere word-break-break-all hyphens-auto">
                 <strong>Usuário:</strong> {selectedComment?.display_name || selectedComment?.username}
               </p>
-              <p className="text-sm text-foreground break-words overflow-wrap-anywhere">
+              <p className="text-sm text-foreground break-all overflow-wrap-anywhere word-break-break-all hyphens-auto">
                 <strong>Comentário:</strong> {selectedComment?.content}
               </p>
             </div>

@@ -21,13 +21,13 @@ export default class ModsModel {
 
       const sql = `
         INSERT INTO mods (
-          id, title, version, slug, minecraft_version, mod_loader, short_description, 
+          id, title, type, description, version, slug, minecraft_version, mod_loader, file_size, file_hash, short_description, 
           full_description, tags, thumbnail_url, download_url_pc, download_url_mobile, video_url, author_id, content_type_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       const params = [
-        id, name, version, slug, minecraft_version, mod_loader, short_description,
+        id, name, "mod", name, version, slug, minecraft_version, mod_loader, 0, "", short_description,
         full_description, JSON.stringify(tags || []), thumbnail_url, 
         download_url_pc, download_url_mobile, video_url, author_id, content_type_id
       ];
@@ -38,7 +38,7 @@ export default class ModsModel {
 
       await executeQuery(sql, params);
       
-      logInfo('Mod criado com sucesso', { modId: id, title: name, author_id, content_type_id });
+      logInfo('Mod criado com sucesso', { modId: id, description: name, author_id, content_type_id });
       return await this.findByIdAdmin(id);
     } catch (error) {
       logError('Erro ao criar mod', error, { modData });
@@ -787,7 +787,7 @@ export default class ModsModel {
       return rows.map(r => ({
         id: r.id,
         modId: r.mod_id,
-        name: r.title,
+        name: r.description,
         thumbnail_url: r.thumbnail_url,
         minecraft_version: r.minecraft_version,
         downloaded_at: r.created_at,

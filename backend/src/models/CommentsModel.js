@@ -387,7 +387,7 @@ export default class CommentsModel {
       FROM user_timeouts 
       WHERE user_id = ? AND timeout_until > NOW()
       ORDER BY timeout_until DESC 
-      LIMIT ${Number(limit)}1
+      LIMIT 1
     `;
     const rows = await executeQuery(sql, [userId]);
     return rows.length > 0 ? rows[0] : null;
