@@ -44,6 +44,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Configurar trust proxy para rate limiting\napp.set('trust proxy', false);
 const PORT = process.env.PORT || 3001;
 
 // =====================================================
