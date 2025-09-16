@@ -33,13 +33,13 @@ const StatCard = ({ title, value, icon: Icon, color, description }) => (
   >
     <Card className="minecraft-card hover:shadow-lg transition-all duration-300 border-l-4 border-l-transparent hover:border-l-primary">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-minecraft uppercase text-muted-foreground">{title}</CardTitle>
-        <div className={`p-2 rounded-lg ${color} bg-opacity-10`}>
-          <Icon className={`h-5 w-5 ${color}`} />
+        <CardTitle className="text-xs sm:text-sm font-minecraft uppercase text-muted-foreground">{title}</CardTitle>
+        <div className={`p-1.5 sm:p-2 rounded-lg ${color} bg-opacity-10`}>
+          <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${color}`} />
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-bold text-foreground mb-2">{value}</div>
+        <div className="text-2xl sm:text-3xl font-bold text-foreground mb-2">{value}</div>
         {description && <p className="text-xs text-muted-foreground mb-2">{description}</p>}
       </CardContent>
     </Card>
@@ -52,14 +52,14 @@ const QuickActionCard = ({ title, description, icon: Icon, action, variant = "de
     whileTap={{ scale: 0.98 }}
   >
     <Card className="minecraft-card cursor-pointer hover:shadow-lg transition-all duration-300" onClick={action}>
-      <CardContent className="p-6">
-        <div className="flex items-center space-x-4">
-          <div className={`p-3 rounded-lg bg-${variant === "default" ? "primary" : variant}/10`}>
-            <Icon className={`h-6 w-6 text-${variant === "default" ? "primary" : variant}`} />
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex items-center space-x-3 sm:space-x-4">
+          <div className={`p-2 sm:p-3 rounded-lg bg-${variant === "default" ? "primary" : variant}/10`}>
+            <Icon className={`h-5 w-5 sm:h-6 sm:w-6 text-${variant === "default" ? "primary" : variant}`} />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-foreground">{title}</h3>
-            <p className="text-sm text-muted-foreground">{description}</p>
+            <h3 className="font-semibold text-foreground text-sm sm:text-base">{title}</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">{description}</p>
           </div>
         </div>
       </CardContent>
@@ -236,28 +236,30 @@ const AdminDashboardPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="space-y-8 p-6"
+      className="space-y-6 sm:space-y-8 p-4 sm:p-6"
     >
       {/* Header com informações do usuário */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-minecraft text-primary mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-2">
             Dashboard Administrativo
           </h1>
-          <p className="text-muted-foreground">
-            Bem-vindo, {currentUser?.display_name || currentUser?.username}! 
-            <Badge variant="outline" className="ml-2">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Bem-vindo, {currentUser?.display_name || currentUser?.username}!
+            </p>
+            <Badge variant="outline" className="w-fit sm:ml-2">
               <Shield className="h-3 w-3 mr-1" />
               {currentUser?.role === 'super_admin' ? 'Super Administrador' : 'Administrador'}
             </Badge>
-          </p>
+          </div>
         </div>
         <div className="flex space-x-2">
           <Button 
             variant="outline" 
             size="sm"
             onClick={handleLogs}
-            className="hover:bg-primary/10 hover:border-primary/50 hover:text-primary transition-all duration-300"
+            className="hover:bg-primary/10 hover:border-primary/50 hover:text-primary transition-all duration-300 w-full sm:w-auto"
           >
             <Activity className="h-4 w-4 mr-2" />
             Logs
@@ -266,7 +268,7 @@ const AdminDashboardPage = () => {
       </div>
       
       {/* Cards de estatísticas principais */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard 
           title="Total de Mods" 
           value={totalMods} 
@@ -299,8 +301,8 @@ const AdminDashboardPage = () => {
 
       {/* Ações rápidas */}
       <div>
-        <h2 className="text-2xl font-minecraft text-primary mb-4">Ações Rápidas</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+        <h2 className="text-xl sm:text-2xl font-minecraft text-primary mb-4">Ações Rápidas</h2>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
           <QuickActionCard
             title="Gerenciar Usuários"
             description="Ver, editar e gerenciar usuários da plataforma"
@@ -320,9 +322,9 @@ const AdminDashboardPage = () => {
 
       {/* Atividade Recente */}
       <div>
-        <h2 className="text-2xl font-minecraft text-primary mb-4">Atividade Recente</h2>
+        <h2 className="text-xl sm:text-2xl font-minecraft text-primary mb-4">Atividade Recente</h2>
         <Card className="minecraft-card">
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             {loadingActivity ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
@@ -334,19 +336,19 @@ const AdminDashboardPage = () => {
                 <p>Nenhuma atividade recente encontrada</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50">
-                    <div className="flex-shrink-0 mt-1">
+                  <div key={activity.id} className="flex items-start sm:items-center space-x-2 sm:space-x-3 p-2 rounded-lg hover:bg-muted/50">
+                    <div className="flex-shrink-0 mt-0.5 sm:mt-1">
                       {getLevelIcon(activity.level)}
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">{activity.action}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-foreground">{activity.action}</p>
                       <p className="text-xs text-muted-foreground">
                         por {activity.display_name || activity.username || 'Sistema'} • {formatTimestamp(activity.created_at)}
                       </p>
                       {activity.details && (
-                        <p className="text-xs text-muted-foreground mt-1 italic">
+                        <p className="text-xs text-muted-foreground mt-1 italic break-words">
                           {activity.details}
                         </p>
                       )}

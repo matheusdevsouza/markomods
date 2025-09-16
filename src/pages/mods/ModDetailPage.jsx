@@ -739,9 +739,9 @@ const ModDetailPage = () => {
       </div>
       
       {/* Layout em coluna única - Com limitação */}
-      <div className="max-w-5xl mx-auto px-4 space-y-6 py-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6 py-4 sm:py-6">
         {/* Seção do Título com Botão de Download */}
-        <div className={`rounded-xl p-6 transition-all duration-1000 ease-out ${getCardClasses()} ${
+        <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           {/* Breadcrumb */}
@@ -757,37 +757,59 @@ const ModDetailPage = () => {
             </Link>
           </div>
           {/* Título e Botão de Download */}
-          <div className="relative">
-            <h1 className={`text-3xl lg:text-4xl font-bold mb-2 pr-32 ${getTextClasses()}`}>{mod.title}</h1>
-            
-            {/* Descrição Curta */}
-            {mod.short_description && (
-              <p className={`text-lg mb-4 pr-32 leading-relaxed ${getSubtextClasses()}`}>
-                {mod.short_description}
-              </p>
-            )}
-            
-            {/* Botão de Download no canto superior direito */}
-            {recommendedDownload && (
-              <div className="absolute top-0 right-0">
+          <div className="space-y-4">
+            {/* Mobile: Botão de download em linha */}
+            <div className="flex flex-col sm:hidden space-y-3">
+              <h1 className={`text-2xl font-bold ${getTextClasses()}`}>{mod.title}</h1>
+              {mod.short_description && (
+                <p className={`text-base leading-relaxed ${getSubtextClasses()}`}>
+                  {mod.short_description}
+                </p>
+              )}
+              {recommendedDownload && (
                 <Button 
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
-                  className="bg-primary hover:bg-primary/90 text-white px-6 py-3 text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
+                  className="bg-primary hover:bg-primary/90 text-white px-6 py-3 text-base h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 w-full"
                 >
                   <Download className="h-5 w-5 mr-2" />
                   {t('modDetail.download')}
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
+
+            {/* Desktop: Layout com botão no canto */}
+            <div className="hidden sm:block relative">
+              <h1 className={`text-3xl lg:text-4xl font-bold mb-2 pr-32 ${getTextClasses()}`}>{mod.title}</h1>
+              
+              {/* Descrição Curta */}
+              {mod.short_description && (
+                <p className={`text-lg mb-4 pr-32 leading-relaxed ${getSubtextClasses()}`}>
+                  {mod.short_description}
+                </p>
+              )}
+              
+              {/* Botão de Download no canto superior direito */}
+              {recommendedDownload && (
+                <div className="absolute top-0 right-0">
+                  <Button 
+                    onClick={() => handleDownload(recommendedDownload, 'desktop')}
+                    className="bg-primary hover:bg-primary/90 text-white px-6 py-3 text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
+                  >
+                    <Download className="h-5 w-5 mr-2" />
+                    {t('modDetail.download')}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
           
           {/* Imagem Principal do Mod */}
-          <div className="mt-6">
+          <div className="mt-4 sm:mt-6">
             <div className="relative group overflow-hidden rounded-lg">
               <img
                 src={buildThumbnailUrl(mod.thumbnail_url)}
                 alt={mod.title}
-                className="w-full h-auto max-h-[600px] object-scale-down rounded-lg transition-all duration-500 ease-out group-hover:scale-110"
+                className="w-full h-auto max-h-[300px] sm:max-h-[400px] lg:max-h-[600px] object-scale-down rounded-lg transition-all duration-500 ease-out group-hover:scale-110"
                 onError={() => setImageError(true)}
               />
             </div>
@@ -795,12 +817,12 @@ const ModDetailPage = () => {
         </div>
 
         {/* Seção de Descrição (desc) */}
-        <div className={`rounded-xl p-6 transition-all duration-1000 ease-out delay-200 ${getCardClasses()} ${
+        <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-200 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-4">
-            <h2 className={`text-2xl font-bold flex items-center ${getTextClasses()}`}>
-              <div className="w-2 h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
+            <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
+              <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.description')}
             </h2>
             <div 
@@ -825,12 +847,12 @@ const ModDetailPage = () => {
         </div>
 
         {/* Seção de Informações (infos) */}
-        <div className={`rounded-xl p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
+        <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-6">
-            <h2 className={`text-2xl font-bold flex items-center ${getTextClasses()}`}>
-              <div className="w-2 h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
+            <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
+              <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.information')}
             </h2>
 
@@ -840,20 +862,20 @@ const ModDetailPage = () => {
                 <Package className="h-5 w-5 mr-2 text-primary" />
                 {t('modDetail.technicalInfo')}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className={`flex justify-between p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className={`flex justify-between p-2 sm:p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
                   <span className={getSubtextClasses()}>{t('modDetail.version')}</span>
                   <span className={`font-semibold ${getTextClasses()}`}>v{mod.version}</span>
                 </div>
-                <div className={`flex justify-between p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
+                <div className={`flex justify-between p-2 sm:p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
                   <span className={getSubtextClasses()}>{t('modDetail.minecraftVersion')}</span>
                   <span className={`font-semibold ${getTextClasses()}`}>{mod.minecraft_version}</span>
                 </div>
-                <div className={`flex justify-between p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
+                <div className={`flex justify-between p-2 sm:p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
                   <span className={getSubtextClasses()}>{t('modDetail.modLoader')}</span>
                   <span className={`font-semibold ${getTextClasses()}`}>{mod.mod_loader}</span>
                 </div>
-                <div className={`flex justify-between p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
+                <div className={`flex justify-between p-2 sm:p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
                   <span className={getSubtextClasses()}>{t('modDetail.fileSize')}</span>
                   <span className={`font-semibold ${getTextClasses()}`}>{mod.file_size ? `${(mod.file_size / 1024 / 1024).toFixed(2)} MB` : 'N/A'}</span>
                 </div>
@@ -940,12 +962,12 @@ const ModDetailPage = () => {
         </div>
 
         {/* Seção de Download */}
-        <div className={`rounded-xl p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
+        <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-6">
-            <h2 className={`text-2xl font-bold flex items-center ${getTextClasses()}`}>
-              <div className="w-2 h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
+            <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
+              <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.download')}
             </h2>
             
@@ -954,10 +976,10 @@ const ModDetailPage = () => {
               <div className="flex justify-center mb-3">
                 <Download className="h-12 w-12 text-primary" />
               </div>
-              <h3 className={`text-xl font-semibold mb-2 ${getTextClasses()}`}>
+              <h3 className={`text-lg sm:text-xl font-semibold mb-2 ${getTextClasses()}`}>
                 {t('modDetail.directDownload')}
               </h3>
-              <p className={`mb-4 ${getSubtextClasses()}`}>
+              <p className={`mb-4 text-sm sm:text-base ${getSubtextClasses()}`}>
                 {mod.content_type_id === 2 
                   ? t('modDetail.addonDownloadDescription')
                   : t('modDetail.modDownloadDescription')
@@ -967,13 +989,13 @@ const ModDetailPage = () => {
               {recommendedDownload ? (
                 <Button 
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
-                  className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
+                  className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-3 text-base sm:text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 w-full sm:w-auto"
                 >
                   <Download className="h-5 w-5 mr-2" />
                   {t('modDetail.downloadNow')}
                 </Button>
               ) : (
-                <div className="text-red-400">
+                <div className="text-red-400 text-sm sm:text-base">
                   {t('modDetail.downloadNotAvailable')}
                 </div>
               )}
@@ -981,8 +1003,8 @@ const ModDetailPage = () => {
 
             {/* Instruções de instalação */}
             <div className={`pt-6 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
-              <h4 className={`text-lg font-semibold mb-4 ${getTextClasses()}`}>{t('modDetail.installationInstructions')}</h4>
-              <div className={`rounded-lg p-4 space-y-3 text-sm ${theme === 'light' ? 'bg-gray-50/80' : 'bg-gray-900/50'}`}>
+              <h4 className={`text-base sm:text-lg font-semibold mb-4 ${getTextClasses()}`}>{t('modDetail.installationInstructions')}</h4>
+              <div className={`rounded-lg p-3 sm:p-4 space-y-3 text-xs sm:text-sm ${theme === 'light' ? 'bg-gray-50/80' : 'bg-gray-900/50'}`}>
                 <p className={getSubtextClasses()}>
                   <strong>1.</strong> {mod.content_type_id === 2 
                     ? t('modDetail.addonStep1') 
@@ -1010,12 +1032,12 @@ const ModDetailPage = () => {
         </div>
 
         {/* Seção de Comentários (comments) */}
-        <div className={`rounded-xl p-6 transition-all duration-1000 ease-out delay-500 ${getCardClasses()} ${
+        <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-500 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-6">
-            <h2 className={`text-2xl font-bold flex items-center ${getTextClasses()}`}>
-              <div className="w-2 h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
+            <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
+              <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.comments')}
             </h2>
 
@@ -1028,15 +1050,15 @@ const ModDetailPage = () => {
                     placeholder={t('modDetail.shareOpinion')}
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    className={`w-full border rounded-xl p-4 pr-20 resize-none transition-all duration-300 hover:border-gray-600 ${getInputClasses()}`}
-                    rows={4}
+                    className={`w-full border rounded-xl p-3 sm:p-4 pr-16 sm:pr-20 resize-none transition-all duration-300 hover:border-gray-600 text-sm sm:text-base ${getInputClasses()}`}
+                    rows={3}
                   />
                   
                   {/* Botão de enviar integrado */}
                   <button
                     onClick={handleSubmitComment}
                     disabled={!newComment.trim() || isSubmittingComment || commentCooldown > 0}
-                    className="absolute bottom-3 right-3 p-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 hover:shadow-lg hover:shadow-primary/25 active:scale-95"
+                    className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 p-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 hover:shadow-lg hover:shadow-primary/25 active:scale-95"
                     title={commentCooldown > 0 ? `Aguarde ${formatCooldownTime(commentCooldown)} antes de comentar novamente` : "Enviar comentário"}
                   >
                     {isSubmittingComment ? (
