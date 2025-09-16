@@ -116,37 +116,37 @@ const SearchResultsPage = () => {
         <motion.div 
           animate={{ rotate: 360 }} 
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }} 
-          className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full" 
+          className="w-8 h-8 sm:w-12 sm:h-12 border-4 border-primary border-t-transparent rounded-full" 
         />
       </div>
     );
   }
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={containerVariants} className="space-y-8">
+    <motion.div initial="hidden" animate="visible" variants={containerVariants} className="space-y-4 sm:space-y-8">
 
       {/* Header da Busca */}
-      <motion.section variants={itemVariants} className="p-6 bg-card/70 rounded-lg shadow-md border border-border">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-minecraft text-primary flex items-center">
-            <Search size={30} className="mr-3 text-accent"/> 
+      <motion.section variants={itemVariants} className="p-4 sm:p-6 bg-card/70 rounded-lg shadow-md border border-border">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center">
+            <Search size={24} className="mr-2 sm:mr-3 text-accent"/> 
             {t('search.advancedSearch')}
           </h1>
           <Button
             variant="outline"
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className="minecraft-btn"
+            className="minecraft-btn text-sm sm:text-base w-full sm:w-auto"
           >
-            <Filter size={18} className="mr-2" />
+            <Filter size={16} className="mr-2" />
             {showAdvancedFilters ? t('search.hideFilters') : t('search.showFilters')}
           </Button>
         </div>
 
         {/* Formulário de Busca Principal */}
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Termo de Busca */}
-            <div className="md:col-span-2">
+            <div className="sm:col-span-2 lg:col-span-2">
               <label htmlFor="search-term" className="block text-sm font-medium text-muted-foreground mb-1">
                 {t('search.whatAreYouLookingFor')}
               </label>
@@ -158,7 +158,7 @@ const SearchResultsPage = () => {
                   placeholder={t('search.modNameDescriptionTags')}
                   value={localFilters.q}
                   onChange={(e) => handleFilterChange('q', e.target.value)}
-                  className="minecraft-input pl-10"
+                  className="minecraft-input pl-10 text-sm sm:text-base"
                 />
               </div>
             </div>
@@ -167,7 +167,7 @@ const SearchResultsPage = () => {
             <div className="flex items-end">
               <Button 
                 type="button" 
-                className="minecraft-btn bg-primary text-primary-foreground w-full"
+                className="minecraft-btn bg-primary text-primary-foreground w-full text-sm sm:text-base"
                 disabled={loading}
                 onClick={() => updateFilters(localFilters)}
               >
@@ -178,7 +178,7 @@ const SearchResultsPage = () => {
                     className="w-4 h-4 border-b-2 border-white border-t-transparent rounded-full mr-2" 
                   />
                 ) : (
-                  <Search size={18} className="mr-2" />
+                  <Search size={16} className="mr-2" />
                 )}
                 {t('search.search')}
               </Button>
@@ -191,15 +191,15 @@ const SearchResultsPage = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4"
             >
               {/* Versão do Minecraft */}
               <div>
-                <label htmlFor="version-filter" className="block text-sm font-medium text-muted-foreground mb-1">
+                <label htmlFor="version-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Versão Minecraft
                 </label>
                 <Select value={localFilters.version} onValueChange={(value) => handleFilterChange('version', value)}>
-                  <SelectTrigger id="version-filter" className="minecraft-input">
+                  <SelectTrigger id="version-filter" className="minecraft-input text-sm">
                     <SelectValue placeholder="Todas as versões" />
                   </SelectTrigger>
                   <SelectContent className="glass-effect max-h-60">
@@ -214,11 +214,11 @@ const SearchResultsPage = () => {
 
               {/* Tipo de Loader */}
               <div>
-                <label htmlFor="loader-filter" className="block text-sm font-medium text-muted-foreground mb-1">
+                <label htmlFor="loader-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Tipo de Loader
                 </label>
                 <Select value={localFilters.loader} onValueChange={(value) => handleFilterChange('loader', value)}>
-                  <SelectTrigger id="loader-filter" className="minecraft-input">
+                  <SelectTrigger id="loader-filter" className="minecraft-input text-sm">
                     <SelectValue placeholder="Todos os tipos" />
                   </SelectTrigger>
                   <SelectContent className="glass-effect">
@@ -233,11 +233,11 @@ const SearchResultsPage = () => {
 
               {/* Categoria */}
               <div>
-                <label htmlFor="category-filter" className="block text-sm font-medium text-muted-foreground mb-1">
+                <label htmlFor="category-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Categoria
                 </label>
                 <Select value={localFilters.category} onValueChange={(value) => handleFilterChange('category', value)}>
-                  <SelectTrigger id="category-filter" className="minecraft-input">
+                  <SelectTrigger id="category-filter" className="minecraft-input text-sm">
                     <SelectValue placeholder="Todas as categorias" />
                   </SelectTrigger>
                   <SelectContent className="glass-effect max-h-60">
@@ -252,11 +252,11 @@ const SearchResultsPage = () => {
 
               {/* Ordenação */}
               <div>
-                <label htmlFor="sort-order" className="block text-sm font-medium text-muted-foreground mb-1">
+                <label htmlFor="sort-order" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Ordenar Por
                 </label>
                 <Select value={localFilters.sort} onValueChange={(value) => handleFilterChange('sort', value)}>
-                  <SelectTrigger id="sort-order" className="minecraft-input">
+                  <SelectTrigger id="sort-order" className="minecraft-input text-sm">
                     <SelectValue placeholder="Relevância" />
                   </SelectTrigger>
                   <SelectContent className="glass-effect">
@@ -270,12 +270,12 @@ const SearchResultsPage = () => {
               </div>
 
               {/* Filtros Adicionais */}
-              <div className="md:col-span-2">
-                <label htmlFor="featured-filter" className="block text-sm font-medium text-muted-foreground mb-1">
+              <div className="sm:col-span-2 lg:col-span-2">
+                <label htmlFor="featured-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Destaque
                 </label>
                 <Select value={localFilters.featured} onValueChange={(value) => handleFilterChange('featured', value)}>
-                  <SelectTrigger id="featured-filter" className="minecraft-input">
+                  <SelectTrigger id="featured-filter" className="minecraft-input text-sm">
                     <SelectValue placeholder="Todos os mods" />
                   </SelectTrigger>
                   <SelectContent className="glass-effect">
@@ -289,8 +289,8 @@ const SearchResultsPage = () => {
               </div>
 
               {/* Autor */}
-              <div className="md:col-span-2">
-                <label htmlFor="author-filter" className="block text-sm font-medium text-muted-foreground mb-1">
+              <div className="sm:col-span-2 lg:col-span-2">
+                <label htmlFor="author-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   {t('modDetail.author')}
                 </label>
                 <Input
@@ -299,7 +299,7 @@ const SearchResultsPage = () => {
                   placeholder="Nome do autor..."
                   value={localFilters.author}
                   onChange={(e) => handleFilterChange('author', e.target.value)}
-                  className="minecraft-input"
+                  className="minecraft-input text-sm sm:text-base"
                 />
               </div>
             </motion.div>
@@ -312,13 +312,13 @@ const SearchResultsPage = () => {
       {/* Resultados da Busca */}
       <motion.section variants={itemVariants}>
         {/* Header dos Resultados */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <h2 className="text-2xl font-minecraft text-foreground">
+        <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <h2 className="text-xl sm:text-2xl font-minecraft text-foreground">
               {t('search.searchResults')}
             </h2>
             {totalResults > 0 && (
-              <Badge variant="secondary" className="text-sm">
+              <Badge variant="secondary" className="text-xs sm:text-sm w-fit">
                 {totalResults} mod{totalResults !== 1 ? 's' : ''} encontrado{totalResults !== 1 ? 's' : ''}
               </Badge>
             )}
@@ -328,9 +328,9 @@ const SearchResultsPage = () => {
           
           {/* Filtros Ativos */}
           {Object.entries(filters).some(([key, value]) => value && value !== 'all') && (
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-muted-foreground">Filtros ativos:</span>
+            <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:space-x-3">
+              <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-center sm:space-x-2">
+                <span className="text-xs sm:text-sm font-medium text-muted-foreground">Filtros ativos:</span>
                 {filtersLoading && (
                   <div className="flex items-center space-x-1 text-xs text-primary">
                     <motion.div 
@@ -376,7 +376,7 @@ const SearchResultsPage = () => {
                         <Badge 
                           key={key} 
                           variant="secondary"
-                          className="px-3 py-1.5 text-xs font-medium bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 hover:border-primary/30 cursor-pointer transition-all duration-200 group"
+                          className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 hover:border-primary/30 cursor-pointer transition-all duration-200 group"
                           onClick={() => {
                             // Limpar filtro individual
                             const newFilters = { ...filters };
@@ -392,7 +392,7 @@ const SearchResultsPage = () => {
                           title={`Clique para remover o filtro ${displayKey}`}
                         >
                           <span className="mr-1">{displayKey}: {displayValue}</span>
-                          <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary/20 text-primary text-xs font-bold group-hover:bg-primary/30 transition-colors">
+                          <span className="inline-flex items-center justify-center w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-primary/20 text-primary text-xs font-bold group-hover:bg-primary/30 transition-colors">
                             ×
                           </span>
                         </Badge>
@@ -408,9 +408,9 @@ const SearchResultsPage = () => {
                 variant="outline"
                 size="sm"
                 onClick={clearFilters}
-                className="px-4 py-1.5 h-auto text-xs font-medium border-destructive/30 text-destructive hover:bg-destructive/10 hover:border-destructive/50 hover:text-destructive/90 transition-all duration-200 shadow-sm"
+                className="px-3 sm:px-4 py-1 sm:py-1.5 h-auto text-xs font-medium border-destructive/30 text-destructive hover:bg-destructive/10 hover:border-destructive/50 hover:text-destructive/90 transition-all duration-200 shadow-sm w-full sm:w-auto"
               >
-                <RotateCcw size={14} className="mr-1.5" />
+                <RotateCcw size={12} className="mr-1 sm:mr-1.5" />
                 Limpar Todos
               </Button>
             </div>
@@ -419,25 +419,25 @@ const SearchResultsPage = () => {
 
         {/* Mensagem de Erro */}
         {error && (
-          <motion.div variants={itemVariants} className="text-center py-10 bg-destructive/10 rounded-lg border border-destructive/20">
-            <XCircle size={48} className="mx-auto text-destructive mb-4" />
-            <p className="text-xl text-destructive">{t('search.searchError')}</p>
-            <p className="text-sm text-muted-foreground mt-2">{error}</p>
-            <div className="mt-4 space-y-2">
+          <motion.div variants={itemVariants} className="text-center py-6 sm:py-10 bg-destructive/10 rounded-lg border border-destructive/20">
+            <XCircle size={40} className="mx-auto text-destructive mb-3 sm:mb-4" />
+            <p className="text-lg sm:text-xl text-destructive">{t('search.searchError')}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-2">{error}</p>
+            <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:gap-2 sm:justify-center">
               <Button 
                 variant="outline" 
                 onClick={() => window.location.reload()} 
-                className="minecraft-btn mr-2"
+                className="minecraft-btn text-sm sm:text-base w-full sm:w-auto"
               >
-                <RotateCcw size={16} className="mr-2" />
+                <RotateCcw size={14} className="mr-2" />
                 {t('search.tryAgain')}
               </Button>
               <Button 
                 variant="outline" 
                 onClick={handleResetFilters} 
-                className="minecraft-btn"
+                className="minecraft-btn text-sm sm:text-base w-full sm:w-auto"
               >
-                <Filter size={16} className="mr-2" />
+                <Filter size={14} className="mr-2" />
                 {t('search.clearFilters')}
               </Button>
             </div>
@@ -447,7 +447,7 @@ const SearchResultsPage = () => {
         {/* Resultados */}
         {!error && searchResults.length > 0 ? (
           <>
-            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" variants={containerVariants}>
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" variants={containerVariants}>
               {searchResults.map(mod => (
                 <ModCard key={mod.id} mod={mod} variants={itemVariants} />
               ))}

@@ -439,22 +439,22 @@ const AdminUsersPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="space-y-6 p-6"
+      className="space-y-4 sm:space-y-6 p-4 sm:p-6"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-minecraft text-primary mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-2">
             Gerenciar Usuários
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Gerencie todos os usuários da plataforma Eu, Marko! Mods
           </p>
         </div>
         <Button
           onClick={() => window.location.reload()}
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 w-full sm:w-auto"
         >
           <RefreshCw className="h-4 w-4" />
           Atualizar
@@ -464,32 +464,32 @@ const AdminUsersPage = () => {
       {/* Filtros e Busca */}
       <Card className="minecraft-card">
         <CardHeader>
-          <CardTitle className="flex items-center text-xl">
-            <Filter className="h-5 w-5 mr-2 text-blue-500" />
+          <CardTitle className="flex items-center text-lg sm:text-xl">
+            <Filter className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-blue-500" />
             Filtros e Busca
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Buscar Usuários</label>
+              <label className="text-xs sm:text-sm font-medium">Buscar Usuários</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Buscar por nome, email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 text-sm sm:text-base"
                 />
               </div>
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-medium">Cargo</label>
+              <label className="text-xs sm:text-sm font-medium">Cargo</label>
               <select
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="w-full p-2 border border-input rounded-md bg-background"
+                className="w-full p-2 border border-input rounded-md bg-background text-sm sm:text-base"
               >
                 <option value="all">Todos os Cargos</option>
                 <option value="super_admin">Super Admin</option>
@@ -499,12 +499,12 @@ const AdminUsersPage = () => {
               </select>
             </div>
             
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Status</label>
+            <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+              <label className="text-xs sm:text-sm font-medium">Status</label>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full p-2 border border-input rounded-md bg-background"
+                className="w-full p-2 border border-input rounded-md bg-background text-sm sm:text-base"
               >
                 <option value="all">Todos os Status</option>
                 <option value="verified">Verificados</option>
@@ -524,16 +524,16 @@ const AdminUsersPage = () => {
       {/* Lista de Usuários */}
       <Card className="minecraft-card">
         <CardHeader>
-          <CardTitle className="flex items-center text-xl">
-            <Users className="h-5 w-5 mr-2 text-green-500" />
+          <CardTitle className="flex items-center text-lg sm:text-xl">
+            <Users className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-500" />
             Usuários da Plataforma
           </CardTitle>
         </CardHeader>
         <CardContent>
           {filteredUsers.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Users className="h-16 w-16 mx-auto mb-4 opacity-50" />
-              <p className="text-lg">Nenhum usuário encontrado com os filtros atuais</p>
+            <div className="text-center py-8 sm:py-12 text-muted-foreground">
+              <Users className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 opacity-50" />
+              <p className="text-sm sm:text-lg">Nenhum usuário encontrado com os filtros atuais</p>
             </div>
           ) : (
             <div className="grid gap-4">
@@ -548,56 +548,60 @@ const AdminUsersPage = () => {
                     key={user.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="group relative p-6 bg-gradient-to-r from-muted/30 to-muted/10 rounded-xl border border-border/50 hover:border-border hover:shadow-lg transition-all duration-300"
+                    className="group relative p-4 sm:p-6 bg-gradient-to-r from-muted/30 to-muted/10 rounded-xl border border-border/50 hover:border-border hover:shadow-lg transition-all duration-300"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <Avatar className="w-14 h-14 ring-2 ring-border/50 group-hover:ring-primary/50 transition-all duration-300">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                      <div className="flex items-center space-x-3 sm:space-x-4">
+                        <Avatar className="w-12 h-12 sm:w-14 sm:h-14 ring-2 ring-border/50 group-hover:ring-primary/50 transition-all duration-300">
                           <AvatarImage src={user.avatar_url} />
-                          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary text-lg font-bold">
+                          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary text-base sm:text-lg font-bold">
                             {user.username?.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-3">
-                            <h3 className="text-lg font-semibold text-foreground">
+                        <div className="space-y-2 flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                            <h3 className="text-base sm:text-lg font-semibold text-foreground truncate">
                               {user.display_name || user.username}
                             </h3>
-                            <Badge className={roleConfig.className}>
-                              <RoleIcon className={`h-3 w-3 mr-1 ${roleConfig.iconColor}`} />
-                              {roleConfig.label}
-                            </Badge>
-                            <Badge className={statusConfig.className}>
-                              <StatusIcon className={`h-3 w-3 mr-1 ${statusConfig.iconColor}`} />
-                              {statusConfig.label}
-                            </Badge>
+                            <div className="flex flex-wrap gap-1 sm:gap-2">
+                              <Badge className={`${roleConfig.className} text-xs`}>
+                                <RoleIcon className={`h-3 w-3 mr-1 ${roleConfig.iconColor}`} />
+                                <span className="hidden sm:inline">{roleConfig.label}</span>
+                                <span className="sm:hidden">{roleConfig.label.split(' ')[0]}</span>
+                              </Badge>
+                              <Badge className={`${statusConfig.className} text-xs`}>
+                                <StatusIcon className={`h-3 w-3 mr-1 ${statusConfig.iconColor}`} />
+                                <span className="hidden sm:inline">{statusConfig.label}</span>
+                                <span className="sm:hidden">{statusConfig.label.split(' ')[0]}</span>
+                              </Badge>
+                            </div>
                           </div>
                           
                           {statusConfig.reason && (
-                            <p className="text-sm text-red-400 font-medium">
+                            <p className="text-xs sm:text-sm text-red-400 font-medium">
                               Motivo: {statusConfig.reason}
                             </p>
                           )}
                           
-                          <div className="flex items-center space-x-6 text-sm text-muted-foreground">
+                          <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-6 text-xs sm:text-sm text-muted-foreground">
                             <span className="flex items-center">
-                              <User className="h-4 w-4 mr-2" />
-                              {user.username}
+                              <User className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
+                              <span className="truncate">{user.username}</span>
                             </span>
                             <span className="flex items-center">
-                              <Mail className="h-4 w-4 mr-2" />
+                              <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
                               {user.email}
                             </span>
                             <span className="flex items-center">
-                              <Calendar className="h-4 w-4 mr-2" />
-                              {formatDate(user.created_at)}
+                              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
+                              <span className="truncate">{formatDate(user.created_at)}</span>
                             </span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-end sm:justify-start space-x-2">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -658,13 +662,13 @@ const AdminUsersPage = () => {
 
       {/* Modal de Banimento */}
       <Dialog open={banModalOpen} onOpenChange={setBanModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center text-red-600">
-              <Ban className="h-5 w-5 mr-2" />
+            <DialogTitle className="flex items-center text-red-600 text-base sm:text-lg">
+              <Ban className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               Banir Usuário
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-sm">
               Você está prestes a banir o usuário <strong>{selectedUser?.display_name || selectedUser?.username}</strong>.
               Esta ação pode ser revertida posteriormente.
             </DialogDescription>
@@ -672,14 +676,14 @@ const AdminUsersPage = () => {
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-xs sm:text-sm font-medium mb-2">
                 Motivo do Banimento <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={banReason}
                 onChange={(e) => setBanReason(e.target.value)}
                 placeholder="Digite o motivo do banimento..."
-                className="w-full p-3 border border-border rounded-md bg-background text-foreground resize-none"
+                className="w-full p-2 sm:p-3 border border-border rounded-md bg-background text-foreground resize-none text-sm sm:text-base"
                 rows={3}
                 required
               />

@@ -98,7 +98,7 @@ const Header = React.memo(() => {
           </div>
 
           {/* Botões - Direita */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
           {/* Usuário Logado */}
           {currentUser && isAuthenticated ? (
             <>
@@ -274,24 +274,24 @@ const Header = React.memo(() => {
           ) : (
             /* Botões de Login/Registro para usuários não logados */
             <>
-              <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-4 py-2 rounded-lg">
-                <Link to="/login" className="flex items-center">
+              <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg h-10 sm:h-auto" title="Login">
+                <Link to="/login" className="flex items-center justify-center">
                   <div className="relative">
-                    <LogIn size={18} className="mr-2 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
+                    <LogIn size={16} className="sm:mr-2 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
                     <div className="absolute inset-0 bg-white/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                  <span className="font-bold text-base tracking-wide">Login</span>
+                  <span className="font-bold text-sm sm:text-base tracking-wide hidden sm:inline">Login</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                 </Link>
               </Button>
               
-              <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-4 py-2 rounded-lg">
-                <Link to="/register" className="flex items-center">
+              <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg h-10 sm:h-auto" title="Registro">
+                <Link to="/register" className="flex items-center justify-center">
                   <div className="relative">
-                    <User size={18} className="mr-2 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
+                    <User size={16} className="sm:mr-2 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
                     <div className="absolute inset-0 bg-white/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                  <span className="font-bold text-base tracking-wide">Registro</span>
+                  <span className="font-bold text-sm sm:text-base tracking-wide hidden sm:inline">Registro</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                 </Link>
               </Button>
@@ -301,12 +301,12 @@ const Header = React.memo(() => {
                 variant="ghost"
                 size="icon"
                 onClick={() => changeTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
+                className="h-9 w-9 sm:h-10 sm:w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
               >
                 {theme === 'dark' ? (
-                  <Sun className="h-5 w-5" />
+                  <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
                 ) : (
-                  <Moon className="h-5 w-5" />
+                  <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
                 )}
               </Button>
               

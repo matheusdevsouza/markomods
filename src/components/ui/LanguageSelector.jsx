@@ -9,8 +9,9 @@ const LanguageSelector = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [isAutoLanguage, setIsAutoLanguage] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState('right-0');
 
-  // Fechar dropdown quando clicar fora
+  // Fechar dropdown quando clicar fora e ajustar posicionamento
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -18,9 +19,29 @@ const LanguageSelector = () => {
       }
     };
 
+    const handleResize = () => {
+      if (isOpen && dropdownRef.current) {
+        const rect = dropdownRef.current.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const dropdownWidth = viewportWidth < 640 ? 280 : 320;
+        
+        // Tanto mobile quanto desktop: sempre à esquerda
+        setDropdownPosition('center');
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    window.addEventListener('resize', handleResize);
+    
+    if (isOpen) {
+      handleResize();
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isOpen]);
 
   const handleLanguageChange = (languageCode) => {
     changeLanguage(languageCode);
@@ -73,10 +94,15 @@ const LanguageSelector = () => {
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border bg-background shadow-lg z-50">
+        <div className={cn(
+          "absolute top-full mt-2 w-64 sm:w-80 max-w-[calc(100vw-1rem)] rounded-lg border bg-background shadow-lg z-50",
+          dropdownPosition === 'center' 
+            ? "right-0" 
+            : dropdownPosition
+        )}>
           {/* Header */}
-          <div className="p-4 border-b">
-            <h3 className="text-sm font-medium text-foreground">
+          <div className="p-2 sm:p-4 border-b">
+            <h3 className="text-xs sm:text-sm font-medium text-foreground">
               {t('language.title')}
             </h3>
             <p className="text-xs text-muted-foreground mt-1">
@@ -85,37 +111,37 @@ const LanguageSelector = () => {
           </div>
 
           {/* Auto Language Option */}
-          <div className="p-2">
+          <div className="p-1 sm:p-2">
             <button
               onClick={handleAutoLanguage}
               className={cn(
-                "w-full flex items-center justify-between p-3 rounded-md text-sm transition-colors",
+                "w-full flex items-center justify-between p-2 sm:p-3 rounded-md text-xs sm:text-sm transition-colors touch-manipulation",
                 isAutoLanguage
                   ? "bg-primary/10 text-primary border border-primary/20"
-                  : "hover:bg-accent text-foreground"
+                  : "hover:bg-accent text-foreground active:bg-accent/80"
               )}
             >
-              <div className="flex items-center space-x-3">
-                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                   <span className="text-xs text-white">A</span>
                 </div>
                 <span className="font-medium">{t('language.auto')}</span>
               </div>
-              {isAutoLanguage && <Check className="h-4 w-4 text-primary" />}
+              {isAutoLanguage && <Check className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />}
             </button>
           </div>
 
           {/* Language Groups */}
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-48 sm:max-h-96 overflow-y-auto overscroll-contain">
             {Object.entries(LANGUAGE_GROUPS).map(([regionKey, group]) => (
               <div key={regionKey} className="border-t">
-                <div className="px-4 py-2 bg-muted/30">
+                <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-muted/30">
                   <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                     {t(`language.${regionKey}`)}
                   </h4>
                 </div>
                 
-                <div className="p-2 space-y-1">
+                <div className="p-1 sm:p-2 space-y-1">
                   {group.languages.map((langCode) => {
                     const langInfo = LANGUAGES[langCode];
                     const isSelected = language === langCode && !isAutoLanguage;
@@ -125,22 +151,22 @@ const LanguageSelector = () => {
                         key={langCode}
                         onClick={() => handleLanguageChange(langCode)}
                         className={cn(
-                          "w-full flex items-center justify-between p-3 rounded-md text-sm transition-colors",
+                          "w-full flex items-center justify-between p-2 sm:p-3 rounded-md text-xs sm:text-sm transition-colors touch-manipulation",
                           isSelected
                             ? "bg-primary/10 text-primary border border-primary/20"
-                            : "hover:bg-accent text-foreground"
+                            : "hover:bg-accent text-foreground active:bg-accent/80"
                         )}
                       >
-                        <div className="flex items-center space-x-3">
-                          <span className="text-lg">{langInfo.flag}</span>
-                          <div className="text-left">
-                            <div className="font-medium">{langInfo.name}</div>
-                            <div className="text-xs text-muted-foreground">
+                        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                          <span className="text-sm sm:text-lg flex-shrink-0">{langInfo.flag}</span>
+                          <div className="text-left min-w-0 flex-1">
+                            <div className="font-medium truncate">{langInfo.name}</div>
+                            <div className="text-xs text-muted-foreground truncate">
                               {langInfo.nativeName}
                             </div>
                           </div>
                         </div>
-                        {isSelected && <Check className="h-4 w-4 text-primary" />}
+                        {isSelected && <Check className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />}
                       </button>
                     );
                   })}
@@ -150,7 +176,7 @@ const LanguageSelector = () => {
           </div>
 
           {/* Footer */}
-          <div className="p-3 border-t bg-muted/20">
+          <div className="p-2 sm:p-3 border-t bg-muted/20">
             <div className="text-xs text-muted-foreground text-center">
               {isAutoLanguage 
                 ? `${t('language.detected')}: ${currentLangInfo?.nativeName}`

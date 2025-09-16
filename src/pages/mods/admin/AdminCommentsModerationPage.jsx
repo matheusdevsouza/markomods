@@ -261,50 +261,62 @@ const AdminCommentsModerationPage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-3xl font-minecraft text-primary flex items-center gap-3 flex-wrap">
-            <Shield className="h-8 w-8" />
+          <CardTitle className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap">
+            <Shield className="h-6 w-6 sm:h-8 sm:w-8" />
             {t('modDetail.comments')}
           </CardTitle>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Gerencie comentários pendentes, aprovados e rejeitados. Mantenha a qualidade da comunidade.
           </p>
         </CardHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="pending" className="flex items-center gap-2 flex-wrap">
-              <Clock className="h-4 w-4" />
-              Pendentes ({pendingComments.length})
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-3 h-auto p-1">
+            <TabsTrigger value="pending" className="flex flex-col items-center justify-center gap-1 py-2 px-1 sm:py-3 sm:px-2 text-xs sm:text-sm h-auto min-h-[60px] sm:min-h-[auto]">
+              <Clock className="h-4 w-4 sm:h-4 sm:w-4 flex-shrink-0" />
+              <div className="flex flex-col items-center">
+                <span className="font-medium leading-tight">{pendingComments.length}</span>
+                <span className="hidden sm:inline">Pendentes</span>
+                <span className="sm:hidden text-xs">Pend.</span>
+              </div>
             </TabsTrigger>
-            <TabsTrigger value="recent" className="flex items-center gap-2 flex-wrap">
-              <TrendingUp className="h-4 w-4" />
-              Mais Recentes ({recentComments.length})
+            <TabsTrigger value="recent" className="flex flex-col items-center justify-center gap-1 py-2 px-1 sm:py-3 sm:px-2 text-xs sm:text-sm h-auto min-h-[60px] sm:min-h-[auto]">
+              <TrendingUp className="h-4 w-4 sm:h-4 sm:w-4 flex-shrink-0" />
+              <div className="flex flex-col items-center">
+                <span className="font-medium leading-tight">{recentComments.length}</span>
+                <span className="hidden sm:inline">Recentes</span>
+                <span className="sm:hidden text-xs">Rec.</span>
+              </div>
             </TabsTrigger>
-            <TabsTrigger value="rejected" className="flex items-center gap-2 flex-wrap">
-              <XCircle className="h-4 w-4" />
-              Rejeitados ({rejectedComments.length})
+            <TabsTrigger value="rejected" className="flex flex-col items-center justify-center gap-1 py-2 px-1 sm:py-3 sm:px-2 text-xs sm:text-sm h-auto min-h-[60px] sm:min-h-[auto]">
+              <XCircle className="h-4 w-4 sm:h-4 sm:w-4 flex-shrink-0" />
+              <div className="flex flex-col items-center">
+                <span className="font-medium leading-tight">{rejectedComments.length}</span>
+                <span className="hidden sm:inline">Rejeitados</span>
+                <span className="sm:hidden text-xs">Rejeit.</span>
+              </div>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pending" className="space-y-4">
             {loading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="text-muted-foreground mt-2">Carregando comentários...</p>
+              <div className="text-center py-6 sm:py-8">
+                <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary mx-auto"></div>
+                <p className="text-sm sm:text-base text-muted-foreground mt-2">Carregando comentários...</p>
               </div>
             ) : pendingComments.length === 0 ? (
               <Card className="minecraft-card">
-                <CardContent className="p-8 text-center">
-                  <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">Nenhum comentário pendente!</h3>
-                  <p className="text-muted-foreground">
+                <CardContent className="p-6 sm:p-8 text-center">
+                  <CheckCircle className="h-12 w-12 sm:h-16 sm:w-16 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">Nenhum comentário pendente!</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
                     Todos os comentários foram moderados. A comunidade está em dia! 🎉
                   </p>
                 </CardContent>
@@ -319,39 +331,41 @@ const AdminCommentsModerationPage = () => {
                     transition={{ duration: 0.3 }}
                   >
                     <Card className="minecraft-card border-yellow-500/30 bg-yellow-500/5">
-                      <CardContent className="p-6">
-                        <div className="flex items-start gap-4">
-                          <Avatar className="w-12 h-12 flex-shrink-0">
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex items-start gap-3 sm:gap-4">
+                          <Avatar className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
                             <AvatarImage src={comment.avatar_url || "/default-avatar.png"} />
-                            <AvatarFallback className="bg-primary/10 text-primary text-base font-medium">
+                            <AvatarFallback className="bg-primary/10 text-primary text-sm sm:text-base font-medium">
                               {getInitials(comment.display_name || comment.username)}
                             </AvatarFallback>
                           </Avatar>
                           
                           <div className="flex-1 space-y-3 min-w-0">
-                            <div className="flex items-center justify-between min-w-0">
-                              <div className="flex items-center gap-3 flex-wrap">
-                                <span className="font-medium text-foreground break-words overflow-wrap-anywhere">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 min-w-0">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-wrap">
+                                <span className="font-medium text-sm sm:text-base text-foreground break-words overflow-wrap-anywhere">
                                   {comment.display_name || comment.username}
                                 </span>
                                 
-                                <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-600 border-yellow-500/30">
-                                  <Clock size={12} className="mr-1" />
-                                  Pendente
-                                </Badge>
-                                
-                                {comment.rating && (
-                                  <div className="flex items-center gap-1">
-                                    {[...Array(5)].map((_, i) => (
-                                      <div
-                                        key={i}
-                                        className={`w-3 h-3 rounded-full ${
-                                          i < comment.rating ? 'bg-yellow-400' : 'bg-gray-300'
-                                        }`}
-                                      />
-                                    ))}
-                                  </div>
-                                )}
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-600 border-yellow-500/30 text-xs">
+                                    <Clock size={10} className="mr-1" />
+                                    Pendente
+                                  </Badge>
+                                  
+                                  {comment.rating && (
+                                    <div className="flex items-center gap-1">
+                                      {[...Array(5)].map((_, i) => (
+                                        <div
+                                          key={i}
+                                          className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
+                                            i < comment.rating ? 'bg-yellow-400' : 'bg-gray-300'
+                                          }`}
+                                        />
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                               
                               <Button
@@ -359,55 +373,55 @@ const AdminCommentsModerationPage = () => {
                                 disabled={processing}
                                 variant="outline"
                                 size="sm"
-                                className="border-red-500/30 text-red-500 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-600 transition-all duration-200"
+                                className="border-red-500/30 text-red-500 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-600 transition-all duration-200 text-xs sm:text-sm"
                               >
-                                <Ban size={14} className="mr-1" />
+                                <Ban size={12} className="mr-1" />
                                 Banir
                               </Button>
                             </div>
                             
                             <div className="bg-card/50 p-3 rounded-lg border border-border/50">
-                              <p className="text-foreground leading-relaxed break-words overflow-wrap-anywhere">
+                              <p className="text-sm sm:text-base text-foreground leading-relaxed break-words overflow-wrap-anywhere">
                                 {comment.content}
                               </p>
                             </div>
                             
-                            <div className="flex items-center justify-between min-w-0">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 min-w-0">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-2 text-xs sm:text-sm text-muted-foreground flex-wrap">
                                 <span className="break-words overflow-wrap-anywhere">Mod: {comment.mod_title}</span>
-                                <div className="w-1 h-1 bg-muted-foreground/50 rounded-full"></div>
+                                <div className="hidden sm:block w-1 h-1 bg-muted-foreground/50 rounded-full"></div>
                                 <Button
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => window.open(`/mods/${comment.mod_slug}`, '_blank')}
-                                  className="h-6 px-2 text-xs hover:bg-primary/10 hover:text-primary transition-colors"
+                                  className="h-6 px-2 text-xs hover:bg-primary/10 hover:text-primary transition-colors w-fit"
                                 >
                                   <ExternalLink size={12} className="mr-1" />
                                   Ver mod
                                 </Button>
-                                <div className="w-1 h-1 bg-muted-foreground/50 rounded-full"></div>
+                                <div className="hidden sm:block w-1 h-1 bg-muted-foreground/50 rounded-full"></div>
                                 <div className="flex items-center gap-1">
                                   <CalendarDays size={12} />
                                   {formatDate(comment.created_at)}
                                 </div>
                               </div>
                               
-                              <div className="flex items-center gap-3 flex-wrap">
+                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                                 <Button
                                   onClick={() => handleApproveComment(comment.id)}
                                   disabled={processing}
-                                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-green-500/25 hover:scale-105"
+                                  className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-green-500/25 hover:scale-105 text-sm"
                                 >
-                                  <CheckCircle size={18} className="mr-2" />
+                                  <CheckCircle size={16} className="mr-2" />
                                   Aprovar
                                 </Button>
                                 
                                 <Button
                                   onClick={() => openRejectModal(comment)}
                                   disabled={processing}
-                                  className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/25 hover:scale-105"
+                                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/25 hover:scale-105 text-sm"
                                 >
-                                  <XCircle size={18} className="mr-2" />
+                                  <XCircle size={16} className="mr-2" />
                                   Rejeitar
                                 </Button>
                               </div>

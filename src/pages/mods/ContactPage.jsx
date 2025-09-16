@@ -97,27 +97,27 @@ const ContactPage = () => {
       animate={{ opacity: 1, y: 0 }}
       className="min-h-screen"
     >
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Cabeçalho */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mb-6"
+            className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-full mb-4 sm:mb-6"
           >
-            <MessageSquare className="w-10 h-10 text-primary" />
+            <MessageSquare className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
           </motion.div>
-          <h1 className="text-4xl font-minecraft text-primary mb-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-3 sm:mb-4">
             {getTranslation('contact.title', 'Entre em Contato')}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             {getTranslation('contact.subtitle', 'Tem alguma dúvida ou sugestão? Entre em contato conosco!')}
           </p>
         </div>
 
         {/* FAQ e Contatos - Layout em duas colunas */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto mb-8 sm:mb-12">
           {/* FAQ - Lado Esquerdo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -125,55 +125,57 @@ const ContactPage = () => {
             transition={{ delay: 0.3 }}
           >
             <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl flex items-center gap-2">
-                  <HelpCircle className="w-6 h-6 text-primary" />
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
+                  <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                   {getTranslation('contact.faq.title', 'Perguntas Frequentes')}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-sm sm:text-base">
                   {getTranslation('contact.faq.subtitle', 'Encontre respostas para as dúvidas mais comuns')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
                 {faqItems.map((item) => (
                   <Card key={item.id} className="overflow-hidden">
                     <div
-                      className="p-6 cursor-pointer hover:bg-muted/50 transition-colors"
+                      className="p-4 sm:p-6 cursor-pointer hover:bg-muted/50 transition-colors"
                       onClick={() => handleFaqToggle(item.id)}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-lg font-semibold">{item.title}</h3>
-                            <span className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full">
+                      <div className="flex items-start sm:items-center justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                            <h3 className="text-sm sm:text-base lg:text-lg font-semibold leading-tight">{item.title}</h3>
+                            <span className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full w-fit">
                               {item.category}
                             </span>
                           </div>
                         </div>
-                        {expandedFaq === item.id ? (
-                          <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                        ) : (
-                          <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                        )}
+                        <div className="flex-shrink-0">
+                          {expandedFaq === item.id ? (
+                            <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                          )}
+                        </div>
                       </div>
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ 
-                        height: expandedFaq === item.id ? 'auto' : 0,
-                        opacity: expandedFaq === item.id ? 1 : 0
-                      }}
-                      transition={{ 
-                        duration: 0.3,
-                        ease: 'easeInOut'
-                      }}
-                      className="overflow-hidden"
-                    >
-                      <div className="mt-4 pt-4 border-t">
-                        <p className="text-muted-foreground leading-relaxed">
-                          {item.content}
-                        </p>
-                      </div>
-                    </motion.div>
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ 
+                          height: expandedFaq === item.id ? 'auto' : 0,
+                          opacity: expandedFaq === item.id ? 1 : 0
+                        }}
+                        transition={{ 
+                          duration: 0.3,
+                          ease: 'easeInOut'
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t">
+                          <p className="text-xs sm:text-sm lg:text-base text-muted-foreground leading-relaxed">
+                            {item.content}
+                          </p>
+                        </div>
+                      </motion.div>
                     </div>
                   </Card>
                 ))}
@@ -186,19 +188,19 @@ const ContactPage = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6"
           >
             <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl flex items-center gap-2">
-                  <Phone className="w-6 h-6 text-primary" />
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
+                  <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                   {getTranslation('contact.info.title', 'Outras Formas de Contato')}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-sm sm:text-base">
                   {getTranslation('contact.info.description', 'Escolha a forma mais conveniente para você')}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
                 {contactMethods.map((method) => (
                   <motion.div
                     key={method.id}
@@ -206,19 +208,19 @@ const ContactPage = () => {
                     whileTap={{ scale: 0.98 }}
                   >
                     <Card className="cursor-pointer hover:shadow-lg transition-all duration-200">
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-4">
-                          <div className={`inline-flex p-3 rounded-full ${method.color}`}>
-                            {typeof method.icon === 'function' ? <method.icon /> : <method.icon className="w-6 h-6 text-white" />}
+                      <CardContent className="p-3 sm:p-4">
+                        <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+                          <div className={`inline-flex p-2 sm:p-3 rounded-full ${method.color} flex-shrink-0`}>
+                            {typeof method.icon === 'function' ? <method.icon /> : <method.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />}
                           </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-lg">{method.title}</h3>
-                            <p className="text-sm text-muted-foreground mb-2">{method.description}</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-sm sm:text-base lg:text-lg leading-tight">{method.title}</h3>
+                            <p className="text-xs sm:text-sm text-muted-foreground mb-2 leading-tight">{method.description}</p>
                             <Button 
                               variant="outline" 
                               size="sm"
                               onClick={() => window.open(method.action, '_blank')}
-                              className="w-full"
+                              className="w-full text-xs sm:text-sm"
                             >
                               {method.value}
                             </Button>
@@ -233,21 +235,21 @@ const ContactPage = () => {
 
             {/* Informações Adicionais */}
             <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-3">
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold mb-3">
                   {getTranslation('contact.additional.title', 'Informações Importantes')}
                 </h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
+                <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 mt-0.5 flex-shrink-0" />
                     <span>{getTranslation('contact.additional.responseTime', 'Respondemos em até 24 horas')}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 mt-0.5 flex-shrink-0" />
                     <span>{getTranslation('contact.additional.support', 'Suporte técnico gratuito')}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 mt-0.5 flex-shrink-0" />
                     <span>{getTranslation('contact.additional.community', 'Comunidade ativa no Discord')}</span>
                   </li>
                 </ul>
@@ -261,21 +263,21 @@ const ContactPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-16 w-full"
+          className="mt-12 sm:mt-16 w-full"
         >
           <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20 w-full">
-            <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-bold mb-4">{getTranslation('contact.stillNeedHelp.title', 'Ainda está com dúvidas?')}</h3>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            <CardContent className="p-6 sm:p-8 text-center">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">{getTranslation('contact.stillNeedHelp.title', 'Ainda está com dúvidas?')}</h3>
+              <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 max-w-2xl mx-auto px-4">
                 {getTranslation('contact.stillNeedHelp.description', 'Nossa equipe de suporte está aqui para ajudar. Entre em contato conosco através dos canais acima ou consulte nossa documentação completa.')}
               </p>
               <div className="flex justify-center">
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-primary hover:bg-primary/90 text-sm sm:text-base w-full sm:w-auto"
                   onClick={() => window.open('mailto:contato@eumarko.com', '_blank')}
                 >
-                  <MessageCircle className="w-5 h-5 mr-2" />
+                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   {getTranslation('contact.stillNeedHelp.contactSupport', 'Contatar Suporte')}
                 </Button>
               </div>
