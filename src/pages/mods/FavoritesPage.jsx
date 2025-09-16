@@ -179,7 +179,7 @@ const FavoritesPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pt-32">
+      <div className="min-h-screen pt-32">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="space-y-6">
@@ -204,7 +204,7 @@ const FavoritesPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background pt-32">
+      <div className="min-h-screen pt-32">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <Card className="bg-card/50 backdrop-blur-sm border-border/50">
@@ -230,7 +230,7 @@ const FavoritesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-32">
+    <div className="min-h-screen pt-32">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
