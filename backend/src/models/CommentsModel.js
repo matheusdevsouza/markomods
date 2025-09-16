@@ -200,7 +200,7 @@ export default class CommentsModel {
         LEFT JOIN mods m ON c.mod_id = m.id
         WHERE c.is_approved = FALSE AND c.rejection_reason IS NULL
         ORDER BY c.created_at ASC
-        LIMIT ? OFFSET ?
+        LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
       
       const result = await executeQuery(sql, [limit, offset]);
@@ -230,7 +230,7 @@ export default class CommentsModel {
         LEFT JOIN users ru ON c.rejected_by = ru.id
         WHERE c.is_approved = FALSE AND c.rejection_reason IS NOT NULL
         ORDER BY c.rejected_at DESC
-        LIMIT ? OFFSET ?
+        LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
       
       const result = await executeQuery(sql, [limit, offset]);
@@ -343,7 +343,7 @@ export default class CommentsModel {
       JOIN users u ON u.id = c.user_id
       WHERE c.mod_id = ?
       ORDER BY c.created_at DESC
-      LIMIT ?
+      LIMIT ${Number(limit)}
     `;
     return executeQuery(sql, [modId, parseInt(limit)]);
   }
@@ -355,7 +355,7 @@ export default class CommentsModel {
       FROM comments c
       WHERE c.user_id = ?
       ORDER BY c.created_at DESC
-      LIMIT ?
+      LIMIT ${Number(limit)}
     `;
     return executeQuery(sql, [userId, parseInt(limit)]);
   }
@@ -387,7 +387,7 @@ export default class CommentsModel {
       FROM user_timeouts 
       WHERE user_id = ? AND timeout_until > NOW()
       ORDER BY timeout_until DESC 
-      LIMIT 1
+      LIMIT ${Number(limit)}1
     `;
     const rows = await executeQuery(sql, [userId]);
     return rows.length > 0 ? rows[0] : null;
@@ -565,7 +565,7 @@ export default class CommentsModel {
         JOIN users u ON u.id = c.user_id
         WHERE c.mod_id = ?
         ORDER BY c.created_at DESC
-        LIMIT ?
+        LIMIT ${Number(limit)}
       `;
       
       const comments = await executeQuery(sql, [modId, parseInt(limit)]);
@@ -720,7 +720,7 @@ export default class CommentsModel {
         JOIN mods m ON c.mod_id = m.id
         WHERE c.is_approved = TRUE
         ORDER BY c.created_at DESC
-        LIMIT ? OFFSET ?
+        LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
       
       const comments = await executeQuery(sql, [parseInt(limit), parseInt(offset)]);
@@ -759,7 +759,7 @@ export default class CommentsModel {
         LEFT JOIN mods m ON c.mod_id = m.id
         ${whereClause}
         ORDER BY c.created_at DESC
-        LIMIT ? OFFSET ?
+        LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
       
       params.push(parseInt(limit), parseInt(offset));

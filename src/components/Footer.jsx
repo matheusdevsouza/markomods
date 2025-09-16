@@ -43,15 +43,15 @@ const Footer = React.memo(() => {
               {t('footer.brandDescription')}
             </p>
             <div className="flex space-x-3">
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-red-500/20 group transition-all duration-300">
+              <a href="https://www.youtube.com/@eumarko" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center h-8 w-8 p-0 hover:bg-red-500/20 group transition-all duration-300 rounded-md">
                 <i className="fab fa-youtube text-lg text-muted-foreground group-hover:text-red-500 group-hover:scale-110 transition-all duration-300"></i>
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-pink-500/20 group transition-all duration-300">
+              </a>
+              <a href="https://www.tiktok.com/@eumarko_" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center h-8 w-8 p-0 hover:bg-pink-500/20 group transition-all duration-300 rounded-md">
                 <i className="fab fa-tiktok text-lg text-muted-foreground group-hover:text-pink-500 group-hover:scale-110 transition-all duration-300"></i>
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-500/20 group transition-all duration-300">
+              </a>
+              <a href="https://www.instagram.com/eumarko.ofc" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center h-8 w-8 p-0 hover:bg-purple-500/20 group transition-all duration-300 rounded-md">
                 <i className="fab fa-instagram text-lg text-muted-foreground group-hover:text-purple-500 group-hover:scale-110 transition-all duration-300"></i>
-              </Button>
+              </a>
             </div>
           </div>
 
