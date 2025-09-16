@@ -762,7 +762,7 @@ export default class CommentsModel {
         LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
       
-      params.push(parseInt(limit), parseInt(offset));
+      // Parâmetros LIMIT e OFFSET já foram aplicados na query
       const comments = await executeQuery(sql, params);
       return comments;
     } catch (error) {
