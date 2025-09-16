@@ -515,7 +515,7 @@ const AdminModsPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="space-y-6 p-6"
+      className="space-y-4 sm:space-y-6 p-4 sm:p-6"
     >
       {/* Feedback Visual */}
       {feedback.show && (
@@ -544,46 +544,47 @@ const AdminModsPage = () => {
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Gerenciar Conteúdo</h1>
-          <p className="text-muted-foreground">Gerencie mods para Java e addons para Bedrock</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Gerenciar Conteúdo</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Gerencie mods para Java e addons para Bedrock</p>
         </div>
-                  <Button onClick={() => setShowCreateModal(true)} className="bg-primary hover:bg-primary/90">
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Mod/Addon
-          </Button>
+        <Button onClick={() => setShowCreateModal(true)} className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
+          <Plus className="h-4 w-4 mr-2" />
+          <span className="hidden sm:inline">Novo Mod/Addon</span>
+          <span className="sm:hidden">Novo</span>
+        </Button>
       </div>
 
       {/* Filtros */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center text-lg">
-            <Filter className="h-5 w-5 mr-2" />
+          <CardTitle className="flex items-center text-base sm:text-lg">
+            <Filter className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
             Filtros
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Buscar</label>
+              <label className="block text-xs sm:text-sm font-medium mb-2">Buscar</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Nome ou descrição..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 text-sm sm:text-base"
                 />
               </div>
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Status</label>
+              <label className="block text-xs sm:text-sm font-medium mb-2">Status</label>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="w-full p-2 border border-border rounded-md bg-background text-foreground"
+                className="w-full p-2 border border-border rounded-md bg-background text-foreground text-sm sm:text-base"
               >
                 <option value="all">Todos</option>
                 <option value="published">Publicados</option>
@@ -592,11 +593,11 @@ const AdminModsPage = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Versão Minecraft</label>
+              <label className="block text-xs sm:text-sm font-medium mb-2">Versão Minecraft</label>
               <select
                 value={selectedMinecraftVersion}
                 onChange={(e) => setSelectedMinecraftVersion(e.target.value)}
-                className="w-full p-2 border border-border rounded-md bg-background text-foreground"
+                className="w-full p-2 border border-border rounded-md bg-background text-foreground text-sm sm:text-base"
               >
                 <option value="all">Todas</option>
                 {getMinecraftVersions().map(version => (
@@ -605,7 +606,7 @@ const AdminModsPage = () => {
               </select>
             </div>
             
-            <div className="flex items-end">
+            <div className="flex items-end sm:col-span-2 lg:col-span-1">
               <Button 
                 variant="outline" 
                 onClick={fetchMods}
@@ -621,47 +622,47 @@ const AdminModsPage = () => {
       {/* Lista de Mods */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
+          <CardTitle className="flex items-center justify-between text-base sm:text-lg">
             <span>Mods ({filteredMods.length})</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           {filteredMods.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              Nenhum mod encontrado
+              <p className="text-sm sm:text-base">Nenhum mod encontrado</p>
             </div>
           ) : (
             <div className="space-y-4">
               {filteredMods.map((mod) => (
-                <div key={mod.id} className="border border-border/50 rounded-xl p-6 hover:shadow-lg hover:border-primary/30 transition-all duration-200 group bg-card">
-                  <div className="flex items-start justify-between">
+                <div key={mod.id} className="border border-border/50 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:border-primary/30 transition-all duration-200 group bg-card">
+                  <div className="flex flex-col space-y-4">
                     <div className="flex-1">
                       {/* Header do Card */}
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-3 sm:space-y-0">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                          <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
                             {getSafeValue(mod.title || mod.name, 'Sem título')}
                           </h3>
-                          <div className="flex items-center space-x-2 mt-2">
-                        {getStatusBadge(mod)}
-                        {mod.is_featured && (
-                              <Badge variant="secondary" className="bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border-yellow-300 shadow-sm">
+                          <div className="flex flex-wrap items-center gap-2 mt-2">
+                            {getStatusBadge(mod)}
+                            {mod.is_featured && (
+                              <Badge variant="secondary" className="bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border-yellow-300 shadow-sm text-xs">
                                 <Star className="h-3 w-3 mr-1 fill-yellow-600" />
-                            Destaque
-                          </Badge>
-                        )}
+                                Destaque
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       </div>
                       
                       {/* Descrição */}
-                      <p className="text-muted-foreground mb-4 leading-relaxed">
+                      <p className="text-sm sm:text-base text-muted-foreground mb-4 leading-relaxed">
                         {getSafeValue(mod.short_description, 'Sem descrição')}
                       </p>
                       
                       {/* Tags */}
                       {getSafeTags(mod.tags).length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
                           {getSafeTags(mod.tags).map((tag, index) => (
                             <Badge key={index} variant="outline" className="text-xs">
                               {tag}
@@ -671,72 +672,72 @@ const AdminModsPage = () => {
                       )}
                       
                       {/* Informações Técnicas e Estatísticas */}
-                      <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
                         {/* Coluna 1: Minecraft + Versão */}
-                        <div className="flex flex-col space-y-3">
-                          <div className="flex items-center space-x-2 text-sm">
-                            <div className="p-2 bg-primary/10 rounded-lg">
-                              <Globe className="h-4 w-4 text-primary" />
-                        </div>
+                        <div className="flex flex-col space-y-2 sm:space-y-3">
+                          <div className="flex items-center space-x-2 text-xs sm:text-sm">
+                            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
+                              <Globe className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+                            </div>
                             <div>
                               <p className="text-xs text-muted-foreground">Minecraft</p>
-                              <p className="font-medium">{getSafeValue(mod.minecraft_version, 'N/A')}</p>
-                        </div>
-                        </div>
+                              <p className="font-medium text-sm sm:text-base">{getSafeValue(mod.minecraft_version, 'N/A')}</p>
+                            </div>
+                          </div>
                           
-                          <div className="flex items-center space-x-2 text-sm">
-                            <div className="p-2 bg-blue-500/10 rounded-lg">
-                              <Tag className="h-4 w-4 text-blue-500" />
-                        </div>
+                          <div className="flex items-center space-x-2 text-xs sm:text-sm">
+                            <div className="p-1.5 sm:p-2 bg-blue-500/10 rounded-lg">
+                              <Tag className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
+                            </div>
                             <div>
                               <p className="text-xs text-muted-foreground">Versão</p>
-                              <p className="font-medium">v{getSafeValue(mod.version, 'N/A')}</p>
-                        </div>
-                        </div>
+                              <p className="font-medium text-sm sm:text-base">v{getSafeValue(mod.version, 'N/A')}</p>
+                            </div>
+                          </div>
                         </div>
                         
                         {/* Coluna 2: Downloads + Visualizações */}
-                        <div className="flex flex-col space-y-3">
-                          <div className="flex items-center space-x-2 text-sm">
-                            <div className="p-2 bg-blue-500/10 rounded-lg">
-                              <Download className="h-4 w-4 text-blue-500" />
+                        <div className="flex flex-col space-y-2 sm:space-y-3">
+                          <div className="flex items-center space-x-2 text-xs sm:text-sm">
+                            <div className="p-1.5 sm:p-2 bg-blue-500/10 rounded-lg">
+                              <Download className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
                             </div>
                             <div>
                               <p className="text-xs text-muted-foreground">Downloads</p>
-                              <p className="font-semibold text-foreground">{getSafeValue(mod.download_count, 0).toLocaleString()}</p>
-                      </div>
-                    </div>
+                              <p className="font-semibold text-sm sm:text-base text-foreground">{getSafeValue(mod.download_count, 0).toLocaleString()}</p>
+                            </div>
+                          </div>
                     
-                          <div className="flex items-center space-x-2 text-sm">
-                            <div className="p-2 bg-green-500/10 rounded-lg">
-                              <Eye className="h-4 w-4 text-green-500" />
+                          <div className="flex items-center space-x-2 text-xs sm:text-sm">
+                            <div className="p-1.5 sm:p-2 bg-green-500/10 rounded-lg">
+                              <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
                             </div>
                             <div>
                               <p className="text-xs text-muted-foreground">Visualizações</p>
-                              <p className="font-semibold text-foreground">{getSafeValue(mod.view_count, 0).toLocaleString()}</p>
+                              <p className="font-semibold text-sm sm:text-base text-foreground">{getSafeValue(mod.view_count, 0).toLocaleString()}</p>
                             </div>
                           </div>
                         </div>
                         
                         {/* Coluna 3: Autor + Criado */}
-                        <div className="flex flex-col space-y-3">
-                          <div className="flex items-center space-x-2 text-sm">
-                            <div className="p-2 bg-green-500/10 rounded-lg">
-                              <User className="h-4 w-4 text-green-500" />
+                        <div className="flex flex-col space-y-2 sm:space-y-3 sm:col-span-2 lg:col-span-1">
+                          <div className="flex items-center space-x-2 text-xs sm:text-sm">
+                            <div className="p-1.5 sm:p-2 bg-green-500/10 rounded-lg">
+                              <User className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
                             </div>
-                            <div>
+                            <div className="min-w-0 flex-1">
                               <p className="text-xs text-muted-foreground">{t('modDetail.author')}</p>
-                              <p className="font-medium truncate">{getSafeValue(mod.author_display_name || mod.author_name, 'Usuário desconhecido')}</p>
+                              <p className="font-medium text-sm sm:text-base truncate">{getSafeValue(mod.author_display_name || mod.author_name, 'Usuário desconhecido')}</p>
                             </div>
                           </div>
                           
-                          <div className="flex items-center space-x-2 text-sm">
-                            <div className="p-2 bg-purple-500/10 rounded-lg">
-                              <Calendar className="h-4 w-4 text-purple-500" />
+                          <div className="flex items-center space-x-2 text-xs sm:text-sm">
+                            <div className="p-1.5 sm:p-2 bg-purple-500/10 rounded-lg">
+                              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-purple-500" />
                             </div>
                             <div>
                               <p className="text-xs text-muted-foreground">Criado</p>
-                              <p className="font-medium">{mod.created_at ? new Date(mod.created_at).toLocaleDateString('pt-BR') : 'N/A'}</p>
+                              <p className="font-medium text-sm sm:text-base">{mod.created_at ? new Date(mod.created_at).toLocaleDateString('pt-BR') : 'N/A'}</p>
                             </div>
                           </div>
                         </div>
@@ -744,7 +745,7 @@ const AdminModsPage = () => {
                         
                         {/* Links de Download */}
                         <div className="mt-4 pt-4 border-t border-border/30">
-                          <div className="flex items-center space-x-4">
+                          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                             {mod.download_url_pc && (
                               <div className="flex items-center space-x-2 text-xs">
                                 <div className="p-1.5 bg-blue-500/10 rounded">
@@ -771,14 +772,14 @@ const AdminModsPage = () => {
                     </div>
                     
                     {/* Ações */}
-                    <div className="flex flex-row items-center space-x-2 ml-6">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-2">
                       {/* Botão Publicar/Despublicar */}
                       <Button
                         onClick={() => handleToggleStatus(mod.id, 'is_published')}
                         disabled={loadingActions[`${mod.id}-is_published`]}
                         size="sm"
                         className={`
-                          w-10 h-10 p-0 rounded-xl border-2 transition-all duration-300 ease-out
+                          w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ease-out
                           ${mod.is_published 
                             ? 'bg-green-500/20 border-green-500 text-green-600 hover:bg-green-500/30 hover:scale-105 hover:shadow-lg hover:shadow-green-500/25' 
                             : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-600/50 hover:border-gray-500 hover:text-gray-300 hover:scale-105'
@@ -788,12 +789,12 @@ const AdminModsPage = () => {
                         title={mod.is_published ? 'Despublicar - O mod ficará visível apenas para administradores' : 'Publicar - O mod ficará visível para todos os usuários'}
                       >
                         {loadingActions[`${mod.id}-is_published`] ? (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-500"></div>
+                          <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-green-500"></div>
                         ) : (
                           <>
                             {mod.is_published 
-                              ? <EyeOff className="h-5 w-5 text-green-500" /> 
-                              : <Eye className="h-5 w-5 text-gray-400" />
+                              ? <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" /> 
+                              : <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                             }
                           </>
                         )}
@@ -805,7 +806,7 @@ const AdminModsPage = () => {
                         disabled={loadingActions[`${mod.id}-is_featured`]}
                         size="sm"
                         className={`
-                          w-10 h-10 p-0 rounded-xl border-2 transition-all duration-300 ease-out
+                          w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ease-out
                           ${mod.is_featured 
                             ? 'bg-yellow-500/20 border-yellow-500 text-yellow-600 hover:bg-yellow-500/30 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25' 
                             : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-600/50 hover:border-gray-500 hover:text-gray-300 hover:scale-105'
@@ -815,12 +816,12 @@ const AdminModsPage = () => {
                         title={mod.is_featured ? 'Remover destaque - O mod não aparecerá mais na seção de destaque' : 'Adicionar destaque - O mod aparecerá na seção de destaque da página inicial'}
                       >
                         {loadingActions[`${mod.id}-is_featured`] ? (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-500"></div>
+                          <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-yellow-500"></div>
                         ) : (
                           <>
                             {mod.is_featured 
-                              ? <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" /> 
-                              : <Star className="h-5 w-5 text-gray-400" />
+                              ? <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 fill-yellow-500" /> 
+                              : <Star className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                             }
                           </>
                         )}
@@ -831,13 +832,13 @@ const AdminModsPage = () => {
                         onClick={() => openEditModal(mod)}
                         size="sm"
                         className="
-                          w-10 h-10 p-0 rounded-xl border-2 border-blue-500/50 bg-blue-500/10 
+                          w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 border-blue-500/50 bg-blue-500/10 
                           text-blue-500 hover:bg-blue-500/20 hover:border-blue-500 hover:scale-105 
                           hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 ease-out
                         "
                         title="Editar mod"
                       >
-                        <Edit className="h-5 w-5" />
+                        <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
                       </Button>
                       
                       {/* Botão Deletar */}
@@ -845,13 +846,13 @@ const AdminModsPage = () => {
                         onClick={() => openDeleteModal(mod)}
                         size="sm"
                         className="
-                          w-10 h-10 p-0 rounded-xl border-2 border-red-500/50 bg-red-500/10 
+                          w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 border-red-500/50 bg-red-500/10 
                           text-red-500 hover:bg-red-500/20 hover:border-red-500 hover:scale-105 
                           hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 ease-out
                         "
                         title="Deletar mod permanentemente"
                       >
-                        <Trash2 className="h-5 w-5" />
+                        <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                       </Button>
                     </div>
                   </div>
@@ -864,19 +865,19 @@ const AdminModsPage = () => {
 
       {/* Modal de Criação/Edição */}
       {(showCreateModal || editingMod) && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-background border border-border rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden"
+            className="bg-background border border-border rounded-xl shadow-2xl w-full max-w-5xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden"
           >
             {/* Header do Modal */}
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border p-6">
+            <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground">
+                  <h3 className="text-lg sm:text-2xl font-bold text-foreground">
               {editingMod ? 'Editar Conteúdo' : 'Criar Novo Mod/Addon'}
             </h3>
                   <p className="text-muted-foreground mt-1">

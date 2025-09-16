@@ -188,57 +188,65 @@ const FAQPage = () => {
       animate={{ opacity: 1, y: 0 }}
       className="min-h-screen"
     >
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Cabeçalho */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mb-6"
+            className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-full mb-4 sm:mb-6"
           >
-            <HelpCircle className="w-10 h-10 text-primary" />
+            <HelpCircle className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
           </motion.div>
-          <h1 className="text-4xl font-minecraft text-primary mb-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-3 sm:mb-4">
             {getTranslation('faq.title', 'Perguntas Frequentes')}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             {getTranslation('faq.subtitle', 'Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko! Mods')}
           </p>
         </div>
 
         {/* Barra de pesquisa */}
-        <div className="max-w-2xl mx-auto mb-8">
+        <div className="max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
             <Input
               type="text"
               placeholder={getTranslation('faq.searchPlaceholder', 'Pesquisar nas perguntas frequentes...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12 text-lg"
+              className="pl-10 h-10 sm:h-12 text-sm sm:text-base lg:text-lg"
             />
           </div>
         </div>
 
         {/* Filtros de categoria */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 mb-6 sm:mb-8 px-4">
           {categories.map((category) => (
             <Button
               key={category.id}
               variant={selectedCategory === category.id ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedCategory(category.id)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2"
             >
-              <category.icon className="w-4 h-4" />
-              {category.name}
+              <category.icon className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">{category.name}</span>
+              <span className="sm:hidden">
+                {category.name === 'Todas' ? 'Todas' :
+                 category.name === 'Geral' ? 'Geral' :
+                 category.name === 'Conta' ? 'Conta' :
+                 category.name === 'Mods' ? 'Mods' :
+                 category.name === 'Técnico' ? 'Téc.' :
+                 category.name === 'Comunidade' ? 'Com.' : category.name}
+              </span>
             </Button>
           ))}
         </div>
 
         {/* FAQ Items */}
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4 px-4">
           {filteredFaqItems.map((item) => (
             <motion.div
               key={item.id}
@@ -248,24 +256,28 @@ const FAQPage = () => {
             >
               <Card className="overflow-hidden">
                 <div
-                  className="p-6 cursor-pointer hover:bg-muted/50 transition-colors"
+                  className="p-4 sm:p-6 cursor-pointer hover:bg-muted/50 transition-colors"
                   onClick={() => handleFaqToggle(item.id)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <item.icon className="w-5 h-5 text-primary" />
-                        <h3 className="text-lg font-semibold">{item.title}</h3>
-                        <span className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full">
+                  <div className="flex items-start sm:items-center justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
+                          <h3 className="text-sm sm:text-base lg:text-lg font-semibold leading-tight">{item.title}</h3>
+                        </div>
+                        <span className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full w-fit">
                           {categories.find(cat => cat.id === item.category)?.name}
                         </span>
                       </div>
                     </div>
-                    {expandedFaq === item.id ? (
-                      <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                    ) : (
-                      <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                    )}
+                    <div className="flex-shrink-0">
+                      {expandedFaq === item.id ? (
+                        <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                      )}
+                    </div>
                   </div>
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
@@ -279,8 +291,8 @@ const FAQPage = () => {
                     }}
                     className="overflow-hidden"
                   >
-                    <div className="mt-4 pt-4 border-t">
-                      <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t">
+                      <p className="text-xs sm:text-sm lg:text-base text-muted-foreground leading-relaxed whitespace-pre-line">
                         {item.content}
                       </p>
                     </div>
@@ -296,29 +308,30 @@ const FAQPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-16 w-full"
+          className="mt-12 sm:mt-16 w-full px-4"
         >
           <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20 w-full">
-            <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-bold mb-4">{getTranslation('faq.stillNeedHelp.title', 'Não encontrou sua resposta?')}</h3>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            <CardContent className="p-6 sm:p-8 text-center">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">{getTranslation('faq.stillNeedHelp.title', 'Não encontrou sua resposta?')}</h3>
+              <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 max-w-2xl mx-auto px-4">
                 {getTranslation('faq.stillNeedHelp.description', 'Nossa equipe de suporte está aqui para ajudar. Entre em contato conosco através dos canais abaixo.')}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Button 
                   size="lg" 
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-primary hover:bg-primary/90 text-sm sm:text-base w-full sm:w-auto"
                   onClick={() => window.open('mailto:contato@eumarko.com', '_blank')}
                 >
-                  <Mail className="w-5 h-5 mr-2" />
+                  <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   {getTranslation('faq.stillNeedHelp.email', 'Enviar Email')}
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline"
+                  className="text-sm sm:text-base w-full sm:w-auto"
                   onClick={() => window.open('https://eumarko.com/discord', '_blank')}
                 >
-                  <MessageCircle className="w-5 h-5 mr-2" />
+                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   {getTranslation('faq.stillNeedHelp.discord', 'Discord')}
                 </Button>
               </div>

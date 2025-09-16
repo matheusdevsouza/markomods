@@ -182,37 +182,37 @@ const AdminAdsPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6 p-4 sm:p-6"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center">
-            <Settings className="h-8 w-8 mr-3 text-primary" />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center">
+            <Settings className="h-6 w-6 sm:h-8 sm:w-8 mr-2 sm:mr-3 text-primary" />
             Gerenciar Anúncios
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-sm sm:text-base text-muted-foreground mt-2">
             Configure anúncios do Google AdSense e anúncios personalizados
           </p>
         </div>
         
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:space-x-3 sm:space-y-0">
           <Button
             variant="outline"
             onClick={() => setPreviewMode(!previewMode)}
-            className="flex items-center space-x-2"
+            className="flex items-center justify-center space-x-2 w-full sm:w-auto"
           >
             {previewMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            <span>{previewMode ? 'Sair do Preview' : 'Preview'}</span>
+            <span className="text-sm sm:text-base">{previewMode ? 'Sair do Preview' : 'Preview'}</span>
           </Button>
           
           <Button
             onClick={saveAdsConfig}
             disabled={isLoading}
-            className="flex items-center space-x-2"
+            className="flex items-center justify-center space-x-2 w-full sm:w-auto"
           >
             {isLoading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            <span>Salvar Configurações</span>
+            <span className="text-sm sm:text-base">Salvar Configurações</span>
           </Button>
         </div>
       </div>
@@ -220,18 +220,18 @@ const AdminAdsPage = () => {
       {/* Configurações Globais */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <Code className="h-5 w-5 mr-2 text-primary" />
+          <CardTitle className="flex items-center text-base sm:text-lg">
+            <Code className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-primary" />
             Configurações Globais
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6">
           {/* Google AdSense */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold">Google AdSense</h3>
-                <p className="text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+              <div className="flex-1">
+                <h3 className="text-base sm:text-lg font-semibold">Google AdSense</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Meta tags do Google AdSense para todo o site
                 </p>
               </div>
@@ -244,25 +244,25 @@ const AdminAdsPage = () => {
             {adsConfig.googleAdsenseEnabled && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-xs sm:text-sm font-medium mb-2">
                     ID da Conta Google AdSense
                   </label>
                   <Input
                     value={adsConfig.googleAdsenseAccount}
                     onChange={(e) => updateConfig('googleAdsenseAccount', e.target.value)}
                     placeholder="ca-pub-XXXXXXXXXX"
-                    className="font-mono"
+                    className="font-mono text-sm sm:text-base"
                   />
                 </div>
                 
-                <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4">
                   <div className="flex items-start space-x-2">
-                    <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5" />
-                    <div className="text-sm">
+                    <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                    <div className="text-xs sm:text-sm min-w-0 flex-1">
                       <p className="font-medium text-blue-800 dark:text-blue-200">
                         Meta tag que será adicionada:
                       </p>
-                      <code className="block mt-2 text-xs bg-white dark:bg-gray-800 p-2 rounded border">
+                      <code className="block mt-2 text-xs bg-white dark:bg-gray-800 p-2 rounded border break-all">
                         {`<meta name="google-adsense-account" content="${adsConfig.googleAdsenseAccount}">`}
                       </code>
                     </div>
@@ -274,10 +274,10 @@ const AdminAdsPage = () => {
 
           {/* Anúncios Personalizados */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold">Anúncios Personalizados</h3>
-                <p className="text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+              <div className="flex-1">
+                <h3 className="text-base sm:text-lg font-semibold">Anúncios Personalizados</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Permite adicionar códigos de anúncio personalizados
                 </p>
               </div>
@@ -291,23 +291,23 @@ const AdminAdsPage = () => {
       </Card>
 
       {/* Anúncios por Página */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         {/* Página de Detalhes do Mod */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
+            <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
               <div className="flex items-center">
-                <Monitor className="h-5 w-5 mr-2 text-primary" />
-                Página de Detalhes do Mod
+                <Monitor className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-primary" />
+                <span className="text-base sm:text-lg">Página de Detalhes do Mod</span>
               </div>
-              <Badge className={getAdStatus(adsConfig.modDetailPage).color}>
+              <Badge className={`${getAdStatus(adsConfig.modDetailPage).color} text-xs`}>
                 {getAdStatus(adsConfig.modDetailPage).text}
               </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Habilitar anúncios</span>
+              <span className="text-xs sm:text-sm font-medium">Habilitar anúncios</span>
               <Switch
                 checked={adsConfig.modDetailPage.enabled}
                 onCheckedChange={(checked) => updateConfig('modDetailPage.enabled', checked)}
@@ -317,7 +317,7 @@ const AdminAdsPage = () => {
             {adsConfig.modDetailPage.enabled && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Banner Superior</span>
+                  <span className="text-xs sm:text-sm font-medium">Banner Superior</span>
                   <Switch
                     checked={adsConfig.modDetailPage.topBanner.enabled}
                     onCheckedChange={(checked) => updateConfig('modDetailPage.topBanner.enabled', checked)}
@@ -327,15 +327,15 @@ const AdminAdsPage = () => {
                 {adsConfig.modDetailPage.topBanner.enabled && (
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label className="block text-xs sm:text-sm font-medium mb-2">
                         Código do Anúncio
                       </label>
                       <Textarea
                         value={adsConfig.modDetailPage.topBanner.code}
                         onChange={(e) => updateConfig('modDetailPage.topBanner.code', e.target.value)}
                         placeholder="Cole aqui o código do anúncio..."
-                        className="font-mono text-sm"
-                        rows={4}
+                        className="font-mono text-xs sm:text-sm"
+                        rows={3}
                       />
                     </div>
                     
@@ -348,7 +348,7 @@ const AdminAdsPage = () => {
                         onChange={() => updateConfig('modDetailPage.topBanner.type', 'google-adsense')}
                         className="text-primary"
                       />
-                      <label htmlFor="mod-detail-google" className="text-sm">
+                      <label htmlFor="mod-detail-google" className="text-xs sm:text-sm">
                         Google AdSense
                       </label>
                     </div>
@@ -362,7 +362,7 @@ const AdminAdsPage = () => {
                         onChange={() => updateConfig('modDetailPage.topBanner.type', 'custom')}
                         className="text-primary"
                       />
-                      <label htmlFor="mod-detail-custom" className="text-sm">
+                      <label htmlFor="mod-detail-custom" className="text-xs sm:text-sm">
                         Personalizado
                       </label>
                     </div>
@@ -376,19 +376,19 @@ const AdminAdsPage = () => {
         {/* Página de Download do Mod */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
+            <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
               <div className="flex items-center">
-                <Monitor className="h-5 w-5 mr-2 text-primary" />
-                Página de Download do Mod
+                <Monitor className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-primary" />
+                <span className="text-base sm:text-lg">Página de Download do Mod</span>
               </div>
-              <Badge className={getAdStatus(adsConfig.modDownloadPage).color}>
+              <Badge className={`${getAdStatus(adsConfig.modDownloadPage).color} text-xs`}>
                 {getAdStatus(adsConfig.modDownloadPage).text}
               </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Habilitar anúncios</span>
+              <span className="text-xs sm:text-sm font-medium">Habilitar anúncios</span>
               <Switch
                 checked={adsConfig.modDownloadPage.enabled}
                 onCheckedChange={(checked) => updateConfig('modDownloadPage.enabled', checked)}
@@ -398,7 +398,7 @@ const AdminAdsPage = () => {
             {adsConfig.modDownloadPage.enabled && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Banner Superior</span>
+                  <span className="text-xs sm:text-sm font-medium">Banner Superior</span>
                   <Switch
                     checked={adsConfig.modDownloadPage.topBanner.enabled}
                     onCheckedChange={(checked) => updateConfig('modDownloadPage.topBanner.enabled', checked)}
@@ -408,15 +408,15 @@ const AdminAdsPage = () => {
                 {adsConfig.modDownloadPage.topBanner.enabled && (
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium mb-2">
+                      <label className="block text-xs sm:text-sm font-medium mb-2">
                         Código do Anúncio
                       </label>
                       <Textarea
                         value={adsConfig.modDownloadPage.topBanner.code}
                         onChange={(e) => updateConfig('modDownloadPage.topBanner.code', e.target.value)}
                         placeholder="Cole aqui o código do anúncio..."
-                        className="font-mono text-sm"
-                        rows={4}
+                        className="font-mono text-xs sm:text-sm"
+                        rows={3}
                       />
                     </div>
                     
@@ -429,7 +429,7 @@ const AdminAdsPage = () => {
                         onChange={() => updateConfig('modDownloadPage.topBanner.type', 'google-adsense')}
                         className="text-primary"
                       />
-                      <label htmlFor="mod-download-google" className="text-sm">
+                      <label htmlFor="mod-download-google" className="text-xs sm:text-sm">
                         Google AdSense
                       </label>
                     </div>
@@ -443,7 +443,7 @@ const AdminAdsPage = () => {
                         onChange={() => updateConfig('modDownloadPage.topBanner.type', 'custom')}
                         className="text-primary"
                       />
-                      <label htmlFor="mod-download-custom" className="text-sm">
+                      <label htmlFor="mod-download-custom" className="text-xs sm:text-sm">
                         Personalizado
                       </label>
                     </div>
