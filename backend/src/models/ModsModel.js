@@ -543,7 +543,7 @@ export default class ModsModel {
 
       // Paginação
       if (filters.limit) {
-        sql += ' LIMIT ?';
+        sql += ' LIMIT ${parseInt(filters.limit)}';
         params.push(filters.limit);
         
         if (filters.offset) {
@@ -780,10 +780,9 @@ export default class ModsModel {
         ${whereClause}
         GROUP BY m.id
         ORDER BY MAX(d.created_at) DESC
-        LIMIT ? OFFSET ?
+        LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
       
-      params.push(Number(limit), Number(offset));
       const rows = await executeQuery(sql, params);
       return rows.map(r => ({
         id: r.id,
