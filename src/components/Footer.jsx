@@ -1,13 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Heart, 
-  Gamepad2, 
-  Download, 
-  Users, 
-  Shield, 
-  Mail, 
+import {
+  Heart,
+  Gamepad2,
+  Download,
+  Shield,
+  Mail,
   ArrowUp,
   ExternalLink
 } from "lucide-react";
@@ -18,13 +17,13 @@ import { useTranslation } from "@/hooks/useTranslation";
 const Footer = React.memo(() => {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
-  
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   return (
-    <motion.footer 
+    <motion.footer
       className="w-full min-w-full bg-gradient-to-br from-background via-background to-muted/20 border-t border-border/50"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
@@ -34,7 +33,7 @@ const Footer = React.memo(() => {
       {/* Conteúdo Principal */}
       <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8 lg:gap-12 xl:gap-16 2xl:gap-20 py-12 justify-items-start">
-          
+
           {/* Seção 1: Sobre */}
           <div className="space-y-4 max-w-xs">
             <div className="flex items-center space-x-2">
@@ -87,21 +86,33 @@ const Footer = React.memo(() => {
             </ul>
           </div>
 
-          {/* Seção 3: Comunidade */}
+          {/* Seção 3: Redes Sociais */}
           <div className="space-y-4 max-w-xs">
-            <h3 className="text-lg font-semibold text-foreground">{t('footer.community')}</h3>
+            <h3 className="text-lg font-semibold text-foreground">Redes Sociais</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/guidelines" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
-                  <Shield className="h-3 w-3 mr-2" />
-                  {t('footer.guidelines')}
-                </Link>
+                <a href="https://www.youtube.com/@eumarko" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-red-500 transition-colors duration-200 flex items-center">
+                  <i className="fab fa-youtube h-3 w-3 mr-2"></i>
+                  YouTube
+                </a>
               </li>
               <li>
-                <Link to="/partners" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
-                  <Users className="h-3 w-3 mr-2" />
-                  {t('footer.partners')}
-                </Link>
+                <a href="https://www.tiktok.com/@eumarko_" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-pink-500 transition-colors duration-200 flex items-center">
+                  <i className="fab fa-tiktok h-3 w-3 mr-2"></i>
+                  TikTok
+                </a>
+              </li>
+              <li>
+                <a href="https://www.instagram.com/eumarko.ofc" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-purple-500 transition-colors duration-200 flex items-center">
+                  <i className="fab fa-instagram h-3 w-3 mr-2"></i>
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a href="https://eumarko.com/pt" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
+                  <i className="fas fa-globe h-3 w-3 mr-2"></i>
+                  Site Oficial
+                </a>
               </li>
             </ul>
           </div>
@@ -128,7 +139,7 @@ const Footer = React.memo(() => {
 
         {/* Separador */}
         <Separator className="w-full bg-border/50" />
-        
+
         {/* Seção Inferior */}
         <div className="py-6 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
           {/* Copyright */}
