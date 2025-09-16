@@ -145,7 +145,7 @@ const Footer = React.memo(() => {
         </div>
 
         {/* Layout Desktop: Grid tradicional */}
-        <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
+        <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8 lg:gap-12 xl:gap-16 2xl:gap-20 pb-12">
           
           {/* Seção 1: Sobre */}
           <div className="space-y-4 max-w-xs text-left">
