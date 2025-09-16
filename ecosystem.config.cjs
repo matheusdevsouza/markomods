@@ -6,6 +6,7 @@ module.exports = {
     {
       name: 'markomods-backend',
       script: './backend/src/server.js',
+      env_file: './backend/.env',
       cwd: '/var/www/mods.eumarko.com',
       instances: 1,
       exec_mode: 'fork',
