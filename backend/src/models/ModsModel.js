@@ -258,15 +258,17 @@ export default class ModsModel {
 
       sql += ' ORDER BY m.is_featured DESC, m.created_at DESC';
 
-      if (filters.limit) {
-        sql += ' LIMIT ?';
-        params.push(filters.limit);
+      // Corrigir problema com LIMIT e OFFSET - usar concatenação para evitar bug do MySQL 8.0.43
+      if (filters.limit && parseInt(filters.limit) > 0) {
+        sql += ` LIMIT ${parseInt(filters.limit)}`;
       }
 
-      if (filters.offset) {
-        sql += ' OFFSET ?';
-        params.push(filters.offset);
+      if (filters.offset && parseInt(filters.offset) >= 0) {
+        sql += ` OFFSET ${parseInt(filters.offset)}`;
       }
+
+      console.log('🔍 ModsModel.findPublic - SQL:', sql);
+      console.log('🔍 ModsModel.findPublic - Params:', params);
 
       const result = await executeQuery(sql, params);
       
@@ -275,8 +277,10 @@ export default class ModsModel {
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : []
       }));
 
+      console.log('🔍 ModsModel.findPublic - Result count:', mods.length);
       return mods;
     } catch (error) {
+      console.error('❌ ModsModel.findPublic - Error:', error);
       logError('Erro ao buscar mods públicos', error, { filters });
       throw error;
     }
@@ -371,7 +375,7 @@ export default class ModsModel {
       
       return true;
     } catch (error) {
-      logError('Erro ao incrementar contador', error, { modId: id, field });
+      logError('Erro ao incrementar contador', error, { modId: id });
       throw error;
     }
   }
@@ -496,7 +500,7 @@ export default class ModsModel {
       switch (sort) {
         case 'relevance':
           if (filters.search) {
-            // Se há termo de busca, priorizar relevância
+            // Se h termo de busca, priorizar relevância
             sql += ` ORDER BY 
               CASE 
                 WHEN m.title LIKE ? THEN 1
@@ -553,7 +557,7 @@ export default class ModsModel {
 
       const result = await executeQuery(sql, params);
       
-      // Buscar total de resultados para paginação
+      // Buscar total de resultados para paginacao
       let countSql = `
         SELECT COUNT(DISTINCT m.id) as total
         FROM mods m
