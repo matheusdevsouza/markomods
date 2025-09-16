@@ -251,12 +251,12 @@ const AddonsListingPage = () => {
     <>
       <BackgroundEffects />
       <motion.div 
-        className="min-h-screen bg-background fixed inset-0 overflow-y-auto"
+        className="min-h-screen md:fixed md:inset-0 overflow-y-hidden md:overflow-y-auto"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
-        <div className="flex w-full h-full pt-32">
+        <div className="flex w-full h-full pt-16 md:pt-32">
           {/* Sidebar de filtros - colada na borda esquerda */}
           <motion.div variants={itemVariants} className="w-80 flex-shrink-0 flex-col hidden lg:flex">
             <Card className="sticky top-4 ml-4 flex-1 mb-10">
