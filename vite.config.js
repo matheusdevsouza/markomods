@@ -20,6 +20,13 @@ export default defineConfig(({ mode }) => {
 					target: isProduction ? 'https://mods.eumarko.com' : 'http://localhost:3001',
 					changeOrigin: true,
 					secure: isProduction,
+					rewrite: (path) => path.replace(/^\/api/, '/api')
+				},
+				'/uploads': {
+					target: isProduction ? 'https://mods.eumarko.com' : 'http://localhost:3001',
+					changeOrigin: true,
+					secure: isProduction,
+					rewrite: (path) => path.replace(/^\/uploads/, '/uploads')
 				},
 			},
 		},

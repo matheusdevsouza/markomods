@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { API_BASE_URL } from '../config/api.js';
 
 const AuthContextMods = createContext();
 
@@ -22,7 +23,6 @@ export const AuthProviderMods = ({ children }) => {
   const closeVerificationModal = () => setVerificationModalOpen(false);
 
   // Configuração da API
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
   // Verificar se há uma sessão ativa ao carregar
   useEffect(() => {
