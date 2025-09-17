@@ -120,7 +120,11 @@
     "favorite": "收藏",
     "share": "分享",
     "downloads": "下载",
-    "favorites": "收藏"
+    "favorites": "收藏",
+    "loginRequired": "请登录以收藏模组",
+    "favoriteError": "收藏模组时出错",
+    "addedToFavorites": "模组已添加到收藏",
+    "removedFromFavorites": "模组已从收藏中移除"
   },
   "modDetail": {
     "backToMods": "返回模组",

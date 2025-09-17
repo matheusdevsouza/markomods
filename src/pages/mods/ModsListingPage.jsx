@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/hooks/useTranslation';
 import ModCard from '@/components/mods/ModCard';
+import ModListItem from '@/components/mods/ModListItem';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -756,15 +757,22 @@ const ModsListingPage = () => {
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 max-w-none" 
                  : "space-y-3 sm:space-y-4"
                }>
-                {paginatedMods.map((mod) => (
-                  <ModCard 
-                    key={mod.id} 
-                    mod={mod} 
-                    variants={itemVariants}
-                    compact={viewMode === 'list'}
-                    imageSize="stretched"
-                  />
-                ))}
+                {paginatedMods.map((mod) => 
+                  viewMode === 'grid' ? (
+                    <ModCard 
+                      key={mod.id} 
+                      mod={mod} 
+                      variants={itemVariants}
+                      imageSize="stretched"
+                    />
+                  ) : (
+                    <ModListItem 
+                      key={mod.id} 
+                      mod={mod} 
+                      variants={itemVariants}
+                    />
+                  )
+                )}
               </div>
 
               {/* Paginação */}

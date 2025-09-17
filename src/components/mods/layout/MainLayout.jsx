@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useThemeMods } from '@/contexts/ThemeContextMods';
 import { useAuth } from '@/contexts/AuthContextMods';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -350,6 +350,12 @@ const Header = React.memo(() => {
 // Footer component removido - agora usando o componente Footer.jsx importado
 
 const MainLayout = () => {
+  const location = useLocation();
+  
+  // Páginas onde o footer deve ser desabilitado
+  const pagesWithoutFooter = ['/mods', '/addons'];
+  const shouldShowFooter = !pagesWithoutFooter.some(page => location.pathname.startsWith(page));
+  
   return (
     <div className="flex min-h-screen flex-col relative overflow-hidden">
       {/* Efeito de Eclipse Roxo no Background */}
@@ -422,7 +428,7 @@ const MainLayout = () => {
       <main className="flex-1 max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <Outlet />
       </main>
-      <Footer />
+      {shouldShowFooter && <Footer />}
     </div>
   );
 };

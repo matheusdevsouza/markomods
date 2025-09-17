@@ -120,7 +120,11 @@
     "favorite": "Favorito",
     "share": "Partilhar",
     "downloads": "Downloads",
-    "favorites": "Favoritos"
+    "favorites": "Favoritos",
+    "loginRequired": "Faça login para adicionar mods aos favoritos",
+    "favoriteError": "Erro ao adicionar aos favoritos",
+    "addedToFavorites": "Mod adicionado aos favoritos",
+    "removedFromFavorites": "Mod removido dos favoritos"
   },
   "modDetail": {
     "backToMods": "Voltar para Mods",
