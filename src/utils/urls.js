@@ -14,7 +14,13 @@ export const buildImageUrl = (imagePath) => {
     return imagePath;
   }
   
-  // Se é um caminho relativo, constrói a URL completa
+  // Se é um caminho relativo que começa com /uploads, retorna como está
+  // O proxy do Vite vai redirecionar /uploads para o backend
+  if (imagePath.startsWith('/uploads')) {
+    return imagePath;
+  }
+  
+  // Se é um caminho relativo que NÃO é uploads, adiciona API_BASE_URL
   if (imagePath.startsWith('/')) {
     const fullUrl = `${API_BASE_URL}${imagePath}`;
     return fullUrl;
