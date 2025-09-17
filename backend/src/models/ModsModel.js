@@ -174,7 +174,7 @@ export default class ModsModel {
 
       if (filters.featured !== undefined) {
         sql += ' AND m.is_featured = ?';
-        params.push(filters.featured ? 1 : 0);
+        params.push(parseInt(filters.featured) ? 1 : 0);
       }
 
       if (filters.minecraft_version) {
@@ -462,7 +462,7 @@ export default class ModsModel {
           m.tags LIKE ?
         )`;
         const searchTerm = `%${filters.search}%`;
-        params.push(searchTerm, searchTerm, searchTerm, searchTerm);
+        params.push(String(searchTerm), String(searchTerm), String(searchTerm), String(searchTerm));
       }
 
       // Filtro por versão do Minecraft
@@ -486,7 +486,7 @@ export default class ModsModel {
       // Filtro por destaque
       if (filters.featured !== undefined) {
         sql += ' AND m.is_featured = ?';
-        params.push(filters.featured ? 1 : 0);
+        params.push(String(parseInt(filters.featured) ? 1 : 0));
       }
 
       // Filtro por autor
@@ -499,21 +499,7 @@ export default class ModsModel {
       // Ordenação
       switch (sort) {
         case 'relevance':
-          if (filters.search) {
-            const searchTerm = `%${filters.search}%`;
-            sql += ` ORDER BY 
-              CASE 
-                WHEN m.title LIKE '${searchTerm}' THEN 1
-                WHEN m.short_description LIKE '${searchTerm}' THEN 2
-                WHEN m.description LIKE '${searchTerm}' THEN 3
-                ELSE 4
-              END,
-              m.is_featured DESC,
-              m.download_count DESC,
-              m.created_at DESC`;
-          } else {
-            sql += ' ORDER BY m.is_featured DESC, m.download_count DESC, m.created_at DESC';
-          }
+          sql += ' ORDER BY m.is_featured DESC, m.download_count DESC, m.created_at DESC';
           break;
         case 'latest':
           sql += ' ORDER BY m.created_at DESC';
@@ -540,11 +526,11 @@ export default class ModsModel {
       // Paginação
       if (filters.limit) {
         sql += ' LIMIT ?';
-        params.push(parseInt(filters.limit));
+        params.push(String(parseInt(filters.limit)));
         
-        if (filters.offset) {
+        if (filters.offset !== undefined && filters.offset !== null) {
           sql += ' OFFSET ?';
-          params.push(parseInt(filters.offset));
+          params.push(String(parseInt(filters.offset)));
         }
       }
 
@@ -592,7 +578,7 @@ export default class ModsModel {
 
       if (filters.featured !== undefined) {
         countSql += ' AND m.is_featured = ?';
-        countParams.push(filters.featured ? 1 : 0);
+        countParams.push(parseInt(filters.featured) ? 1 : 0);
       }
 
       if (filters.author) {
