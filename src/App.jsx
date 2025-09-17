@@ -91,8 +91,8 @@ function App() {
                   <Route index element={<HomePage />} />
                   <Route path="mods" element={<ModsListingPage />} />
                   <Route path="addons" element={<AddonsListingPage />} />
-                  <Route path="mods/:modId" element={<ModDetailPage />} />
-                  <Route path="mods/:modId/download" element={<DownloadPage />} />
+                  <Route path="mods/:slug" element={<ModDetailPage />} />
+                  <Route path="mods/:slug/download" element={<DownloadPage />} />
                   <Route path="search" element={<SearchResultsPage />} />
                   <Route path="terms" element={<TermsOfServicePage />} />
                   <Route path="contact" element={<ContactPage />} />

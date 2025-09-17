@@ -9,22 +9,22 @@ export const createMod = async (req, res) => {
     console.log('🔍 Dados recebidos no createMod:', req.body);
     
     const {
-      name, version, minecraft_version, mod_loader, short_description, full_description,
+      name, slug, version, minecraft_version, mod_loader, short_description, full_description,
       tags, thumbnail_url, download_url_pc, download_url_mobile, video_url, content_type_id = 1
     } = req.body;
     
     console.log('🔍 Campos extraídos:', { name, version, minecraft_version, mod_loader, short_description, full_description });
 
     // Validações básicas
-    if (!name || !version || !minecraft_version || !mod_loader || !short_description || !full_description) {
+    if (!name || !slug || !version || !minecraft_version || !mod_loader || !short_description || !full_description) {
       return res.status(400).json({
         success: false,
         message: 'Todos os campos obrigatórios devem ser preenchidos'
       });
     }
 
-    // Gerar slug único
-    const slug = await ModsModel.generateUniqueSlug(name);
+    // Verificar se o slug é único
+    const finalSlug = await ModsModel.generateUniqueSlug(slug);
 
     // Processar thumbnail
     let finalThumbnailUrl = thumbnail_url || null;
@@ -49,7 +49,7 @@ export const createMod = async (req, res) => {
 
     const modData = {
       name,
-      slug,
+      slug: finalSlug,
       version,
       minecraft_version,
       mod_loader,
@@ -681,10 +681,16 @@ export const registerDownload = async (req, res) => {
     
     const result = await ModsModel.registerDownload(modId, userId);
     
+    // Buscar o mod atualizado para retornar o contador correto
+    const updatedMod = await ModsModel.findById(modId);
+    
     res.json({
       success: true,
       message: result.message,
-      data: result
+      data: {
+        ...result,
+        download_count: updatedMod?.download_count || 0
+      }
     });
   } catch (error) {
     console.error('Erro ao registrar download:', error);
