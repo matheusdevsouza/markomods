@@ -500,20 +500,17 @@ export default class ModsModel {
       switch (sort) {
         case 'relevance':
           if (filters.search) {
+            const searchTerm = `%${filters.search}%`;
             sql += ` ORDER BY 
               CASE 
-                WHEN m.title LIKE ? THEN 1
-                WHEN m.short_description LIKE ? THEN 2
-                WHEN m.description LIKE ? THEN 3
+                WHEN m.title LIKE '${searchTerm}' THEN 1
+                WHEN m.short_description LIKE '${searchTerm}' THEN 2
+                WHEN m.description LIKE '${searchTerm}' THEN 3
                 ELSE 4
               END,
               m.is_featured DESC,
               m.download_count DESC,
               m.created_at DESC`;
-            if (filters.search) {
-              const searchTerm = `%${filters.search}%`;
-              params.push(searchTerm, searchTerm, searchTerm);
-            }
           } else {
             sql += ' ORDER BY m.is_featured DESC, m.download_count DESC, m.created_at DESC';
           }
