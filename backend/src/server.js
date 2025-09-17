@@ -45,7 +45,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Configurar trust proxy para rate limiting\napp.set('trust proxy', false);
+// Configurar trust proxy para rate limiting
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3001;
 
 // =====================================================
