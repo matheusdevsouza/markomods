@@ -58,6 +58,7 @@ const AdminModsPage = () => {
   // Estados do formulário
   const [formData, setFormData] = useState({
     name: '',
+    slug: '',
     version: '',
     minecraft_version: '',
     mod_loader: '',
@@ -73,6 +74,16 @@ const AdminModsPage = () => {
   });
 
   const [thumbnailMode, setThumbnailMode] = useState('url'); // 'url' ou 'upload'
+
+  // Função para gerar slug automaticamente baseado no nome
+  const generateSlug = (name) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim('-');
+  };
 
   // Buscar mods do banco de dados
   useEffect(() => {
@@ -162,9 +173,10 @@ const AdminModsPage = () => {
       const token = localStorage.getItem('authToken');
       
       // Validar campos obrigatórios
-      if (!formData.name || !formData.version || !formData.minecraft_version || !formData.mod_loader || !formData.short_description || !formData.full_description) {
+      if (!formData.name || !formData.slug || !formData.version || !formData.minecraft_version || !formData.mod_loader || !formData.short_description || !formData.full_description) {
         const missingFields = [];
         if (!formData.name) missingFields.push('Nome');
+        if (!formData.slug) missingFields.push('Slug');
         if (!formData.version) missingFields.push('Versão');
         if (!formData.minecraft_version) missingFields.push('Versão do Minecraft');
         if (!formData.mod_loader) missingFields.push('Loader do Mod');
@@ -185,6 +197,7 @@ const AdminModsPage = () => {
         // Modo upload: usar FormData para arquivo
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
+        formDataToSend.append('slug', formData.slug);
         formDataToSend.append('version', formData.version);
         formDataToSend.append('minecraft_version', formData.minecraft_version);
         formDataToSend.append('mod_loader', formData.mod_loader);
@@ -204,6 +217,7 @@ const AdminModsPage = () => {
         headers['Content-Type'] = 'application/json';
         requestBody = JSON.stringify({
           name: formData.name,
+          slug: formData.slug,
           version: formData.version,
           minecraft_version: formData.minecraft_version,
           mod_loader: formData.mod_loader,
@@ -257,9 +271,10 @@ const AdminModsPage = () => {
       console.log('  - short_description:', formData.short_description, '✅', !!formData.short_description);
       console.log('  - full_description:', formData.full_description, '✅', !!formData.full_description);
       
-      if (!formData.name || !formData.version || !formData.minecraft_version || !formData.mod_loader || !formData.short_description || !formData.full_description) {
+      if (!formData.name || !formData.slug || !formData.version || !formData.minecraft_version || !formData.mod_loader || !formData.short_description || !formData.full_description) {
         const missingFields = [];
         if (!formData.name) missingFields.push('Nome');
+        if (!formData.slug) missingFields.push('Slug');
         if (!formData.version) missingFields.push('Versão');
         if (!formData.minecraft_version) missingFields.push('Versão do Minecraft');
         if (!formData.mod_loader) missingFields.push('Loader do Mod');
@@ -280,6 +295,7 @@ const AdminModsPage = () => {
         // Modo upload: usar FormData para arquivo
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
+        formDataToSend.append('slug', formData.slug);
         formDataToSend.append('version', formData.version);
         formDataToSend.append('minecraft_version', formData.minecraft_version);
         formDataToSend.append('mod_loader', formData.mod_loader);
@@ -297,6 +313,7 @@ const AdminModsPage = () => {
         // Modo URL: usar JSON normal
         requestBody = {
           name: formData.name,
+          slug: formData.slug,
           version: formData.version,
           minecraft_version: formData.minecraft_version,
           mod_loader: formData.mod_loader,
@@ -445,6 +462,7 @@ const AdminModsPage = () => {
     setEditingMod(mod);
     const formDataToSet = {
       name: getSafeValue(mod.title || mod.name), // Mapear title para name
+      slug: getSafeValue(mod.slug),
       version: getSafeValue(mod.version),
       minecraft_version: getSafeValue(mod.minecraft_version),
       mod_loader: getSafeValue(mod.mod_loader),
@@ -474,6 +492,7 @@ const AdminModsPage = () => {
   const resetForm = () => {
     setFormData({
       name: '',
+      slug: '',
       version: '',
       minecraft_version: '',
       mod_loader: '',
@@ -915,11 +934,34 @@ const AdminModsPage = () => {
                 <Input
                   id="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    const newSlug = generateSlug(newName);
+                    setFormData({ 
+                      ...formData, 
+                      name: newName,
+                      slug: newSlug
+                    });
+                  }}
                   placeholder="Nome do mod ou addon"
                   required
                         className="mt-1"
                 />
+              </div>
+              
+              <div>
+                      <Label htmlFor="slug" className="text-sm font-medium">Slug (URL) *</Label>
+                <Input
+                  id="slug"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  placeholder="slug-do-mod"
+                  required
+                        className="mt-1"
+                />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        URL amigável para o mod (gerado automaticamente baseado no nome)
+                      </p>
               </div>
               
               <div>
@@ -1306,7 +1348,7 @@ const AdminModsPage = () => {
               </Button>
               <Button
                 onClick={editingMod ? handleUpdateMod : handleCreateMod}
-                  disabled={!formData.name || !formData.version || !formData.minecraft_version || !formData.short_description || !formData.full_description || isUpdating}
+                  disabled={!formData.name || !formData.slug || !formData.version || !formData.minecraft_version || !formData.short_description || !formData.full_description || isUpdating}
                   className="flex-1 h-12 text-base bg-primary hover:bg-primary/90 shadow-lg"
                 >
                   {editingMod ? (

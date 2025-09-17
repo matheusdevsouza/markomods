@@ -119,7 +119,7 @@ const ModListItem = ({ mod, variants }) => {
           <div className="flex h-full">
             {/* Thumbnail - Lado esquerdo */}
             <div className="flex-shrink-0 w-32 sm:w-40 h-24 sm:h-28 relative">
-              <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick} className="block h-full">
+              <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick} className="block h-full">
                 <img 
                   src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 
                   alt={`Thumbnail de ${mod.title || mod.name}`} 
@@ -150,7 +150,7 @@ const ModListItem = ({ mod, variants }) => {
               {/* Header com título e visualizações */}
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex-1 min-w-0">
-                  <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick}>
+                  <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick}>
                     <h3 className="text-lg font-minecraft text-primary group-hover:text-primary/80 transition-colors duration-300 leading-tight line-clamp-1 mb-1">
                       {mod.title || mod.name}
                     </h3>
@@ -206,7 +206,7 @@ const ModListItem = ({ mod, variants }) => {
                   size="sm"
                   className="minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-200 shadow-lg shadow-primary/25"
                 >
-                  <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick}>
+                  <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick}>
                     <Eye size={14} className="mr-1" />
                     <span className="hidden sm:inline">{t('mods.viewDetails')}</span>
                     <span className="sm:hidden">Ver</span>

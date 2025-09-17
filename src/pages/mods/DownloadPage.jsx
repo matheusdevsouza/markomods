@@ -19,7 +19,7 @@ import AdSpace from '../../components/ads/AdSpace';
 import GoogleAdsenseMeta from '../../components/ads/GoogleAdsenseMeta';
 
 const DownloadPage = () => {
-  const { modId } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const { currentUser, isAuthenticated } = useAuth();
   const { theme } = useThemeMods();
@@ -70,8 +70,10 @@ const DownloadPage = () => {
   }, [mod]);
 
   useEffect(() => {
-    fetchModById(modId);
-  }, [modId]);
+    if (slug) {
+      fetchModBySlug(slug);
+    }
+  }, [slug]);
 
   useEffect(() => {
     if (countdown > 0 && !downloadStarted) {
@@ -85,7 +87,7 @@ const DownloadPage = () => {
     }
   }, [countdown, downloadStarted]);
 
-  const fetchModById = async (id) => {
+  const fetchModBySlug = async (slug) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('authToken');
@@ -98,7 +100,7 @@ const DownloadPage = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch(`/api/mods/mod/${id}`, {
+      const response = await fetch(`/api/mods/public/${slug}`, {
         method: 'GET',
         headers
       });
@@ -139,7 +141,7 @@ const DownloadPage = () => {
         }
 
         try {
-          const response = await fetch(`/api/mods/${modId}/download`, {
+          const response = await fetch(`/api/mods/${mod.id}/download`, {
             method: 'POST',
             headers
           });
@@ -349,7 +351,7 @@ const DownloadPage = () => {
                        </p>
                        
                        <div className="flex justify-center gap-4">
-                         <Link to={`/mods/${modId}`}>
+                         <Link to={`/mods/${mod.slug}`}>
                            <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/10 hover:border-primary/70 hover:text-primary">
                              <ArrowLeft className="h-4 w-4 mr-2" />
                              {t('downloadPage.backToMod')}

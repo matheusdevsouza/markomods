@@ -35,7 +35,7 @@ import { Textarea } from '../../components/ui/textarea';
 import { toast } from 'sonner';
 
 const ModDetailPage = () => {
-  const { modId } = useParams();
+  const { slug } = useParams();
   const { currentUser, isAuthenticated } = useAuth();
   const { theme } = useThemeMods();
   const { t } = useTranslation();
@@ -103,27 +103,27 @@ const ModDetailPage = () => {
   const [pageLoaded, setPageLoaded] = useState(false);
 
   useEffect(() => {
-    if (modId) {
-      console.log('🔍 ModDetailPage: Buscando mod com ID:', modId);
+    if (slug) {
+      console.log('🔍 ModDetailPage: Buscando mod com slug:', slug);
       console.log('🔍 ModDetailPage: Usuário atual:', currentUser ? 'logado' : 'não logado');
       console.log('🔍 ModDetailPage: Token presente:', localStorage.getItem('authToken') ? 'sim' : 'não');
-      fetchModById(modId);
+      fetchModBySlug(slug);
     }
-  }, [modId, currentUser]);
+  }, [slug, currentUser]);
 
   // Registrar visualização quando o mod for carregado
   useEffect(() => {
     if (mod && !loading) {
-      registerView(modId);
+      registerView(mod.id);
     }
-  }, [mod, loading, modId]);
+  }, [mod, loading]);
 
   // Carregar comentários quando o mod for carregado
   useEffect(() => {
     if (mod && !loading) {
       fetchComments();
     }
-  }, [mod, loading, modId]);
+  }, [mod, loading]);
 
   // Controla animações de entrada da página
   useEffect(() => {
@@ -150,7 +150,7 @@ const ModDetailPage = () => {
     }
   }, [commentCooldown]);
 
-  const fetchModById = async (id) => {
+  const fetchModBySlug = async (slug) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('authToken');
@@ -163,7 +163,7 @@ const ModDetailPage = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const apiUrl = `/api/mods/mod/${id}`;
+      const apiUrl = `/api/mods/public/${slug}`;
       console.log('🔍 ModDetailPage: Fazendo requisição para:', apiUrl);
       console.log('🔍 ModDetailPage: Headers:', headers);
       console.log('🔍 ModDetailPage: URL completa:', window.location.origin + apiUrl);
@@ -210,7 +210,7 @@ const ModDetailPage = () => {
     }
     
     // Redirecionar para a página de download
-    navigate(`/mods/${mod.id}/download`);
+    navigate(`/mods/${mod.slug}/download`);
   };
 
 
@@ -220,7 +220,7 @@ const ModDetailPage = () => {
   // Registrar visualização do mod
   const registerView = async (modId) => {
     try {
-      const response = await fetch(`/api/mods/mod/${modId}/view`, {
+      const response = await fetch(`/api/mods/mod/${mod.id}/view`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -282,7 +282,7 @@ const ModDetailPage = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      const response = await fetch(`/api/comments/mod/${modId}?includeReplies=true`, { headers });
+      const response = await fetch(`/api/comments/mod/${mod.id}?includeReplies=true`, { headers });
       
       if (response.ok) {
         const data = await response.json();
@@ -314,7 +314,7 @@ const ModDetailPage = () => {
         },
         body: JSON.stringify({
           content: newComment.trim(),
-          modId: modId
+          modId: mod.id
         })
       });
 
@@ -502,7 +502,7 @@ const ModDetailPage = () => {
         body: JSON.stringify({
           parentId: replyingToComment.id,
           content: replyContent.trim(),
-          modId: modId
+          modId: mod.id
         })
       });
 
@@ -761,11 +761,6 @@ const ModDetailPage = () => {
             {/* Mobile: Botão de download em linha */}
             <div className="flex flex-col sm:hidden space-y-3">
               <h1 className={`text-2xl font-bold ${getTextClasses()}`}>{mod.title}</h1>
-              {mod.short_description && (
-                <p className={`text-base leading-relaxed ${getSubtextClasses()}`}>
-                  {mod.short_description}
-                </p>
-              )}
               {recommendedDownload && (
                 <Button 
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
@@ -780,13 +775,6 @@ const ModDetailPage = () => {
             {/* Desktop: Layout com botão no canto */}
             <div className="hidden sm:block relative">
               <h1 className={`text-3xl lg:text-4xl font-bold mb-2 pr-32 ${getTextClasses()}`}>{mod.title}</h1>
-              
-              {/* Descrição Curta */}
-              {mod.short_description && (
-                <p className={`text-lg mb-4 pr-32 leading-relaxed ${getSubtextClasses()}`}>
-                  {mod.short_description}
-                </p>
-              )}
               
               {/* Botão de Download no canto superior direito */}
               {recommendedDownload && (
