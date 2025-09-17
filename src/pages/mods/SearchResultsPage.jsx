@@ -56,6 +56,7 @@ const SearchResultsPage = () => {
   const [localFilters, setLocalFilters] = useState(filters);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [filtersLoading, setFiltersLoading] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
 
 
 
@@ -64,6 +65,15 @@ const SearchResultsPage = () => {
     setLocalFilters(filters);
   }, [filters]);
 
+  // Limpar timeout ao desmontar componente
+  useEffect(() => {
+    return () => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+    };
+  }, [searchTimeout]);
+
 
 
   // Atualizar filtros locais e aplicar automaticamente
@@ -71,18 +81,39 @@ const SearchResultsPage = () => {
     const newFilters = { ...localFilters, [key]: value };
     setLocalFilters(newFilters);
     
-    // Mostrar loading
-    setFiltersLoading(true);
-    
-    // Aplicar filtros automaticamente após uma pequena pausa
-    setTimeout(() => {
-      updateFilters(newFilters);
-      setFiltersLoading(false);
-    }, 300); // 300ms de delay para evitar muitas requisições
+    // Se for o campo de busca, implementar debounce
+    if (key === 'q') {
+      // Limpar timeout anterior se existir
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+      
+      // Criar novo timeout para busca
+      const timeout = setTimeout(() => {
+        setFiltersLoading(true);
+        updateFilters(newFilters);
+        setFiltersLoading(false);
+      }, 800); // 800ms de delay para busca
+      
+      setSearchTimeout(timeout);
+    } else {
+      // Para outros filtros, aplicar imediatamente
+      setFiltersLoading(true);
+      setTimeout(() => {
+        updateFilters(newFilters);
+        setFiltersLoading(false);
+      }, 300);
+    }
   };
 
   // Resetar filtros
   const handleResetFilters = () => {
+    // Limpar timeout de busca se existir
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+      setSearchTimeout(null);
+    }
+    
     clearFilters();
     setLocalFilters({
       q: '',
@@ -160,6 +191,15 @@ const SearchResultsPage = () => {
                   onChange={(e) => handleFilterChange('q', e.target.value)}
                   className="minecraft-input pl-10 text-sm sm:text-base"
                 />
+                {searchTimeout && localFilters.q && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <motion.div 
+                      animate={{ rotate: 360 }} 
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }} 
+                      className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full" 
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -483,16 +523,16 @@ const SearchResultsPage = () => {
             )}
           </>
         ) : !loading && !error && searchResults.length === 0 ? (
-          <motion.div variants={itemVariants} className="text-center py-10 bg-card/50 rounded-lg">
-            {filters.q ? (
-              <>
-                <XCircle size={48} className="mx-auto text-muted-foreground mb-4" />
-                <p className="text-xl text-muted-foreground">{t('search.noModsFound')}</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('search.tryAdjustingSearch')}
-                </p>
-                {Object.entries(filters).some(([key, value]) => value && value !== 'all') && (
-                  <>
+          <>
+            <motion.div variants={itemVariants} className="text-center py-10 bg-card/50 rounded-lg">
+              {filters.q ? (
+                <>
+                  <XCircle size={48} className="mx-auto text-muted-foreground mb-4" />
+                  <p className="text-xl text-muted-foreground">{t('search.noModsFound')}</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {t('search.tryAdjustingSearch')}
+                  </p>
+                  {Object.entries(filters).some(([key, value]) => value && value !== 'all') && (
                     <Button 
                       variant="outline" 
                       onClick={handleResetFilters} 
@@ -501,34 +541,37 @@ const SearchResultsPage = () => {
                       <RotateCcw size={16} className="mr-2" />
                       {t('search.clearFilters')}
                     </Button>
-                    
-                    {/* Dica sobre filtros quando não há resultados */}
-                    <div className="mt-6 p-4 bg-muted/20 rounded-lg border border-border/30 max-w-md mx-auto">
-                      <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0 w-5 h-5 bg-primary/20 rounded-full flex items-center justify-center">
-                          <span className="text-primary text-xs">💡</span>
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="text-xs font-medium text-foreground mb-1">Dica para encontrar mais resultados</h4>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            Muitos filtros ativos podem limitar os resultados. Tente remover alguns filtros para ver mais mods.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                <Search size={48} className="mx-auto text-muted-foreground mb-4" />
-                <p className="text-xl text-muted-foreground">{t('search.typeToSearch')}</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('search.useFiltersAbove')}
-                </p>
-              </>
-            )}
-          </motion.div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Search size={48} className="mx-auto text-muted-foreground mb-4" />
+                  <p className="text-xl text-muted-foreground">{t('search.typeToSearch')}</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {t('search.useFiltersAbove')}
+                  </p>
+                </>
+              )}
+            </motion.div>
+
+            {/* Dica sobre filtros quando não há resultados - sempre aparece */}
+            <motion.div variants={itemVariants} className="mt-6 p-6 bg-muted/20 rounded-lg border border-border/30">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center">
+                  <span className="text-primary text-sm">💡</span>
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-foreground mb-1">Dica para encontrar mais resultados</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {Object.entries(filters).some(([key, value]) => value && value !== 'all') 
+                      ? "Muitos filtros ativos podem limitar os resultados. Tente remover alguns filtros para ver mais mods."
+                      : "Tente usar termos de busca diferentes ou ajustar os filtros acima para encontrar mais mods."
+                    }
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </>
         ) : null}
       </motion.section>
     </motion.div>
