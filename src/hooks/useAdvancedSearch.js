@@ -64,7 +64,7 @@ export const useAdvancedSearch = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos de timeout
       
-      const response = await fetch(`${API_BASE_URL}/api/mods/search?${queryParams.toString()}`, {
+      const response = await fetch(`${API_BASE_URL}/mods/search?${queryParams.toString()}`, {
         signal: controller.signal
       });
       

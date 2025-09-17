@@ -442,6 +442,8 @@ export default class ModsModel {
   // Busca avançada com múltiplos filtros
   static async advancedSearch(filters = {}, sort = 'relevance') {
     try {
+      console.log('🔍 ModsModel.advancedSearch - Iniciando busca com:', { filters, sort });
+      
       let sql = `
         SELECT m.*, u.username as author_name, u.display_name as author_display_name, u.avatar_url as author_avatar_url
         FROM mods m
@@ -494,13 +496,10 @@ export default class ModsModel {
         params.push(authorTerm, authorTerm);
       }
 
-      // Não é mais necessário agrupar sem os JOINs
-
       // Ordenação
       switch (sort) {
         case 'relevance':
           if (filters.search) {
-            // Se h termo de busca, priorizar relevância
             sql += ` ORDER BY 
               CASE 
                 WHEN m.title LIKE ? THEN 1
@@ -543,12 +542,12 @@ export default class ModsModel {
 
       // Paginação
       if (filters.limit) {
-        sql += ' LIMIT ${parseInt(filters.limit)}';
-        params.push(filters.limit);
+        sql += ' LIMIT ?';
+        params.push(parseInt(filters.limit));
         
         if (filters.offset) {
           sql += ' OFFSET ?';
-          params.push(filters.offset);
+          params.push(parseInt(filters.offset));
         }
       }
 
@@ -557,7 +556,7 @@ export default class ModsModel {
 
       const result = await executeQuery(sql, params);
       
-      // Buscar total de resultados para paginacao
+      // Buscar total de resultados para paginação
       let countSql = `
         SELECT COUNT(DISTINCT m.id) as total
         FROM mods m
