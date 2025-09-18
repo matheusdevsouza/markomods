@@ -29,7 +29,6 @@ export const DownloadsProvider = ({ children }) => {
       const token = localStorage.getItem('authToken');
       
       if (!token) {
-        console.error('Token de autenticação não encontrado');
         return;
       }
 
@@ -81,7 +80,6 @@ export const DownloadsProvider = ({ children }) => {
           
           setDownloadHistory(combinedHistory);
         } catch (error) {
-          console.error('Erro ao processar histórico local:', error);
           setDownloadHistory(apiHistory);
         }
         
@@ -97,15 +95,12 @@ export const DownloadsProvider = ({ children }) => {
           const countData = await countResponse.json();
           setTotalDownloads(countData.data?.total || 0);
         } else {
-          console.error('Erro ao buscar contagem de downloads:', countResponse.status);
           // Usar contagem do histórico combinado como fallback
           setTotalDownloads(combinedHistory.length);
         }
       } else {
-        console.error('Erro ao buscar downloads:', response.status);
       }
     } catch (error) {
-      console.error('Erro ao buscar downloads:', error);
     } finally {
       setLoading(false);
     }
@@ -144,7 +139,6 @@ export const DownloadsProvider = ({ children }) => {
         fetchDownloadHistory();
       }
     } catch (error) {
-      console.error('Erro ao salvar histórico local:', error);
     }
   };
 

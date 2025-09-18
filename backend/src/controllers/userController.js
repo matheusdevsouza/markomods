@@ -149,7 +149,6 @@ export const uploadAvatar = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro no upload de avatar:', error);
     logError('Erro ao fazer upload do avatar', error, { userId: req.user.id });
     res.status(500).json({
       success: false,
@@ -193,7 +192,6 @@ export const updateProfile = async (req, res) => {
       data: updatedUser
     });
   } catch (error) {
-    console.error('Erro ao atualizar perfil:', error);
     logError('Erro ao atualizar perfil', error, { userId: req.user.id });
     res.status(500).json({
       success: false,
@@ -243,7 +241,6 @@ export const changePassword = async (req, res) => {
       message: 'Senha alterada com sucesso'
     });
   } catch (error) {
-    console.error('Erro ao alterar senha:', error);
     logError('Erro ao alterar senha', error, { userId: req.user.id });
     res.status(500).json({
       success: false,
@@ -335,8 +332,6 @@ export const toggleUserBan = async (req, res) => {
     const { userId } = req.params;
     const { is_banned, ban_reason } = req.body;
 
-    console.log('🔄 Iniciando alteração de status:', { userId, is_banned, ban_reason });
-
     // Verificar se não está tentando banir a si próprio
     if (userId === req.user.id) {
       return res.status(400).json({
@@ -374,28 +369,23 @@ export const toggleUserBan = async (req, res) => {
       updateData.banned_at = new Date();
       updateData.banned_by = req.user.id;
       
-      console.log('🚫 Dados de banimento:', updateData);
     } else {
       // Usuário sendo desbanido
       updateData.ban_reason = null;
       updateData.banned_at = null;
       updateData.banned_by = null;
       
-      console.log('✅ Dados de desbanimento:', updateData);
     }
 
-    console.log('📝 Dados para atualização:', updateData);
 
     const updatedUser = await UserModel.update(userId, updateData);
     if (!updatedUser) {
-      console.error('❌ Usuário não encontrado para atualização');
       return res.status(404).json({
         success: false,
         message: 'Usuário não encontrado'
       });
     }
 
-    console.log('✅ Usuário atualizado com sucesso:', updatedUser.username);
 
     // Log da atividade
     await LogService.logUsers(
@@ -412,7 +402,6 @@ export const toggleUserBan = async (req, res) => {
       data: updatedUser
     });
   } catch (error) {
-    console.error('❌ Erro ao alterar status do usuário:', error);
     logError('Erro ao alterar status do usuário', error, { userId: req.user.id });
     res.status(500).json({
       success: false,
@@ -425,36 +414,29 @@ export const toggleUserBan = async (req, res) => {
 // Editar usuário (admin)
 export const editUser = async (req, res) => {
   try {
-    console.log('✏️ Iniciando edição de usuário...');
     const { userId } = req.params;
     const { username, display_name, email, role, is_verified } = req.body;
     const adminId = req.user.id;
 
-    console.log('📋 Dados da requisição:', { userId, username, display_name, email, role, is_verified });
 
     // Verificar se o usuário existe
-    console.log('🔍 Buscando usuário para editar...');
     const userToEdit = await UserModel.findById(userId);
     if (!userToEdit) {
-      console.log('❌ Usuário não encontrado');
       return res.status(404).json({
         success: false,
         message: 'Usuário não encontrado'
       });
     }
 
-    console.log('✅ Usuário encontrado:', userToEdit.username);
 
     // Verificar se não está tentando editar outro admin (apenas super_admin pode editar admins)
     if ((userToEdit.role === 'admin' || userToEdit.role === 'super_admin') && req.user.role !== 'super_admin') {
-      console.log('❌ Tentativa de editar admin sem permissão');
       return res.status(400).json({
         success: false,
         message: 'Apenas super administradores podem editar outros administradores'
       });
     }
 
-    console.log('✅ Validações passaram, iniciando edição...');
 
     // Atualizar usuário
     const updatedUser = await UserModel.updateUser(userId, {
@@ -465,7 +447,6 @@ export const editUser = async (req, res) => {
       is_verified: is_verified === true || is_verified === 'true'
     });
 
-    console.log('✅ Usuário editado com sucesso!');
 
     res.json({
       success: true,
@@ -473,8 +454,6 @@ export const editUser = async (req, res) => {
       data: updatedUser
     });
   } catch (error) {
-    console.error('❌ ERRO CRÍTICO ao editar usuário:', error);
-    console.error('❌ Stack trace:', error.stack);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor: ' + error.message
@@ -485,28 +464,22 @@ export const editUser = async (req, res) => {
 // Deletar usuário (admin)
 export const deleteUser = async (req, res) => {
   try {
-    console.log('🚀 Iniciando exclusão de usuário...');
     const { userId } = req.params;
     const adminId = req.user.id;
 
-    console.log('📋 Dados da requisição:', { userId, adminId });
 
     // Verificar se o usuário a ser deletado existe
-    console.log('🔍 Buscando usuário para deletar...');
     const userToDelete = await UserModel.findById(userId);
     if (!userToDelete) {
-      console.log('❌ Usuário não encontrado');
       return res.status(404).json({
         success: false,
         message: 'Usuário não encontrado'
       });
     }
 
-    console.log('✅ Usuário encontrado:', userToDelete.username);
 
     // Verificar se não está tentando deletar a si mesmo
     if (userId === adminId) {
-      console.log('❌ Tentativa de auto-exclusão');
       return res.status(400).json({
         success: false,
         message: 'Você não pode deletar sua própria conta'
@@ -515,27 +488,22 @@ export const deleteUser = async (req, res) => {
 
     // Verificar se não está tentando deletar outro admin
     if (userToDelete.role === 'admin' || userToDelete.role === 'super_admin') {
-      console.log('❌ Tentativa de deletar admin');
       return res.status(400).json({
         success: false,
         message: 'Não é possível deletar contas de administradores'
       });
     }
 
-    console.log('✅ Validações passaram, iniciando exclusão...');
 
     // Deletar usuário completamente
     await UserModel.deleteAccountCompletely(userId);
 
-    console.log('✅ Usuário deletado com sucesso!');
 
     res.json({
       success: true,
       message: 'Usuário deletado com sucesso'
     });
   } catch (error) {
-    console.error('❌ ERRO CRÍTICO ao deletar usuário:', error);
-    console.error('❌ Stack trace:', error.stack);
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor: ' + error.message

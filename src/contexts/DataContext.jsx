@@ -14,7 +14,7 @@ const initialMediaKitStructure = {
     username: TARGET_PROFILE_USERNAME,
     full_name: 'Eu, Marko!',
     bio: 'Criador de conteúdo, Mods de Minecraft, Shorts virais, etc.',
-    avatar_url: '/assets/marko-avatar.png',
+    avatar_url: '/src/assets/images/marko-avatar.png',
     email: 'contato@eumarko.com',
     role: 'admin',
     is_verified: true,
@@ -135,7 +135,6 @@ export const DataProvider = ({ children }) => {
         localStorage.setItem(LOCAL_STORAGE_MEDIA_KIT_KEY, JSON.stringify(initialMediaKitStructure));
       }
     } catch (error) {
-      console.error("Error fetching media kit data from localStorage:", error);
       toast({ title: "Erro ao carregar Media Kit", description: "Não foi possível carregar os dados locais.", variant: "destructive" });
       setMediaKitPublicData(initialMediaKitStructure); 
     } finally {

@@ -12,14 +12,6 @@ export const trackActivity = async (activityData) => {
   try {
     const { userId, modId, activityType, activityData: additionalData } = activityData;
     
-    // Log da atividade para desenvolvimento
-    console.log('📊 Atividade registrada:', {
-      userId,
-      modId,
-      activityType,
-      additionalData,
-      timestamp: new Date().toISOString()
-    });
     
     // Em desenvolvimento, apenas logamos a atividade
     // Em produção, aqui seria salvo no banco de dados
@@ -44,13 +36,6 @@ export const untrackActivity = async (activityData) => {
   try {
     const { userId, modId, activityType } = activityData;
     
-    // Log da remoção da atividade para desenvolvimento
-    console.log('📊 Atividade removida:', {
-      userId,
-      modId,
-      activityType,
-      timestamp: new Date().toISOString()
-    });
     
     // Em desenvolvimento, apenas logamos a remoção
     // Em produção, aqui seria removido do banco de dados
@@ -71,7 +56,6 @@ export const untrackActivity = async (activityData) => {
  */
 export const getUserActivities = async (userId, options = {}) => {
   try {
-    console.log('📊 Buscando atividades do usuário:', { userId, options });
     
     // Em desenvolvimento, retorna dados mockados
     // Em produção, aqui seria consultado no banco de dados
@@ -92,7 +76,6 @@ export const getUserActivities = async (userId, options = {}) => {
  */
 export const getActivityStats = async (filters = {}) => {
   try {
-    console.log('📊 Buscando estatísticas de atividades:', filters);
     
     // Em desenvolvimento, retorna dados mockados
     // Em produção, aqui seria consultado no banco de dados

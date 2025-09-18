@@ -12,7 +12,7 @@ const BackgroundEffects = () => {
       <motion.div
         className="absolute top-0 left-0 w-[150vw] h-[150vh] opacity-5"
         style={{
-          backgroundImage: 'url("/assets/minecraft-bg.png")',
+          backgroundImage: 'url("/src/assets/images/minecraft-bg.png")',
           backgroundRepeat: 'repeat',
           backgroundSize: '512px',
         }}

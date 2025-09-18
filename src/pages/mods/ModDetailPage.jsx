@@ -108,9 +108,6 @@ const ModDetailPage = () => {
 
   useEffect(() => {
     if (slug) {
-      console.log('🔍 ModDetailPage: Buscando mod com slug:', slug);
-      console.log('🔍 ModDetailPage: Usuário atual:', currentUser ? 'logado' : 'não logado');
-      console.log('🔍 ModDetailPage: Token presente:', localStorage.getItem('authToken') ? 'sim' : 'não');
       fetchModBySlug(slug);
     }
   }, [slug, currentUser]);
@@ -128,6 +125,13 @@ const ModDetailPage = () => {
       fetchComments();
     }
   }, [mod, loading]);
+
+  // Verificar status de favorito quando o mod for carregado
+  useEffect(() => {
+    if (mod && !loading && isAuthenticated) {
+      checkFavoriteStatus();
+    }
+  }, [mod, loading, isAuthenticated]);
 
   // Controla animações de entrada da página
   useEffect(() => {
@@ -168,37 +172,24 @@ const ModDetailPage = () => {
       }
 
       const apiUrl = `/api/mods/public/${slug}`;
-      console.log('🔍 ModDetailPage: Fazendo requisição para:', apiUrl);
-      console.log('🔍 ModDetailPage: Headers:', headers);
-      console.log('🔍 ModDetailPage: URL completa:', window.location.origin + apiUrl);
 
       const response = await fetch(apiUrl, {
         headers
       });
 
-      console.log('🔍 ModDetailPage: Response status:', response.status);
-      console.log('🔍 ModDetailPage: Response headers:', Object.fromEntries(response.headers.entries()));
-      console.log('🔍 ModDetailPage: Response ok:', response.ok);
-
       if (response.ok) {
         const data = await response.json();
-        console.log('🔍 ModDetailPage: Mod encontrado:', data.data);
         setMod(data.data);
       } else {
-        console.error('❌ ModDetailPage: Erro na resposta:', response.status, response.statusText);
-        
         // Tentar obter mais detalhes do erro
         try {
           const errorData = await response.json();
-          console.error('❌ ModDetailPage: Detalhes do erro:', errorData);
           setError(errorData.message || `Erro ${response.status}: ${response.statusText}`);
         } catch (parseError) {
-          console.error('❌ ModDetailPage: Erro ao parsear resposta de erro:', parseError);
           setError(`Erro ${response.status}: ${response.statusText}`);
         }
       }
     } catch (error) {
-      console.error('❌ ModDetailPage: Erro ao buscar mod:', error);
       setError('Erro ao carregar mod');
     } finally {
       setLoading(false);
@@ -233,10 +224,31 @@ const ModDetailPage = () => {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('👁️ Visualização registrada:', data.message);
       }
     } catch (error) {
-      console.error('❌ Erro ao registrar visualização:', error);
+      // Erro silencioso para visualização
+    }
+  };
+
+  // Verificar se o mod é favorito para o usuário atual
+  const checkFavoriteStatus = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+
+      const response = await fetch(`/api/mods/${mod.id}/favorite`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsFavorite(data.data.isFavorite);
+      }
+    } catch (error) {
+      // Erro silencioso para verificação de favorito
     }
   };
 
@@ -249,27 +261,33 @@ const ModDetailPage = () => {
 
     setFavoriteLoading(true);
     try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        toast.error(t('mods.loginRequired'));
+        return;
+      }
+
       const response = await fetch(`/api/mods/${mod.id}/favorite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${currentUser?.token}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
         const result = await response.json();
-        setIsFavorite(result.isFavorite);
+        setIsFavorite(result.data.isFavorite);
         setMod(prev => ({
           ...prev,
-          like_count: result.like_count
+          like_count: result.data.like_count
         }));
-        toast.success(result.isFavorite ? t('mods.addedToFavorites') : t('mods.removedFromFavorites'));
+        toast.success(result.data.isFavorite ? t('mods.addedToFavorites') : t('mods.removedFromFavorites'));
       } else {
-        toast.error(t('mods.favoriteError'));
+        const errorData = await response.json();
+        toast.error(errorData.message || t('mods.favoriteError'));
       }
     } catch (error) {
-      console.error('Erro ao favoritar mod:', error);
       toast.error(t('mods.favoriteError'));
     } finally {
       setFavoriteLoading(false);
@@ -328,11 +346,9 @@ const ModDetailPage = () => {
         const data = await response.json();
         setComments(data.data || []);
       } else {
-        console.error('Erro ao buscar comentários:', response.statusText);
         setComments([]);
       }
     } catch (error) {
-      console.error('Erro ao buscar comentários:', error);
       setComments([]);
     } finally {
       setLoadingComments(false);
@@ -402,7 +418,6 @@ const ModDetailPage = () => {
         }
       }
     } catch (error) {
-      console.error('Erro ao enviar comentário:', error);
       toast.error('Erro ao enviar comentário');
     } finally {
       setIsSubmittingComment(false);
@@ -438,7 +453,6 @@ const ModDetailPage = () => {
         ));
       }
     } catch (error) {
-      console.error('Erro ao curtir comentário:', error);
       toast.error('Erro ao curtir comentário');
     }
   };
@@ -510,7 +524,6 @@ const ModDetailPage = () => {
         toast.error(errorData.message || 'Erro ao excluir comentário');
       }
     } catch (error) {
-      console.error('Erro ao excluir comentário:', error);
       toast.error('Erro ao excluir comentário');
     }
   };
@@ -626,7 +639,6 @@ const ModDetailPage = () => {
         toast.error('Erro ao registrar voto');
       }
     } catch (error) {
-      console.error('Erro ao votar no comentário:', error);
       toast.error('Erro ao registrar voto');
     }
   };

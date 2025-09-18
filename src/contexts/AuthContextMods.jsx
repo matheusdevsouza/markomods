@@ -83,7 +83,6 @@ export const AuthProviderMods = ({ children }) => {
           setIsAuthenticated(false);
         }
       } catch (error) {
-        console.error('Erro ao verificar sessão:', error);
         // Em caso de erro, limpar estado
         localStorage.removeItem('authToken');
         setCurrentUser(null);
@@ -101,7 +100,6 @@ export const AuthProviderMods = ({ children }) => {
     try {
       setLoading(true);
       
-      console.log('📝 Tentando registrar usuário:', userData);
       
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
@@ -112,12 +110,10 @@ export const AuthProviderMods = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log('📡 Resposta do backend (registro):', data);
 
       if (response.ok) {
         // Verificar se data.data.user existe (estrutura do backend)
         if (!data.data || !data.data.user) {
-          console.error('❌ Backend não retornou dados do usuário no registro:', data);
           throw new Error('Dados do usuário não recebidos do servidor');
         }
 
@@ -125,7 +121,6 @@ export const AuthProviderMods = ({ children }) => {
         const token = data.data.tokens?.accessToken || data.data.tokens?.access_token;
 
         if (!token) {
-          console.error('❌ Backend não retornou token de acesso no registro:', data.data.tokens);
           throw new Error('Token de acesso não recebido do servidor');
         }
 
@@ -136,16 +131,13 @@ export const AuthProviderMods = ({ children }) => {
         openVerificationModal();
         toast({ title: 'Conta criada!', description: 'Enviamos um e-mail para verificação.' });
         
-        console.log('✅ Registro bem-sucedido. Token salvo, usuário definido, aguardando verificação de e-mail.');
         
         return { success: true, message: data.message };
       } else {
-        console.error('❌ Erro na resposta do backend (registro):', data);
         throw new Error(data.message || 'Erro ao criar conta');
       }
       
     } catch (error) {
-      console.error('❌ Erro no registro:', error);
       toast({
         title: "Erro no registro",
         description: error.message || "Ocorreu um erro ao criar sua conta",
@@ -204,7 +196,6 @@ export const AuthProviderMods = ({ children }) => {
       }
       
     } catch (error) {
-      console.error('Erro no login:', error);
       toast({
         title: "Erro no login",
         description: error.message || "Ocorreu um erro ao fazer login",
@@ -258,7 +249,6 @@ export const AuthProviderMods = ({ children }) => {
         variant: "default"
       });
     } catch (error) {
-      console.error('Erro ao fazer logout:', error);
       // Mesmo com erro, limpar estado local
       localStorage.removeItem('authToken');
       setCurrentUser(null);
@@ -300,7 +290,6 @@ export const AuthProviderMods = ({ children }) => {
       }
       
     } catch (error) {
-      console.error('Erro ao solicitar recuperação:', error);
       
       // Não mostrar toast se já foi mostrado acima
       if (!error.message.includes('Muitas tentativas')) {
@@ -351,7 +340,6 @@ export const AuthProviderMods = ({ children }) => {
       }
       
     } catch (error) {
-      console.error('Erro ao redefinir senha:', error);
       
       // Não mostrar toast se já foi mostrado acima
       if (!error.message.includes('Muitas tentativas')) {
@@ -391,7 +379,6 @@ export const AuthProviderMods = ({ children }) => {
       return { success: response.ok, message: data.message };
       
     } catch (error) {
-      console.error('Erro ao verificar token:', error);
       return { success: false, message: 'Erro ao verificar token' };
     }
   };
@@ -432,7 +419,6 @@ export const AuthProviderMods = ({ children }) => {
       }
       
     } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
       toast({
         title: "Erro ao atualizar perfil",
         description: error.message || "Ocorreu um erro ao atualizar seu perfil",
