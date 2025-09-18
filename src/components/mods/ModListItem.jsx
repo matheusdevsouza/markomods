@@ -39,7 +39,7 @@ const ModListItem = ({ mod, variants }) => {
         setIsFavorited(data.data.isFavorite);
       }
     } catch (error) {
-      console.error('❌ Erro ao verificar favorito:', error);
+      // Erro silencioso para verificação de favorito
     }
   };
 
@@ -82,7 +82,6 @@ const ModListItem = ({ mod, variants }) => {
         toast.error(errorData.message || t('mods.favoriteError'));
       }
     } catch (error) {
-      console.error('❌ Erro ao favoritar:', error);
       toast.error(t('mods.favoriteError'));
     }
   };
@@ -98,7 +97,7 @@ const ModListItem = ({ mod, variants }) => {
       
       setViewCount(prev => prev + 1);
     } catch (error) {
-      console.error('❌ Erro ao registrar visualização:', error);
+      // Erro silencioso para visualização
     }
   };
 
@@ -118,7 +117,7 @@ const ModListItem = ({ mod, variants }) => {
         <CardContent className="p-0">
           <div className="flex h-full">
             {/* Thumbnail - Lado esquerdo */}
-            <div className="flex-shrink-0 w-32 sm:w-40 h-24 sm:h-28 relative">
+            <div className="flex-shrink-0 w-40 sm:w-48 h-full relative">
               <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick} className="block h-full">
                 <img 
                   src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 

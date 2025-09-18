@@ -38,7 +38,7 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
         setIsFavorited(data.data.isFavorite);
       }
     } catch (error) {
-      console.error('❌ Erro ao verificar favorito:', error);
+      // Erro silencioso para verificação de favorito
     }
   };
 
@@ -58,8 +58,6 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
         return;
       }
 
-      console.log('🔍 ModCard: Alternando favorito para mod:', mod.id);
-      
       const response = await fetch(`/api/mods/${mod.id}/favorite`, {
         method: 'POST',
         headers: {
@@ -68,11 +66,8 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
         }
       });
 
-      console.log('🔍 ModCard: Resposta da API:', response.status, response.statusText);
-
       if (response.ok) {
         const data = await response.json();
-        console.log('🔍 ModCard: Dados da resposta:', data);
         
         setIsFavorited(data.data.isFavorite);
         
@@ -86,11 +81,9 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
         }
       } else {
         const errorData = await response.json().catch(() => ({}));
-        console.error('❌ ModCard: Erro na resposta da API:', errorData);
         toast.error(errorData.message || 'Erro ao favoritar mod');
       }
     } catch (error) {
-      console.error('❌ ModCard: Erro ao alternar favorito:', error);
       toast.error('Erro ao favoritar mod');
     }
   };
@@ -155,7 +148,7 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
         }
       }
     } catch (error) {
-      console.error('❌ Erro ao registrar download:', error);
+      // Erro silencioso para download
     }
   };
 
@@ -171,13 +164,12 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
       
       if (response.ok) {
         const data = await response.json();
-        console.log('👁️ Visualização registrada:', data.message);
         
         // Atualizar contador de visualizações
         setViewCount(prev => prev + 1);
       }
     } catch (error) {
-      console.error('❌ Erro ao registrar visualização:', error);
+      // Erro silencioso para visualização
     }
   };
 
@@ -187,7 +179,7 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
         <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
           {/* Imagem no topo */}
           <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick} className="block relative">
-            <div className="relative overflow-hidden mod-image-container h-32 w-full">
+            <div className="relative overflow-hidden mod-image-container h-40 w-full">
               <img 
                 src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 
                 alt={`Thumbnail de ${mod.title || mod.name}`} 
@@ -293,7 +285,7 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
       <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
         <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick} className="block">
           <div className={`relative overflow-hidden mod-image-container ${
-            imageSize === 'stretched' ? 'h-48 w-full' : 'h-48 w-full'
+            imageSize === 'stretched' ? 'h-56 w-full' : 'h-56 w-full'
           }`}>
                            <img 
                  src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 

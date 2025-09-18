@@ -12,13 +12,6 @@ export default class ModsModel {
         tags, thumbnail_url, download_url_pc, download_url_mobile, video_url, author_id, content_type_id = 1
       } = modData;
 
-      // Debug: mostrar exatamente o que está sendo processado
-      console.log('🔍 ModsModel.create - Dados recebidos:', {
-        name, slug, version, minecraft_version, mod_loader, 
-        short_description, full_description, tags, thumbnail_url, 
-        download_url_pc, download_url_mobile, video_url, author_id, content_type_id
-      });
-
       const sql = `
         INSERT INTO mods (
           id, title, type, description, version, slug, minecraft_version, mod_loader, file_size, file_hash, short_description, 
@@ -31,10 +24,6 @@ export default class ModsModel {
         full_description, JSON.stringify(tags || []), thumbnail_url, 
         download_url_pc, download_url_mobile, video_url, author_id, content_type_id
       ];
-
-      // Debug: mostrar SQL e parâmetros
-      console.log('🔍 ModsModel.create - SQL:', sql);
-      console.log('🔍 ModsModel.create - Parâmetros:', params);
 
       await executeQuery(sql, params);
       
@@ -149,7 +138,6 @@ export default class ModsModel {
   // Buscar todos os mods (para admin)
   static async findAll(filters = {}) {
     try {
-      console.log('🔍 ModsModel.findAll: Iniciando busca com filtros:', filters);
       
       let sql = `
         SELECT m.*, u.username as author_name, u.display_name as author_display_name, u.avatar_url as author_avatar_url
@@ -191,12 +179,11 @@ export default class ModsModel {
       // Ordenação
       sql += ' ORDER BY m.created_at DESC';
 
-      console.log('🔍 ModsModel.findAll: SQL final:', sql);
-      console.log('🔍 ModsModel.findAll: Parâmetros:', params);
+     
 
       const result = await executeQuery(sql, params);
       
-      console.log('🔍 ModsModel.findAll: Resultado bruto:', result.length, 'mods');
+     
       
       // Processar tags JSON
       const mods = result.map(mod => ({
@@ -204,15 +191,7 @@ export default class ModsModel {
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : []
       }));
 
-      console.log('🔍 ModsModel.findAll: Mods processados:', mods.length);
-      if (mods.length > 0) {
-        console.log('🔍 ModsModel.findAll: Primeiro mod:', {
-          id: mods[0].id,
-          title: mods[0].title,
-          is_published: mods[0].is_published,
-          is_archived: mods[0].is_archived
-        });
-      }
+        
 
       logInfo('Mods buscados com sucesso', { count: mods.length, filters });
       return mods;
@@ -267,8 +246,7 @@ export default class ModsModel {
         sql += ` OFFSET ${parseInt(filters.offset)}`;
       }
 
-      console.log('🔍 ModsModel.findPublic - SQL:', sql);
-      console.log('🔍 ModsModel.findPublic - Params:', params);
+     
 
       const result = await executeQuery(sql, params);
       
@@ -277,10 +255,10 @@ export default class ModsModel {
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : []
       }));
 
-      console.log('🔍 ModsModel.findPublic - Result count:', mods.length);
+    
       return mods;
     } catch (error) {
-      console.error('❌ ModsModel.findPublic - Error:', error);
+    
       logError('Erro ao buscar mods públicos', error, { filters });
       throw error;
     }
@@ -442,7 +420,7 @@ export default class ModsModel {
   // Busca avançada com múltiplos filtros
   static async advancedSearch(filters = {}, sort = 'relevance') {
     try {
-      console.log('🔍 ModsModel.advancedSearch - Iniciando busca com:', { filters, sort });
+     
       
       let sql = `
         SELECT m.*, u.username as author_name, u.display_name as author_display_name, u.avatar_url as author_avatar_url
@@ -534,8 +512,7 @@ export default class ModsModel {
         }
       }
 
-      console.log('🔍 ModsModel.advancedSearch: SQL final:', sql);
-      console.log('🔍 ModsModel.advancedSearch: Parâmetros:', params);
+     
 
       const result = await executeQuery(sql, params);
       
@@ -598,8 +575,7 @@ export default class ModsModel {
         view_count: parseInt(mod.view_count) || 0
       }));
 
-      console.log('🔍 ModsModel.advancedSearch: Resultado:', { mods: mods.length, total });
-
+    
       return {
         mods,
         total
@@ -787,10 +763,8 @@ export default class ModsModel {
   // Adicionar/remover favorito
   static async toggleFavorite(modId, userId) {
     try {
-      console.log('🔍 ModsModel.toggleFavorite - Parâmetros:', { modId, userId, modIdType: typeof modId, userIdType: typeof userId });
       
       if (!modId || !userId) {
-        console.error('❌ ModsModel.toggleFavorite - Parâmetros inválidos:', { modId, userId });
         throw new Error('Parâmetros inválidos para toggleFavorite');
       }
       
@@ -829,10 +803,10 @@ export default class ModsModel {
   // Verificar se um mod é favorito para um usuário
   static async isFavorite(modId, userId) {
     try {
-      console.log('🔍 ModsModel.isFavorite - Parâmetros:', { modId, userId, modIdType: typeof modId, userIdType: typeof userId });
+      
       
       if (!modId || !userId) {
-        console.error('❌ ModsModel.isFavorite - Parâmetros inválidos:', { modId, userId });
+       
         return false;
       }
       

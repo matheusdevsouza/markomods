@@ -96,7 +96,6 @@ const UserDashboardPage = React.memo(() => {
       const token = localStorage.getItem('authToken');
       
       if (!token) {
-        console.error('Token de autenticação não encontrado');
         return;
       }
 
@@ -120,7 +119,6 @@ const UserDashboardPage = React.memo(() => {
         setCommentsData(data.data?.comments || []);
         setCommentsTotal(data.data?.total || 0);
       } else {
-        console.error('Erro ao buscar comentários:', response.status);
         toast({
           title: 'Erro',
           description: 'Não foi possível carregar seus comentários',
@@ -128,7 +126,6 @@ const UserDashboardPage = React.memo(() => {
         });
       }
     } catch (error) {
-      console.error('Erro ao buscar comentários:', error);
       toast({
         title: 'Erro',
         description: 'Erro ao carregar comentários',
@@ -144,7 +141,6 @@ const UserDashboardPage = React.memo(() => {
       const token = localStorage.getItem('authToken');
       
       if (!token) {
-        console.error('Token de autenticação não encontrado');
         return;
       }
 
@@ -158,14 +154,12 @@ const UserDashboardPage = React.memo(() => {
 
       if (favoritesResponse.ok) {
         const favoritesData = await favoritesResponse.json();
-        console.log('❤️ Favoritos carregados na dashboard:', favoritesData.data);
         
         setUserStats(prev => ({
           ...prev,
           favoriteMods: favoritesData.data || []
         }));
       } else {
-        console.error('Erro ao buscar favoritos:', favoritesResponse.status);
       }
 
       // Buscar contagem de downloads do usuário
@@ -180,7 +174,6 @@ const UserDashboardPage = React.memo(() => {
           // totalDownloads agora é gerenciado pelo contexto
         }
       } catch (e) {
-        console.warn('Falha ao buscar contagem de downloads do usuário');
       }
 
       // Buscar contagem de comentários do usuário
@@ -193,7 +186,6 @@ const UserDashboardPage = React.memo(() => {
           setUserStats(prev => ({ ...prev, userCommentsCount: data.data?.total || 0 }));
         }
       } catch (e) {
-        console.warn('Falha ao buscar contagem de comentários do usuário');
       }
 
       // Buscar lista de comentários do usuário
@@ -206,7 +198,6 @@ const UserDashboardPage = React.memo(() => {
           setUserStats(prev => ({ ...prev, userComments: data.data || [] }));
         }
       } catch (e) {
-        console.warn('Falha ao buscar comentários do usuário');
       }
 
       // Buscar histórico de downloads do usuário
@@ -231,10 +222,8 @@ const UserDashboardPage = React.memo(() => {
           // downloadHistory agora é gerenciado pelo contexto
         }
       } catch (e) {
-        console.warn('Falha ao buscar histórico de downloads do usuário');
       }
     } catch (error) {
-      console.error('❌ Erro ao buscar estatísticas do usuário:', error);
       toast({
         title: 'Erro',
         description: 'Não foi possível carregar suas estatísticas',
@@ -269,7 +258,6 @@ const UserDashboardPage = React.memo(() => {
         throw new Error(data.message || 'Erro ao excluir comentário');
       }
     } catch (error) {
-      console.error('Erro ao excluir comentário:', error);
       toast({
         title: 'Erro',
         description: error.message || 'Não foi possível excluir o comentário',

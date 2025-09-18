@@ -8,6 +8,8 @@ import PaginationControls from '@/components/ui/PaginationControls';
 import { Flame, ArrowRight, History, DownloadCloud, Package } from 'lucide-react';
 import { buildThumbnailUrl } from '@/utils/urls';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth } from '@/contexts/AuthContextMods';
+import EditableBanner from '@/components/admin/EditableBanner';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -126,7 +128,9 @@ const HomePage = () => {
   const [loadingMods, setLoadingMods] = useState(true);
   const [latestModsPage, setLatestModsPage] = useState(1);
   const [popularModsPage, setPopularModsPage] = useState(1);
+  const [bannerUrl, setBannerUrl] = useState('/src/assets/images/markomods-banner.png');
   const { t } = useTranslation();
+  const { currentUser } = useAuth();
   
   // Simular verificação de admin (em produção, isso viria do contexto de autenticação)
   const isAdmin = false; // Mude para true para testar como admin
@@ -141,14 +145,11 @@ const HomePage = () => {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('🏠 HomePage: Mods públicos carregados:', data.data?.length || 0);
           setMods(data.data || []);
         } else {
-          console.error('❌ HomePage: Erro ao buscar mods públicos:', response.status);
           setMods([]);
         }
       } catch (error) {
-        console.error('❌ HomePage: Erro na busca:', error);
         setMods([]);
       } finally {
         setLoadingMods(false);
@@ -156,6 +157,25 @@ const HomePage = () => {
     };
 
     fetchPublicMods();
+  }, []);
+
+  // Carregar configuração do banner
+  useEffect(() => {
+    const fetchBannerConfig = async () => {
+      try {
+        const response = await fetch('/api/admin/banner/public-config');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.banner_url) {
+            setBannerUrl(data.banner_url);
+          }
+        }
+      } catch (error) {
+        // Em caso de erro, manter a URL padrão
+      }
+    };
+
+    fetchBannerConfig();
   }, []);
 
   if (loadingMods) {
@@ -190,6 +210,10 @@ const HomePage = () => {
     setPopularModsPage(newPage);
   };
 
+  const handleBannerUpdate = (newBannerUrl) => {
+    setBannerUrl(newBannerUrl);
+  };
+
   return (
     <motion.div 
       className="space-y-12"
@@ -200,26 +224,29 @@ const HomePage = () => {
       <ModsCarousel mods={featuredMods} />
 
       {/* Banner da Plataforma */}
-      <motion.div 
-        variants={itemVariants} 
+      <EditableBanner
+        bannerUrl={bannerUrl}
+        onBannerUpdate={handleBannerUpdate}
         className="relative rounded-xl overflow-hidden shadow-2xl border-2 border-primary/30 group bg-gradient-to-r from-primary/5 to-purple-600/5"
       >
-        <img 
-          src="/channels4_banner.jpg" 
-          alt="Banner da Plataforma Eu Marko Mods"
-          className="w-full h-32 md:h-48 lg:h-56 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-purple-600/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        <div className="absolute top-4 right-4">
-          <div className="bg-primary/20 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/30">
-            <span className="text-xs font-semibold text-white flex items-center gap-1">
-              <Package size={12} />
-              MODS
-            </span>
+        <motion.div variants={itemVariants}>
+          <img 
+            src={bannerUrl} 
+            alt="Banner da Plataforma Eu Marko Mods"
+            className="w-full h-32 md:h-48 lg:h-56 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-purple-600/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute top-4 right-4">
+            <div className="bg-primary/20 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/30">
+              <span className="text-xs font-semibold text-white flex items-center gap-1">
+                <Package size={12} />
+                MODS
+              </span>
+            </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </EditableBanner>
 
       <motion.div variants={itemVariants} className="text-center p-6 bg-card/70 rounded-lg shadow-md border border-border">
         <h3 className="font-minecraft text-2xl text-primary mb-2">{t('home.totalDownloadsOnPlatform')}</h3>

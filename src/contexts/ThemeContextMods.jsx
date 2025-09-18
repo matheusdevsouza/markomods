@@ -18,7 +18,6 @@ export const ThemeProviderMods = ({ children }) => {
       const savedTheme = localStorage.getItem('eu_marko_mods_theme');
       return savedTheme || 'dark'; // Dark como padrão se não houver tema salvo
     } catch (error) {
-      console.log('Erro ao carregar tema do localStorage, usando dark como padrão');
       return 'dark';
     }
   };
@@ -29,15 +28,13 @@ export const ThemeProviderMods = ({ children }) => {
   const saveThemeToStorage = (newTheme) => {
     try {
       localStorage.setItem('eu_marko_mods_theme', newTheme);
-      console.log('🎨 Tema salvo no localStorage:', newTheme);
     } catch (error) {
-      console.error('Erro ao salvar tema no localStorage:', error);
+      // Erro ao salvar tema
     }
   };
 
   // Função para mudar o tema
   const changeTheme = (newTheme) => {
-    console.log('🔄 Mudando tema para:', newTheme);
     setTheme(newTheme);
     
     // Salvar no localStorage
@@ -47,24 +44,19 @@ export const ThemeProviderMods = ({ children }) => {
     const root = document.documentElement;
     if (newTheme === 'dark') {
       root.classList.add('dark');
-      console.log('🌙 Classe dark adicionada');
     } else {
       root.classList.remove('dark');
-      console.log('☀️ Classe dark removida');
     }
   };
 
   // Aplicar tema quando o componente montar ou o tema mudar
   useEffect(() => {
-    console.log('🎯 Aplicando tema inicial:', theme);
     const root = document.documentElement;
     
     if (theme === 'dark') {
       root.classList.add('dark');
-      console.log('🌙 Classe dark aplicada inicialmente');
     } else {
       root.classList.remove('dark');
-      console.log('☀️ Classe dark removida inicialmente');
     }
   }, [theme]);
 

@@ -26,7 +26,7 @@ const Header = ({ profileUsername }) => {
   
   const name = profileData?.full_name || profileData?.username || t('header.creatorName');
   const bio = profileData?.bio || t('header.creatorBio');
-  const avatarUrl = profileData?.avatar_url || `/assets/marko-avatar.png`;
+  const avatarUrl = profileData?.avatar_url || `/src/assets/images/marko-avatar.png`;
   const emailLink = socialLinks.find(link => link.platform_key === 'email');
 
 

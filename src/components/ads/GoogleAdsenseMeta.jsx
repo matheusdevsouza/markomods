@@ -38,7 +38,6 @@ const GoogleAdsenseMeta = () => {
             
             document.head.appendChild(script);
             
-            console.log('Google AdSense carregado:', data.data.account);
           }
         }
       } catch (error) {

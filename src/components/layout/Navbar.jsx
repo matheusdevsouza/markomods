@@ -24,7 +24,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center space-x-2">
-            <img  src="/assets/minecraft-logo.png" alt="Minecraft Mod Portal Logo" className="h-10 w-auto" src="https://images.unsplash.com/photo-1614680376739-414d95ff43df" />
+            <img src="/src/assets/images/markomods-logo.png" alt="Marko Mods Logo" className="h-10 w-auto" />
             <span className="text-2xl font-bold gradient-text-minecraft">ModPortal</span>
           </Link>
           
