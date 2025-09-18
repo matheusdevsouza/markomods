@@ -59,9 +59,9 @@ const Header = React.memo(() => {
           {/* Logo - Esquerda */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <img 
-              src="/markomods-logo.png" 
+              src="/markomods-logo2.png" 
               alt="Eu, Marko! Mods Logo" 
-              className={`h-10 w-auto transition-all duration-300 ${
+              className={`h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer ${
                 theme === 'dark' 
                   ? 'brightness-75 contrast-125' 
                   : 'brightness-100 contrast-100'
