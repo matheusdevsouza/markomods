@@ -85,6 +85,10 @@ const ModDetailPage = () => {
 
   const [imageError, setImageError] = useState(false);
   
+  // Estado para favoritos
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+  
   // Estados para comentários
   const [comments, setComments] = useState([]);
   const [loadingComments, setLoadingComments] = useState(false);
@@ -233,6 +237,42 @@ const ModDetailPage = () => {
       }
     } catch (error) {
       console.error('❌ Erro ao registrar visualização:', error);
+    }
+  };
+
+  // Função para favoritar/desfavoritar mod
+  const handleFavorite = async () => {
+    if (!isAuthenticated) {
+      toast.error(t('mods.loginRequired'));
+      return;
+    }
+
+    setFavoriteLoading(true);
+    try {
+      const response = await fetch(`/api/mods/${mod.id}/favorite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentUser?.token}`,
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setIsFavorite(result.isFavorite);
+        setMod(prev => ({
+          ...prev,
+          like_count: result.like_count
+        }));
+        toast.success(result.isFavorite ? t('mods.addedToFavorites') : t('mods.removedFromFavorites'));
+      } else {
+        toast.error(t('mods.favoriteError'));
+      }
+    } catch (error) {
+      console.error('Erro ao favoritar mod:', error);
+      toast.error(t('mods.favoriteError'));
+    } finally {
+      setFavoriteLoading(false);
     }
   };
 
@@ -740,68 +780,77 @@ const ModDetailPage = () => {
       
       {/* Layout em coluna única - Com limitação */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6 py-4 sm:py-6">
+        {/* Botão Voltar - Fora do container */}
+        <div className={`transition-all duration-700 ease-out ${
+          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}>
+          <Link to={mod?.content_type_id === 2 ? "/addons" : "/mods"} className={`inline-flex items-center text-sm hover:text-primary transition-colors ${getSubtextClasses()}`}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {mod?.content_type_id === 2 
+              ? t('modDetail.backToAddons') 
+              : t('modDetail.backToMods')
+            }
+          </Link>
+        </div>
+
         {/* Seção do Título com Botão de Download */}
-        <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out ${getCardClasses()} ${
+        <div className={`rounded-xl p-3 sm:p-4 transition-all duration-1000 ease-out ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          {/* Breadcrumb */}
-          <div className={`mb-4 transition-all duration-700 ease-out ${
-            pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}>
-            <Link to={mod?.content_type_id === 2 ? "/addons" : "/mods"} className={`inline-flex items-center text-sm hover:text-primary transition-colors ${getSubtextClasses()}`}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {mod?.content_type_id === 2 
-                ? t('modDetail.backToAddons') 
-                : t('modDetail.backToMods')
-              }
-            </Link>
-          </div>
-          {/* Título e Botão de Download */}
-          <div className="space-y-4">
-            {/* Mobile: Botão de download em linha */}
-            <div className="flex flex-col sm:hidden space-y-3">
-              <h1 className={`text-2xl font-bold ${getTextClasses()}`}>{mod.title}</h1>
+          {/* Novo Layout: Ícone + Título + Coração + Download */}
+          <div className="flex items-center space-x-4">
+            {/* Ícone do Mod */}
+            <div className="flex-shrink-0">
+              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-lg overflow-hidden">
+                <img
+                  src={buildThumbnailUrl(mod.thumbnail_url)}
+                  alt={mod.title}
+                  className="w-full h-full object-cover rounded-lg"
+                  onError={() => setImageError(true)}
+                />
+              </div>
+            </div>
+
+            {/* Título à Esquerda */}
+            <div className="flex-1 text-left">
+              <h1 className={`text-2xl lg:text-3xl font-bold ${getTextClasses()}`}>{mod.title}</h1>
+            </div>
+
+            {/* Ícone de Favoritar */}
+            <div className="flex-shrink-0">
+              <button
+                onClick={handleFavorite}
+                disabled={favoriteLoading}
+                className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                  isFavorite 
+                    ? 'text-red-500 hover:text-red-600' 
+                    : 'text-gray-400 hover:text-red-500'
+                }`}
+              >
+                {favoriteLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  <Heart 
+                    className={`h-6 w-6 ${isFavorite ? 'fill-current' : ''}`} 
+                  />
+                )}
+              </button>
+            </div>
+
+            {/* Botão de Download */}
+            <div className="flex-shrink-0">
               {recommendedDownload && (
                 <Button 
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
-                  className="bg-primary hover:bg-primary/90 text-white px-6 py-3 text-base h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 w-full"
+                  className="bg-primary hover:bg-primary/90 text-white px-4 py-2 lg:px-6 lg:py-3 text-sm lg:text-base h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
                 >
-                  <Download className="h-5 w-5 mr-2" />
+                  <Download className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
                   {t('modDetail.download')}
                 </Button>
               )}
             </div>
-
-            {/* Desktop: Layout com botão no canto */}
-            <div className="hidden sm:block relative">
-              <h1 className={`text-3xl lg:text-4xl font-bold mb-2 pr-32 ${getTextClasses()}`}>{mod.title}</h1>
-              
-              {/* Botão de Download no canto superior direito */}
-              {recommendedDownload && (
-                <div className="absolute top-0 right-0">
-                  <Button 
-                    onClick={() => handleDownload(recommendedDownload, 'desktop')}
-                    className="bg-primary hover:bg-primary/90 text-white px-6 py-3 text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
-                  >
-                    <Download className="h-5 w-5 mr-2" />
-                    {t('modDetail.download')}
-                  </Button>
-                </div>
-              )}
-            </div>
           </div>
           
-          {/* Imagem Principal do Mod */}
-          <div className="mt-4 sm:mt-6">
-            <div className="relative group overflow-hidden rounded-lg">
-              <img
-                src={buildThumbnailUrl(mod.thumbnail_url)}
-                alt={mod.title}
-                className="w-full h-auto max-h-[300px] sm:max-h-[400px] lg:max-h-[600px] object-scale-down rounded-lg transition-all duration-500 ease-out group-hover:scale-110"
-                onError={() => setImageError(true)}
-              />
-            </div>
-          </div>
         </div>
 
         {/* Seção de Descrição (desc) */}
