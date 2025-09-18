@@ -53,8 +53,6 @@ router.get('/test-mod/:id', (req, res) => {
 
 // Rota para buscar mod por ID (público) - DEVE vir ANTES das rotas autenticadas
 router.get('/mod/:id', (req, res) => {
-  // Rota completamente pública, sem middleware de autenticação
-  console.log('🔍 Rota pública /mod/:id sendo acessada');
   getModById(req, res);
 });
 

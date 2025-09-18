@@ -25,5 +25,5 @@ export const getAvatarUrl = (avatarUrl) => {
  * @returns {string} URL do avatar padrão
  */
 export const getDefaultAvatarUrl = () => {
-  return '/assets/marko-avatar.png';
+  return '/src/assets/images/marko-avatar.png';
 };

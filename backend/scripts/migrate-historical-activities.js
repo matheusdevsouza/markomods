@@ -3,10 +3,8 @@ import { executeQuery } from '../src/config/database.js';
 // Script para migrar atividades históricas dos usuários
 async function migrateHistoricalActivities() {
   try {
-    console.log('🔄 Iniciando migração de atividades históricas...');
 
     // 1. Migrar downloads históricos
-    console.log('📥 Migrando downloads históricos...');
     const downloadsQuery = `
       SELECT DISTINCT d.user_id, d.mod_id, d.created_at, m.title, m.file_size, m.minecraft_version
       FROM downloads d
@@ -51,10 +49,8 @@ async function migrateHistoricalActivities() {
       }
     }
     
-    console.log(`✅ ${downloads.length} downloads migrados`);
 
     // 2. Migrar favoritos históricos
-    console.log('❤️ Migrando favoritos históricos...');
     const favoritesQuery = `
       SELECT DISTINCT f.user_id, f.mod_id, f.created_at, m.title
       FROM favorites f
@@ -96,10 +92,8 @@ async function migrateHistoricalActivities() {
       }
     }
     
-    console.log(`✅ ${favorites.length} favoritos migrados`);
 
     // 3. Migrar comentários históricos (apenas aprovados)
-    console.log('💬 Migrando comentários históricos...');
     const commentsQuery = `
       SELECT DISTINCT c.user_id, c.mod_id, c.created_at, c.content, c.rating, m.title
       FROM comments c
@@ -144,7 +138,6 @@ async function migrateHistoricalActivities() {
       }
     }
     
-    console.log(`✅ ${comments.length} comentários migrados`);
 
     // 4. Estatísticas finais
     const statsQuery = `
@@ -156,15 +149,11 @@ async function migrateHistoricalActivities() {
     `;
     
     const stats = await executeQuery(statsQuery);
-    console.log('\n📊 Estatísticas finais:');
     stats.forEach(stat => {
-      console.log(`  ${stat.activity_type}: ${stat.count} atividades`);
     });
 
-    console.log('\n🎉 Migração de atividades históricas concluída com sucesso!');
     
   } catch (error) {
-    console.error('❌ Erro durante a migração:', error);
     throw error;
   }
 }
@@ -173,7 +162,6 @@ async function migrateHistoricalActivities() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   migrateHistoricalActivities()
     .then(() => {
-      console.log('✅ Script executado com sucesso');
       process.exit(0);
     })
     .catch((error) => {

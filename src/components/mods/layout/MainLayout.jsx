@@ -59,7 +59,7 @@ const Header = React.memo(() => {
           {/* Logo - Esquerda */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <img 
-              src="/marko logo.png" 
+              src="/markomods-logo.png" 
               alt="Eu, Marko! Mods Logo" 
               className={`h-10 w-auto transition-all duration-300 ${
                 theme === 'dark' 

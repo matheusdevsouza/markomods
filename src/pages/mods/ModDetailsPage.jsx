@@ -48,7 +48,6 @@ const ModDetailsPage = () => {
       await fetchModComments(modId);
       
     } catch (error) {
-      console.error('Erro ao buscar detalhes do mod:', error);
       toast({ title: "Erro ao carregar mod", description: error.message, variant: "destructive" });
       setMod(null);
     } finally {
@@ -67,7 +66,6 @@ const ModDetailsPage = () => {
         setComments([]);
       }
     } catch (error) {
-      console.error('Erro ao buscar comentários:', error);
       toast({ title: "Erro ao carregar comentários", description: error.message, variant: "destructive" });
       setComments([]);
     } finally {

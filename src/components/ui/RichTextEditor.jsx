@@ -144,7 +144,6 @@ const ResizableImage = Image.extend({
         try {
           // Encontrar a posição exata da imagem no documento
           const pos = getPos();
-          console.log('🎯 Posição da imagem:', pos, 'Nova largura:', newWidth);
           
           if (pos !== undefined && pos !== null) {
             const { state, view } = editor;
@@ -153,12 +152,9 @@ const ResizableImage = Image.extend({
               width: newWidth
             });
             view.dispatch(tr);
-            console.log('✅ Atributos da imagem atualizados com sucesso');
           } else {
-            console.warn('⚠️ Posição da imagem não encontrada');
           }
         } catch (error) {
-          console.error('❌ Erro ao atualizar atributos da imagem:', error);
         }
       };
 
@@ -214,13 +210,11 @@ const ResizableImage = Image.extend({
             
             // GARANTIR QUE O REDIMENSIONAMENTO SEJA SALVO
             const newWidth = img.style.width;
-            console.log('🔧 Redimensionando imagem para:', newWidth);
             updateAttrs(newWidth);
             
             // Forçar atualização do editor para garantir que a mudança seja persistida
             setTimeout(() => {
               const html = editor.getHTML();
-              console.log('📝 HTML após redimensionamento:', html);
               onChange?.(html);
             }, 50);
           };
@@ -339,8 +333,6 @@ export const RichTextEditor = ({ value, onChange }) => {
         .replace(/<br>\s*<br>\s*<br>/g, '<br><br>')
         .replace(/<br>\s*<br>/g, '<br>');
       
-      console.log('🔍 HTML gerado pelo editor:', html);
-      console.log('🔍 HTML com quebras de linha:', html.replace(/\n/g, '\\n'));
       onChange?.(html);
     },
     onCreate: ({ editor }) => {
@@ -440,7 +432,6 @@ export const RichTextEditor = ({ value, onChange }) => {
         setSelectedAlignment('left');
       }
     } catch (error) {
-      console.error('Erro ao fazer upload da imagem:', error);
     }
   }, [selectedFile, selectedAlignment, editor]);
 
@@ -679,7 +670,6 @@ export const RichTextEditor = ({ value, onChange }) => {
         <MenuButton onClick={() => {
           if (editor) {
             editor.chain().focus().insertContent('<br>').run();
-            console.log('🔧 Quebra de linha inserida manualmente');
           }
         }} title="Inserir Quebra de Linha (Ctrl+Enter)">
           <CornerDownLeft size={16} />
@@ -688,11 +678,9 @@ export const RichTextEditor = ({ value, onChange }) => {
         
         {/* Botão de teste para centralizar todas as imagens */}
         <MenuButton onClick={() => {
-          console.log('=== TESTANDO CENTRALIZAÇÃO DE TODAS ===');
           forceAlignAllImages('center');
           setTimeout(() => {
             const html = editor.getHTML();
-            console.log('HTML após centralização:', html);
           }, 100);
         }} title="Centralizar Todas as Imagens (Teste)">
           🎯

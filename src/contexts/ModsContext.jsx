@@ -21,9 +21,6 @@ export const ModsProvider = ({ children }) => {
   useEffect(() => {
     // Detectar se o usuário é admin e buscar mods apropriados
     const isAdmin = currentUser?.role === 'super_admin';
-    console.log('🔍 ModsContext: currentUser:', currentUser);
-    console.log('🔍 ModsContext: isAdmin:', isAdmin);
-    console.log('🔍 ModsContext: role:', currentUser?.role);
     fetchMods(isAdmin);
   }, [currentUser]);
 
@@ -38,9 +35,6 @@ export const ModsProvider = ({ children }) => {
         url = '/api/mods/admin';
       }
 
-      console.log('🔍 ModsContext: fetchMods - isAdmin:', isAdmin);
-      console.log('🔍 ModsContext: fetchMods - url:', url);
-      console.log('🔍 ModsContext: fetchMods - token:', token ? 'presente' : 'ausente');
 
       const headers = {
         'Content-Type': 'application/json'
@@ -55,18 +49,14 @@ export const ModsProvider = ({ children }) => {
         headers
       });
 
-      console.log('🔍 ModsContext: fetchMods - response status:', response.status);
 
       if (response.ok) {
         const data = await response.json();
-        console.log('🔍 ModsContext: fetchMods - data:', data);
         setMods(data.data || []);
       } else {
-        console.error('Erro ao buscar mods:', response.statusText);
         setMods([]);
       }
     } catch (error) {
-      console.error('Erro ao buscar mods:', error);
       setMods([]);
     } finally {
       setLoadingMods(false);
@@ -75,7 +65,6 @@ export const ModsProvider = ({ children }) => {
 
   // Buscar mods por tipo de conteúdo
   const fetchModsByType = useCallback(async (contentType, isAdmin = false) => {
-    console.log('🚀 ModsContext: fetchModsByType chamada com:', { contentType, isAdmin });
     
     try {
       setLoadingMods(true);
@@ -86,9 +75,6 @@ export const ModsProvider = ({ children }) => {
         url = `/api/mods/admin?content_type=${contentType}`;
       }
 
-      console.log('🔍 ModsContext: fetchModsByType - contentType:', contentType);
-      console.log('🔍 ModsContext: fetchModsByType - isAdmin:', isAdmin);
-      console.log('🔍 ModsContext: fetchModsByType - url:', url);
 
       const headers = {
         'Content-Type': 'application/json'
@@ -104,14 +90,11 @@ export const ModsProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('🔍 ModsContext: fetchModsByType - data:', data);
         setMods(data.data || []);
       } else {
-        console.error('Erro ao buscar mods por tipo:', response.statusText);
         setMods([]);
       }
     } catch (error) {
-      console.error('Erro ao buscar mods por tipo:', error);
       setMods([]);
     } finally {
       setLoadingMods(false);
@@ -139,7 +122,6 @@ export const ModsProvider = ({ children }) => {
         throw new Error('Erro ao criar mod');
       }
     } catch (error) {
-      console.error('Erro ao criar mod:', error);
       throw error;
     }
   };
@@ -167,7 +149,6 @@ export const ModsProvider = ({ children }) => {
         throw new Error('Erro ao atualizar mod');
       }
     } catch (error) {
-      console.error('Erro ao atualizar mod:', error);
       throw error;
     }
   };
@@ -191,7 +172,6 @@ export const ModsProvider = ({ children }) => {
         throw new Error('Erro ao excluir mod');
       }
     } catch (error) {
-      console.error('Erro ao excluir mod:', error);
       throw error;
     }
   };

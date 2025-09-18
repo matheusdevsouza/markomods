@@ -6,14 +6,11 @@ import { trackActivity, untrackActivity } from '../services/ActivityService.js';
 // Criar novo mod
 export const createMod = async (req, res) => {
   try {
-    console.log('🔍 Dados recebidos no createMod:', req.body);
     
     const {
       name, slug, version, minecraft_version, mod_loader, short_description, full_description,
       tags, thumbnail_url, download_url_pc, download_url_mobile, video_url, content_type_id = 1
     } = req.body;
-    
-    console.log('🔍 Campos extraídos:', { name, version, minecraft_version, mod_loader, short_description, full_description });
 
     // Validações básicas
     if (!name || !slug || !version || !minecraft_version || !mod_loader || !short_description || !full_description) {
@@ -45,7 +42,6 @@ export const createMod = async (req, res) => {
       }
     }
     
-    console.log('🏷️ Tags processadas:', finalTags);
 
     const modData = {
       name,
@@ -64,9 +60,7 @@ export const createMod = async (req, res) => {
       content_type_id
     };
 
-    console.log('🔍 Chamando ModsModel.create com dados:', modData);
     const newMod = await ModsModel.create(modData);
-    console.log('✅ Mod criado com sucesso:', newMod);
 
     // Log da atividade
     await LogService.logMods(
@@ -83,7 +77,6 @@ export const createMod = async (req, res) => {
       data: newMod
     });
   } catch (error) {
-    console.error('Erro ao criar mod:', error);
     logError('Erro ao criar mod', error, { userId: req.user?.id });
     res.status(500).json({
       success: false,
@@ -95,9 +88,7 @@ export const createMod = async (req, res) => {
 // Buscar todos os mods (requer autenticação de admin)
 export const getAllMods = async (req, res) => {
   try {
-    console.log('🔍 getAllMods: Iniciando busca de mods para admin');
-    console.log('🔍 getAllMods: Usuário:', req.user?.username, 'Role:', req.user?.role);
-    console.log('🔍 getAllMods: Query params:', req.query);
+
     
     const { status, featured, minecraft_version, search } = req.query;
     
@@ -108,19 +99,15 @@ export const getAllMods = async (req, res) => {
     if (minecraft_version) filters.minecraft_version = minecraft_version;
     if (search) filters.search = search;
 
-    console.log('🔍 getAllMods: Filtros aplicados:', filters);
 
     const mods = await ModsModel.findAll(filters);
     
-    console.log('🔍 getAllMods: Mods encontrados:', mods.length);
-    console.log('🔍 getAllMods: Primeiro mod:', mods[0]);
 
     res.json({
       success: true,
       data: mods
     });
   } catch (error) {
-    console.error('Erro ao buscar mods:', error);
     logError('Erro ao buscar mods', error, { userId: req.user?.id });
     res.status(500).json({
       success: false,
@@ -151,7 +138,6 @@ export const getPublicMods = async (req, res) => {
       data: mods
     });
   } catch (error) {
-    console.error('Erro ao buscar mods públicos:', error);
     logError('Erro ao buscar mods públicos', error);
     res.status(500).json({
       success: false,
@@ -165,39 +151,33 @@ export const getModById = async (req, res) => {
   try {
     const { id } = req.params;
     
-    console.log('🔍 getModById: Buscando mod com ID:', id);
-    console.log('🔍 getModById: Usuário autenticado:', !!req.user);
-    console.log('🔍 getModById: Role do usuário:', req.user?.role);
-    console.log('🔍 getModById: Headers:', req.headers);
-    console.log('🔍 getModById: URL completa:', req.originalUrl);
+
     
     // Para usuários não autenticados, sempre usar método público
     let mod;
     if (req.user && req.user.role === 'super_admin') {
       // Admin pode ver todos os mods
-      console.log('🔍 getModById: Usando método admin');
+
       mod = await ModsModel.findByIdAdmin(id);
     } else {
       // Usuários normais e não autenticados só veem mods publicados
-      console.log('🔍 getModById: Usando método público');
+
       mod = await ModsModel.findById(id);
     }
 
     if (!mod) {
-      console.log('🔍 getModById: Mod não encontrado');
+
       return res.status(404).json({
         success: false,
         message: 'Mod não encontrado'
       });
     }
 
-    console.log('🔍 getModById: Mod encontrado:', mod.name);
     res.json({
       success: true,
       data: mod
     });
   } catch (error) {
-    console.error('Erro ao buscar mod:', error);
     logError('Erro ao buscar mod', error, { userId: req.user?.id });
     res.status(500).json({
       success: false,
@@ -246,7 +226,6 @@ export const getModBySlug = async (req, res) => {
       data: mod
     });
   } catch (error) {
-    console.error('Erro ao buscar mod:', error);
     logError('Erro ao buscar mod', error);
     res.status(500).json({
       success: false,
@@ -261,55 +240,44 @@ export const updateMod = async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    console.log('🔄 Atualizando mod:', id);
-    console.log('📝 Dados recebidos:', updateData);
-    console.log('👤 Usuário:', req.user?.username, 'Role:', req.user?.role);
 
     // Verificar se o mod existe (admin pode ver todos os mods)
     const existingMod = await ModsModel.findByIdAdmin(id);
     if (!existingMod) {
-      console.log('❌ Mod não encontrado:', id);
       return res.status(404).json({
         success: false,
         message: 'Mod não encontrado'
       });
     }
 
-    console.log('✅ Mod encontrado:', existingMod.title);
 
     // Verificar se o usuário é o autor ou um admin
     if (existingMod.author_id !== req.user.id && req.user.role !== 'super_admin') {
-      console.log('❌ Sem permissão. Author ID:', existingMod.author_id, 'User ID:', req.user.id, 'User Role:', req.user.role);
       return res.status(403).json({
         success: false,
         message: 'Você não tem permissão para editar este mod'
       });
     }
 
-    console.log('✅ Permissão verificada');
 
     // Mapear name para title sempre (se name foi enviado)
     if (updateData.name) {
-      console.log('🔄 Mapeando name para title:', updateData.name);
       updateData.title = updateData.name;
       delete updateData.name;
       
       // Se o nome foi alterado, gerar novo slug
       if (updateData.title !== existingMod.title) {
-        console.log('🔄 Nome alterado, gerando novo slug');
         updateData.slug = await ModsModel.generateUniqueSlug(updateData.title);
       }
     }
 
     // Processar thumbnail se foi enviado um arquivo
     if (req.thumbnailInfo) {
-      console.log('🖼️ Processando upload de thumbnail');
       updateData.thumbnail_url = `/uploads/thumbnails/${req.thumbnailInfo.filename}`;
     }
 
     // Processar tags se foram enviadas
     if (updateData.tags) {
-      console.log('🏷️ Processando tags');
       if (Array.isArray(updateData.tags)) {
         updateData.tags = updateData.tags;
       } else if (typeof updateData.tags === 'string') {
@@ -319,7 +287,6 @@ export const updateMod = async (req, res) => {
           updateData.tags = updateData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
         }
       }
-      console.log('🏷️ Tags processadas:', updateData.tags);
     }
 
     // Manter full_description como está (não mapear para description)
@@ -329,24 +296,19 @@ export const updateMod = async (req, res) => {
     if (updateData.mod_Loader) {
       updateData.mod_loader = updateData.mod_Loader;
       delete updateData.mod_Loader;
-      console.log('🔧 Mod Loader corrigido:', updateData.mod_loader);
     }
 
     // Processar tipo de conteúdo se foi enviado
     if (updateData.content_type_id) {
-      console.log('🎮 Tipo de Conteúdo ID:', updateData.content_type_id);
     }
 
     // Processar URLs de download se foram enviadas
     if (updateData.download_url_pc) {
-      console.log('💻 URL de download PC:', updateData.download_url_pc);
     }
     if (updateData.download_url_mobile) {
-      console.log('📱 URL de download Mobile:', updateData.download_url_mobile);
     }
 
     const updatedMod = await ModsModel.update(id, updateData);
-    console.log('✅ Mod atualizado no modelo:', updatedMod.title);
 
     // Log da atividade
     await LogService.logMods(
@@ -357,7 +319,6 @@ export const updateMod = async (req, res) => {
       req.get('User-Agent')
     );
 
-    console.log('✅ Log de atividade criado');
 
     res.json({
       success: true,
@@ -365,7 +326,6 @@ export const updateMod = async (req, res) => {
       data: updatedMod
     });
   } catch (error) {
-    console.error('💥 Erro ao atualizar mod:', error);
     logError('Erro ao atualizar mod', error, { userId: req.user?.id });
     res.status(500).json({
       success: false,
@@ -503,7 +463,6 @@ export const getModStats = async (req, res) => {
 export const downloadMod = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(`📥 Download solicitado para mod ${id} pelo usuário ${req.user?.id || 'não autenticado'}`);
 
     // Verificar se o mod existe e está publicado
     let mod;
@@ -516,18 +475,15 @@ export const downloadMod = async (req, res) => {
     }
     
     if (!mod || !mod.is_published || mod.is_archived) {
-      console.log(`❌ Mod ${id} não encontrado ou não disponível`);
       return res.status(404).json({
         success: false,
         message: 'Mod não encontrado ou não disponível para download'
       });
     }
 
-    console.log(`✅ Mod ${id} encontrado: ${mod.title}`);
 
     // Registrar download usando o novo sistema
     await ModsModel.registerDownload(id, req.user?.id);
-    console.log(`📊 Download registrado para mod ${id}`);
 
 
     res.json({
@@ -538,7 +494,6 @@ export const downloadMod = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('❌ Erro ao registrar download:', error);
     logError('Erro ao registrar download', error);
     res.status(500).json({
       success: false,
@@ -562,7 +517,6 @@ export const advancedSearch = async (req, res) => {
       author
     } = req.query;
     
-    console.log('🔍 Advanced Search - Parâmetros recebidos:', req.query);
     
     const filters = {
       search: q,
@@ -582,7 +536,6 @@ export const advancedSearch = async (req, res) => {
       }
     });
 
-    console.log('🔍 Advanced Search - Filtros aplicados:', filters);
 
     const result = await ModsModel.advancedSearch(filters, sort);
 
@@ -599,7 +552,6 @@ export const advancedSearch = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro na busca avançada:', error);
     logError('Erro na busca avançada', error, { userId: req.user?.id });
     res.status(500).json({
       success: false,
@@ -618,7 +570,6 @@ export const getContentTypes = async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.error('Erro ao buscar tipos de conteúdo:', error);
     logError('Erro ao buscar tipos de conteúdo', error);
     res.status(500).json({
       success: false,
@@ -637,7 +588,6 @@ export const getModsCount = async (req, res) => {
       data: counts
     });
   } catch (error) {
-    console.error('Erro ao buscar contagem de mods:', error);
     logError('Erro ao buscar contagem de mods', error);
     res.status(500).json({
       success: false,
@@ -652,7 +602,6 @@ export const registerView = async (req, res) => {
     const { id } = req.params;
     const ipAddress = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'] || 'unknown';
     
-    console.log('👁️ Registrando visualização:', { modId: id, ipAddress });
     
     const result = await ModsModel.registerView(id, ipAddress);
     
@@ -662,7 +611,6 @@ export const registerView = async (req, res) => {
       data: result
     });
   } catch (error) {
-    console.error('Erro ao registrar visualização:', error);
     logError('Erro ao registrar visualização', error, { modId: id, ipAddress: req.ip });
     res.status(500).json({
       success: false,
@@ -677,7 +625,6 @@ export const registerDownload = async (req, res) => {
     const { modId } = req.params;
     const userId = req.user?.id || null;
     
-    console.log('⬇️ Registrando download:', { modId, userId });
     
     const result = await ModsModel.registerDownload(modId, userId);
     
@@ -693,7 +640,6 @@ export const registerDownload = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Erro ao registrar download:', error);
     logError('Erro ao registrar download', error, { modId: req.params.modId, userId: req.user?.id });
     res.status(500).json({
       success: false,
@@ -714,7 +660,6 @@ export const getUserDownloadsCount = async (req, res) => {
     const total = await ModsModel.getUserDownloadsCount(userId);
     res.json({ success: true, data: { total } });
   } catch (error) {
-    console.error('Erro ao buscar contagem de downloads do usuário:', error);
     res.status(500).json({ success: false, message: 'Erro interno do servidor' });
   }
 };
@@ -769,7 +714,6 @@ export const getUserDownloadHistory = async (req, res) => {
     
     res.json({ success: true, data: history });
   } catch (error) {
-    console.error('Erro ao buscar histórico de downloads do usuário:', error);
     res.status(500).json({ success: false, message: 'Erro interno do servidor' });
   }
 };
@@ -780,7 +724,6 @@ export const toggleFavorite = async (req, res) => {
     const { id } = req.params;
     const userId = req.user?.id;
     
-    console.log('🔍 toggleFavorite - Parâmetros recebidos:', { id, userId, params: req.params });
     
     if (!userId) {
       return res.status(401).json({
@@ -790,14 +733,12 @@ export const toggleFavorite = async (req, res) => {
     }
     
     if (!id) {
-      console.error('❌ toggleFavorite - ID do mod não fornecido');
       return res.status(400).json({
         success: false,
         message: 'ID do mod não fornecido'
       });
     }
     
-    console.log('❤️ Alternando favorito:', { modId: id, userId });
     
     const result = await ModsModel.toggleFavorite(id, userId);
     
@@ -824,8 +765,7 @@ export const toggleFavorite = async (req, res) => {
       message: result.message,
       data: result
     });
-  } catch (error) {
-    console.error('Erro ao alternar favorito:', error);
+  } catch (error) { 
     logError('Erro ao alternar favorito', error, { modId: req.params.id, userId: req.user?.id });
     res.status(500).json({
       success: false,
@@ -840,7 +780,6 @@ export const checkFavorite = async (req, res) => {
     const { id } = req.params;
     const userId = req.user?.id;
     
-    console.log('🔍 checkFavorite - Parâmetros recebidos:', { id, userId, params: req.params });
     
     if (!userId) {
       return res.json({
@@ -885,7 +824,6 @@ export const getUserFavorites = async (req, res) => {
       });
     }
     
-    console.log('❤️ Buscando favoritos do usuário:', userId);
     
     const favorites = await ModsModel.getUserFavorites(userId);
     

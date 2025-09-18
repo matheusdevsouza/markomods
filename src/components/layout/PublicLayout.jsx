@@ -23,7 +23,7 @@ const PublicLayout = () => {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 max-w-screen-2xl items-center">
           <Link to="/" className="mr-6 flex items-center space-x-2">
-             <img src="/marko logo.png" alt="Eu Marko Mods Logo" className="h-6 w-auto" />
+             <img src="/markomods-logo.png" alt="Eu Marko Mods Logo" className="h-6 w-auto" />
             <span className="font-bold sm:inline-block gradient-text">Media Kit</span>
           </Link>
           <nav className="flex flex-1 items-center space-x-4">

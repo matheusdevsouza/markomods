@@ -55,7 +55,6 @@ export const processHtmlWithCss = (html) => {
 export const processHtmlForDatabase = (html) => {
   if (!html) return '';
   
-  console.log('🔍 HTML para banco (original):', html);
   
   // VERIFICAR SE JÁ FOI PROCESSADO (contém <br> mas não parágrafos vazios)
   const hasBrTags = html.includes('<br>');
@@ -63,7 +62,6 @@ export const processHtmlForDatabase = (html) => {
   
   // Se já tem <br> e não tem parágrafos vazios, não processar novamente
   if (hasBrTags && !hasEmptyParagraphs) {
-    console.log('🔍 HTML já processado, retornando sem modificações');
     return html;
   }
   
@@ -82,7 +80,6 @@ export const processHtmlForDatabase = (html) => {
     .replace(/<br>\s*<br>\s*<br>/g, '<br><br>')
     .replace(/<br>\s*<br>/g, '<br>');
   
-  console.log('🔍 HTML para banco (processado):', processedHtml);
   
   return processedHtml;
 };
@@ -95,8 +92,6 @@ export const processHtmlForDatabase = (html) => {
 export const processHtmlComplete = (html) => {
   if (!html) return '';
   
-  console.log('🔍 HTML original:', html);
-  console.log('🔍 HTML original com quebras:', html.replace(/\n/g, '\\n'));
   
   // CONVERTER TODAS AS LINHAS VAZIAS EM <br>
   let processedHtml = html
@@ -124,8 +119,6 @@ export const processHtmlComplete = (html) => {
     .replace(/<\/h[1-6]><p>/g, '</h1><br><p>')
     .replace(/<\/h[1-6]><br><p>/g, '</h1><br><br><p>');
   
-  console.log('🔍 HTML processado:', processedHtml);
-  console.log('🔍 HTML processado com quebras:', processedHtml.replace(/\n/g, '\\n'));
   
   return processedHtml;
 };

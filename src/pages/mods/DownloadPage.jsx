@@ -113,7 +113,6 @@ const DownloadPage = () => {
         setError(errorData.message || 'Erro ao carregar mod');
       }
     } catch (error) {
-      console.error('Erro ao buscar mod:', error);
       setError('Erro de conexão');
     } finally {
       setLoading(false);
@@ -182,7 +181,6 @@ const DownloadPage = () => {
             toast.success('Download registrado com sucesso!');
           }
         } catch (error) {
-          console.error('❌ Erro ao registrar download:', error);
         }
 
         // Abrir link em nova aba (não fechar o site)
@@ -193,7 +191,6 @@ const DownloadPage = () => {
         toast.error(t('downloadPage.error.downloadNotAvailable'));
       }
     } catch (error) {
-      console.error('Erro no download:', error);
               toast.error(t('downloadPage.toast.downloadError'));
     } finally {
       setIsDownloading(false);

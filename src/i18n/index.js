@@ -31,10 +31,7 @@ const resources = {
   }
 };
 
-// Debug: verificar se os recursos estão sendo carregados
-console.log('🔍 i18n Resources:', resources);
-console.log('🔍 i18n Resources pt-BR:', resources['pt-BR']);
-console.log('🔍 i18n Resources en-US:', resources['en-US']);
+// Recursos carregados
 
 i18n
   .use(LanguageDetector)
@@ -86,14 +83,9 @@ i18n
       expirationTime: 7 * 24 * 60 * 60 * 1000, // 7 dias
     }
   }).then(() => {
-    console.log('✅ i18n inicializado com sucesso!');
-    console.log('🌍 Idioma atual:', i18n.language);
-    console.log('🔑 Teste de tradução pt-BR:', i18n.t('language.title', { lng: 'pt-BR' }));
-    console.log('🔑 Teste de tradução en-US:', i18n.t('language.title', { lng: 'en-US' }));
-    console.log('🔑 Teste de tradução home.hero.title pt-BR:', i18n.t('home.hero.title', { lng: 'pt-BR' }));
-    console.log('🔑 Teste de tradução home.hero.title en-US:', i18n.t('home.hero.title', { lng: 'en-US' }));
+    // i18n inicializado com sucesso
   }).catch((error) => {
-    console.error('❌ Erro ao inicializar i18n:', error);
+    // Erro ao inicializar i18n
   });
 
 export default i18n;

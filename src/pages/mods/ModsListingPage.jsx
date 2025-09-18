@@ -87,14 +87,11 @@ const ModsListingPage = () => {
           const data = await response.json();
           // Filtrar apenas mods (content_type_id = 1)
           const modsOnly = (data.data || []).filter(mod => mod.content_type_id === 1);
-          console.log('📋 ModsListingPage: Mods públicos carregados:', modsOnly.length);
           setMods(modsOnly);
         } else {
-          console.error('❌ ModsListingPage: Erro ao buscar mods públicos:', response.status);
           setMods([]);
         }
       } catch (error) {
-        console.error('❌ ModsListingPage: Erro na busca:', error);
         setMods([]);
       } finally {
         setLoadingMods(false);
@@ -116,11 +113,9 @@ const ModsListingPage = () => {
           const addonsOnly = (data.data || []).filter(addon => addon.content_type_id === 2);
           setAddonsCount(addonsOnly.length);
         } else {
-          console.error('❌ ModsListingPage: Erro ao buscar contagem de addons:', response.status);
           setAddonsCount(0);
         }
       } catch (error) {
-        console.error('❌ ModsListingPage: Erro na busca de addons:', error);
         setAddonsCount(0);
       }
     };

@@ -73,8 +73,6 @@ const fileFilter = (req, file, cb) => {
     return cb(new Error('Arquivo muito grande. Tamanho máximo: 5MB'), false);
   }
   
-  // Log de upload para auditoria
-  console.log(`📁 Upload autorizado: ${file.originalname} (${file.mimetype}) - IP: ${req.ip}`);
   
   cb(null, true);
 };
@@ -115,8 +113,7 @@ export const validateThumbnail = (req, res, next) => {
       size: req.file.size,
       validated: true
     };
-    
-    console.log(`✅ Arquivo validado com sucesso: ${req.file.originalname}`);
+
   }
   next();
 };

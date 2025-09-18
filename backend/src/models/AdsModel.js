@@ -15,7 +15,7 @@ class AdsModel {
       
       return result[0];
     } catch (error) {
-      console.error('Erro ao buscar configurações de anúncios:', error);
+      
       throw error;
     }
   }
@@ -65,9 +65,8 @@ class AdsModel {
         defaultConfig.mod_download_page
       ]);
 
-      console.log('Configuração padrão de anúncios criada');
     } catch (error) {
-      console.error('Erro ao criar configuração padrão de anúncios:', error);
+
       throw error;
     }
   }
@@ -94,9 +93,7 @@ class AdsModel {
         JSON.stringify(config.modDownloadPage)
       ]);
 
-      console.log('Configurações de anúncios atualizadas');
     } catch (error) {
-      console.error('Erro ao atualizar configurações de anúncios:', error);
       throw error;
     }
   }
@@ -107,7 +104,7 @@ class AdsModel {
       const config = await this.getAdsConfig();
       return config.google_adsense_enabled;
     } catch (error) {
-      console.error('Erro ao verificar status do Google AdSense:', error);
+
       return false;
     }
   }
@@ -125,7 +122,7 @@ class AdsModel {
       
       return null;
     } catch (error) {
-      console.error('Erro ao buscar configurações de página:', error);
+
       return null;
     }
   }

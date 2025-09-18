@@ -284,43 +284,35 @@ export class UserModel {
   // Deletar conta completamente (hard delete) - Versão simplificada
   static async deleteAccountCompletely(userId) {
     try {
-      console.log('🗑️ Iniciando exclusão do usuário:', userId);
 
       // 1. Deletar comentários do usuário
-      console.log('🗑️ Deletando comentários...');
       const deleteCommentsSql = `DELETE FROM comments WHERE user_id = ?`;
       await executeQuery(deleteCommentsSql, [userId]);
 
       // 2. Deletar downloads do usuário
-      console.log('🗑️ Deletando downloads...');
+
       const deleteDownloadsSql = `DELETE FROM downloads WHERE user_id = ?`;
       await executeQuery(deleteDownloadsSql, [userId]);
 
       // 3. Deletar favoritos do usuário
-      console.log('🗑️ Deletando favoritos...');
       const deleteFavoritesSql = `DELETE FROM favorites WHERE user_id = ?`;
       await executeQuery(deleteFavoritesSql, [userId]);
 
       // 4. Deletar atividades do usuário (se a tabela existir)
-      console.log('🗑️ Deletando atividades...');
       try {
         const deleteActivitiesSql = `DELETE FROM activities WHERE user_id = ?`;
         await executeQuery(deleteActivitiesSql, [userId]);
       } catch (activityError) {
-        console.log('⚠️ Tabela activities não existe ou erro:', activityError.message);
       }
 
       // 5. Deletar o usuário
-      console.log('🗑️ Deletando usuário...');
       const deleteUserSql = `DELETE FROM users WHERE id = ?`;
       const result = await executeQuery(deleteUserSql, [userId]);
 
-      console.log('✅ Usuário deletado com sucesso:', result.affectedRows, 'linhas afetadas');
       logInfo('Conta do usuário deletada completamente', { userId });
       return true;
 
     } catch (error) {
-      console.error('❌ Erro ao deletar usuário:', error);
       logError('Erro ao deletar conta completamente', error, { userId });
       throw error;
     }
@@ -329,7 +321,6 @@ export class UserModel {
   // Atualizar usuário (admin)
   static async updateUser(userId, updateData) {
     try {
-      console.log('📝 Atualizando usuário:', userId, updateData);
       
       const { username, display_name, email, role, is_verified } = updateData;
       
@@ -369,8 +360,6 @@ export class UserModel {
       values.push(userId);
       
       const sql = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
-      console.log('📝 SQL:', sql);
-      console.log('📝 Values:', values);
       
       const result = await executeQuery(sql, values);
       
@@ -378,14 +367,12 @@ export class UserModel {
         throw new Error('Usuário não encontrado');
       }
       
-      console.log('✅ Usuário atualizado:', result.affectedRows, 'linhas afetadas');
       
       // Buscar usuário atualizado
       const updatedUser = await this.findById(userId);
       return updatedUser;
       
     } catch (error) {
-      console.error('❌ Erro ao atualizar usuário:', error);
       logError('Erro ao atualizar usuário', error, { userId });
       throw error;
     }

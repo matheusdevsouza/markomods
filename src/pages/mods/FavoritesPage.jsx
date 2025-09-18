@@ -54,14 +54,12 @@ const FavoritesPage = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('❤️ Favoritos carregados:', data.data);
         setFavorites(data.data || []);
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Erro ao carregar favoritos');
       }
     } catch (error) {
-      console.error('❌ Erro ao buscar favoritos:', error);
       setError('Erro ao carregar favoritos');
     } finally {
       setLoading(false);
@@ -88,7 +86,6 @@ const FavoritesPage = () => {
         }
       }
     } catch (error) {
-      console.error('❌ Erro ao remover favorito:', error);
       toast.error('Erro ao remover favorito');
     }
   };

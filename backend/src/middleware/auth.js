@@ -67,11 +67,9 @@ export const authenticateToken = async (req, res, next) => {
 // Middleware para verificar se usuário está autenticado (opcional)
 export const optionalAuth = async (req, res, next) => {
   try {
-    console.log('🔍 optionalAuth: Verificando autenticação opcional para:', req.path);
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
     
-    console.log('🔍 optionalAuth: Token presente:', !!token);
     
     if (token) {
       try {
@@ -82,22 +80,16 @@ export const optionalAuth = async (req, res, next) => {
           if (user && !user.is_banned) {
             req.user = user;
             req.token = token;
-            console.log('🔍 optionalAuth: Usuário autenticado:', user.username);
           }
         } else {
-          console.log('🔍 optionalAuth: Token inválido, continuando sem autenticação');
         }
       } catch (tokenError) {
-        console.log('🔍 optionalAuth: Erro ao verificar token, continuando sem autenticação:', tokenError.message);
       }
     } else {
-      console.log('🔍 optionalAuth: Nenhum token, continuando sem autenticação');
     }
     
-    console.log('🔍 optionalAuth: Continuando para próximo middleware');
     next();
   } catch (error) {
-    console.log('🔍 optionalAuth: Erro geral, continuando sem autenticação:', error.message);
     // Em caso de erro, continuar sem autenticação
     next();
   }
@@ -289,7 +281,6 @@ export const publicOrAuthenticated = async (req, res, next) => {
   try {
     // Se for GET request para buscar mod por ID, permitir acesso público
     if (req.method === 'GET' && req.params.id && !isNaN(req.params.id)) {
-      console.log('🔍 publicOrAuthenticated: Permitindo acesso público para GET /:id');
       return next();
     }
     
@@ -379,7 +370,6 @@ export const commentsPublicOrAuthenticated = async (req, res, next) => {
           }
         } catch (tokenError) {
           // Se houver erro no token, continuar sem autenticação
-          console.log('🔍 commentsPublicOrAuthenticated: Token inválido, continuando sem autenticação');
         }
       }
       
