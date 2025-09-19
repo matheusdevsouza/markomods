@@ -178,7 +178,7 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
       <motion.div variants={variants} className="h-full">
         <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
           {/* Imagem no topo */}
-          <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick} className="block relative">
+          <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick} className="block relative">
             <div className="relative overflow-hidden mod-image-container h-40 w-full">
               <img 
                 src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 
@@ -322,7 +322,7 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
           {/* Título e Visualizações - MESMA DIV, SEM TAGS */}
           <div className="flex items-start justify-between gap-3 mb-1">
             <div className="flex-1 min-w-0">
-              <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick}>
+              <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick}>
                 <CardTitle className="text-xl font-minecraft text-primary line-clamp-2 group-hover:text-primary/80 transition-colors duration-300">{mod.title || mod.name}</CardTitle>
               </Link>
             </div>
@@ -382,7 +382,7 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
           {/* Botão - SEMPRE na parte mais baixa */}
           <div className="flex-shrink-0">
             <Button asChild className="w-full minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-200 h-10 shadow-lg shadow-primary/25">
-              <Link to={`/mods/${mod.id}`} onClick={handleViewDetailsClick}>
+              <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick}>
                 <Eye size={16} className="mr-2" /> 
                 <span className="text-sm font-medium">{t('mods.viewDetails')}</span>
               </Link>
