@@ -771,7 +771,7 @@ const UserDashboardPage = React.memo(() => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Button asChild variant="outline" size="sm" className="hover:bg-green-500/10 hover:border-green-500/50 hover:text-green-500 group">
-                        <Link to={`/mods/${comment.mod_id}`}>
+                        <Link to={`/mods/${comment.mod_slug}`}>
                           <Eye size={14} className="mr-1 group-hover:text-green-500" />
                           Ver
                         </Link>
