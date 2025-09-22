@@ -342,3 +342,9 @@ backend/logs/
 .temp/
 tmp/
 temp/
+database/**
+!database/.gitkeep
+backend/migrations/**
+!backend/migrations/.gitkeep
+backend/database/migrations/**
+!backend/database/migrations/.gitkeep
