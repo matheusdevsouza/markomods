@@ -3,9 +3,26 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CalendarDays, GitMerge, Bug, Wrench, ArrowLeft } from 'lucide-react';
+import { 
+  CalendarDays, ArrowLeft, Sparkles, Bug, BookOpen, Palette, 
+  RotateCcw, Zap, TestTube, Wrench, Rocket, Building2, Undo2 
+} from 'lucide-react';
 
-const typeToIcon = { feature: GitMerge, fix: Bug, chore: Wrench };
+const typeToIcon = { 
+  feat: Sparkles, 
+  fix: Bug, 
+  docs: BookOpen, 
+  style: Palette, 
+  refactor: RotateCcw, 
+  perf: Zap, 
+  test: TestTube, 
+  chore: Wrench, 
+  ci: Rocket, 
+  build: Building2, 
+  revert: Undo2,
+  // Compatibilidade com tipos antigos
+  feature: Sparkles 
+};
 
 const Item = ({ item }) => {
   const Icon = typeToIcon[item.type] || Wrench;

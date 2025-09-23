@@ -3,12 +3,26 @@ import { motion } from 'framer-motion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CalendarDays, GitMerge, Bug, Wrench, ChevronRight, History, Info, Package, Rocket } from 'lucide-react';
+import { 
+  CalendarDays, ChevronRight, History, Info, Package, Rocket,
+  Sparkles, Bug, BookOpen, Palette, RotateCcw, Zap, TestTube, 
+  Wrench, Building2, Undo2 
+} from 'lucide-react';
 
 const typeToIcon = {
-  feature: GitMerge,
+  feat: Sparkles,
   fix: Bug,
+  docs: BookOpen,
+  style: Palette,
+  refactor: RotateCcw,
+  perf: Zap,
+  test: TestTube,
   chore: Wrench,
+  ci: Rocket,
+  build: Building2,
+  revert: Undo2,
+  // Compatibilidade com tipos antigos
+  feature: Sparkles,
 };
 
 const ItemRow = ({ item }) => {
