@@ -187,8 +187,8 @@ const AdminAdsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold flex items-center">
-            <Settings className="h-6 w-6 sm:h-8 sm:w-8 mr-2 sm:mr-3 text-primary" />
+          <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap">
+            <Settings className="h-6 w-6 sm:h-8 sm:w-8" />
             Gerenciar Anúncios
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground mt-2">

@@ -289,7 +289,8 @@ const AdminLogsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-2">
+          <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap mb-2">
+            <Activity className="h-6 w-6 sm:h-8 sm:w-8" />
             Logs do Sistema
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
