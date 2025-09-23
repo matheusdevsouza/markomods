@@ -134,7 +134,7 @@ const NotFoundPage = () => {
   const parallaxY = (mousePosition.y - window.innerHeight / 2) * 0.01;
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-[#1F1335] via-[#311C4A] to-[#000000] overflow-hidden">
       {/* Elementos flutuantes de fundo */}
       <div className="absolute inset-0 pointer-events-none">
         {floatingElements.map((element) => {
@@ -142,7 +142,7 @@ const NotFoundPage = () => {
           return (
             <motion.div
               key={element.id}
-              className="absolute text-purple-400/20"
+              className="absolute text-[#9F6E9F]/20"
               style={{
                 left: `${element.x}%`,
                 top: `${element.y}%`,
@@ -171,7 +171,7 @@ const NotFoundPage = () => {
       <div 
         className="absolute inset-0 opacity-30"
         style={{
-          background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(147, 51, 234, 0.3) 0%, transparent 50%)`
+          background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(159, 110, 159, 0.35) 0%, transparent 50%)`
         }}
       />
 
@@ -245,12 +245,12 @@ const NotFoundPage = () => {
           transition={{ duration: 0.8, type: "spring" }}
         >
           <motion.h1 
-            className="text-9xl md:text-[12rem] font-black bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent"
+            className="text-9xl md:text-[12rem] font-black bg-gradient-to-r from-[#1F1335] via-[#9F6E9F] to-[#311C4A] bg-clip-text text-transparent"
             animate={{ 
               textShadow: [
-                "0 0 20px rgba(147, 51, 234, 0.5)",
-                "0 0 40px rgba(147, 51, 234, 0.8)",
-                "0 0 20px rgba(147, 51, 234, 0.5)"
+                "0 0 20px rgba(159, 110, 159, 0.5)",
+                "0 0 40px rgba(49, 28, 74, 0.8)",
+                "0 0 20px rgba(159, 110, 159, 0.5)"
               ]
             }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -287,7 +287,7 @@ const NotFoundPage = () => {
           <Link to="/">
             <Button
               size="lg"
-              className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 hover:from-purple-500 hover:via-pink-500 hover:to-blue-500 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-gradient-to-r from-[#1F1335] via-[#9F6E9F] to-[#311C4A] hover:from-[#0D071A] hover:via-[#805B80] hover:to-[#1F1335] text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -327,13 +327,13 @@ const NotFoundPage = () => {
                 <>
                   {/* Instruções e Status do Jogo */}
                   <div className="text-center mb-4">
-                    <h3 className="text-lg font-bold text-purple-300 mb-2">🎯 {t('notFound.game.active')}</h3>
+                    <h3 className="text-lg font-bold text-[#CCFCDE] mb-2">🎯 {t('notFound.game.active')}</h3>
                     <p className="text-sm text-gray-300 mb-3">
                       {t('notFound.game.instructions')}
                     </p>
                     
                     {/* Pontuação e Tempo */}
-                    <div className="flex justify-between items-center bg-purple-900/30 rounded-lg p-3 mb-3">
+                    <div className="flex justify-between items-center bg-[#1F1335]/40 rounded-lg p-3 mb-3">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-yellow-400">{score}</div>
                         <div className="text-xs text-gray-300">{t('notFound.game.points')}</div>
@@ -372,7 +372,7 @@ const NotFoundPage = () => {
                   <Button
                     onClick={startGame}
                     size="sm"
-                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+                    className="flex-1 bg-[#311C4A] hover:bg-[#1F1335] text-white"
                   >
                     {t('notFound.game.actions.playAgain')}
                   </Button>
@@ -399,7 +399,7 @@ const NotFoundPage = () => {
             onClick={startGame}
             variant="outline"
             size="lg"
-            className="bg-black/20 border-purple-400/50 text-purple-300 hover:bg-purple-600/20 hover:border-purple-300 hover:text-white backdrop-blur-sm shadow-lg"
+            className="bg-black/20 border-[#9F6E9F]/50 text-[#CCFCDE] hover:bg-[#311C4A]/30 hover:border-[#2D6364] hover:text-white backdrop-blur-sm shadow-lg"
             whileHover={{ scale: 1.1, rotate: 5 }}
             whileTap={{ scale: 0.9 }}
           >
@@ -412,7 +412,7 @@ const NotFoundPage = () => {
           {[...Array(20)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-1 h-1 bg-purple-400/30 rounded-full"
+              className="absolute w-1 h-1 bg-[#9F6E9F]/30 rounded-full"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -434,7 +434,7 @@ const NotFoundPage = () => {
       </div>
 
       {/* Efeito de borda brilhante */}
-      <div className="absolute inset-0 border border-purple-500/20 rounded-none pointer-events-none" />
+      <div className="absolute inset-0 border border-[#9F6E9F]/20 rounded-none pointer-events-none" />
     </div>
   );
 };

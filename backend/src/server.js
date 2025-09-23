@@ -27,6 +27,8 @@ import adsRoutes from './routes/ads.js';
 import userSettingsRoutes from './routes/userSettings.js';
 import securityRoutes from './routes/security.js';
 import adminRoutes from './routes/admin.js';
+import changelogRoutes from './routes/changelogs.js';
+import ChangelogModel from './models/ChangelogModel.js';
 // Removido: rotas do editor customizado
 
 // Configurar dotenv
@@ -267,6 +269,7 @@ app.use('/api/comments', commentLimiter, commentsRoutes);
 app.use('/api/ads', adsRoutes);
 app.use('/api/security', adminSecurityMiddleware, securityRoutes);
 app.use('/api/admin', adminSecurityMiddleware, adminRoutes);
+app.use('/api/changelogs', changelogRoutes);
 // Removido: app.use('/api/editor', editorRoutes);
 
 // Upload de imagens do editor (rota direta para evitar problemas de roteamento aninhado)
@@ -395,6 +398,8 @@ const startServer = async () => {
     }
     
     console.log('✅ Conexão com banco estabelecida. Iniciando servidor HTTP...');
+    // Garantir tabela de changelogs
+    try { await ChangelogModel.ensureTable(); } catch (e) { console.error('Erro ao garantir tabela changelogs', e); }
     
     // Iniciar servidor
     app.listen(PORT, () => {

@@ -39,6 +39,7 @@ const AdminLayout = () => {
     { name: 'Usuários', href: '/admin/users', icon: Users },
     { name: 'Mods', href: '/admin/mods', icon: Package },
     { name: 'Anúncios', href: '/admin/ads', icon: Megaphone },
+    { name: 'Changelogs', href: '/admin/changelogs', icon: Activity },
     { name: t('modDetail.comments'), href: '/admin/comments-moderation', icon: MessageSquare },
     { name: 'Logs', href: '/admin/logs', icon: Activity },
   ];

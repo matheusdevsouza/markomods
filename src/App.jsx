@@ -53,9 +53,12 @@ const AdminModsPage = React.lazy(() => import('@/pages/mods/admin/AdminModsPage'
 const AdminAdsPage = React.lazy(() => import('@/pages/mods/admin/AdminAdsPage'));
 const AdminLogsPage = React.lazy(() => import('@/pages/mods/admin/AdminLogsPage'));
 const AdminCommentsModerationPage = React.lazy(() => import('@/pages/mods/admin/AdminCommentsModerationPage'));
+const AdminChangelogsPage = React.lazy(() => import('@/pages/mods/admin/AdminChangelogsPage'));
 
 // Páginas públicas
 const MediaKitPage = React.lazy(() => import('@/pages/MediaKitPage'));
+const ChangelogPage = React.lazy(() => import('@/pages/ChangelogPage'));
+const ChangelogDetailPage = React.lazy(() => import('@/pages/ChangelogDetailPage'));
 
 // Componente de loading
 const LoadingSpinner = () => {
@@ -97,6 +100,8 @@ function App() {
                   <Route path="terms" element={<TermsOfServicePage />} />
                   <Route path="contact" element={<ContactPage />} />
                   <Route path="faq" element={<FAQPage />} />
+                  <Route path="changelog" element={<ChangelogPage />} />
+                  <Route path="changelog/:slug" element={<ChangelogDetailPage />} />
                   <Route path="banned" element={<BannedPage />} />
                   
                   {/* Rotas de autenticação (não requerem login) */}
@@ -156,6 +161,7 @@ function App() {
                   <Route path="users" element={<AdminUsersPage />} />
                   <Route path="mods" element={<AdminModsPage />} />
                   <Route path="ads" element={<AdminAdsPage />} />
+                  <Route path="changelogs" element={<AdminChangelogsPage />} />
                   <Route path="comments-moderation" element={<AdminCommentsModerationPage />} />
                   <Route path="logs" element={<AdminLogsPage />} />
                 </Route>
