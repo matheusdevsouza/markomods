@@ -1,3 +1,40 @@
+# === Segredos e variáveis de ambiente ===
+.env
+.env.*
+production.env
+config.env
+backend/.env
+backend/.env.*
+
+# === Backups e dumps ===
+backend/backups/
+backup_modsdomarko_db*.sql
+files-backup-*.tar.gz
+database/**/*.sql
+
+# === Uploads de usuários ===
+uploads/
+backend/uploads/
+
+# === Logs ===
+backend/logs/
+*.log
+*.gz
+
+# === Configs locais que não devem ir para o git ===
+nginx-config.conf
+nginx-simple.conf
+
+# === Build/temporários ===
+dist/
+node_modules/
+
+# === IDE/SO ===
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
+
 # =====================================================
 # GITIGNORE - EU, MARKO! MODS
 # Otimizado para produção
