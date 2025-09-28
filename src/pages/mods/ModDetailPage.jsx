@@ -5,6 +5,7 @@ import { useThemeMods } from '../../contexts/ThemeContextMods';
 import { useTranslation } from '../../hooks/useTranslation';
 import { buildThumbnailUrl, buildAvatarUrl } from '../../utils/urls';
 import { processHtmlComplete } from '../../utils/htmlProcessor';
+import YouTubePlayer from '../../components/YouTubePlayer';
 
 import { 
   Download, 
@@ -894,6 +895,24 @@ const ModDetailPage = () => {
             `}</style>
           </div>
         </div>
+
+        {/* Player de Vídeo */}
+        {mod.video_url && (
+          <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-250 ${getCardClasses()} ${
+            pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
+            <div className="space-y-4">
+              <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
+                <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
+                Vídeo do Mod
+              </h2>
+              <YouTubePlayer 
+                videoUrl={mod.video_url} 
+                title={`${mod.title} - Vídeo Demonstrativo`}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Seção de Informações (infos) */}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${

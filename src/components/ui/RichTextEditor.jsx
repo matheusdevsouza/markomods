@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import HardBreak from '@tiptap/extension-hard-break';
@@ -7,8 +7,10 @@ import Link from '@tiptap/extension-link';
 import Heading from '@tiptap/extension-heading';
 import Image from '@tiptap/extension-image';
 import TextAlign from '@tiptap/extension-text-align';
+import TextStyle from '@tiptap/extension-text-style';
+import Color from '@tiptap/extension-color';
 import { Resizable } from 're-resizable';
-import { Bold, Italic, Strikethrough, List, ListOrdered, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, Link as LinkIcon, Image as ImageIcon, Undo, Redo, AlignLeft, AlignCenter, AlignRight, AlignJustify, Underline as UnderlineIcon, Code, Quote, Type, X, CornerDownLeft } from 'lucide-react';
+import { Bold, Italic, Strikethrough, List, ListOrdered, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, Link as LinkIcon, Image as ImageIcon, Undo, Redo, AlignLeft, AlignCenter, AlignRight, AlignJustify, Underline as UnderlineIcon, Code, Quote, Type, X, CornerDownLeft, Palette, Check, Upload, Image as ImageIcon2 } from 'lucide-react';
 import './RichTextEditor.css';
 
 // Extensão personalizada para preservar parágrafos vazios
@@ -180,6 +182,80 @@ const ResizableImage = Image.extend({
           document.dispatchEvent(event);
         };
         
+        // Botão de exclusão
+        const deleteButton = document.createElement('div');
+        deleteButton.style.position = 'absolute';
+        deleteButton.style.top = '8px';
+        deleteButton.style.right = '8px';
+        deleteButton.style.width = '24px';
+        deleteButton.style.height = '24px';
+        deleteButton.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+        deleteButton.style.borderRadius = '6px';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.style.zIndex = '20';
+        deleteButton.style.border = 'none';
+        deleteButton.style.display = 'flex';
+        deleteButton.style.alignItems = 'center';
+        deleteButton.style.justifyContent = 'center';
+        deleteButton.style.fontSize = '12px';
+        deleteButton.style.color = 'white';
+        deleteButton.style.fontWeight = '600';
+        deleteButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2)';
+        deleteButton.style.opacity = '0';
+        deleteButton.style.transition = 'all 0.2s ease';
+        deleteButton.style.transform = 'scale(0.8)';
+        
+        // Ícone de lixeira SVG
+        deleteButton.innerHTML = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3,6 5,6 21,6"></polyline>
+            <path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        `;
+        
+        // Mostrar botão no hover
+        wrapper.onmouseenter = () => { 
+          wrapper.style.border = '1px dashed var(--border)';
+          deleteButton.style.opacity = '1';
+          deleteButton.style.transform = 'scale(1)';
+        };
+        wrapper.onmouseleave = () => { 
+          wrapper.style.border = '1px dashed transparent';
+          deleteButton.style.opacity = '0';
+          deleteButton.style.transform = 'scale(0.8)';
+        };
+        
+        // Efeito de hover no botão
+        deleteButton.onmouseenter = () => {
+          deleteButton.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+          deleteButton.style.transform = 'scale(1.1)';
+          deleteButton.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3)';
+        };
+        
+        deleteButton.onmouseleave = () => {
+          deleteButton.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+          deleteButton.style.transform = 'scale(1)';
+          deleteButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2)';
+        };
+        
+        // Handler para exclusão
+        deleteButton.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          try {
+            const pos = getPos();
+            if (pos !== undefined && pos !== null) {
+              const { state, view } = editor;
+              const tr = state.tr.delete(pos, pos + node.nodeSize);
+              view.dispatch(tr);
+            }
+          } catch (error) {
+            console.error('Erro ao excluir imagem:', error);
+          }
+        };
+
         const handle = document.createElement('div');
         handle.style.position = 'absolute';
         handle.style.right = '-6px';
@@ -215,7 +291,9 @@ const ResizableImage = Image.extend({
             // Forçar atualização do editor para garantir que a mudança seja persistida
             setTimeout(() => {
               const html = editor.getHTML();
-              onChange?.(html);
+              if (onChange) {
+                onChange(html);
+              }
             }, 50);
           };
           document.addEventListener('mousemove', onMove);
@@ -230,6 +308,7 @@ const ResizableImage = Image.extend({
         
         wrapper.appendChild(img);
         wrapper.appendChild(handle);
+        wrapper.appendChild(deleteButton);
         resizable.appendChild(wrapper);
         
         // FORÇAR ATUALIZAÇÃO VISUAL
@@ -265,6 +344,105 @@ const ResizableImage = Image.extend({
   }
 });
 
+// Componente de Seletor de Cores
+const ColorPicker = ({ onColorSelect, currentColor, onClose }) => {
+  const [customColor, setCustomColor] = useState(currentColor || '#FFFFFF');
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  
+  const predefinedColors = [
+    '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00',
+    '#FF00FF', '#00FFFF', '#FFA500', '#800080', '#008000', '#000080',
+    '#808080', '#C0C0C0', '#FFC0CB', '#A52A2A', '#FFD700', '#00CED1',
+    '#FF6347', '#32CD32', '#8A2BE2', '#DC143C', '#00BFFF', '#FF1493'
+  ];
+
+  const handleColorSelect = (color) => {
+    onColorSelect(color);
+    // Não fechar automaticamente, permitir múltiplas seleções
+  };
+
+  const handleCustomColorSubmit = () => {
+    if (customColor) {
+      onColorSelect(customColor);
+      // Não fechar automaticamente
+    }
+  };
+
+  return (
+    <div className="absolute top-full left-0 mt-2 bg-background border border-border rounded-lg shadow-lg p-4 z-50 min-w-[280px]">
+      <div className="flex items-center justify-between mb-3">
+        <h4 className="text-sm font-medium text-foreground">Escolher Cor</h4>
+        <button
+          onClick={onClose}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <X size={16} />
+        </button>
+      </div>
+      
+      {/* Cores Predefinidas */}
+      <div className="mb-4">
+        <p className="text-xs text-muted-foreground mb-2">Cores Predefinidas</p>
+        <div className="grid grid-cols-6 gap-2">
+          {predefinedColors.map((color) => (
+            <button
+              key={color}
+              onClick={() => handleColorSelect(color)}
+              className={`w-8 h-8 rounded border-2 ${
+                currentColor === color ? 'border-primary' : 'border-border'
+              }`}
+              style={{ backgroundColor: color }}
+              title={color}
+            >
+              {currentColor === color && (
+                <Check size={12} className="text-white mx-auto" />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+      
+      {/* Cor Personalizada */}
+      <div className="border-t border-border pt-3">
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={customColor}
+            onChange={(e) => setCustomColor(e.target.value)}
+            className="w-8 h-8 rounded border border-border cursor-pointer"
+          />
+          <input
+            type="text"
+            value={customColor}
+            onChange={(e) => setCustomColor(e.target.value)}
+            placeholder="#000000"
+            className="flex-1 px-2 py-1 text-xs border border-border rounded bg-background text-foreground"
+          />
+          <button
+            onClick={handleCustomColorSubmit}
+            className="px-3 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90"
+          >
+            Aplicar
+          </button>
+        </div>
+      </div>
+      
+      {/* Botão Limpar */}
+      <div className="border-t border-border pt-3 mt-3">
+        <button
+          onClick={() => {
+            onColorSelect('#FFFFFF'); // Aplicar cor padrão (branco)
+            onClose();
+          }}
+          className="w-full px-3 py-2 text-xs bg-muted text-muted-foreground rounded hover:bg-muted/80"
+        >
+          Limpar
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export const RichTextEditor = ({ value, onChange }) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -272,6 +450,18 @@ export const RichTextEditor = ({ value, onChange }) => {
   const [showImageOptionsModal, setShowImageOptionsModal] = useState(false);
   const [selectedImageNode, setSelectedImageNode] = useState(null);
   const [selectedImagePos, setSelectedImagePos] = useState(null);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showFloatingColorPicker, setShowFloatingColorPicker] = useState(false);
+  const [colorPickerPosition, setColorPickerPosition] = useState({ top: 0, left: 0 });
+  const [showFloatingMenu, setShowFloatingMenu] = useState(false);
+  const [floatingMenuPosition, setFloatingMenuPosition] = useState({ top: 0, left: 0 });
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [selectedText, setSelectedText] = useState('');
+  const [isDragOver, setIsDragOver] = useState(false);
+  const colorPickerRef = useRef(null);
+  const floatingMenuRef = useRef(null);
+  const selectionTimeoutRef = useRef(null);
 
   const editor = useEditor({
     extensions: [
@@ -302,6 +492,8 @@ export const RichTextEditor = ({ value, onChange }) => {
         HTMLAttributes: { rel: 'noopener noreferrer nofollow', target: '_blank' }
       }),
       TextAlign.configure({ types: ['heading', 'paragraph', 'image'] }),
+      TextStyle,
+      Color.configure({ types: [TextStyle.name] }),
       ResizableImage.configure({ inline: false, allowBase64: true }),
       PreserveEmptyParagraphs,
       ForceLineBreaks
@@ -356,20 +548,161 @@ export const RichTextEditor = ({ value, onChange }) => {
     }
   });
 
+  // Função para aplicar cor ao texto selecionado
+  const applyTextColor = useCallback((color) => {
+    if (editor) {
+      editor.chain().focus().setColor(color).run();
+      // Não fechar automaticamente, deixar o usuário decidir
+    }
+  }, [editor]);
+
+  // Função para aplicar cor do menu flutuante
+  const applyFloatingTextColor = useCallback((color) => {
+    if (editor) {
+      editor.chain().focus().setColor(color).run();
+      // Não fechar automaticamente, deixar o usuário decidir
+    }
+  }, [editor]);
+
+  // Função para obter a cor atual do texto selecionado
+  const getCurrentTextColor = useCallback(() => {
+    if (editor) {
+      return editor.getAttributes('textStyle').color || '#FFFFFF';
+    }
+    return '#FFFFFF';
+  }, [editor]);
+
+  // Função para remover cor do texto selecionado
+  const removeTextColor = useCallback(() => {
+    if (editor) {
+      editor.chain().focus().unsetColor().run();
+      setShowColorPicker(false);
+    }
+  }, [editor]);
+
+  // Função para abrir modal de link
+  const openLinkModal = useCallback(() => {
+    if (editor) {
+      const { selection } = editor.state;
+      const selectedText = editor.state.doc.textBetween(selection.from, selection.to);
+      setSelectedText(selectedText);
+      setLinkUrl('');
+      setShowLinkModal(true);
+    }
+  }, [editor]);
+
+  // Função para aplicar link
+  const applyLink = useCallback(() => {
+    if (editor && linkUrl.trim()) {
+      editor.chain().focus().setLink({ href: linkUrl }).run();
+      setShowLinkModal(false);
+      setLinkUrl('');
+      setSelectedText('');
+    }
+  }, [editor, linkUrl]);
+
+  // Função para remover link
+  const removeLink = useCallback(() => {
+    if (editor) {
+      editor.chain().focus().unsetLink().run();
+    }
+  }, [editor]);
+
+  // Função para abrir modal de opções de imagem
+  const openImageOptionsModal = useCallback((node, pos) => {
+    setSelectedImageNode(node);
+    setSelectedImagePos(pos);
+    setShowImageOptionsModal(true);
+  }, []);
+
+
+
+
   // Event listener para cliques em imagens
   React.useEffect(() => {
     const handleImageClick = (event) => {
       const { node, pos } = event.detail;
-      setSelectedImageNode(node);
-      setSelectedImagePos(pos);
-      setShowImageOptionsModal(true);
+      openImageOptionsModal(node, pos);
     };
 
     document.addEventListener('imageClick', handleImageClick);
     return () => {
       document.removeEventListener('imageClick', handleImageClick);
     };
-  }, []);
+  }, [openImageOptionsModal]);
+
+  // Event listener para detectar seleção de texto com delay
+  React.useEffect(() => {
+    if (!editor) return;
+
+    const handleSelectionUpdate = () => {
+      const { selection } = editor.state;
+      const hasSelection = !selection.empty;
+      
+      // Limpar timeout anterior se existir
+      if (selectionTimeoutRef.current) {
+        clearTimeout(selectionTimeoutRef.current);
+      }
+      
+      if (hasSelection) {
+        // Adicionar delay de 500ms antes de mostrar o menu
+        selectionTimeoutRef.current = setTimeout(() => {
+          // Verificar se ainda há seleção após o delay
+          const currentSelection = editor.state.selection;
+          if (!currentSelection.empty) {
+            // Calcular posição do menu flutuante
+            const { view } = editor;
+            const { from, to } = currentSelection;
+            const start = view.coordsAtPos(from);
+            const end = view.coordsAtPos(to);
+            
+            const editorRect = view.dom.getBoundingClientRect();
+            const menuTop = start.top - editorRect.top - 10;
+            const menuLeft = Math.min(start.left - editorRect.left, editorRect.width - 200);
+            
+            setFloatingMenuPosition({ top: menuTop, left: menuLeft });
+            setShowFloatingMenu(true);
+          }
+        }, 500);
+      } else {
+        setShowFloatingMenu(false);
+      }
+    };
+
+    editor.on('selectionUpdate', handleSelectionUpdate);
+    
+    return () => {
+      editor.off('selectionUpdate', handleSelectionUpdate);
+      // Limpar timeout ao desmontar
+      if (selectionTimeoutRef.current) {
+        clearTimeout(selectionTimeoutRef.current);
+      }
+    };
+  }, [editor]);
+
+  // Event listener para cliques fora do seletor de cores e menu flutuante
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      const isColorPickerClick = colorPickerRef.current && colorPickerRef.current.contains(event.target);
+      const isFloatingMenuClick = floatingMenuRef.current && floatingMenuRef.current.contains(event.target);
+      
+      if (!isColorPickerClick && !isFloatingMenuClick) {
+        // Adicionar um pequeno delay para evitar fechamento acidental
+        setTimeout(() => {
+          setShowColorPicker(false);
+          setShowFloatingColorPicker(false);
+        }, 100);
+      }
+    };
+
+    if (showColorPicker || showFloatingColorPicker || showFloatingMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showColorPicker, showFloatingColorPicker, showFloatingMenu]);
 
   // GARANTIR REDIMENSIONAMENTO EM MODS EXISTENTES
   // Quando o valor muda (edição de mod existente), reinicializar imagens
@@ -398,12 +731,37 @@ export const RichTextEditor = ({ value, onChange }) => {
     setShowImageModal(true);
     setSelectedFile(null);
     setSelectedAlignment('left');
+    // Não resetar imageLinkUrl aqui para manter o valor
+    setIsDragOver(false);
   }, []);
 
   const handleFileSelect = useCallback((event) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+    }
+  }, []);
+
+  const handleDragOver = useCallback((event) => {
+    event.preventDefault();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((event) => {
+    event.preventDefault();
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback((event) => {
+    event.preventDefault();
+    setIsDragOver(false);
+    
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('image/')) {
+        setSelectedFile(file);
+      }
     }
   }, []);
 
@@ -420,18 +778,23 @@ export const RichTextEditor = ({ value, onChange }) => {
         body: formData
       });
       const data = await resp.json();
+      
       if (data?.url) {
+        // Inserir imagem normal
         editor?.chain().focus().setImage({ 
           src: data.url, 
           alt: selectedFile.name, 
           width: '100%', 
           align: selectedAlignment 
         }).run();
+        
+        // Limpar estados
         setShowImageModal(false);
         setSelectedFile(null);
         setSelectedAlignment('left');
       }
     } catch (error) {
+      console.error('Erro ao inserir imagem:', error);
     }
   }, [selectedFile, selectedAlignment, editor]);
 
@@ -599,6 +962,28 @@ export const RichTextEditor = ({ value, onChange }) => {
         </MenuButton>
         <span className="mx-1 h-5 w-px bg-border" />
         
+        {/* Seletor de Cor */}
+        <div className="relative" ref={colorPickerRef}>
+          <MenuButton 
+            onClick={() => {
+              setShowColorPicker(!showColorPicker);
+              setShowFloatingColorPicker(false); // Fechar o do menu flutuante
+            }} 
+            active={editor.isActive('textStyle', { color: /^#/ })} 
+            title="Cor do Texto"
+          >
+            <Palette size={16} />
+          </MenuButton>
+          {showColorPicker && (
+            <ColorPicker
+              onColorSelect={applyTextColor}
+              currentColor={getCurrentTextColor()}
+              onClose={() => setShowColorPicker(false)}
+            />
+          )}
+        </div>
+        <span className="mx-1 h-5 w-px bg-border" />
+        
         {/* Títulos */}
         <MenuButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive('heading', { level: 1 })} title="Título 1">
           <Heading1 size={16} />
@@ -654,14 +1039,10 @@ export const RichTextEditor = ({ value, onChange }) => {
         <span className="mx-1 h-5 w-px bg-border" />
         
         {/* Links e Imagens */}
-        <MenuButton onClick={() => {
-          const url = window.prompt('Informe a URL do link:');
-          if (!url) return;
-          editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-        }} active={editor.isActive('link')} title="Adicionar Link">
+        <MenuButton onClick={openLinkModal} active={editor.isActive('link')} title="Adicionar Link">
           <LinkIcon size={16} />
         </MenuButton>
-        <MenuButton onClick={() => editor.chain().focus().unsetLink().run()} active={editor.isActive('link')} title="Remover Link">
+        <MenuButton onClick={removeLink} active={editor.isActive('link')} title="Remover Link">
           <LinkIcon size={16} className="text-red-400" />
         </MenuButton>
         <MenuButton onClick={openImageModal} title="Adicionar Imagem">
@@ -696,12 +1077,118 @@ export const RichTextEditor = ({ value, onChange }) => {
           </MenuButton>
         </div>
       </div>
-      <div className="p-3 min-h-[220px]">
+      <div className="p-3 min-h-[220px] relative">
         <EditorContent 
           editor={editor} 
           className="rich-text-editor"
         />
+        
+        {/* Menu Flutuante de Seleção de Texto */}
+        {showFloatingMenu && (
+          <div 
+            ref={floatingMenuRef}
+            className="absolute bg-background border border-border rounded-lg shadow-lg p-2 flex items-center gap-1 z-50"
+            style={{
+              top: `${floatingMenuPosition.top}px`,
+              left: `${floatingMenuPosition.left}px`,
+            }}
+          >
+            <MenuButton 
+              onClick={() => {
+                setShowFloatingColorPicker(!showFloatingColorPicker);
+                setShowColorPicker(false); // Fechar o da barra de ferramentas
+              }} 
+              active={editor.isActive('textStyle', { color: /^#/ })} 
+              title="Cor do Texto"
+            >
+              <Palette size={14} />
+            </MenuButton>
+            <MenuButton 
+              onClick={removeTextColor} 
+              title="Remover Cor"
+            >
+              <X size={14} />
+            </MenuButton>
+            {showFloatingColorPicker && (
+              <div className="absolute top-full left-0 mt-2">
+                <ColorPicker
+                  onColorSelect={applyFloatingTextColor}
+                  currentColor={getCurrentTextColor()}
+                  onClose={() => setShowFloatingColorPicker(false)}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Modal para inserir link */}
+      {showLinkModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-background border border-border rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-foreground">Adicionar Link</h3>
+              <button
+                onClick={() => setShowLinkModal(false)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            {/* Texto selecionado */}
+            {selectedText && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Texto selecionado:
+                </label>
+                <div className="p-3 bg-muted rounded-md border border-border">
+                  <span className="text-muted-foreground">"{selectedText}"</span>
+                </div>
+              </div>
+            )}
+            
+            {/* Campo de URL */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-foreground mb-2">
+                URL do link:
+              </label>
+              <input
+                type="url"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+                placeholder="https://exemplo.com"
+                className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    applyLink();
+                  } else if (e.key === 'Escape') {
+                    setShowLinkModal(false);
+                  }
+                }}
+              />
+            </div>
+            
+            {/* Botões */}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowLinkModal(false)}
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={applyLink}
+                disabled={!linkUrl.trim()}
+                className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed rounded-md transition-colors"
+              >
+                Aplicar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal para inserir imagem */}
       {showImageModal && (
@@ -723,17 +1210,66 @@ export const RichTextEditor = ({ value, onChange }) => {
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Selecionar Imagem
                 </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileSelect}
-                  className="w-full p-2 border border-border rounded-md bg-background text-foreground"
-                />
-                {selectedFile && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Arquivo selecionado: {selectedFile.name}
-                  </p>
-                )}
+                
+                {/* Área de Drop Zone Estilizada */}
+                <div
+                  className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+                    isDragOver 
+                      ? 'border-primary bg-primary/5' 
+                      : selectedFile 
+                        ? 'border-green-500 bg-green-500/5' 
+                        : 'border-border hover:border-primary/50'
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById('file-input').click()}
+                >
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                  
+                  {selectedFile ? (
+                    <div className="space-y-3">
+                      <div className="w-16 h-16 mx-auto bg-green-500/20 rounded-full flex items-center justify-center">
+                        <ImageIcon2 size={32} className="text-green-500" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">
+                          {selectedFile.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Clique para trocar ou arraste outra imagem
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
+                        <ImageIcon2 size={32} className="text-muted-foreground" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground mb-1">
+                          Clique para selecionar ou arraste uma imagem
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          PNG, JPG, GIF até 5MB
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                      >
+                        <Upload size={16} />
+                        Escolher Arquivo
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Seleção de alinhamento */}
@@ -778,6 +1314,7 @@ export const RichTextEditor = ({ value, onChange }) => {
                 </div>
               </div>
 
+
               {/* Botões de ação */}
               <div className="flex justify-end gap-2 pt-4">
                 <button
@@ -821,9 +1358,6 @@ export const RichTextEditor = ({ value, onChange }) => {
                   alt={selectedImageNode.attrs.alt || 'Imagem selecionada'}
                   className="max-w-full h-32 object-contain mx-auto rounded border"
                 />
-                <p className="text-sm text-muted-foreground mt-2">
-                  Alinhamento atual: {selectedImageNode.attrs.align || 'left'}
-                </p>
               </div>
 
               {/* Opções de alinhamento */}
@@ -868,17 +1402,13 @@ export const RichTextEditor = ({ value, onChange }) => {
                 </div>
               </div>
 
-              {/* Informações da imagem */}
-              <div className="text-sm text-muted-foreground">
-                <p><strong>Largura:</strong> {selectedImageNode.attrs.width || '100%'}</p>
-                <p><strong>Alt:</strong> {selectedImageNode.attrs.alt || 'Sem descrição'}</p>
-      </div>
-      
+
+
               {/* Botões de ação */}
               <div className="flex justify-end gap-2 pt-4">
                 <button
                   onClick={() => setShowImageOptionsModal(false)}
-                  className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
                 >
                   Fechar
                 </button>
