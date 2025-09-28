@@ -62,13 +62,13 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://www.youtube.com", "https://*.youtube.com"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", "https://www.youtube.com", "https://*.youtube.com"],
       fontSrc: ["'self'"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
-      frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com"],
+      frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com", "https://*.youtube.com"],
       baseUri: ["'self'"],
       formAction: ["'self'"],
       frameAncestors: ["'none'"],
@@ -105,6 +105,27 @@ app.use(helmet({
   dnsPrefetchControl: true,
   frameguard: { action: 'deny' }
 }));
+
+// Middleware específico para YouTube (sobrescreve CSP se necessário)
+app.use((req, res, next) => {
+  // Headers específicos para YouTube
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Content-Security-Policy', 
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' https://www.youtube.com https://*.youtube.com; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "img-src 'self' data: https:; " +
+    "connect-src 'self' https://www.youtube.com https://*.youtube.com; " +
+    "font-src 'self' https://fonts.gstatic.com; " +
+    "frame-src 'self' https://www.youtube.com https://youtube.com https://*.youtube.com; " +
+    "object-src 'none'; " +
+    "media-src 'self'; " +
+    "base-uri 'self'; " +
+    "form-action 'self'; " +
+    "frame-ancestors 'none'"
+  );
+  next();
+});
 
 // CORS
 const corsOptions = {

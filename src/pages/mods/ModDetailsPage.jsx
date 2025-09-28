@@ -10,7 +10,6 @@ import ShareButtons from '@/components/mods/ShareButtons';
 import CommentSection from '@/components/mods/CommentSection';
 import { useMods } from '@/contexts/ModsContext';
 import { useToast } from '@/components/ui/use-toast';
-import YouTubePlayer from '@/components/YouTubePlayer';
 
 
 const ModDetailsPage = () => {
@@ -190,20 +189,6 @@ const ModDetailsPage = () => {
               </CardContent>
             </Card>
 
-            {/* Player de Vídeo */}
-            {mod.video_url && (
-              <Card className="minecraft-card">
-                <CardHeader>
-                  <CardTitle className="text-xl font-minecraft text-primary">Vídeo do Mod</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <YouTubePlayer 
-                    videoUrl={mod.video_url} 
-                    title={`${mod.name} - Vídeo Demonstrativo`}
-                  />
-                </CardContent>
-              </Card>
-            )}
 
             {/* Galeria de Imagens */}
             {mod.gallery_urls && JSON.parse(mod.gallery_urls).length > 0 && (
