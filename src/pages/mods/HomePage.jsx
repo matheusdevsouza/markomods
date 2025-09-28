@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import ModCard from '@/components/mods/ModCard';
 import { Button } from '@/components/ui/button';
 import PaginationControls from '@/components/ui/PaginationControls';
-import { Flame, ArrowRight, History, DownloadCloud, Package } from 'lucide-react';
+import { Flame, ArrowRight, History, DownloadCloud, Package, Eye } from 'lucide-react';
 import { buildThumbnailUrl } from '@/utils/urls';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/contexts/AuthContextMods';
@@ -105,16 +105,20 @@ const ModsCarousel = ({ mods }) => {
               <img 
           src={featuredMod.gallery_urls?.[0] || buildThumbnailUrl(featuredMod.thumbnail_url) || '/placeholder-images/default-gallery-1.jpg'}
           alt={`Banner para ${featuredMod.name}`}
-          className="w-full h-64 md:h-96 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+          className="w-full h-48 md:h-64 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
         />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/60" />
       <div className="absolute bottom-0 left-0 p-6 md:p-10 text-white">
-        <span className="block font-minecraft text-xs text-accent mb-1">{t('home.modOfTheWeek')}</span>
+        <div className="inline-flex items-center bg-primary/20 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/30 mb-4">
+          <span className="text-xs font-semibold text-white uppercase tracking-wide">{t('home.modOfTheWeek')}</span>
+        </div>
         <h1 className="text-3xl md:text-5xl font-minecraft mb-2 md:mb-4 line-clamp-2">{featuredMod.name}</h1>
         <p className="text-sm md:text-base text-gray-300 line-clamp-2 mb-4 md:mb-6 max-w-xl">{featuredMod.short_description}</p>
-        <Button size="lg" asChild className="minecraft-btn bg-accent hover:bg-accent/90 text-accent-foreground">
-          <Link to={`/mod/${featuredMod.id}`}>
-            <DownloadCloud size={20} className="mr-2" /> {t('home.viewMod')}
+        <Button asChild className="minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105 transition-all duration-200 h-10 shadow-lg shadow-primary/25">
+          <Link to={`/mods/${featuredMod.slug}`}>
+            <Eye size={16} className="mr-2" /> 
+            <span className="text-sm font-medium">{t('home.viewMod')}</span>
           </Link>
         </Button>
       </div>
@@ -221,8 +225,6 @@ const HomePage = () => {
       animate="visible"
       variants={containerVariants}
     >
-      <ModsCarousel mods={featuredMods} />
-
       {/* Banner da Plataforma */}
       <EditableBanner
         bannerUrl={bannerUrl}
@@ -252,6 +254,8 @@ const HomePage = () => {
         <h3 className="font-minecraft text-2xl text-primary mb-2">{t('home.totalDownloadsOnPlatform')}</h3>
         <p className="text-5xl font-bold text-accent animate-pulse">{totalDownloadsAllMods.toLocaleString('pt-BR')}</p>
       </motion.div>
+
+      <ModsCarousel mods={featuredMods} />
 
       <section>
         <SectionTitle title={t('home.latestModsAdded')} icon={History} viewAllLink="/mods?sort=recent" />
