@@ -4,6 +4,8 @@ import { useAuth } from '../../contexts/AuthContextMods';
 import { useThemeMods } from '../../contexts/ThemeContextMods';
 import { useTranslation } from '../../hooks/useTranslation';
 import { buildThumbnailUrl, buildAvatarUrl } from '../../utils/urls';
+import { buildVideoUrl } from '../../utils/urls';
+import VideoPlayer from '../../components/VideoPlayer';
 import { processHtmlComplete } from '../../utils/htmlProcessor';
 
 import { 
@@ -896,6 +898,29 @@ const ModDetailPage = () => {
         </div>
 
 
+        {/* Seção de Vídeo (logo abaixo da descrição) */}
+        {mod.video_url && (
+          <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-250 ${getCardClasses()} ${
+            pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
+            <div className="space-y-4">
+              <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
+                <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
+                Vídeo
+              </h2>
+              <div className="aspect-video rounded-lg overflow-hidden">
+                {(() => {
+                  const raw = mod.video_url || '';
+                  const src = buildVideoUrl(raw);
+                  const ext = (raw.split('.').pop() || '').toLowerCase();
+                  const type = ext === 'mp4' ? 'video/mp4' : ext === 'webm' ? 'video/webm' : ext === 'ogg' ? 'video/ogg' : undefined;
+                  return <VideoPlayer src={src} type={type} />;
+                })()}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Seção de Informações (infos) */}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -1690,3 +1715,6 @@ const ModDetailPage = () => {
 };
 
 export default ModDetailPage;
+
+
+

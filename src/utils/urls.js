@@ -57,3 +57,20 @@ export const buildAvatarUrl = (avatarPath) => {
 export const buildGalleryUrl = (galleryPath) => {
   return buildImageUrl(galleryPath);
 };
+
+/**
+ * Constrói a URL completa para um vídeo salvo em uploads
+ * Regras:
+ * - Se já for http/https, retorna como está
+ * - Se começar com /api/mods/uploads, retorna como está
+ * - Se começar com /uploads, prefixa com /api/mods
+ * - Caso contrário, tenta prefixar com API_BASE_URL
+ */
+export const buildVideoUrl = (videoPath) => {
+  if (!videoPath) return null;
+  if (videoPath.startsWith('http://') || videoPath.startsWith('https://')) return videoPath;
+  if (videoPath.startsWith('/api/mods/uploads')) return videoPath;
+  if (videoPath.startsWith('/uploads')) return `/api/mods${videoPath}`;
+  if (videoPath.startsWith('/')) return `${API_BASE_URL}${videoPath}`;
+  return `${API_BASE_URL}/${videoPath}`;
+};
