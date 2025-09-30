@@ -71,7 +71,8 @@ const AdminModsPage = () => {
     thumbnail_file: null,
     download_url_pc: '',
     download_url_mobile: '',
-    video_url: ''
+    video_url: '',
+    video_file: null
   });
 
   const [thumbnailMode, setThumbnailMode] = useState('url'); // 'url' ou 'upload'
@@ -187,6 +188,11 @@ const AdminModsPage = () => {
         setFeedback({ show: true, message: `Campos obrigatórios faltando: ${missingFields.join(', ')}`, type: 'error' });
         return;
       }
+      // Exigir vídeo no cadastro
+      if (!formData.video_file) {
+        setFeedback({ show: true, message: 'Envie um arquivo de vídeo do mod (MP4/WEBM/OGG/MKV/MOV)', type: 'error' });
+        return;
+      }
       
       // Preparar dados para envio
       let requestBody;
@@ -209,28 +215,29 @@ const AdminModsPage = () => {
         formDataToSend.append('thumbnail_file', formData.thumbnail_file);
         formDataToSend.append('download_url_pc', formData.download_url_pc);
         formDataToSend.append('download_url_mobile', formData.download_url_mobile);
-        formDataToSend.append('video_url', formData.video_url);
+        // vídeo enviado por arquivo
+        formDataToSend.append('video_file', formData.video_file);
         
         requestBody = formDataToSend;
         // Não definir Content-Type para FormData (será definido automaticamente)
       } else {
         // Modo URL: usar JSON normal
-        headers['Content-Type'] = 'application/json';
-        requestBody = JSON.stringify({
-          name: formData.name,
-          slug: formData.slug,
-          version: formData.version,
-          minecraft_version: formData.minecraft_version,
-          mod_loader: formData.mod_loader,
-          content_type_id: formData.content_type_id,
-          short_description: formData.short_description,
-          full_description: processHtmlComplete(formData.full_description),
-          tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-          thumbnail_url: formData.thumbnail_url,
-          download_url_pc: formData.download_url_pc,
-          download_url_mobile: formData.download_url_mobile,
-          video_url: formData.video_url
-        });
+        // Mesmo que a thumbnail seja por URL, precisamos enviar vídeo por arquivo
+        const formDataToSend = new FormData();
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('slug', formData.slug);
+        formDataToSend.append('version', formData.version);
+        formDataToSend.append('minecraft_version', formData.minecraft_version);
+        formDataToSend.append('mod_loader', formData.mod_loader);
+        formDataToSend.append('content_type_id', formData.content_type_id);
+        formDataToSend.append('short_description', formData.short_description);
+        formDataToSend.append('full_description', processHtmlForDatabase(formData.full_description));
+        formDataToSend.append('tags', formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag));
+        formDataToSend.append('thumbnail_url', formData.thumbnail_url);
+        formDataToSend.append('download_url_pc', formData.download_url_pc);
+        formDataToSend.append('download_url_mobile', formData.download_url_mobile);
+        formDataToSend.append('video_file', formData.video_file);
+        requestBody = formDataToSend;
       }
       
       const response = await fetch('/api/mods', {
@@ -292,6 +299,7 @@ const AdminModsPage = () => {
       // Preparar dados para envio
       let requestBody;
       
+      // Em edição, vídeo é opcional (mantém existente se não enviar)
       if (thumbnailMode === 'upload' && formData.thumbnail_file) {
         // Modo upload: usar FormData para arquivo
         const formDataToSend = new FormData();
@@ -307,26 +315,34 @@ const AdminModsPage = () => {
         formDataToSend.append('thumbnail_file', formData.thumbnail_file);
         formDataToSend.append('download_url_pc', formData.download_url_pc);
         formDataToSend.append('download_url_mobile', formData.download_url_mobile);
-        formDataToSend.append('video_url', formData.video_url);
+        if (formData.video_file) {
+          formDataToSend.append('video_file', formData.video_file);
+        }
+        // suporte a remoção do vídeo
+        formDataToSend.append('video_remove', (!formData.video_file && !formData.video_url) ? 'true' : 'false');
         
         requestBody = formDataToSend;
       } else {
         // Modo URL: usar JSON normal
-        requestBody = {
-          name: formData.name,
-          slug: formData.slug,
-          version: formData.version,
-          minecraft_version: formData.minecraft_version,
-          mod_loader: formData.mod_loader,
-          content_type_id: formData.content_type_id,
-          short_description: formData.short_description,
-          full_description: processHtmlComplete(formData.full_description),
-          tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-          thumbnail_url: formData.thumbnail_url,
-          download_url_pc: formData.download_url_pc,
-          download_url_mobile: formData.download_url_mobile,
-          video_url: formData.video_url
-        };
+        const formDataToSend = new FormData();
+        formDataToSend.append('name', formData.name);
+        formDataToSend.append('slug', formData.slug);
+        formDataToSend.append('version', formData.version);
+        formDataToSend.append('minecraft_version', formData.minecraft_version);
+        formDataToSend.append('mod_loader', formData.mod_loader);
+        formDataToSend.append('content_type_id', formData.content_type_id);
+        formDataToSend.append('short_description', formData.short_description);
+        formDataToSend.append('full_description', processHtmlForDatabase(formData.full_description));
+        formDataToSend.append('tags', formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag));
+        formDataToSend.append('thumbnail_url', formData.thumbnail_url);
+        formDataToSend.append('download_url_pc', formData.download_url_pc);
+        formDataToSend.append('download_url_mobile', formData.download_url_mobile);
+        if (formData.video_file) {
+          formDataToSend.append('video_file', formData.video_file);
+        }
+        // suporte a remoção do vídeo quando não enviar novo
+        formDataToSend.append('video_remove', (!formData.video_file && !formData.video_url) ? 'true' : 'false');
+        requestBody = formDataToSend;
       }
 
       console.log('📤 Dados sendo enviados para API:', requestBody);
@@ -336,16 +352,12 @@ const AdminModsPage = () => {
         'Authorization': `Bearer ${token}`
       };
       
-      if (thumbnailMode === 'upload' && formData.thumbnail_file) {
-        // Não definir Content-Type para FormData
-      } else {
-        headers['Content-Type'] = 'application/json';
-      }
+      // Sempre FormData (vídeo pode ser arquivo)
       
       const response = await fetch(`/api/mods/${editingMod.id}`, {
         method: 'PUT',
         headers,
-        body: thumbnailMode === 'upload' && formData.thumbnail_file ? requestBody : JSON.stringify(requestBody)
+        body: requestBody
       });
 
       console.log('📡 Resposta da API:', response.status, response.statusText);
@@ -475,7 +487,8 @@ const AdminModsPage = () => {
       thumbnail_file: null,
       download_url_pc: getSafeValue(mod.download_url_pc || mod.download_url), // Compatibilidade com versões antigas
       download_url_mobile: getSafeValue(mod.download_url_mobile),
-      video_url: getSafeValue(mod.video_url)
+      video_url: getSafeValue(mod.video_url),
+      video_file: null
     };
     
     // Definir modo baseado se há URL ou não
@@ -505,7 +518,8 @@ const AdminModsPage = () => {
       thumbnail_file: null,
       download_url_pc: '',
       download_url_mobile: '',
-      video_url: ''
+      video_url: '',
+      video_file: null
     });
     setThumbnailMode('url');
   };
@@ -1308,27 +1322,115 @@ const AdminModsPage = () => {
                 </div>
                 
                 <div className="bg-muted/30 rounded-lg p-4">
-                  <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-                    <ExternalLink className="h-5 w-5 mr-2 text-primary" />
-                    Links e Mídia
-                  </h4>
+                  <div className="mb-4 flex items-center justify-between">
+                    <h4 className="text-lg font-semibold text-foreground flex items-center">
+                      <ExternalLink className="h-5 w-5 mr-2 text-primary" />
+                      Vídeo do Mod
+                    </h4>
+                    {editingMod && formData.video_url && !formData.video_file && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="h-8"
+                        onClick={() => setFormData({ ...formData, video_url: '', video_file: null })}
+                      >
+                        Remover vídeo
+                      </Button>
+                    )}
+                  </div>
                   
                   <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="video_url" className="text-sm font-medium flex items-center">
-                        <Play className="h-4 w-4 mr-2 text-red-500" />
-                        URL do Vídeo
-                      </Label>
-                <Input
-                  id="video_url"
-                  value={formData.video_url}
-                  onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
-                  placeholder="https://youtube.com/watch?v=..."
-                        className="mt-1"
-                />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Vídeo de demonstração ou tutorial
-                      </p>
+                    <div className="relative">
+                      {/* Input real invisível e clicável em toda a área */}
+                      <input
+                        id="video_file"
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) => {
+                          const file = e.target.files && e.target.files[0];
+                          if (!file) return;
+                          const maxSize = 200 * 1024 * 1024; // 200MB
+                          if (file.size > maxSize) {
+                            setFeedback({ show: true, message: 'O vídeo deve ter no máximo 200MB', type: 'error' });
+                            return;
+                          }
+                          const allowed = ['video/mp4','video/webm','video/ogg','video/x-matroska','video/quicktime'];
+                          if (!allowed.includes(file.type)) {
+                            setFeedback({ show: true, message: 'Formato não suportado. Use MP4, WEBM, OGG, MKV ou MOV.', type: 'error' });
+                            return;
+                          }
+                          setFormData({ ...formData, video_file: file });
+                        }}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      />
+
+                      <div className={`
+                        border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ease-out
+                        ${formData.video_file 
+                          ? 'border-purple-500 bg-purple-500/5' 
+                          : 'border-muted-foreground/30 bg-muted/20 hover:border-primary/50 hover:bg-muted/30'
+                        }
+                      `}>
+                        <div className="space-y-3">
+                          {/* Estado com arquivo selecionado */}
+                          {formData.video_file ? (
+                            <div className="space-y-2">
+                              <div className="mx-auto w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center">
+                                <Play className="h-8 w-8 text-purple-500" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-foreground">Vídeo selecionado</p>
+                                <p className="text-xs text-muted-foreground">{formData.video_file.name} • {(formData.video_file.size / 1024 / 1024).toFixed(2)} MB</p>
+                              </div>
+                              <div className="flex items-center justify-center gap-2 pt-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50"
+                                  onClick={() => {
+                                    setFormData({ ...formData, video_file: null });
+                                    const el = document.getElementById('video_file');
+                                    if (el) el.value = '';
+                                  }}
+                                >
+                                  Trocar Vídeo
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            // Estado inicial
+                            <div className="space-y-3">
+                              <div className="mx-auto w-16 h-16 bg-muted-foreground/20 rounded-full flex items-center justify-center">
+                                <Play className="h-8 w-8 text-muted-foreground" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-foreground">
+                                  Clique para selecionar ou arraste um vídeo {editingMod ? '' : '*'}
+                                </p>
+                                <p className="text-xs text-muted-foreground">MP4, WEBM, OGG, MKV ou MOV até 200MB</p>
+                              </div>
+                              <div>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="mt-2 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50"
+                                  onClick={() => document.getElementById('video_file')?.click()}
+                                >
+                                  Escolher Arquivo
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Informações adicionais quando não selecionar novo arquivo em edição */}
+                      {editingMod && !formData.video_file && formData.video_url && (
+                        <p className="mt-2 text-xs text-muted-foreground">Vídeo atual manterá: {formData.video_url.split('/').pop()}</p>
+                      )}
                     </div>
                   </div>
               </div>

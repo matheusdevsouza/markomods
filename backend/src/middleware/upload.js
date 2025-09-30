@@ -30,91 +30,114 @@ const checkMagicNumbers = (filePath, expectedMimeType) => {
   }
 };
 
-// Configuração do storage
+// Utilitário: garantir diretório
+const ensureDir = (dirPath) => {
+  try {
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+  } catch {}
+};
+
+// Configuração de storage única para múltiplos campos (thumbnail e vídeo)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads/thumbnails'));
+    const isThumbnail = file.fieldname === 'thumbnail_file';
+    const dir = isThumbnail
+      ? path.join(__dirname, '../../uploads/thumbnails')
+      : path.join(__dirname, '../../uploads/videos');
+    ensureDir(dir);
+    cb(null, dir);
   },
   filename: (req, file, cb) => {
-    // Gerar nome único para o arquivo
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    cb(null, `thumbnail-${uniqueSuffix}${ext}`);
+    const ext = path.extname(file.originalname).toLowerCase();
+    const prefix = file.fieldname === 'thumbnail_file' ? 'thumbnail' : 'video';
+    cb(null, `${prefix}-${uniqueSuffix}${ext}`);
   }
 });
 
-// Filtro de arquivos ULTRA RIGOROSO para máxima segurança
+// Filtro de arquivos com regras específicas por campo
 const fileFilter = (req, file, cb) => {
-  // Lista de tipos MIME permitidos
-  const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-  
-  // Verificar se o tipo MIME está na lista permitida
-  if (!allowedMimeTypes.includes(file.mimetype)) {
-    return cb(new Error(`Tipo de arquivo não suportado. Tipos aceitos: ${allowedMimeTypes.join(', ')}`), false);
+  const isThumbnail = file.fieldname === 'thumbnail_file';
+  const isVideo = file.fieldname === 'video_file';
+
+  if (!isThumbnail && !isVideo) {
+    return cb(new Error('Campo de upload não suportado'), false);
   }
-  
-  // Verificar extensão do arquivo
-  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-  const fileExtension = path.extname(file.originalname).toLowerCase();
-  
-  if (!allowedExtensions.includes(fileExtension)) {
-    return cb(new Error(`Extensão de arquivo não permitida. Extensões aceitas: ${allowedExtensions.join(', ')}`), false);
-  }
-  
-  // Verificar se o nome do arquivo não contém caracteres suspeitos
+
   const suspiciousChars = /[<>:"/\\|?*\x00-\x1f]/;
   if (suspiciousChars.test(file.originalname)) {
     return cb(new Error('Nome de arquivo contém caracteres inválidos'), false);
   }
-  
-  // Verificar tamanho do arquivo (já limitado pelo multer, mas dupla verificação)
-  const maxSize = 5 * 1024 * 1024; // 5MB
-  if (file.size && file.size > maxSize) {
-    return cb(new Error('Arquivo muito grande. Tamanho máximo: 5MB'), false);
+
+  const ext = path.extname(file.originalname).toLowerCase();
+  const mime = file.mimetype;
+
+  if (isThumbnail) {
+    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    if (!allowedMimeTypes.includes(mime) || !allowedExtensions.includes(ext)) {
+      return cb(new Error('Tipo de imagem não suportado'), false);
+    }
+  } else if (isVideo) {
+    const allowedMimeTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/x-matroska', 'video/quicktime'];
+    const allowedExtensions = ['.mp4', '.webm', '.ogg', '.mkv', '.mov'];
+    if (!allowedMimeTypes.includes(mime) || !allowedExtensions.includes(ext)) {
+      return cb(new Error('Tipo de vídeo não suportado'), false);
+    }
   }
-  
-  
+
   cb(null, true);
 };
 
-// Configuração do multer
+// Configuração do multer (limite geral alto para suportar vídeo)
 const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
+  storage,
+  fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
-    files: 1 // Apenas 1 arquivo
+    fileSize: 210 * 1024 * 1024, // 210MB
+    files: 2
   }
 });
 
-// Middleware para upload de thumbnail
-export const uploadThumbnail = upload.single('thumbnail_file');
+// Middleware unificado para upload de mídia de mod (thumbnail + vídeo)
+export const uploadModMedia = upload.fields([
+  { name: 'thumbnail_file', maxCount: 1 },
+  { name: 'video_file', maxCount: 1 }
+]);
 
-// Middleware para verificar se o arquivo foi enviado e validar magic numbers
-export const validateThumbnail = (req, res, next) => {
-  if (req.file) {
-    // Verificar magic numbers para garantir que o arquivo é realmente do tipo declarado
-    const isValidFile = checkMagicNumbers(req.file.path, req.file.mimetype);
-    
-    if (!isValidFile) {
-      // Remover arquivo suspeito
-      fs.unlinkSync(req.file.path);
-      return res.status(400).json({
-        success: false,
-        message: 'Arquivo corrompido ou tipo inválido. Verificação de assinatura falhou.'
-      });
+// Validação e anexação de metadados dos arquivos
+export const validateModMedia = (req, res, next) => {
+  const files = req.files || {};
+
+  const imageFile = files.thumbnail_file?.[0];
+  if (imageFile) {
+    const isValidImage = checkMagicNumbers(imageFile.path, imageFile.mimetype);
+    if (!isValidImage) {
+      try { fs.unlinkSync(imageFile.path); } catch {}
+      return res.status(400).json({ success: false, message: 'Thumbnail inválida (assinatura incorreta).' });
     }
-    
-    // Arquivo foi enviado e validado, adicionar informações ao request
     req.thumbnailInfo = {
-      filename: req.file.filename,
-      path: req.file.path,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
+      filename: imageFile.filename,
+      path: imageFile.path,
+      mimetype: imageFile.mimetype,
+      size: imageFile.size,
       validated: true
     };
-
   }
+
+  const videoFile = files.video_file?.[0];
+  if (videoFile) {
+    req.videoInfo = {
+      filename: videoFile.filename,
+      path: videoFile.path,
+      mimetype: videoFile.mimetype,
+      size: videoFile.size,
+      validated: true
+    };
+  }
+
   next();
 };
 
@@ -173,4 +196,6 @@ export const uploadEditorImage = editorUpload.single('image');
 export default upload;
 
 
+
+// Removidos: middlewares separados de vídeo (substituídos por uploadModMedia/validateModMedia)
 

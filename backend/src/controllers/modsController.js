@@ -1,4 +1,6 @@
 import ModsModel from '../models/ModsModel.js';
+import fs from 'fs';
+import path from 'path';
 import { logError } from '../config/logger.js';
 import { LogService } from '../services/LogService.js';
 import { trackActivity, untrackActivity } from '../services/ActivityService.js';
@@ -30,6 +32,12 @@ export const createMod = async (req, res) => {
       finalThumbnailUrl = `/uploads/thumbnails/${req.thumbnailInfo.filename}`;
     }
 
+    // Processar vídeo
+    let finalVideoUrl = video_url || null;
+    if (req.videoInfo) {
+      finalVideoUrl = `/uploads/videos/${req.videoInfo.filename}`;
+    }
+
     // Processar tags (pode vir como string ou array)
     let finalTags = tags || [];
     if (Array.isArray(tags)) {
@@ -55,7 +63,7 @@ export const createMod = async (req, res) => {
       thumbnail_url: finalThumbnailUrl,
       download_url_pc: download_url_pc || null,
       download_url_mobile: download_url_mobile || null,
-      video_url: video_url || null,
+      video_url: finalVideoUrl,
       author_id: req.user.id,
       content_type_id
     };
@@ -274,6 +282,33 @@ export const updateMod = async (req, res) => {
     // Processar thumbnail se foi enviado um arquivo
     if (req.thumbnailInfo) {
       updateData.thumbnail_url = `/uploads/thumbnails/${req.thumbnailInfo.filename}`;
+    }
+
+    // Processar vídeo se foi enviado um arquivo
+    if (req.videoInfo) {
+      updateData.video_url = `/uploads/videos/${req.videoInfo.filename}`;
+    }
+
+    // Remover vídeo atual, se solicitado e nenhum novo vídeo foi enviado
+    const removeFlag = updateData.video_remove === true || updateData.video_remove === 'true' || updateData.video_remove === '1';
+    if (removeFlag && !req.videoInfo) {
+      // Apagar arquivo antigo, se houver
+      if (existingMod.video_url && existingMod.video_url.startsWith('/uploads/')) {
+        try {
+          const filePath = path.join(process.cwd(), existingMod.video_url);
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+        } catch (e) {
+          // falha silenciosa para não quebrar update
+        }
+      }
+      updateData.video_url = null;
+    }
+
+    // limpar campo auxiliar para não tentar atualizar coluna inexistente
+    if (Object.prototype.hasOwnProperty.call(updateData, 'video_remove')) {
+      delete updateData.video_remove;
     }
 
     // Processar tags se foram enviadas

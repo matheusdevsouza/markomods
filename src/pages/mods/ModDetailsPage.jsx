@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { processHtmlComplete } from '../../utils/htmlProcessor';
+import { buildVideoUrl } from '@/utils/urls';
+import VideoPlayer from '@/components/VideoPlayer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Download, Heart, Star, Share2, Eye, EyeOff, User, CalendarDays, Gamepad2, Tag, ArrowLeft, ShieldAlert } from 'lucide-react';
@@ -212,21 +214,22 @@ const ModDetailsPage = () => {
               </Card>
             )}
 
-            {/* Vídeo do YouTube */}
-            {mod.youtube_video_url && (
+            {/* Vídeo do Mod (arquivo) */}
+            {mod.video_url && (
               <Card className="minecraft-card">
                 <CardHeader>
                   <CardTitle className="text-xl font-minecraft text-primary">Vídeo</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="aspect-video">
-                    <iframe
-                      src={mod.youtube_video_url.replace('watch?v=', 'embed/')}
-                      title={`${mod.name} - Vídeo`}
-                      className="w-full h-full rounded-lg"
-                      allowFullScreen
-                    />
-            </div>
+                    {(() => {
+                      const raw = mod.video_url || '';
+                      const videoSrc = buildVideoUrl(raw);
+                      const ext = (raw.split('.').pop() || '').toLowerCase();
+                      const type = ext === 'mp4' ? 'video/mp4' : ext === 'webm' ? 'video/webm' : ext === 'ogg' ? 'video/ogg' : undefined;
+                      return <VideoPlayer src={videoSrc} type={type} />;
+                    })()}
+                  </div>
                 </CardContent>
               </Card>
             )}

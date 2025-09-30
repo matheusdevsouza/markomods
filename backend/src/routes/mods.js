@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { authenticateToken, requireAdmin, optionalAuth, publicOrAuthenticated } from '../middleware/auth.js';
-import { uploadThumbnail, validateThumbnail, uploadEditorImage } from '../middleware/upload.js';
+import { uploadModMedia, validateModMedia, uploadEditorImage } from '../middleware/upload.js';
 import { adminSecurityMiddleware } from '../middleware/adminSecurity.js';
 import {
   createMod,
@@ -56,8 +56,10 @@ router.get('/mod/:id', (req, res) => {
   getModById(req, res);
 });
 
-// Rota para registrar visualização (pública) - DEVE vir DEPOIS da rota /mod/:id
+// Rotas para registrar visualização (públicas)
+// Compatível com duas formas usadas no frontend (/mod/:id/view e /:id/view)
 router.post('/mod/:id/view', registerView);
+router.post('/:id/view', registerView);
 
 // Rota para servir arquivos de thumbnail
 router.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
@@ -82,8 +84,8 @@ router.get('/:id/favorite', authenticateToken, checkFavorite);
 router.get('/user/favorites', authenticateToken, getUserFavorites);
 
 // Rotas de criação/edição (requerem admin + segurança extra)
-router.post('/', adminSecurityMiddleware, requireAdmin, uploadThumbnail, validateThumbnail, createMod);
-router.put('/:id', adminSecurityMiddleware, requireAdmin, uploadThumbnail, validateThumbnail, updateMod);
+router.post('/', adminSecurityMiddleware, requireAdmin, uploadModMedia, validateModMedia, createMod);
+router.put('/:id', adminSecurityMiddleware, requireAdmin, uploadModMedia, validateModMedia, updateMod);
 router.delete('/:id', adminSecurityMiddleware, requireAdmin, deleteMod);
 router.patch('/:id/status', adminSecurityMiddleware, requireAdmin, toggleModStatus);
 
