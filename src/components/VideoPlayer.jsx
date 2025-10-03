@@ -16,6 +16,9 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
   const [buffered, setBuffered] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showControls, setShowControls] = useState(false);
+  const [controlsTimeout, setControlsTimeout] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const formatTime = (secs) => {
     if (!isFinite(secs)) return '0:00';
@@ -30,8 +33,36 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     if (!video) return;
     if (video.paused) {
       video.play();
+      // Quando começar a tocar, mostrar controles e depois esconder
+      setShowControls(true);
+      hideControlsAfterDelay();
     } else {
       video.pause();
+      // Quando pausar, esconder controles imediatamente
+      setShowControls(false);
+      clearControlsTimeout();
+    }
+  };
+
+  const showControlsTemporarily = () => {
+    setShowControls(true);
+    hideControlsAfterDelay();
+  };
+
+  const hideControlsAfterDelay = () => {
+    clearControlsTimeout();
+    const timeout = setTimeout(() => {
+      if (isPlaying) {
+        setShowControls(false);
+      }
+    }, 2000); // Esconder após 2 segundos
+    setControlsTimeout(timeout);
+  };
+
+  const clearControlsTimeout = () => {
+    if (controlsTimeout) {
+      clearTimeout(controlsTimeout);
+      setControlsTimeout(null);
     }
   };
 
@@ -88,6 +119,27 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     video.currentTime = ratio * video.duration;
   };
 
+  const handleVideoClick = (e) => {
+    e.stopPropagation(); // Evitar que o clique se propague para o container
+    if (isPlaying) {
+      if (isMobile) {
+        // No mobile, sempre mostrar controles quando clicar no vídeo
+        showControlsTemporarily();
+      } else {
+        // No desktop, mostrar controles temporariamente
+        showControlsTemporarily();
+      }
+    }
+  };
+
+  const handleContainerClick = (e) => {
+    // Se clicou fora do vídeo (no container), esconder controles no mobile
+    if (isMobile && isPlaying && e.target === containerRef.current) {
+      setShowControls(false);
+      clearControlsTimeout();
+    }
+  };
+
   const handleRate = (rate) => {
     const r = Number(rate) || 1;
     const video = videoRef.current;
@@ -101,10 +153,10 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     if (!el) return;
     if (!document.fullscreenElement) {
       await el.requestFullscreen?.();
-      setIsFullscreen(true);
+        setIsFullscreen(true);
     } else {
       await document.exitFullscreen?.();
-      setIsFullscreen(false);
+        setIsFullscreen(false);
     }
   };
 
@@ -148,8 +200,16 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    const onPlay = () => setIsPlaying(true);
-    const onPause = () => setIsPlaying(false);
+    const onPlay = () => {
+      setIsPlaying(true);
+      setShowControls(true);
+      hideControlsAfterDelay();
+    };
+    const onPause = () => {
+      setIsPlaying(false);
+      setShowControls(false);
+      clearControlsTimeout();
+    };
     const onTime = () => setCurrentTime(v.currentTime);
     const onLoaded = () => {
       setDuration(v.duration || 0);
@@ -214,11 +274,36 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     };
   }, []);
 
+  // Detectar se é mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // sm breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
+  // Cleanup timeout ao desmontar
+  useEffect(() => {
+    return () => {
+      clearControlsTimeout();
+    };
+  }, []);
+
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
   const bufferedPercent = buffered * 100;
 
   return (
-    <div ref={containerRef} className={`group relative w-full h-full bg-black/80 rounded-lg overflow-hidden ${className}`}>
+    <div 
+      ref={containerRef} 
+      className={`group relative w-full h-full bg-black/80 rounded-lg overflow-hidden ${className}`}
+      onClick={handleContainerClick}
+    >
       {/* Camada de preenchimento (blur) */}
       <video
         ref={bgVideoRef}
@@ -231,7 +316,15 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
         style={{ zIndex: 0 }}
       />
       {/* Vídeo principal acima do background */}
-      <video ref={videoRef} className="relative z-10 w-full h-full object-contain" src={src} {...(type ? { type } : {})} poster={poster} preload="metadata" />
+      <video 
+        ref={videoRef} 
+        className="relative z-10 w-full h-full object-contain cursor-pointer" 
+        src={src} 
+        {...(type ? { type } : {})} 
+        poster={poster} 
+        preload="metadata"
+        onClick={handleVideoClick}
+      />
 
       {/* Overlay: escurecer e aplicar blur quando pausado */}
       <div
@@ -241,95 +334,116 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
         style={{ zIndex: 20 }}
       />
 
-      {/* Controles */}
-      <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300" style={{ zIndex: 40 }}>
-        {/* Barra de progresso */}
-        <div ref={progressRef} className="relative h-2 sm:h-2.5 bg-white/10 rounded-full cursor-pointer select-none mb-3" onClick={handleSeek}>
+      {/* Controles Inteligentes e Responsivos */}
+      <div className={`absolute inset-x-0 bottom-0 p-3 sm:p-4 md:p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-all duration-300 ${
+        isPlaying 
+          ? (showControls ? 'opacity-100' : 'opacity-0 pointer-events-none') 
+          : 'opacity-0 pointer-events-none'
+      }`} style={{ zIndex: 40 }} onClick={(e) => e.stopPropagation()}>
+        {/* Barra de progresso - Melhorada */}
+        <div ref={progressRef} className="relative h-2 sm:h-3 md:h-4 bg-white/10 rounded-full cursor-pointer select-none mb-3 sm:mb-4 md:mb-5" onClick={handleSeek}>
           <div className="absolute inset-y-0 left-0 bg-white/20 rounded-full" style={{ width: `${bufferedPercent}%` }} />
-          <div className="absolute inset-y-0 left-0 bg-primary rounded-full" style={{ width: `${progressPercent}%` }} />
-          <div className="absolute -top-1.5 h-5 w-5 bg-primary border-2 border-white/20 rounded-full shadow-md" style={{ left: `calc(${progressPercent}% - 10px)` }} />
+          <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-purple-600 rounded-full" style={{ width: `${progressPercent}%` }} />
+          <div className="absolute -top-1 sm:-top-1.5 md:-top-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 bg-white border-2 border-primary rounded-full shadow-lg hover:scale-110 transition-transform" style={{ left: `calc(${progressPercent}% - 8px)` }} />
         </div>
 
-        {/* Linha de ações */}
-        <div className="flex items-center justify-between gap-2 text-white">
-          <div className="flex items-center gap-2 sm:gap-3">
+        {/* Controles Principais - Layout Inteligente */}
+        <div className="flex items-center justify-between text-white">
+          {/* Seção Esquerda: Play + Tempo */}
+          <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
             <button
               onClick={togglePlay}
-              className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-gradient-to-br from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 flex items-center justify-center shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-full bg-gradient-to-br from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 flex items-center justify-center shadow-xl focus:outline-none focus:ring-4 focus:ring-primary/50 transition-all duration-300 hover:scale-110 active:scale-95"
               title={isPlaying ? 'Pausar' : 'Reproduzir'}
             >
               {isPlaying ? (
-                // Ícone pause amigável
-                <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-white flex items-center justify-center" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M6 5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5zm7 0a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1V5z" />
                 </svg>
               ) : (
-                // Ícone play amigável
-                <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-white flex items-center justify-center" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M8 5.14v13.72c0 .8.86 1.3 1.56.9l10.12-6.86c.67-.4.67-1.4 0-1.8L9.56 4.24A1.05 1.05 0 0 0 8 5.14z" />
                 </svg>
               )}
             </button>
-            <div className="text-xs sm:text-sm tabular-nums">
+            <div className="text-sm sm:text-base md:text-lg tabular-nums font-mono font-medium">
               {formatTime(currentTime)} / {formatTime(duration)}
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Volume */}
-            <button onClick={toggleMute} className="h-8 w-8 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center" title={isMuted || volume===0 ? 'Ativar som' : 'Silenciar'}>
-              {getVolumeIcon()}
+          {/* Seção Direita: Controles Secundários */}
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+            {/* Volume - Layout Inteligente */}
+            <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={toggleMute}
+                className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95" 
+                title={isMuted || volume===0 ? 'Ativar som' : 'Silenciar'}
+              >
+                {getVolumeIcon()}
             </button>
+              {/* Slider de volume - Responsivo */}
             <input
               type="range"
               min="0"
               max="1"
               step="0.01"
-              value={volume}
-              onChange={(e) => handleVolume(e.target.value)}
-              className="w-20 sm:w-28 accent-primary"
+                value={volume}
+                onChange={(e) => handleVolume(e.target.value)}
+                className="hidden sm:block w-16 md:w-20 lg:w-24 xl:w-28 h-1.5 md:h-2 bg-white/20 rounded-full appearance-none cursor-pointer accent-primary hover:accent-purple-500 transition-colors"
             />
+          </div>
 
-            {/* Velocidade */}
-            <div className="relative">
+            {/* Velocidade - Dropdown Elegante (Oculto no Mobile) */}
+            <div className="relative hidden sm:block">
               <select
                 value={playbackRate}
                 onChange={(e) => handleRate(e.target.value)}
-                className="appearance-none bg-black/40 text-white border border-white/10 hover:bg-black/50 backdrop-blur px-3 py-1.5 pr-8 rounded-md text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                title="Velocidade"
+                className="appearance-none bg-black/50 text-white border border-white/20 hover:bg-black/60 backdrop-blur px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-3 pr-8 sm:pr-10 md:pr-12 rounded-lg text-sm sm:text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 hover:scale-105"
+                title="Velocidade de reprodução"
               >
                 {[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map(r => (
                   <option key={r} value={r} className="bg-neutral-900 text-white">{r}x</option>
                 ))}
               </select>
-              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-white/80">
-                <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.2l3.71-2.97a.75.75 0 111.04 1.08l-4.24 3.4a.75.75 0 01-.94 0l-4.24-3.4a.75.75 0 01-.02-1.06z"/></svg>
+              <span className="pointer-events-none absolute right-2 sm:right-3 md:right-4 top-1/2 -translate-y-1/2 text-white/80">
+                <svg className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M5.23 7.21a.75.75 0 011.06.02L10 10.2l3.71-2.97a.75.75 0 111.04 1.08l-4.24 3.4a.75.75 0 01-.94 0l-4.24-3.4a.75.75 0 01-.02-1.06z"/>
+                </svg>
               </span>
             </div>
 
-            {/* Fullscreen */}
-            <button onClick={toggleFullscreen} className="h-8 w-8 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center" title={isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}>
+            {/* Fullscreen - Botão Elegante */}
+            <button
+              onClick={toggleFullscreen}
+              className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95" 
+              title={isFullscreen ? 'Sair da tela cheia' : 'Tela cheia'}
+            >
               {isFullscreen ? (
-                // Ícone compress (menor e discreto)
-                <svg className="h-3.5 w-3.5 text-white/90" viewBox="0 0 24 24" fill="currentColor"><path d="M9 3H7v4H3v2h6V3zm8 0h-2v6h6V7h-4V3zM3 15v2h4v4h2v-6H3zm18 0h-6v6h2v-4h4v-2z"/></svg>
+                <svg className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white/90" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 3H7v4H3v2h6V3zm8 0h-2v6h6V7h-4V3zM3 15v2h4v4h2v-6H3zm18 0h-6v6h2v-4h4v-2z"/>
+                </svg>
               ) : (
-                // Ícone expand (menor e discreto)
-                <svg className="h-3.5 w-3.5 text-white/90" viewBox="0 0 24 24" fill="currentColor"><path d="M9 5H5v4H3V3h6v2zm12 4h-2V5h-4V3h6v6zM5 15H3v6h6v-2H5v-4zm16 6h-6v-2h4v-4h2v6z"/></svg>
+                <svg className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white/90" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 5H5v4H3V3h6v2zm12 4h-2V5h-4V3h6v6zM5 15H3v6h6v-2H5v-4zm16 6h-6v-2h4v-4h2v6z"/>
+                </svg>
               )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Botão Play central para estado pausado (UX) */}
+      {/* Botão Play central para estado pausado (UX Premium) */}
       {!isPlaying && (
         <button
           onClick={togglePlay}
-          className="absolute inset-0 m-auto h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br from-primary to-purple-600/90 flex items-center justify-center border-2 border-white/20 shadow-[0_10px_40px_rgba(124,58,237,0.45)] hover:scale-105 transition"
-          title="Reproduzir"
+          className="absolute inset-0 m-auto h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-28 lg:w-28 rounded-full bg-gradient-to-br from-primary via-primary to-purple-600 flex items-center justify-center border-4 border-white/30 shadow-[0_20px_60px_rgba(124,58,237,0.6)] hover:scale-110 hover:shadow-[0_25px_80px_rgba(124,58,237,0.8)] transition-all duration-500 focus:outline-none focus:ring-8 focus:ring-primary/50 active:scale-95"
+          title="Reproduzir vídeo"
           style={{ zIndex: 50 }}
         >
-          <svg className="h-9 w-9 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72c0 .8.86 1.3 1.56.9l10.12-6.86c.67-.4.67-1.4 0-1.8L9.56 4.24A1.05 1.05 0 0 0 8 5.14z"/></svg>
+          <svg className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 text-white flex items-center justify-center" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5.14v13.72c0 .8.86 1.3 1.56.9l10.12-6.86c.67-.4.67-1.4 0-1.8L9.56 4.24A1.05 1.05 0 0 0 8 5.14z"/>
+          </svg>
         </button>
       )}
     </div>

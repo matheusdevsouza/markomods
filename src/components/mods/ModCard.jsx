@@ -175,15 +175,15 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
 
   if (compact) {
     return (
-      <motion.div variants={variants} className="h-full">
+      <motion.div variants={variants} className="h-full max-w-sm mx-auto">
         <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
           {/* Imagem no topo */}
           <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick} className="block relative">
-            <div className="relative overflow-hidden mod-image-container h-40 w-full">
+            <div className="relative overflow-hidden mod-image-container aspect-[4/3] w-full bg-gradient-to-br from-gray-800 to-gray-900">
               <img 
                 src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 
                 alt={`Thumbnail de ${mod.title || mod.name}`} 
-                className="mod-image w-full h-full object-cover" 
+                className="mod-image w-full h-full object-contain" 
                 style={{ objectPosition: 'center' }}
               />
               <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-minecraft-ten border border-border/30 shadow-lg">
@@ -281,22 +281,16 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
   }
 
   return (
-    <motion.div variants={variants} className="h-full">
+    <motion.div variants={variants} className="h-full max-w-sm mx-auto">
       <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
         <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick} className="block">
-          <div className={`relative overflow-hidden mod-image-container ${
-            imageSize === 'stretched' ? 'h-56 w-full' : 'h-56 w-full'
-          }`}>
-                           <img 
-                 src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 
-                 alt={`Thumbnail de ${mod.title || mod.name}`} 
-                 className={`mod-image ${
-                   imageSize === 'stretched' 
-                     ? 'object-cover' 
-                     : 'object-cover'
-                 }`} 
-                 style={{ objectPosition: 'center' }}
-               />
+          <div className="relative overflow-hidden mod-image-container aspect-[4/3] w-full bg-gradient-to-br from-gray-800 to-gray-900">
+            <img 
+              src={buildThumbnailUrl(mod.thumbnail_url) || '/placeholder-images/default-thumb.jpg'} 
+              alt={`Thumbnail de ${mod.title || mod.name}`} 
+              className="mod-image w-full h-full object-contain" 
+              style={{ objectPosition: 'center' }}
+            />
             
             {/* Badge de versão - Canto superior esquerdo */}
             <div className="absolute top-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-minecraft-ten border border-border/30 shadow-lg z-10">

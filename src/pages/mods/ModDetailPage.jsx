@@ -807,64 +807,127 @@ const ModDetailPage = () => {
           </Link>
         </div>
 
-        {/* Seção do Título com Botão de Download */}
-        <div className={`rounded-xl p-3 sm:p-4 transition-all duration-1000 ease-out ${getCardClasses()} ${
+        {/* Seção do Título com Layout Responsivo */}
+        <div className={`rounded-xl p-4 sm:p-6 md:p-8 transition-all duration-1000 ease-out relative ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          {/* Novo Layout: Ícone + Título + Coração + Download */}
-          <div className="flex items-center space-x-4">
-            {/* Ícone do Mod */}
-            <div className="flex-shrink-0">
-              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-lg overflow-hidden">
+          {/* Layout Mobile/Tablet: Centralizado */}
+          <div className="flex flex-col items-center text-center space-y-4 sm:hidden">
+            {/* Ícone do Mod - Centralizado */}
+            <div className="relative">
+              <div className="w-24 h-24 rounded-xl overflow-hidden shadow-2xl ring-4 ring-primary/20 hover:ring-primary/40 transition-all duration-300 hover:scale-105">
                 <img
                   src={buildThumbnailUrl(mod.thumbnail_url)}
                   alt={mod.title}
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-full object-cover"
                   onError={() => setImageError(true)}
                 />
               </div>
+              {/* Efeito de brilho sutil */}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
             </div>
 
-            {/* Título à Esquerda */}
-            <div className="flex-1 text-left">
-              <h1 className={`text-2xl lg:text-3xl font-bold ${getTextClasses()}`}>{mod.title}</h1>
+            {/* Título - Centralizado */}
+            <div className="space-y-2">
+              <h1 className={`text-3xl font-bold ${getTextClasses()} break-words leading-tight`}>
+                {mod.title}
+              </h1>
             </div>
 
-            {/* Ícone de Favoritar */}
-            <div className="flex-shrink-0">
+            {/* Botão de Download - Centralizado */}
+            {recommendedDownload && (
+              <div className="pt-2">
+                <Button 
+                  onClick={() => handleDownload(recommendedDownload, 'desktop')}
+                  className="bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white px-8 py-4 text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 rounded-xl font-semibold"
+                >
+                  <Download className="h-6 w-6 mr-3" />
+                  {t('modDetail.download')}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Layout Desktop: Horizontal Original [FOTO] [TÍTULO] [FAVORITO] [DOWNLOAD] */}
+          <div className="hidden sm:flex items-center justify-between space-x-6">
+            {/* Seção Esquerda: Ícone + Título */}
+            <div className="flex items-center space-x-4 md:space-x-6">
+              {/* Ícone do Mod */}
+              <div className="relative">
+                <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-xl overflow-hidden shadow-2xl ring-4 ring-primary/20 hover:ring-primary/40 transition-all duration-300 hover:scale-105">
+                  <img
+                    src={buildThumbnailUrl(mod.thumbnail_url)}
+                    alt={mod.title}
+                    className="w-full h-full object-cover"
+                    onError={() => setImageError(true)}
+                  />
+                </div>
+                {/* Efeito de brilho sutil */}
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
+              </div>
+
+              {/* Título */}
+              <div>
+                <h1 className={`text-2xl md:text-3xl lg:text-4xl font-bold ${getTextClasses()} break-words leading-tight`}>
+                  {mod.title}
+                </h1>
+              </div>
+            </div>
+
+            {/* Seção Direita: Favorito + Download */}
+            <div className="flex items-center space-x-3 md:space-x-4">
+              {/* Botão de Favorito */}
               <button
                 onClick={handleFavorite}
                 disabled={favoriteLoading}
-                className={`p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                className={`p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm ${
                   isFavorite 
-                    ? 'text-red-500 hover:text-red-600' 
-                    : 'text-gray-400 hover:text-red-500'
+                    ? 'text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20' 
+                    : 'text-gray-400 hover:text-red-500 bg-gray-500/10 hover:bg-red-500/10'
                 }`}
               >
                 {favoriteLoading ? (
-                  <Loader2 className="h-6 w-6 animate-spin" />
+                  <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin" />
                 ) : (
                   <Heart 
-                    className={`h-6 w-6 ${isFavorite ? 'fill-current' : ''}`} 
+                    className={`h-5 w-5 md:h-6 md:w-6 ${isFavorite ? 'fill-current' : ''}`} 
                   />
                 )}
               </button>
-            </div>
 
-            {/* Botão de Download */}
-            <div className="flex-shrink-0">
+              {/* Botão de Download */}
               {recommendedDownload && (
                 <Button 
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
-                  className="bg-primary hover:bg-primary/90 text-white px-4 py-2 lg:px-6 lg:py-3 text-sm lg:text-base h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
+                  className="bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white px-4 md:px-6 py-2 md:py-3 text-sm md:text-base h-auto transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 rounded-lg font-semibold"
                 >
-                  <Download className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
+                  <Download className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
                   {t('modDetail.download')}
                 </Button>
               )}
             </div>
           </div>
-          
+
+          {/* Botão de Favorito - Canto Superior Direito (apenas mobile) */}
+          <div className="absolute top-4 right-4 z-10 sm:hidden">
+            <button
+              onClick={handleFavorite}
+              disabled={favoriteLoading}
+              className={`p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm ${
+                isFavorite 
+                  ? 'text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20' 
+                  : 'text-gray-400 hover:text-red-500 bg-gray-500/10 hover:bg-red-500/10'
+              }`}
+            >
+              {favoriteLoading ? (
+                <Loader2 className="h-6 w-6 animate-spin" />
+              ) : (
+                <Heart 
+                  className={`h-6 w-6 ${isFavorite ? 'fill-current' : ''}`} 
+                />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Seção de Descrição (desc) */}
@@ -937,22 +1000,22 @@ const ModDetailPage = () => {
                 <Package className="h-5 w-5 mr-2 text-primary" />
                 {t('modDetail.technicalInfo')}
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className={`flex justify-between p-2 sm:p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
-                  <span className={getSubtextClasses()}>{t('modDetail.version')}</span>
-                  <span className={`font-semibold ${getTextClasses()}`}>v{mod.version}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 sm:gap-3">
+                <div className={`flex flex-col sm:flex-row sm:justify-between p-3 sm:p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] ${getInfoCardClasses()}`}>
+                  <span className={`text-sm sm:text-base ${getSubtextClasses()} mb-1 sm:mb-0`}>{t('modDetail.version')}</span>
+                  <span className={`font-semibold text-sm sm:text-base ${getTextClasses()}`}>v{mod.version}</span>
                 </div>
-                <div className={`flex justify-between p-2 sm:p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
-                  <span className={getSubtextClasses()}>{t('modDetail.minecraftVersion')}</span>
-                  <span className={`font-semibold ${getTextClasses()}`}>{mod.minecraft_version}</span>
+                <div className={`flex flex-col sm:flex-row sm:justify-between p-3 sm:p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] ${getInfoCardClasses()}`}>
+                  <span className={`text-sm sm:text-base ${getSubtextClasses()} mb-1 sm:mb-0`}>{t('modDetail.minecraftVersion')}</span>
+                  <span className={`font-semibold text-sm sm:text-base ${getTextClasses()}`}>{mod.minecraft_version}</span>
                 </div>
-                <div className={`flex justify-between p-2 sm:p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
-                  <span className={getSubtextClasses()}>{t('modDetail.modLoader')}</span>
-                  <span className={`font-semibold ${getTextClasses()}`}>{mod.mod_loader}</span>
+                <div className={`flex flex-col sm:flex-row sm:justify-between p-3 sm:p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] ${getInfoCardClasses()}`}>
+                  <span className={`text-sm sm:text-base ${getSubtextClasses()} mb-1 sm:mb-0`}>{t('modDetail.modLoader')}</span>
+                  <span className={`font-semibold text-sm sm:text-base ${getTextClasses()}`}>{mod.mod_loader}</span>
                 </div>
-                <div className={`flex justify-between p-2 sm:p-3 rounded-lg transition-all duration-300 hover:scale-105 ${getInfoCardClasses()}`}>
-                  <span className={getSubtextClasses()}>{t('modDetail.fileSize')}</span>
-                  <span className={`font-semibold ${getTextClasses()}`}>{mod.file_size ? `${(mod.file_size / 1024 / 1024).toFixed(2)} MB` : 'N/A'}</span>
+                <div className={`flex flex-col sm:flex-row sm:justify-between p-3 sm:p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] ${getInfoCardClasses()}`}>
+                  <span className={`text-sm sm:text-base ${getSubtextClasses()} mb-1 sm:mb-0`}>{t('modDetail.fileSize')}</span>
+                  <span className={`font-semibold text-sm sm:text-base ${getTextClasses()}`}>{mod.file_size ? `${(mod.file_size / 1024 / 1024).toFixed(2)} MB` : 'N/A'}</span>
                 </div>
               </div>
             </div>
@@ -964,12 +1027,12 @@ const ModDetailPage = () => {
                   <Tag className="h-5 w-5 mr-2 text-primary" />
                   {t('modDetail.categories')}
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   {mod.tags.map((tag, index) => (
                     <Badge 
                       key={index} 
                       variant="outline" 
-                      className="bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 transition-all duration-300"
+                      className="bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 transition-all duration-300 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-1.5"
                     >
                       {tag}
                     </Badge>
@@ -984,8 +1047,8 @@ const ModDetailPage = () => {
                 <User className="h-5 w-5 mr-2 text-primary" />
                 {t('modDetail.author')}
               </h3>
-              <div className="flex items-center space-x-4 p-4">
-                <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
                   {mod.author_avatar_url && mod.author_avatar_url.trim() !== '' ? (
                     <>
                       <img 
@@ -1000,15 +1063,15 @@ const ModDetailPage = () => {
                           e.target.nextSibling.style.display = 'flex';
                         }}
                       />
-                      <User className="h-6 w-6 text-primary" style={{ display: 'none' }} />
+                      <User className="h-5 w-5 sm:h-6 sm:w-6 text-primary" style={{ display: 'none' }} />
                     </>
                   ) : (
-                    <User className="h-6 w-6 text-primary" />
+                    <User className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                   )}
                 </div>
-                <div>
-                  <p className={`font-semibold ${getTextClasses()}`}>{mod.author_display_name || mod.author_name || t('modDetail.unknown')}</p>
-                  <p className={`text-sm ${getSubtextClasses()}`}>
+                <div className="min-w-0 flex-1">
+                  <p className={`font-semibold text-sm sm:text-base ${getTextClasses()} truncate`}>{mod.author_display_name || mod.author_name || t('modDetail.unknown')}</p>
+                  <p className={`text-xs sm:text-sm ${getSubtextClasses()}`}>
                     {mod.content_type === 'addons' 
                       ? t('modDetail.addonCreator') 
                       : t('modDetail.modCreator')
@@ -1019,18 +1082,18 @@ const ModDetailPage = () => {
             </div>
 
             {/* Estatísticas - Versão Compacta (por último) */}
-            <div className={`flex items-center justify-start space-x-6 py-2 pt-4 ${theme === 'light' ? 'border-t border-gray-200/50' : 'border-t border-gray-700/50'}`}>
+            <div className={`flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6 py-3 pt-4 ${theme === 'light' ? 'border-t border-gray-200/50' : 'border-t border-gray-700/50'}`}>
               <div className={`flex items-center space-x-2 ${getSubtextClasses()}`}>
                 <Download className="h-4 w-4 text-primary" />
-                <span className="text-sm">{mod.download_count || 0}</span>
+                <span className="text-xs sm:text-sm font-medium">{mod.download_count || 0}</span>
               </div>
               <div className={`flex items-center space-x-2 ${getSubtextClasses()}`}>
                 <Eye className="h-4 w-4 text-blue-400" />
-                <span className="text-sm">{mod.view_count || 0}</span>
+                <span className="text-xs sm:text-sm font-medium">{mod.view_count || 0}</span>
               </div>
               <div className={`flex items-center space-x-2 ${getSubtextClasses()}`}>
                 <Heart className="h-4 w-4 text-red-400" />
-                <span className="text-sm">{mod.like_count || 0}</span>
+                <span className="text-xs sm:text-sm font-medium">{mod.like_count || 0}</span>
               </div>
             </div>
           </div>
@@ -1040,7 +1103,7 @@ const ModDetailPage = () => {
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
               <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.download')}
@@ -1048,13 +1111,13 @@ const ModDetailPage = () => {
             
             {/* Download direto */}
             <div className="text-center">
-              <div className="flex justify-center mb-3">
-                <Download className="h-12 w-12 text-primary" />
+              <div className="flex justify-center mb-3 sm:mb-4">
+                <Download className="h-10 w-10 sm:h-12 sm:w-12 text-primary" />
               </div>
-              <h3 className={`text-lg sm:text-xl font-semibold mb-2 ${getTextClasses()}`}>
+              <h3 className={`text-lg sm:text-xl font-semibold mb-2 sm:mb-3 ${getTextClasses()}`}>
                 {t('modDetail.directDownload')}
               </h3>
-              <p className={`mb-4 text-sm sm:text-base ${getSubtextClasses()}`}>
+              <p className={`mb-4 sm:mb-6 text-sm sm:text-base ${getSubtextClasses()} max-w-2xl mx-auto`}>
                 {mod.content_type_id === 2 
                   ? t('modDetail.addonDownloadDescription')
                   : t('modDetail.modDownloadDescription')
@@ -1064,9 +1127,9 @@ const ModDetailPage = () => {
               {recommendedDownload ? (
                 <Button 
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
-                  className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-3 text-base sm:text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 w-full sm:w-auto"
+                  className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 w-full sm:w-auto max-w-xs sm:max-w-none"
                 >
-                  <Download className="h-5 w-5 mr-2" />
+                  <Download className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   {t('modDetail.downloadNow')}
                 </Button>
               ) : (
@@ -1077,28 +1140,28 @@ const ModDetailPage = () => {
             </div>
 
             {/* Instruções de instalação */}
-            <div className={`pt-6 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
-              <h4 className={`text-base sm:text-lg font-semibold mb-4 ${getTextClasses()}`}>{t('modDetail.installationInstructions')}</h4>
-              <div className={`rounded-lg p-3 sm:p-4 space-y-3 text-xs sm:text-sm ${theme === 'light' ? 'bg-gray-50/80' : 'bg-gray-900/50'}`}>
-                <p className={getSubtextClasses()}>
+            <div className={`pt-4 sm:pt-6 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
+              <h4 className={`text-base sm:text-lg font-semibold mb-3 sm:mb-4 ${getTextClasses()}`}>{t('modDetail.installationInstructions')}</h4>
+              <div className={`rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3 text-xs sm:text-sm ${theme === 'light' ? 'bg-gray-50/80' : 'bg-gray-900/50'}`}>
+                <p className={`${getSubtextClasses()} leading-relaxed`}>
                   <strong>1.</strong> {mod.content_type_id === 2 
                     ? t('modDetail.addonStep1') 
                     : t('modDetail.modStep1')
                   }
                 </p>
-                <p className={getSubtextClasses()}>
+                <p className={`${getSubtextClasses()} leading-relaxed`}>
                   <strong>2.</strong> {mod.content_type_id === 2 
                     ? t('modDetail.addonStep2') 
                     : t('modDetail.modStep2')
                   }
                 </p>
-                <p className={getSubtextClasses()}>
+                <p className={`${getSubtextClasses()} leading-relaxed`}>
                   <strong>3.</strong> {mod.content_type_id === 2 
                     ? t('modDetail.addonStep3') 
                     : t('modDetail.modStep3', { loader: mod.mod_loader })
                   }
                 </p>
-                <p className={getSubtextClasses()}>
+                <p className={`${getSubtextClasses()} leading-relaxed`}>
                   <strong>4.</strong> {t('modDetail.step4')}
                 </p>
               </div>
@@ -1118,14 +1181,14 @@ const ModDetailPage = () => {
 
             {/* Input de Comentário */}
             {isAuthenticated ? (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="relative">
                   <Textarea
                     id="commentText"
                     placeholder={t('modDetail.shareOpinion')}
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    className={`w-full border rounded-xl p-3 sm:p-4 pr-16 sm:pr-20 resize-none transition-all duration-300 hover:border-gray-600 text-sm sm:text-base ${getInputClasses()}`}
+                    className={`w-full border rounded-xl p-3 sm:p-4 pr-14 sm:pr-16 md:pr-20 resize-none transition-all duration-300 hover:border-gray-600 text-sm sm:text-base ${getInputClasses()}`}
                     rows={3}
                   />
                   
@@ -1133,15 +1196,15 @@ const ModDetailPage = () => {
                   <button
                     onClick={handleSubmitComment}
                     disabled={!newComment.trim() || isSubmittingComment || commentCooldown > 0}
-                    className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 p-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 hover:shadow-lg hover:shadow-primary/25 active:scale-95"
+                    className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 p-1.5 sm:p-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 hover:shadow-lg hover:shadow-primary/25 active:scale-95"
                     title={commentCooldown > 0 ? `Aguarde ${formatCooldownTime(commentCooldown)} antes de comentar novamente` : "Enviar comentário"}
                   >
                     {isSubmittingComment ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
                     ) : commentCooldown > 0 ? (
-                      <Clock className="h-5 w-5" />
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5" />
                     ) : (
-                      <Send className="h-5 w-5" />
+                      <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                     )}
                   </button>
                   
@@ -1159,7 +1222,7 @@ const ModDetailPage = () => {
                 </div>
                 
                 {/* Dicas de uso */}
-                <div className="flex items-center space-x-4 text-xs text-gray-500">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs text-gray-500">
                   <div className="flex items-center space-x-1">
                     <MessageSquare className="h-3 w-3" />
                     <span>{t('modDetail.beRespectful')}</span>
@@ -1172,16 +1235,16 @@ const ModDetailPage = () => {
               </div>
             ) : (
               /* Mensagem para usuários não logados */
-              <div className="text-center py-8 bg-gradient-to-r from-gray-900/40 to-gray-800/40 rounded-2xl border border-gray-700/50 backdrop-blur-sm">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <LogIn className="h-8 w-8 text-primary" />
+              <div className="text-center py-6 sm:py-8 bg-gradient-to-r from-gray-900/40 to-gray-800/40 rounded-2xl border border-gray-700/50 backdrop-blur-sm">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <LogIn className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                 </div>
-                <h3 className={`text-lg font-semibold mb-2 ${getTextClasses()}`}>{t('modDetail.loginToComment')}</h3>
-                <p className={`mb-4 text-sm ${getSubtextClasses()}`}>{t('modDetail.loginToShareOpinion')}</p>
+                <h3 className={`text-base sm:text-lg font-semibold mb-2 ${getTextClasses()}`}>{t('modDetail.loginToComment')}</h3>
+                <p className={`mb-4 text-xs sm:text-sm ${getSubtextClasses()}`}>{t('modDetail.loginToShareOpinion')}</p>
                 <Button 
                   variant="outline"
                   onClick={() => navigate('/login')}
-                  className="border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/60 hover:scale-105 transition-all duration-300"
+                  className="border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/60 hover:scale-105 transition-all duration-300 text-sm sm:text-base px-4 py-2"
                 >
                   <LogIn className="h-4 w-4 mr-2" />
                   {t('modDetail.login')}
@@ -1190,10 +1253,10 @@ const ModDetailPage = () => {
             )}
 
             {/* Lista de comentários */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3 mb-4">
-                <MessageSquare className="h-6 w-6 text-primary" />
-                <span className="bg-primary/20 text-primary px-2 py-1 rounded-full text-sm font-medium">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center space-x-3 mb-3 sm:mb-4">
+                <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                <span className="bg-primary/20 text-primary px-2 py-1 rounded-full text-xs sm:text-sm font-medium">
                   {comments?.length || 0} {t('modDetail.commentsCount')}
                 </span>
               </div>
@@ -1215,17 +1278,17 @@ const ModDetailPage = () => {
                 </div>
               ) : comments && comments.length > 0 ? (
                 comments.map((comment) => (
-                  <div key={comment.id} className={`rounded-lg p-4 relative ${getCommentCardClasses()}`}>
+                  <div key={comment.id} className={`rounded-lg p-3 sm:p-4 relative ${getCommentCardClasses()}`}>
                     {/* Botões de ação no canto superior direito */}
                     <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
                       {/* Botão de resposta (apenas super admins) */}
                       {currentUser?.role === 'super_admin' && (
                         <button
                           onClick={() => handleReplyClick(comment)}
-                          className="flex items-center justify-center w-6 h-6 bg-primary hover:bg-primary/80 text-white rounded transition-colors duration-200"
+                          className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 bg-primary hover:bg-primary/80 text-white rounded transition-colors duration-200"
                           title="Responder comentário"
                         >
-                          <Reply className="h-3 w-3" />
+                          <Reply className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                         </button>
                       )}
                       
@@ -1233,22 +1296,22 @@ const ModDetailPage = () => {
                       {isAuthenticated && (currentUser?.id === comment.user_id || currentUser?.role === 'super_admin') && (
                         <button
                           onClick={() => handleDeleteComment(comment.id)}
-                          className="flex items-center justify-center w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded transition-colors duration-200"
+                          className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 bg-red-500 hover:bg-red-600 text-white rounded transition-colors duration-200"
                           title="Excluir comentário"
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                         </button>
                       )}
                     </div>
                     
-                    <div className="flex items-start space-x-3">
+                    <div className="flex items-start space-x-2 sm:space-x-3">
                       <div className="flex-shrink-0 relative">
                         {/* Avatar com imagem */}
                         {comment.avatar_url && (
                           <img
                             src={getAvatarUrl(comment.avatar_url)}
                             alt={`Avatar de ${comment.display_name || comment.username}`}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-gray-700/50 shadow-lg select-none pointer-events-none"
+                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-gray-700/50 shadow-lg select-none pointer-events-none"
                             draggable="false"
                             onContextMenu={(e) => e.preventDefault()}
                             onDragStart={(e) => e.preventDefault()}
@@ -1263,18 +1326,18 @@ const ModDetailPage = () => {
                         
                         {/* Avatar fallback com inicial */}
                         <div 
-                          className={`w-10 h-10 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-lg ${
+                          className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-lg ${
                             comment.avatar_url ? 'hidden' : 'flex'
                           }`}
                         >
-                          <span className={`font-semibold text-sm ${getTextClasses()}`}>
+                          <span className={`font-semibold text-xs sm:text-sm ${getTextClasses()}`}>
                             {(comment.display_name || comment.username)?.charAt(0).toUpperCase() || 'U'}
                           </span>
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <span className={`text-sm font-semibold ${getTextClasses()}`}>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
+                          <span className={`text-xs sm:text-sm font-semibold ${getTextClasses()}`}>
                             {comment.display_name || comment.username || 'Usuário'}
                           </span>
                           <span className={`text-xs ${getSubtextClasses()}`}>
@@ -1287,12 +1350,12 @@ const ModDetailPage = () => {
                             })}
                           </span>
                         </div>
-                        <p className={`text-sm leading-relaxed break-words overflow-wrap-anywhere ${getSubtextClasses()}`}>
+                        <p className={`text-xs sm:text-sm leading-relaxed break-words overflow-wrap-anywhere ${getSubtextClasses()}`}>
                           {comment.content}
                         </p>
 
                         {/* Sistema de votos */}
-                        <div className="flex items-center space-x-4 mt-3">
+                        <div className="flex items-center space-x-3 sm:space-x-4 mt-2 sm:mt-3">
                           {/* Upvote */}
                           <button
                             onClick={() => handleVoteComment(comment.id, 'upvote')}
@@ -1303,7 +1366,7 @@ const ModDetailPage = () => {
                             }`}
                             title="Votar positivamente"
                           >
-                            <i className={`fa-solid fa-caret-up text-lg transition-colors duration-200 ${
+                            <i className={`fa-solid fa-caret-up text-sm sm:text-lg transition-colors duration-200 ${
                               comment.user_vote === 'upvote' 
                                 ? 'text-green-400' 
                                 : 'text-gray-400 group-hover:text-green-400'
@@ -1325,7 +1388,7 @@ const ModDetailPage = () => {
                             }`}
                             title="Votar negativamente"
                           >
-                            <i className={`fa-solid fa-caret-down text-lg transition-colors duration-200 ${
+                            <i className={`fa-solid fa-caret-down text-sm sm:text-lg transition-colors duration-200 ${
                               comment.user_vote === 'downvote' 
                                 ? 'text-red-400' 
                                 : ' group-hover:text-red-400'
@@ -1336,41 +1399,39 @@ const ModDetailPage = () => {
                                 :  'group-hover:text-red-400'
                             }`}>{comment.dislike_count || 0}</span>
                           </button>
-
-
                         </div>
                       </div>
                     </div>
                     
                     {/* Campo de resposta inline */}
                     {replyingToComment?.id === comment.id && (
-                      <div className={`mt-4 p-4 rounded-lg border border-primary/30 ${
+                      <div className={`mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg border border-primary/30 ${
                         theme === 'light' 
                           ? 'bg-gray-50/80' 
                           : 'bg-gray-800/50'
                       }`}>
-                        <div className="flex items-start space-x-3">
-                          <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center border border-primary/30">
-                            <Reply className="w-4 h-4 text-primary" />
+                        <div className="flex items-start space-x-2 sm:space-x-3">
+                          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/20 rounded-full flex items-center justify-center border border-primary/30 flex-shrink-0">
+                            <Reply className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
                           </div>
-                          <div className="flex-1">
-                            <p className="text-sm text-primary mb-3">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs sm:text-sm text-primary mb-2 sm:mb-3">
                               Respondendo a <span className="font-medium">{comment.display_name || comment.username}</span>
                             </p>
-                            <form onSubmit={handleReplySubmit} className="space-y-3">
+                            <form onSubmit={handleReplySubmit} className="space-y-2 sm:space-y-3">
                               <textarea
                                 value={replyContent}
                                 onChange={(e) => setReplyContent(e.target.value)}
                                 placeholder="Digite sua resposta oficial aqui..."
-                                className={`w-full h-20 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none ${getInputClasses()}`}
+                                className={`w-full h-16 sm:h-20 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-xs sm:text-sm ${getInputClasses()}`}
                                 required
                                 disabled={isSubmittingReply}
                               />
-                              <div className="flex justify-end gap-2">
+                              <div className="flex flex-col sm:flex-row justify-end gap-2">
                                 <button
                                   type="button"
                                   onClick={cancelReply}
-                                  className={`px-4 py-2 text-sm transition-colors ${
+                                  className={`px-3 py-2 text-xs sm:text-sm transition-colors ${
                                     theme === 'light' 
                                       ? 'text-gray-600 hover:text-gray-800' 
                                       : 'text-gray-400 hover:text-white'
@@ -1381,13 +1442,13 @@ const ModDetailPage = () => {
                                 </button>
                                 <button
                                   type="submit"
-                                  className="px-4 py-2 text-sm font-medium bg-primary hover:bg-primary/80 text-white rounded-lg transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-3 py-2 text-xs sm:text-sm font-medium bg-primary hover:bg-primary/80 text-white rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                   disabled={isSubmittingReply || !replyContent.trim()}
                                 >
                                   {isSubmittingReply ? (
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                   ) : (
-                                    <Send className="w-4 h-4" />
+                                    <Send className="w-3 h-3 sm:w-4 sm:h-4" />
                                   )}
                                   <span>{isSubmittingReply ? 'Enviando...' : 'Enviar'}</span>
                                 </button>
@@ -1402,18 +1463,18 @@ const ModDetailPage = () => {
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="mt-3 space-y-2">
                         {comment.replies.map((reply) => (
-                          <div key={reply.id} className="ml-8 p-3 bg-gradient-to-r from-primary/10 to-primary/5 border-l-4 border-primary rounded-r-lg">
+                          <div key={reply.id} className="ml-4 sm:ml-6 md:ml-8 p-2 sm:p-3 bg-gradient-to-r from-primary/10 to-primary/5 border-l-4 border-primary rounded-r-lg">
 
                             {/* Header da resposta */}
                             <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center space-x-2">
+                              <div className="flex items-center space-x-2 min-w-0 flex-1">
                                 <div className="flex-shrink-0 relative">
                                   {/* Avatar com imagem */}
                                   {reply.avatar_url && (
                                     <img
                                       src={getAvatarUrl(reply.avatar_url)}
                                       alt={`Avatar de ${reply.display_name || reply.username}`}
-                                      className="w-6 h-6 rounded-full object-cover border border-primary/30 shadow-sm select-none pointer-events-none"
+                                      className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-primary/30 shadow-sm select-none pointer-events-none"
                                       draggable="false"
                                       onContextMenu={(e) => e.preventDefault()}
                                       onDragStart={(e) => e.preventDefault()}
@@ -1428,7 +1489,7 @@ const ModDetailPage = () => {
                                   
                                   {/* Avatar fallback com inicial */}
                                   <div 
-                                    className={`w-6 h-6 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-sm ${
+                                    className={`w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-sm ${
                                       reply.avatar_url ? 'hidden' : 'flex'
                                     }`}
                                   >
@@ -1437,11 +1498,11 @@ const ModDetailPage = () => {
                                     </span>
                                   </div>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                  <span className="text-sm font-medium text-primary">
+                                <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
+                                  <span className="text-xs sm:text-sm font-medium text-primary truncate">
                                     {reply.display_name || reply.username}
                                   </span>
-                                  <Shield className="w-4 h-4 text-primary" />
+                                  <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
                                 </div>
                               </div>
 
@@ -1449,21 +1510,21 @@ const ModDetailPage = () => {
                               {isAuthenticated && (currentUser?.id === reply.user_id || currentUser?.role === 'super_admin') && (
                                 <button
                                   onClick={() => handleDeleteComment(reply.id)}
-                                  className="w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded flex items-center justify-center transition-colors"
+                                  className="w-4 h-4 sm:w-5 sm:h-5 bg-red-500 hover:bg-red-600 text-white rounded flex items-center justify-center transition-colors flex-shrink-0"
                                   title="Excluir resposta"
                                 >
-                                  <Trash2 className="w-3 h-3" />
+                                  <Trash2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                 </button>
                               )}
                             </div>
 
                             {/* Conteúdo da resposta */}
-                            <div className={`text-sm leading-relaxed ${getSubtextClasses()}`}>
+                            <div className={`text-xs sm:text-sm leading-relaxed ${getSubtextClasses()}`}>
                               {reply.content}
                             </div>
 
                             {/* Badge de resposta oficial e horário */}
-                            <div className="mt-2 flex justify-between items-center">
+                            <div className="mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-2">
                               <span className={`text-xs ${getSubtextClasses()}`}>
                                 {new Date(reply.created_at).toLocaleString('pt-BR', {
                                   day: '2-digit',
@@ -1474,7 +1535,7 @@ const ModDetailPage = () => {
                                 })}
                               </span>
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/20 text-primary border border-primary/30">
-                                <Reply className="w-3 h-3 mr-1" />
+                                <Reply className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />
                                 {t('modDetail.officialReply')}
                               </span>
                             </div>
@@ -1485,10 +1546,10 @@ const ModDetailPage = () => {
                   </div>
                 ))
               ) : (
-                <div className="text-center py-8">
-                  <MessageSquare className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-                  <p className={`text-lg ${getSubtextClasses()}`}>Nenhum comentário ainda</p>
-                  <p className={`text-sm ${getSubtextClasses()}`}>Seja o primeiro a comentar sobre este mod!</p>
+                <div className="text-center py-6 sm:py-8">
+                  <MessageSquare className="h-10 w-10 sm:h-12 sm:w-12 text-gray-500 mx-auto mb-3 sm:mb-4" />
+                  <p className={`text-base sm:text-lg ${getSubtextClasses()}`}>Nenhum comentário ainda</p>
+                  <p className={`text-xs sm:text-sm ${getSubtextClasses()}`}>Seja o primeiro a comentar sobre este mod!</p>
                 </div>
               )}
             </div>
