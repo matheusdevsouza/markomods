@@ -54,14 +54,14 @@ const Header = React.memo(() => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        <div className="max-w-none flex h-20 items-center justify-between">
+      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16">
+        <div className="max-w-none flex h-16 sm:h-18 md:h-20 items-center justify-between">
           {/* Logo - Esquerda */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <img 
               src="/markomods-logo2.png" 
               alt="Eu, Marko! Mods Logo" 
-              className={`h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer ${
+              className={`h-8 sm:h-9 md:h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer ${
                 theme === 'dark' 
                   ? 'brightness-75 contrast-125' 
                   : 'brightness-100 contrast-100'
@@ -70,7 +70,7 @@ const Header = React.memo(() => {
           </Link>
           
           {/* Barra de Busca - Centralizada (Funcional) */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <div className="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
             <div className="w-full">
               <form onSubmit={(e) => {
                 e.preventDefault();
@@ -98,7 +98,7 @@ const Header = React.memo(() => {
           </div>
 
           {/* Botões - Direita */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
           {/* Usuário Logado */}
           {currentUser && isAuthenticated ? (
             <>
@@ -107,34 +107,36 @@ const Header = React.memo(() => {
                 variant="ghost"
                 size="icon"
                 onClick={() => changeTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
+                className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
               >
                 {theme === 'dark' ? (
-                  <Sun className="h-5 w-5" />
+                  <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
                 ) : (
-                  <Moon className="h-5 w-5" />
+                  <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
                 )}
               </Button>
               
               {/* Seletor de Idioma */}
-              <LanguageSelector />
+              <div className="hidden sm:block">
+                <LanguageSelector />
+              </div>
               
               {/* Menu do Usuário */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-10 px-3 hover:bg-primary/10 transition-all duration-300 group">
-                    <div className="flex items-center space-x-2">
-                      <Avatar className="h-8 w-8 border-2 border-primary/20">
+                  <Button variant="ghost" className="h-8 px-2 sm:h-9 sm:px-3 md:h-10 hover:bg-primary/10 transition-all duration-300 group">
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <Avatar className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 border-2 border-primary/20">
                         <AvatarImage 
                           src={currentUser.avatar_url ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001'}${currentUser.avatar_url}` : undefined} 
                           alt={currentUser.display_name || currentUser.username} 
                         />
-                        <AvatarFallback className="text-sm bg-primary/10 text-primary font-medium">
+                        <AvatarFallback className="text-xs sm:text-sm bg-primary/10 text-primary font-medium">
                           {currentUser.display_name?.substring(0, 2).toUpperCase() || currentUser.username?.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="hidden sm:block text-sm font-medium group-hover:text-white transition-colors duration-200">{currentUser.display_name || currentUser.username}</span>
-                      {currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && <Shield className="h-4 w-4 text-primary" />}
+                      <span className="hidden md:block text-sm font-medium group-hover:text-white transition-colors duration-200">{currentUser.display_name || currentUser.username}</span>
+                      {currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />}
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
@@ -319,7 +321,7 @@ const Header = React.memo(() => {
       </div>
 
       {/* Barra de Busca Mobile (Funcional) */}
-      <div className="md:hidden border-t border-border/40 px-4 py-3">
+      <div className="md:hidden border-t border-border/40 px-3 sm:px-4 py-2 sm:py-3">
         <form onSubmit={(e) => {
           e.preventDefault();
           const searchTerm = e.target.searchMobile.value.trim();
@@ -332,11 +334,11 @@ const Header = React.memo(() => {
             name="searchMobile"
             type="text"
             placeholder={t('mods.search.placeholder')}
-            className="pl-10 pr-20 w-full minecraft-input bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground/70"
+            className="pl-10 pr-16 sm:pr-20 w-full minecraft-input bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground/70 text-sm sm:text-base"
           />
           <Button 
             type="submit"
-            className="absolute right-0 h-full px-3 bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-l border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm rounded-l-none"
+            className="absolute right-0 h-full px-2 sm:px-3 bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-l border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm rounded-l-none"
             size="sm"
           >
             <Search className="h-4 w-4" />

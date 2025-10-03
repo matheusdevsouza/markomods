@@ -1324,9 +1324,9 @@ const AdminModsPage = () => {
                 <div className="bg-muted/30 rounded-lg p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <h4 className="text-lg font-semibold text-foreground flex items-center">
-                      <ExternalLink className="h-5 w-5 mr-2 text-primary" />
+                    <ExternalLink className="h-5 w-5 mr-2 text-primary" />
                       Vídeo do Mod
-                    </h4>
+                  </h4>
                     {editingMod && formData.video_url && !formData.video_file && (
                       <Button
                         type="button"
@@ -1410,7 +1410,7 @@ const AdminModsPage = () => {
                                   Clique para selecionar ou arraste um vídeo {editingMod ? '' : '*'}
                                 </p>
                                 <p className="text-xs text-muted-foreground">MP4, WEBM, OGG, MKV ou MOV até 200MB</p>
-                              </div>
+                    </div>
                               <div>
                                 <Button
                                   type="button"
@@ -1421,7 +1421,7 @@ const AdminModsPage = () => {
                                 >
                                   Escolher Arquivo
                                 </Button>
-                              </div>
+                  </div>
                             </div>
                           )}
                         </div>

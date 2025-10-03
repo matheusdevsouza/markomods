@@ -368,7 +368,7 @@ const FavoritesPage = () => {
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center"
                 >
                   {paginatedFavorites.map((mod) => (
                     <motion.div key={mod.id} variants={itemVariants}>

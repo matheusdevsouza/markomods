@@ -261,8 +261,8 @@ const HomePage = () => {
         <SectionTitle title={t('home.latestModsAdded')} icon={History} viewAllLink="/mods?sort=recent" />
         {latestMods.length > 0 ? (
           <>
-            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" variants={containerVariants}>
-              {latestMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} imageSize="stretched" />)}
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center" variants={containerVariants}>
+              {latestMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} />)}
             </motion.div>
             
             {/* Navegação por páginas - só aparece se houver mais de 4 mods */}
@@ -291,8 +291,8 @@ const HomePage = () => {
         <SectionTitle title={t('home.mostDownloadedMods')} icon={Flame} viewAllLink="/mods?sort=downloads" />
          {mostDownloadedMods.length > 0 ? (
           <>
-            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" variants={containerVariants}>
-              {mostDownloadedMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} imageSize="stretched" />)}
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center" variants={containerVariants}>
+              {mostDownloadedMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} />)}
             </motion.div>
             
             {/* Navegação por páginas - só aparece se houver mais de 4 mods */}

@@ -487,7 +487,7 @@ const SearchResultsPage = () => {
         {/* Resultados */}
         {!error && searchResults.length > 0 ? (
           <>
-            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" variants={containerVariants}>
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center" variants={containerVariants}>
               {searchResults.map(mod => (
                 <ModCard key={mod.id} mod={mod} variants={itemVariants} />
               ))}
