@@ -15,7 +15,7 @@ export const buildImageUrl = (imagePath) => {
   }
   
   // Se é um caminho relativo que começa com /uploads, retorna como está
-  // O proxy do Vite vai redirecionar /uploads para o backend
+  // Nginx serve diretamente em produção, Vite proxy em desenvolvimento
   if (imagePath.startsWith('/uploads')) {
     return imagePath;
   }
@@ -63,14 +63,14 @@ export const buildGalleryUrl = (galleryPath) => {
  * Regras:
  * - Se já for http/https, retorna como está
  * - Se começar com /api/mods/uploads, retorna como está
- * - Se começar com /uploads, prefixa com /api/mods
+ * - Se começar com /uploads, retorna como está (Nginx serve diretamente)
  * - Caso contrário, tenta prefixar com API_BASE_URL
  */
 export const buildVideoUrl = (videoPath) => {
   if (!videoPath) return null;
   if (videoPath.startsWith('http://') || videoPath.startsWith('https://')) return videoPath;
   if (videoPath.startsWith('/api/mods/uploads')) return videoPath;
-  if (videoPath.startsWith('/uploads')) return `/api/mods${videoPath}`;
+  if (videoPath.startsWith('/uploads')) return videoPath; // Nginx serve diretamente
   if (videoPath.startsWith('/')) return `${API_BASE_URL}${videoPath}`;
   return `${API_BASE_URL}/${videoPath}`;
 };
