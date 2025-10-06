@@ -61,9 +61,6 @@ router.get('/mod/:id', (req, res) => {
 router.post('/mod/:id/view', registerView);
 router.post('/:id/view', registerView);
 
-// Rota para servir arquivos de thumbnail
-router.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
-
 // IMPORTANTE: Todas as rotas abaixo desta linha usam middleware que permite acesso público para GET /:id
 // Rotas que requerem autenticação ou permitem acesso público
 router.use(publicOrAuthenticated);

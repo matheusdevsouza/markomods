@@ -339,7 +339,7 @@ const uploadsPath = path.join(__dirname, '../uploads');
 
 // Verificar e criar diretórios de uploads (base e subpastas)
 if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath, { recursive: true });
-const uploadsSubdirs = ['avatars', 'thumbnails', 'editor-images'];
+const uploadsSubdirs = ['avatars', 'thumbnails', 'editor-images', 'videos'];
 for (const dir of uploadsSubdirs) {
   const full = path.join(uploadsPath, dir);
   if (!fs.existsSync(full)) fs.mkdirSync(full, { recursive: true });
@@ -369,10 +369,10 @@ app.get('/uploads/avatars/:filename', (req, res) => {
   res.sendFile(filePath);
 });
 
-// Middleware de arquivos estáticos para outros arquivos
+// Middleware de arquivos estáticos para outros arquivos (incluindo vídeos)
 app.use('/uploads', express.static(uploadsPath, {
   setHeaders: (res, path) => {
-    // Permitir CORS para imagens
+    // Permitir CORS para todos os arquivos estáticos
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Methods', 'GET');
     res.set('Access-Control-Allow-Headers', 'Content-Type');
@@ -383,6 +383,11 @@ app.use('/uploads', express.static(uploadsPath, {
     // Cache para imagens
     if (path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.png') || path.endsWith('.gif') || path.endsWith('.webp')) {
       res.set('Cache-Control', 'public, max-age=31536000'); // 1 ano
+    }
+    
+    // Cache para vídeos (menor tempo devido ao tamanho)
+    if (path.endsWith('.mp4') || path.endsWith('.webm') || path.endsWith('.ogg')) {
+      res.set('Cache-Control', 'public, max-age=86400'); // 1 dia
     }
   }
 }));
