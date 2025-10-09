@@ -1,9 +1,7 @@
 import { executeQuery } from '../config/database.js';
 import { logInfo, logError } from '../config/logger.js';
 import { v4 as uuidv4 } from 'uuid';
-
 export default class ModsModel {
-  // Criar novo mod
   static async create(modData) {
     try {
       const id = uuidv4();
@@ -11,22 +9,18 @@ export default class ModsModel {
         name, slug, version, minecraft_version, mod_loader, short_description, full_description,
         tags, thumbnail_url, download_url_pc, download_url_mobile, video_url, author_id, content_type_id = 1
       } = modData;
-
       const sql = `
         INSERT INTO mods (
-          id, title, type, description, version, slug, minecraft_version, mod_loader, file_size, file_hash, short_description, 
+          id, title, type, description, version, slug, minecraft_version, mod_loader, file_size, file_hash, short_description,
           full_description, tags, thumbnail_url, download_url_pc, download_url_mobile, video_url, author_id, content_type_id
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-
       const params = [
         id, name, "mod", name, version, slug, minecraft_version, mod_loader, 0, "", short_description,
-        full_description, JSON.stringify(tags || []), thumbnail_url, 
+        full_description, JSON.stringify(tags || []), thumbnail_url,
         download_url_pc, download_url_mobile, video_url, author_id, content_type_id
       ];
-
       await executeQuery(sql, params);
-      
       logInfo('Mod criado com sucesso', { modId: id, description: name, author_id, content_type_id });
       return await this.findByIdAdmin(id);
     } catch (error) {
@@ -34,8 +28,6 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Buscar mod por ID (apenas mods publicados para usuários normais)
   static async findById(id) {
     try {
       const sql = `
@@ -46,21 +38,16 @@ export default class ModsModel {
         LEFT JOIN content_types ct ON m.content_type_id = ct.id
         WHERE m.id = ? AND m.is_published = 1 AND (m.is_archived IS NULL OR m.is_archived = 0)
       `;
-      
       const result = await executeQuery(sql, [id]);
       if (result.length === 0) return null;
-      
       const mod = result[0];
       mod.tags = mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [];
-      
       return mod;
     } catch (error) {
       logError('Erro ao buscar mod por ID', error, { modId: id });
       throw error;
     }
   }
-
-  // Buscar mod por ID (apenas para admin - retorna todos os mods)
   static async findByIdAdmin(id) {
     try {
       const sql = `
@@ -71,21 +58,16 @@ export default class ModsModel {
         LEFT JOIN content_types ct ON m.content_type_id = ct.id
         WHERE m.id = ?
       `;
-      
       const result = await executeQuery(sql, [id]);
       if (result.length === 0) return null;
-      
       const mod = result[0];
       mod.tags = mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [];
-      
       return mod;
     } catch (error) {
       logError('Erro ao buscar mod por ID (admin)', error, { modId: id });
       throw error;
     }
   }
-
-  // Buscar mod por slug (apenas mods publicados para usuários normais)
   static async findBySlug(slug) {
     try {
       const sql = `
@@ -96,21 +78,16 @@ export default class ModsModel {
         LEFT JOIN content_types ct ON m.content_type_id = ct.id
         WHERE m.slug = ? AND m.is_published = 1 AND (m.is_archived IS NULL OR m.is_archived = 0)
       `;
-      
       const result = await executeQuery(sql, [slug]);
       if (result.length === 0) return null;
-      
       const mod = result[0];
       mod.tags = mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [];
-      
       return mod;
     } catch (error) {
       logError('Erro ao buscar mod por slug', error, { slug });
       throw error;
     }
   }
-
-  // Buscar mod por slug (para admin - retorna todos os mods)
   static async findBySlugAdmin(slug) {
     try {
       const sql = `
@@ -121,34 +98,25 @@ export default class ModsModel {
         LEFT JOIN content_types ct ON m.content_type_id = ct.id
         WHERE m.slug = ?
       `;
-      
       const result = await executeQuery(sql, [slug]);
       if (result.length === 0) return null;
-      
       const mod = result[0];
       mod.tags = mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [];
-      
       return mod;
     } catch (error) {
       logError('Erro ao buscar mod por slug (admin)', error, { slug });
       throw error;
     }
   }
-
-  // Buscar todos os mods (para admin)
   static async findAll(filters = {}) {
     try {
-      
       let sql = `
         SELECT m.*, u.username as author_name, u.display_name as author_display_name, u.avatar_url as author_avatar_url
         FROM mods m
         LEFT JOIN users u ON m.author_id = u.id
         WHERE 1=1
       `;
-      
       const params = [];
-
-      // Filtros
       if (filters.status) {
         if (filters.status === 'published') {
           sql += ' AND m.is_published = 1 AND (m.is_archived IS NULL OR m.is_archived = 0)';
@@ -158,41 +126,25 @@ export default class ModsModel {
           sql += ' AND m.is_published = 0 AND (m.is_archived IS NULL OR m.is_archived = 0)';
         }
       }
-      // Se nenhum status for especificado, retornar todos os mods (para admin)
-
       if (filters.featured !== undefined) {
         sql += ' AND m.is_featured = ?';
         params.push(parseInt(filters.featured) ? 1 : 0);
       }
-
       if (filters.minecraft_version) {
         sql += ' AND m.minecraft_version = ?';
         params.push(filters.minecraft_version);
       }
-
       if (filters.search) {
         sql += ' AND (m.title LIKE ? OR m.short_description LIKE ?)';
         const searchTerm = `%${filters.search}%`;
         params.push(searchTerm, searchTerm);
       }
-
-      // Ordenação
       sql += ' ORDER BY m.created_at DESC';
-
-     
-
       const result = await executeQuery(sql, params);
-      
-     
-      
-      // Processar tags JSON
       const mods = result.map(mod => ({
         ...mod,
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : []
       }));
-
-        
-
       logInfo('Mods buscados com sucesso', { count: mods.length, filters });
       return mods;
     } catch (error) {
@@ -200,8 +152,6 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Buscar mods públicos (para usuários)
   static async findPublic(filters = {}) {
     try {
       let sql = `
@@ -212,59 +162,41 @@ export default class ModsModel {
         LEFT JOIN content_types ct ON m.content_type_id = ct.id
         WHERE m.is_published = 1 AND (m.is_archived IS NULL OR m.is_archived = 0)
       `;
-      
       const params = [];
-
       if (filters.featured) {
         sql += ' AND m.is_featured = 1';
       }
-
       if (filters.minecraft_version) {
         sql += ' AND m.minecraft_version = ?';
         params.push(filters.minecraft_version);
       }
-
       if (filters.content_type) {
         sql += ' AND ct.name = ?';
         params.push(filters.content_type);
       }
-
       if (filters.search) {
         sql += ' AND (m.title LIKE ? OR m.short_description LIKE ?)';
         const searchTerm = `%${filters.search}%`;
         params.push(searchTerm, searchTerm);
       }
-
       sql += ' ORDER BY m.is_featured DESC, m.created_at DESC';
-
-      // Corrigir problema com LIMIT e OFFSET - usar concatenação para evitar bug do MySQL 8.0.43
       if (filters.limit && parseInt(filters.limit) > 0) {
         sql += ` LIMIT ${parseInt(filters.limit)}`;
       }
-
       if (filters.offset && parseInt(filters.offset) >= 0) {
         sql += ` OFFSET ${parseInt(filters.offset)}`;
       }
-
-     
-
       const result = await executeQuery(sql, params);
-      
       const mods = result.map(mod => ({
         ...mod,
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : []
       }));
-
-    
       return mods;
     } catch (error) {
-    
       logError('Erro ao buscar mods públicos', error, { filters });
       throw error;
     }
   }
-
-  // Atualizar mod
   static async update(id, updateData) {
     try {
       const allowedFields = [
@@ -272,10 +204,8 @@ export default class ModsModel {
         'description', 'full_description', 'tags', 'thumbnail_url', 'download_url_pc', 'download_url_mobile', 'video_url',
         'mod_loader', 'is_published', 'is_archived', 'is_featured', 'content_type_id'
       ];
-
       const updates = [];
       const params = [];
-
       for (const [field, value] of Object.entries(updateData)) {
         if (allowedFields.includes(field) && value !== undefined) {
           if (field === 'tags') {
@@ -287,16 +217,12 @@ export default class ModsModel {
           }
         }
       }
-
       if (updates.length === 0) {
         throw new Error('Nenhum campo válido para atualização');
       }
-
       params.push(id);
-      const sql = `UPDATE mods SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
-      
+      const sql = `UPDATE mods SET ${updates.join(__STRING_PLACEHOLDER_52__)}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       await executeQuery(sql, params);
-      
       logInfo('Mod atualizado com sucesso', { modId: id, updates: Object.keys(updateData) });
       return await this.findByIdAdmin(id);
     } catch (error) {
@@ -304,13 +230,10 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Deletar mod
   static async delete(id) {
     try {
       const sql = 'DELETE FROM mods WHERE id = ?';
       await executeQuery(sql, [id]);
-      
       logInfo('Mod deletado com sucesso', { modId: id });
       return true;
     } catch (error) {
@@ -318,19 +241,14 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Toggle de status
   static async toggleStatus(id, field) {
     try {
       const allowedFields = ['is_published', 'is_archived', 'is_featured'];
-      
       if (!allowedFields.includes(field)) {
         throw new Error('Campo de status inválido');
       }
-
       const sql = `UPDATE mods SET ${field} = NOT ${field}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       await executeQuery(sql, [id]);
-      
       logInfo('Status do mod alterado', { modId: id, field });
       return await this.findByIdAdmin(id);
     } catch (error) {
@@ -338,27 +256,20 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Incrementar contadores
   static async incrementCount(id, field) {
     try {
       const allowedFields = ['download_count', 'view_count'];
-      
       if (!allowedFields.includes(field)) {
         throw new Error('Campo de contador inválido');
       }
-
       const sql = `UPDATE mods SET ${field} = ${field} + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       await executeQuery(sql, [id]);
-      
       return true;
     } catch (error) {
       logError('Erro ao incrementar contador', error, { modId: id });
       throw error;
     }
   }
-
-  // Gerar slug único
   static async generateUniqueSlug(name) {
     try {
       let slug = name
@@ -367,23 +278,18 @@ export default class ModsModel {
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
         .trim('-');
-
       let finalSlug = slug;
       let counter = 1;
-
       while (await this.slugExists(finalSlug)) {
         finalSlug = `${slug}-${counter}`;
         counter++;
       }
-
       return finalSlug;
     } catch (error) {
       logError('Erro ao gerar slug único', error, { name });
       throw error;
     }
   }
-
-  // Verificar se slug existe
   static async slugExists(slug) {
     try {
       const sql = 'SELECT COUNT(*) as count FROM mods WHERE slug = ?';
@@ -394,12 +300,10 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Buscar estatísticas
   static async getStats() {
     try {
       const sql = `
-        SELECT 
+        SELECT
           COUNT(*) as total_mods,
           SUM(CASE WHEN is_published = 1 AND (is_archived IS NULL OR is_archived = 0) THEN 1 ELSE 0 END) as published_mods,
           SUM(CASE WHEN is_archived = 1 THEN 1 ELSE 0 END) as archived_mods,
@@ -408,7 +312,6 @@ export default class ModsModel {
           SUM(view_count) as total_views
         FROM mods
       `;
-
       const result = await executeQuery(sql);
       return result[0];
     } catch (error) {
@@ -416,65 +319,46 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Busca avançada com múltiplos filtros
   static async advancedSearch(filters = {}, sort = 'relevance') {
     try {
-     
-      
       let sql = `
         SELECT m.*, u.username as author_name, u.display_name as author_display_name, u.avatar_url as author_avatar_url
         FROM mods m
         LEFT JOIN users u ON m.author_id = u.id
         WHERE m.is_published = 1 AND (m.is_archived IS NULL OR m.is_archived = 0)
       `;
-      
       const params = [];
-
-      // Filtro por termo de busca
       if (filters.search) {
         sql += ` AND (
-          m.title LIKE ? OR 
-          m.short_description LIKE ? OR 
+          m.title LIKE ? OR
+          m.short_description LIKE ? OR
           m.description LIKE ? OR
           m.tags LIKE ?
         )`;
         const searchTerm = `%${filters.search}%`;
         params.push(String(searchTerm), String(searchTerm), String(searchTerm), String(searchTerm));
       }
-
-      // Filtro por versão do Minecraft
       if (filters.minecraft_version) {
         sql += ' AND m.minecraft_version = ?';
         params.push(filters.minecraft_version);
       }
-
-      // Filtro por tipo de loader
       if (filters.mod_loader) {
         sql += ' AND m.mod_loader = ?';
         params.push(filters.mod_loader);
       }
-
-      // Filtro por categoria/tag
       if (filters.category) {
         sql += ' AND JSON_CONTAINS(m.tags, ?)';
         params.push(JSON.stringify(filters.category));
       }
-
-      // Filtro por destaque
       if (filters.featured !== undefined) {
         sql += ' AND m.is_featured = ?';
         params.push(String(parseInt(filters.featured) ? 1 : 0));
       }
-
-      // Filtro por autor
       if (filters.author) {
         sql += ' AND (u.username LIKE ? OR u.display_name LIKE ?)';
         const authorTerm = `%${filters.author}%`;
         params.push(authorTerm, authorTerm);
       }
-
-      // Ordenação
       switch (sort) {
         case 'relevance':
           sql += ' ORDER BY m.is_featured DESC, m.download_count DESC, m.created_at DESC';
@@ -500,82 +384,61 @@ export default class ModsModel {
         default:
           sql += ' ORDER BY m.is_featured DESC, m.created_at DESC';
       }
-
-      // Paginação
       if (filters.limit) {
         sql += ' LIMIT ?';
         params.push(String(parseInt(filters.limit)));
-        
         if (filters.offset !== undefined && filters.offset !== null) {
           sql += ' OFFSET ?';
           params.push(String(parseInt(filters.offset)));
         }
       }
-
-     
-
       const result = await executeQuery(sql, params);
-      
-      // Buscar total de resultados para paginação
       let countSql = `
         SELECT COUNT(DISTINCT m.id) as total
         FROM mods m
         LEFT JOIN users u ON m.author_id = u.id
         WHERE m.is_published = 1 AND (m.is_archived IS NULL OR m.is_archived = 0)
       `;
-      
       const countParams = [];
-      
-      // Aplicar mesmos filtros para contagem
       if (filters.search) {
         countSql += ` AND (
-          m.title LIKE ? OR 
-          m.short_description LIKE ? OR 
+          m.title LIKE ? OR
+          m.short_description LIKE ? OR
           m.description LIKE ? OR
           m.tags LIKE ?
         )`;
         const searchTerm = `%${filters.search}%`;
         countParams.push(searchTerm, searchTerm, searchTerm, searchTerm);
       }
-
       if (filters.minecraft_version) {
         countSql += ' AND m.minecraft_version = ?';
         countParams.push(filters.minecraft_version);
       }
-
       if (filters.mod_loader) {
         countSql += ' AND m.mod_loader = ?';
         countParams.push(filters.mod_loader);
       }
-
       if (filters.category) {
         countSql += ' AND JSON_CONTAINS(m.tags, ?)';
         countParams.push(JSON.stringify(filters.category));
       }
-
       if (filters.featured !== undefined) {
         countSql += ' AND m.is_featured = ?';
         countParams.push(parseInt(filters.featured) ? 1 : 0);
       }
-
       if (filters.author) {
         countSql += ' AND (u.username LIKE ? OR u.display_name LIKE ?)';
         const authorTerm = `%${filters.author}%`;
         countParams.push(authorTerm, authorTerm);
       }
-
       const countResult = await executeQuery(countSql, countParams);
       const total = countResult[0]?.total || 0;
-
-      // Processar tags JSON
       const mods = result.map(mod => ({
         ...mod,
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [],
         download_count: parseInt(mod.download_count) || 0,
         view_count: parseInt(mod.view_count) || 0
       }));
-
-    
       return {
         mods,
         total
@@ -585,8 +448,6 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Buscar tipos de conteúdo disponíveis
   static async getContentTypes() {
     try {
       const sql = 'SELECT * FROM content_types WHERE is_active = 1 ORDER BY id';
@@ -597,12 +458,10 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Buscar contagem total de mods para estatísticas
   static async getModsCount() {
     try {
       const sql = `
-        SELECT 
+        SELECT
           COUNT(*) as total_mods,
           SUM(CASE WHEN is_published = 1 AND (is_archived IS NULL OR is_archived = 0) THEN 1 ELSE 0 END) as published_mods,
           SUM(CASE WHEN is_featured = 1 THEN 1 ELSE 0 END) as featured_mods,
@@ -610,10 +469,8 @@ export default class ModsModel {
           SUM(CASE WHEN is_archived = 1 THEN 1 ELSE 0 END) as archived_mods
         FROM mods
       `;
-      
       const result = await executeQuery(sql);
       const counts = result[0];
-      
       return {
         total: parseInt(counts.total_mods) || 0,
         published: parseInt(counts.published_mods) || 0,
@@ -626,35 +483,25 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Registrar visualização de um mod
   static async registerView(modId, ipAddress) {
     try {
-      // Incrementar contador total no mod
       const incrementSql = 'UPDATE mods SET view_count = COALESCE(view_count, 0) + 1 WHERE id = ?';
       await executeQuery(incrementSql, [modId]);
-      
       return { success: true, message: 'Visualização registrada com sucesso' };
     } catch (error) {
       logError('Erro ao registrar visualização', error, { modId, ipAddress });
       throw error;
     }
   }
-
-  // Registrar download de um mod
   static async registerDownload(modId, userId = null) {
     try {
-      // Incrementar contador de downloads no mod
       const sql = 'UPDATE mods SET download_count = COALESCE(download_count, 0) + 1 WHERE id = ?';
       await executeQuery(sql, [modId]);
-      
-      // Registrar histórico de download por usuário (se autenticado)
       if (userId) {
         const insertSql = 'INSERT INTO downloads (mod_id, user_id, created_at) VALUES (?, ?, NOW())';
         try {
           await executeQuery(insertSql, [modId, userId]);
         } catch (err) {
-          // Se a tabela não existir, criar e tentar novamente
           const msg = String(err?.message || '');
           if (msg.includes('ER_NO_SUCH_TABLE') || msg.includes('Unknown table') || msg.includes("doesn't exist")) {
             try {
@@ -679,15 +526,12 @@ export default class ModsModel {
           }
         }
       }
-      
       return { success: true, message: 'Download registrado com sucesso' };
     } catch (error) {
       logError('Erro ao registrar download', error, { modId, userId });
       throw error;
     }
   }
-
-  // Buscar contagem de downloads do usuário
   static async getUserDownloadsCount(userId) {
     try {
       const sql = 'SELECT COUNT(*) AS total FROM downloads WHERE user_id = ?';
@@ -699,32 +543,23 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Buscar histórico de downloads do usuário (com dados do mod)
   static async getUserDownloadHistory({ userId, offset = 0, limit = 20, search = '', dateCondition = '', type = null }) {
     try {
       let whereClause = 'WHERE d.user_id = ?';
       let params = [userId];
-      
-      // Adicionar filtro de busca
       if (search && search.trim()) {
         whereClause += ' AND m.title LIKE ?';
         params.push(`%${search.trim()}%`);
       }
-      
-      // Adicionar filtro de data
       if (dateCondition) {
         whereClause += ` ${dateCondition}`;
       }
-      
-      // Adicionar filtro de tipo (se implementado no futuro)
       if (type && type !== 'all') {
         whereClause += ' AND d.download_type = ?';
         params.push(type);
       }
-      
       const sql = `
-        SELECT 
+        SELECT
           MAX(d.id) AS id,
           MAX(d.created_at) AS created_at,
           m.id AS mod_id,
@@ -740,7 +575,6 @@ export default class ModsModel {
         ORDER BY MAX(d.created_at) DESC
         LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
-      
       const rows = await executeQuery(sql, params);
       return rows.map(r => ({
         id: r.id,
@@ -759,39 +593,25 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Adicionar/remover favorito
   static async toggleFavorite(modId, userId) {
     try {
-      
       if (!modId || !userId) {
         throw new Error('Parâmetros inválidos para toggleFavorite');
       }
-      
-      // Verificar se já é favorito
       const checkSql = 'SELECT id FROM favorites WHERE mod_id = ? AND user_id = ?';
       const existing = await executeQuery(checkSql, [modId, userId]);
-      
       if (existing.length > 0) {
-        // Remover favorito
         const deleteSql = 'DELETE FROM favorites WHERE mod_id = ? AND user_id = ?';
         await executeQuery(deleteSql, [modId, userId]);
-        
-        // Decrementar contador de favoritos no mod
         const decrementSql = 'UPDATE mods SET like_count = GREATEST(COALESCE(like_count, 0) - 1, 0) WHERE id = ?';
         await executeQuery(decrementSql, [modId]);
-        
         return { success: true, message: 'Favorito removido', isFavorite: false };
       } else {
-        // Adicionar favorito
         const favoriteId = uuidv4(); // Gerar ID único
         const insertSql = 'INSERT INTO favorites (id, mod_id, user_id) VALUES (?, ?, ?)';
         await executeQuery(insertSql, [favoriteId, modId, userId]);
-        
-        // Incrementar contador de favoritos no mod
         const incrementSql = 'UPDATE mods SET like_count = COALESCE(like_count, 0) + 1 WHERE id = ?';
         await executeQuery(incrementSql, [modId]);
-        
         return { success: true, message: 'Favorito adicionado', isFavorite: true };
       }
     } catch (error) {
@@ -799,17 +619,11 @@ export default class ModsModel {
       throw error;
     }
   }
-
-  // Verificar se um mod é favorito para um usuário
   static async isFavorite(modId, userId) {
     try {
-      
-      
       if (!modId || !userId) {
-       
         return false;
       }
-      
       const sql = 'SELECT id FROM favorites WHERE mod_id = ? AND user_id = ?';
       const result = await executeQuery(sql, [modId, userId]);
       return result.length > 0;
@@ -818,8 +632,6 @@ export default class ModsModel {
       return false;
     }
   }
-
-  // Buscar todos os mods favoritados por um usuário
   static async getUserFavorites(userId) {
     try {
       const sql = `
@@ -833,10 +645,7 @@ export default class ModsModel {
         WHERE f.user_id = ? AND m.is_published = 1 AND (m.is_archived IS NULL OR m.is_archived = 0)
         ORDER BY f.created_at DESC
       `;
-      
       const result = await executeQuery(sql, [userId]);
-      
-      // Processar tags JSON e contadores
       const favorites = result.map(mod => ({
         ...mod,
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [],
@@ -845,7 +654,6 @@ export default class ModsModel {
         like_count: parseInt(mod.like_count) || 0,
         favorited_at: mod.favorited_at
       }));
-      
       return favorites;
     } catch (error) {
       logError('Erro ao buscar favoritos do usuário', error, { userId });

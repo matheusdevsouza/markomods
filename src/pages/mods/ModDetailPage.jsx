@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContextMods';
 import { useThemeMods } from '../../contexts/ThemeContextMods';
@@ -7,12 +7,11 @@ import { buildThumbnailUrl, buildAvatarUrl } from '../../utils/urls';
 import { buildVideoUrl } from '../../utils/urls';
 import VideoPlayer from '../../components/VideoPlayer';
 import { processHtmlComplete } from '../../utils/htmlProcessor';
-
-import { 
-  Download, 
-  Calendar, 
-  User, 
-  Eye, 
+import {
+  Download,
+  Calendar,
+  User,
+  Eye,
   ArrowLeft,
   Tag,
   Package,
@@ -35,62 +34,48 @@ import AdSpace from '../../components/ads/AdSpace';
 import GoogleAdsenseMeta from '../../components/ads/GoogleAdsenseMeta';
 import { Textarea } from '../../components/ui/textarea';
 import { toast } from 'sonner';
-
 const ModDetailPage = () => {
   const { slug } = useParams();
   const { currentUser, isAuthenticated } = useAuth();
   const { theme } = useThemeMods();
   const { t } = useTranslation();
   const navigate = useNavigate();
-
   const getCardClasses = () => {
-    return theme === 'light' 
-      ? 'bg-white/90 border-gray-200/50 shadow-lg' 
+    return theme === 'light'
+      ? 'bg-white/90 border-gray-200/50 shadow-lg'
       : 'bg-gradient-to-br from-gray-900/50 to-gray-800/30 border-gray-700/50 backdrop-blur-sm';
   };
-
   const getTextClasses = () => {
-    return theme === 'light' 
-      ? 'text-gray-900' 
+    return theme === 'light'
+      ? 'text-gray-900'
       : 'text-white';
   };
-
   const getSubtextClasses = () => {
-    return theme === 'light' 
-      ? 'text-gray-600' 
+    return theme === 'light'
+      ? 'text-gray-600'
       : 'text-gray-300';
   };
-
   const getInfoCardClasses = () => {
-    return theme === 'light' 
-      ? 'bg-gray-50/80 hover:bg-gray-100/80' 
+    return theme === 'light'
+      ? 'bg-gray-50/80 hover:bg-gray-100/80'
       : 'bg-gray-900/30 hover:bg-gray-900/50';
   };
-
   const getCommentCardClasses = () => {
-    return theme === 'light' 
-      ? 'bg-gray-50/80 border-gray-200/50' 
+    return theme === 'light'
+      ? 'bg-gray-50/80 border-gray-200/50'
       : 'bg-gray-900/50 border-gray-700/50';
   };
-
   const getInputClasses = () => {
-    return theme === 'light' 
-      ? 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-primary focus:ring-primary/20' 
+    return theme === 'light'
+      ? 'bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-primary focus:ring-primary/20'
       : 'bg-gray-900/30 border-gray-700/50 text-white placeholder-gray-400 focus:border-primary focus:ring-primary/20';
   };
-
-  
   const [mod, setMod] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [imageError, setImageError] = useState(false);
-  
-  // estados para favoritos
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
-  
-  // estados para comentarios
   const [comments, setComments] = useState([]);
   const [loadingComments, setLoadingComments] = useState(false);
   const [newComment, setNewComment] = useState('');
@@ -98,54 +83,45 @@ const ModDetailPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [commentCooldown, setCommentCooldown] = useState(0);
-  
-  // estados para o sistema de respostas dos comentarios
   const [replyingToComment, setReplyingToComment] = useState(null);
   const [replyContent, setReplyContent] = useState('');
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
-
-  // estados para nimacoes
   const [pageLoaded, setPageLoaded] = useState(false);
-
+  const viewRegisteredRef = useRef(false);
   useEffect(() => {
     if (slug) {
       fetchModBySlug(slug);
     }
   }, [slug, currentUser]);
-
-  // contar visualizacao quando o mod for carregado
   useEffect(() => {
     if (mod && !loading) {
-      registerView(mod.id);
+      const sessionKey = `mod_viewed_${mod.id}`;
+      const alreadyViewed = sessionStorage.getItem(sessionKey);
+      if (!alreadyViewed && !viewRegisteredRef.current) {
+        viewRegisteredRef.current = true;
+        sessionStorage.setItem(sessionKey, 'true');
+        registerView(mod.id);
+      }
     }
   }, [mod, loading]);
-
-  // carregar comentarios quando o mod for carregado
   useEffect(() => {
     if (mod && !loading) {
       fetchComments();
     }
   }, [mod, loading]);
-
-  // verificar o status dde favorito quando o mod for carregado
   useEffect(() => {
     if (mod && !loading && isAuthenticated) {
       checkFavoriteStatus();
     }
   }, [mod, loading, isAuthenticated]);
-
-  // animacoes de entrada da pagina
   useEffect(() => {
     if (!loading && mod) {
       const timer = setTimeout(() => setPageLoaded(true), 100);
-      
       return () => {
         clearTimeout(timer);
       };
     }
   }, [loading, mod]);
-
-  // cooldown de comentarios
   useEffect(() => {
     if (commentCooldown > 0) {
       const timer = setInterval(() => {
@@ -154,30 +130,23 @@ const ModDetailPage = () => {
           return prev - 1;
         });
       }, 1000);
-      
       return () => clearInterval(timer);
     }
   }, [commentCooldown]);
-
   const fetchModBySlug = async (slug) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('authToken');
-      
       const headers = {
         'Content-Type': 'application/json'
       };
-      
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-
       const apiUrl = `/api/mods/public/${slug}`;
-
       const response = await fetch(apiUrl, {
         headers
       });
-
       if (response.ok) {
         const data = await response.json();
         setMod(data.data);
@@ -195,53 +164,37 @@ const ModDetailPage = () => {
       setLoading(false);
     }
   };
-
-
-
   const handleDownload = async (url, platform) => {
     if (!url) {
-      toast.error(`${t('modDetail.downloadNotAvailable')} ${platform === 'mobile' ? 'mobile' : 'PC'}`);
+      toast.error(`${t(__STRING_PLACEHOLDER_43__)} ${platform === __STRING_PLACEHOLDER_44__ ? __STRING_PLACEHOLDER_45__ : __STRING_PLACEHOLDER_46__}`);
       return;
     }
-    
-    // redirecionar para a pagina de download
     navigate(`/mods/${mod.slug}/download`);
   };
-
-
-
-
-
-  // contar visualizacao do mod
   const registerView = async (modId) => {
     try {
-      const response = await fetch(`/api/mods/mod/${mod.id}/view`, {
+      const response = await fetch(`/api/mods/${mod.id}/view`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
-      if (response.ok) {
-        const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
     }
   };
-
-  // verificar se o mod é favorito para o usuario atual
   const checkFavoriteStatus = async () => {
     try {
       const token = localStorage.getItem('authToken');
       if (!token) return;
-
       const response = await fetch(`/api/mods/${mod.id}/favorite`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
-
       if (response.ok) {
         const data = await response.json();
         setIsFavorite(data.data.isFavorite);
@@ -249,14 +202,11 @@ const ModDetailPage = () => {
     } catch (error) {
     }
   };
-
-  // funcao para favoritar/desfavoritar mod
   const handleFavorite = async () => {
     if (!isAuthenticated) {
       toast.error(t('mods.loginRequired'));
       return;
     }
-
     setFavoriteLoading(true);
     try {
       const token = localStorage.getItem('authToken');
@@ -264,7 +214,6 @@ const ModDetailPage = () => {
         toast.error(t('mods.loginRequired'));
         return;
       }
-
       const response = await fetch(`/api/mods/${mod.id}/favorite`, {
         method: 'POST',
         headers: {
@@ -272,7 +221,6 @@ const ModDetailPage = () => {
           'Authorization': `Bearer ${token}`,
         },
       });
-
       if (response.ok) {
         const result = await response.json();
         setIsFavorite(result.data.isFavorite);
@@ -291,9 +239,6 @@ const ModDetailPage = () => {
       setFavoriteLoading(false);
     }
   };
-
-
-
   const getLoaderIcon = (loader) => {
     switch (loader?.toLowerCase()) {
       case 'forge':
@@ -306,7 +251,6 @@ const ModDetailPage = () => {
         return <Package className="h-4 w-4 text-primary" />;
     }
   };
-
   const getLoaderColor = (loader) => {
     switch (loader?.toLowerCase()) {
       case 'forge':
@@ -319,27 +263,21 @@ const ModDetailPage = () => {
         return 'bg-primary/20 text-primary border-primary/30';
     }
   };
-
   const getMinecraftVersionColor = (version) => {
     if (version?.includes('1.20')) return 'bg-green-500/20 text-green-600 border-green-500/30';
     if (version?.includes('1.19')) return 'bg-blue-500/20 text-blue-600 border-blue-500/30';
     if (version?.includes('1.18')) return 'bg-purple-500/20 text-purple-600 border-purple-500/30';
     return 'bg-gray-500/20 text-gray-600 border-gray-500/30';
   };
-
-  // funcoes para gerenciar comentarios
   const fetchComments = async () => {
     try {
       setLoadingComments(true);
       const token = localStorage.getItem('authToken');
-      
       const headers = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-      
       const response = await fetch(`/api/comments/mod/${mod.id}?includeReplies=true`, { headers });
-      
       if (response.ok) {
         const data = await response.json();
         setComments(data.data || []);
@@ -352,14 +290,11 @@ const ModDetailPage = () => {
       setLoadingComments(false);
     }
   };
-
   const handleSubmitComment = async () => {
     if (!newComment.trim()) return;
-    
     try {
       setIsSubmittingComment(true);
       const token = localStorage.getItem('authToken');
-      
       const response = await fetch('/api/comments', {
         method: 'POST',
         headers: {
@@ -371,7 +306,6 @@ const ModDetailPage = () => {
           modId: mod.id
         })
       });
-
       if (response.ok) {
         const data = await response.json();
         setComments(prev => [data.data, ...prev]);
@@ -379,15 +313,12 @@ const ModDetailPage = () => {
         toast.success('Comentário enviado com sucesso!');
       } else {
         const errorData = await response.json();
-        
         if (errorData.cooldown) {
-          toast.error(errorData.message, { 
+          toast.error(errorData.message, {
             duration: 8000,
             icon: '⏰'
           });
-          
           let cooldownSeconds = 0;
-          
           const daysMatch = errorData.message.match(/(\d+)\s*dia\(s\)/);
           if (daysMatch) {
             cooldownSeconds = parseInt(daysMatch[1]) * 24 * 60 * 60;
@@ -402,7 +333,6 @@ const ModDetailPage = () => {
               }
             }
           }
-          
           if (cooldownSeconds > 0) {
             setCommentCooldown(cooldownSeconds);
           }
@@ -416,13 +346,11 @@ const ModDetailPage = () => {
       setIsSubmittingComment(false);
     }
   };
-
   const handleLikeComment = async (commentId) => {
     if (!isAuthenticated) {
       toast.error('Faça login para curtir comentários');
       return;
     }
-
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/comments/${commentId}/like`, {
@@ -432,15 +360,14 @@ const ModDetailPage = () => {
           'Content-Type': 'application/json'
         }
       });
-
       if (response.ok) {
         const data = await response.json();
-        setComments(prev => prev.map(comment => 
-          comment.id === commentId 
-            ? { 
-                ...comment, 
+        setComments(prev => prev.map(comment =>
+          comment.id === commentId
+            ? {
+                ...comment,
                 user_liked: data.data.user_liked,
-                likes_count: data.data.likes_count 
+                likes_count: data.data.likes_count
               }
             : comment
         ));
@@ -449,12 +376,8 @@ const ModDetailPage = () => {
       toast.error('Erro ao curtir comentário');
     }
   };
-
   const handleDeleteComment = (commentId) => {
-    // procurar primeiro nos comentarios principais
     let comment = comments.find(c => c.id === commentId);
-    
-    // procurar nas respostas (somente se nao encontrar nos principaiss)
     if (!comment) {
       for (const mainComment of comments) {
         if (mainComment.replies) {
@@ -463,23 +386,19 @@ const ModDetailPage = () => {
         }
       }
     }
-    
     if (comment) {
       setCommentToDelete(comment);
       setShowDeleteModal(true);
     }
   };
-
   const confirmDeleteComment = async () => {
     if (!commentToDelete) return;
-
     try {
       const token = localStorage.getItem('authToken');
       if (!token) {
         toast.error('Token de autenticação não encontrado');
         return;
       }
-      
       const response = await fetch(`/api/comments/${commentToDelete.id}`, {
         method: 'DELETE',
         headers: {
@@ -487,13 +406,9 @@ const ModDetailPage = () => {
           'Content-Type': 'application/json'
         }
       });
-
       if (response.ok) {
-        // verificar se é uma resposta ou comentario principal
         const isReply = commentToDelete.is_reply || commentToDelete.parent_id;
-        
         if (isReply) {
-          // remover resposta da lista de respostas do comentario principal
           setComments(prev => prev.map(comment => {
             if (comment.replies) {
               return {
@@ -505,11 +420,9 @@ const ModDetailPage = () => {
           }));
           toast.success(t('modDetail.replyDeletedSuccess'));
         } else {
-          // remover comentario principal
           setComments(prev => prev.filter(comment => comment.id !== commentToDelete.id));
           toast.success('Comentário excluído com sucesso!');
         }
-        
         setShowDeleteModal(false);
         setCommentToDelete(null);
       } else {
@@ -520,22 +433,17 @@ const ModDetailPage = () => {
       toast.error('Erro ao excluir comentário');
     }
   };
-
   const cancelDeleteComment = () => {
     setShowDeleteModal(false);
     setCommentToDelete(null);
   };
-
-  // funcoes para sistema de respostas
   const handleReplyClick = (comment) => {
     setReplyingToComment(comment);
     setReplyContent('');
   };
-
   const handleReplySubmit = async (e) => {
     e.preventDefault();
     if (!replyingToComment || !replyContent.trim()) return;
-
     setIsSubmittingReply(true);
     try {
       const token = localStorage.getItem('authToken');
@@ -551,7 +459,6 @@ const ModDetailPage = () => {
           modId: mod.id
         })
       });
-
       if (response.ok) {
         toast.success(t('modDetail.replySentSuccess'));
         setReplyingToComment(null);
@@ -567,38 +474,33 @@ const ModDetailPage = () => {
       setIsSubmittingReply(false);
     }
   };
-
   const cancelReply = () => {
     setReplyingToComment(null);
     setReplyContent('');
   };
-
   const formatCooldownTime = (seconds) => {
-    if (seconds >= 86400) { 
+    if (seconds >= 86400) {
       const days = Math.floor(seconds / 86400);
       const hours = Math.floor((seconds % 86400) / 3600);
       if (days > 0) {
         return `${days}d ${hours}h`;
       }
       return `${hours}h`;
-    } else if (seconds >= 3600) { 
+    } else if (seconds >= 3600) {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
       return `${hours}h ${minutes}m`;
-    } else { 
+    } else {
       const minutes = Math.floor(seconds / 60);
       const secs = seconds % 60;
       return `${minutes}m ${secs}s`;
     }
   };
-
-  // sistema de votacao nos comentarios
   const handleVoteComment = async (commentId, voteType) => {
     if (!isAuthenticated) {
       toast.error('Faça login para votar em comentários');
       return;
     }
-
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/comments/${commentId}/vote`, {
@@ -609,18 +511,15 @@ const ModDetailPage = () => {
         },
         body: JSON.stringify({ voteType })
       });
-
       if (response.ok) {
         const data = await response.json();
-        
         await fetchComments();
-
         if (data.data && data.data.action === 'added') {
-          toast.success(`Voto ${voteType === 'upvote' ? 'positivo' : 'negativo'} registrado!`);
+          toast.success(`Voto ${voteType === __STRING_PLACEHOLDER_131__ ? __STRING_PLACEHOLDER_132__ : __STRING_PLACEHOLDER_133__} registrado!`);
         } else if (data.data && data.data.action === 'removed') {
           toast.success('Voto removido!');
         } else if (data.data && data.data.action === 'changed') {
-          toast.success(`Voto alterado para ${voteType === 'upvote' ? 'positivo' : 'negativo'}!`);
+          toast.success(`Voto alterado para ${voteType === __STRING_PLACEHOLDER_137__ ? __STRING_PLACEHOLDER_138__ : __STRING_PLACEHOLDER_139__}!`);
         } else {
           toast.success('Voto registrado!');
         }
@@ -631,36 +530,29 @@ const ModDetailPage = () => {
       toast.error('Erro ao registrar voto');
     }
   };
-
-  // funcao para fazer url completa do avatar
   const getAvatarUrl = (avatarUrl) => {
     if (!avatarUrl) return null;
     if (avatarUrl.startsWith('http')) return avatarUrl;
-
     if (window.location.origin.includes('localhost:5173')) {
-      return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001'}${avatarUrl}`;
+      return `${import.meta.env.VITE_API_URL?.replace(__STRING_PLACEHOLDER_145__, __STRING_PLACEHOLDER_146__) || __STRING_PLACEHOLDER_147__}${avatarUrl}`;
     }
-    
     return `${window.location.origin}${avatarUrl}`;
   };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background fixed inset-0 overflow-y-auto pt-32">
         <div className="flex w-full h-full">
           <div className="flex-1 px-4">
             <div className={`max-w-4xl mx-auto space-y-6 rounded-xl p-6 ${getCardClasses()}`}>
-              {/* skeleton do header */}
+              {}
               <div className="space-y-4 animate-pulse">
                 <Skeleton className="h-8 w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <Skeleton className="h-12 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
                 <Skeleton className="h-6 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
               </div>
-              
-              {/* skeleton da imagem */}
+              {}
               <Skeleton className="h-80 w-full rounded-lg bg-gradient-to-r from-gray-700 to-gray-600 animate-pulse" />
-              
-              {/* skeleton das abas */}
+              {}
               <div className="space-y-4">
                 <div className="flex space-x-2">
                   <Skeleton className="h-10 w-24 bg-gradient-to-r from-gray-700 to-gray-600" />
@@ -671,10 +563,9 @@ const ModDetailPage = () => {
               </div>
             </div>
           </div>
-          
           <div className="w-80 flex-shrink-0">
             <div className="space-y-6 ml-8">
-              {/* skeleton das estatisticas */}
+              {}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="grid grid-cols-3 gap-4">
@@ -683,8 +574,7 @@ const ModDetailPage = () => {
                   <Skeleton className="h-16 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
                 </div>
               </div>
-              
-              {/* skeleton das categorias */}
+              {}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-1/2 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="flex flex-wrap gap-2">
@@ -693,8 +583,7 @@ const ModDetailPage = () => {
                   <Skeleton className="h-6 w-14 bg-gradient-to-r from-gray-700 to-gray-600" />
                 </div>
               </div>
-              
-              {/* skeleton das informacoes tec. */}
+              {}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-2/3 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="space-y-2">
@@ -709,7 +598,6 @@ const ModDetailPage = () => {
       </div>
     );
   }
-
   if (error || !mod) {
     return (
       <div className="min-h-screen bg-background fixed inset-0 overflow-y-auto pt-32">
@@ -724,19 +612,17 @@ const ModDetailPage = () => {
                 </div>
               </div>
             </div>
-            
             <div className="space-y-4">
               <h1 className="text-4xl lg:text-5xl font-bold text-primary">
                 {error || 'Mod não encontrado'}
               </h1>
               <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                {error ? 
-                  `Erro ao carregar o mod: ${error}` : 
+                {error ?
+                  `Erro ao carregar o mod: ${error}` :
                   'O mod que você está procurando não existe ou foi removido do nosso catálogo.'
                 }
               </p>
             </div>
-            
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Link to="/mods">
                 <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg h-auto shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105">
@@ -755,36 +641,31 @@ const ModDetailPage = () => {
       </div>
     );
   }
-
   const recommendedDownload = mod.download_url_pc || mod.download_url_mobile;
-
   return (
     <div className="min-h-screen">
       <GoogleAdsenseMeta />
-      
       <div className="w-full px-4 py-6">
-        <AdSpace 
-          page="mod-detail" 
+        <AdSpace
+          page="mod-detail"
           position="top-banner"
           fallbackText="Nenhum anúncio configurado"
         />
       </div>
-      
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6 py-4 sm:py-6">
         <div className={`transition-all duration-700 ease-out ${
-          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          pageLoaded ? __STRING_PLACEHOLDER_150__ : __STRING_PLACEHOLDER_151__
         }`}>
           <Link to={mod?.content_type_id === 2 ? "/addons" : "/mods"} className={`inline-flex items-center text-sm hover:text-primary transition-colors ${getSubtextClasses()}`}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            {mod?.content_type_id === 2 
-              ? t('modDetail.backToAddons') 
+            {mod?.content_type_id === 2
+              ? t('modDetail.backToAddons')
               : t('modDetail.backToMods')
             }
           </Link>
         </div>
-
         <div className={`rounded-xl p-4 sm:p-6 md:p-8 transition-all duration-1000 ease-out relative ${getCardClasses()} ${
-          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          pageLoaded ? __STRING_PLACEHOLDER_154__ : __STRING_PLACEHOLDER_155__
         }`}>
           <div className="flex flex-col items-center text-center space-y-4 sm:hidden">
             <div className="relative">
@@ -798,16 +679,14 @@ const ModDetailPage = () => {
               </div>
               <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
             </div>
-
             <div className="space-y-2">
               <h1 className={`text-3xl font-bold ${getTextClasses()} break-words leading-tight`}>
                 {mod.title}
               </h1>
             </div>
-
             {recommendedDownload && (
               <div className="pt-2">
-                <Button 
+                <Button
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
                   className="bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white px-8 py-4 text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 rounded-xl font-semibold"
                 >
@@ -817,7 +696,6 @@ const ModDetailPage = () => {
               </div>
             )}
           </div>
-
           <div className="hidden sm:flex items-center justify-between space-x-6">
             <div className="flex items-center space-x-4 md:space-x-6">
               <div className="relative">
@@ -831,35 +709,32 @@ const ModDetailPage = () => {
                 </div>
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
               </div>
-
               <div>
                 <h1 className={`text-2xl md:text-3xl lg:text-4xl font-bold ${getTextClasses()} break-words leading-tight`}>
                   {mod.title}
                 </h1>
               </div>
             </div>
-
             <div className="flex items-center space-x-3 md:space-x-4">
               <button
                 onClick={handleFavorite}
                 disabled={favoriteLoading}
                 className={`p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm ${
-                  isFavorite 
-                    ? 'text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20' 
-                    : 'text-gray-400 hover:text-red-500 bg-gray-500/10 hover:bg-red-500/10'
+                  isFavorite
+                    ? __STRING_PLACEHOLDER_158__
+                    : __STRING_PLACEHOLDER_159__
                 }`}
               >
                 {favoriteLoading ? (
                   <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin" />
                 ) : (
-                  <Heart 
-                    className={`h-5 w-5 md:h-6 md:w-6 ${isFavorite ? 'fill-current' : ''}`} 
+                  <Heart
+                    className={`h-5 w-5 md:h-6 md:w-6 ${isFavorite ? __STRING_PLACEHOLDER_160__ : __STRING_PLACEHOLDER_161__}`}
                   />
                 )}
               </button>
-
               {recommendedDownload && (
-                <Button 
+                <Button
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
                   className="bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white px-4 md:px-6 py-2 md:py-3 text-sm md:text-base h-auto transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 rounded-lg font-semibold"
                 >
@@ -869,43 +744,41 @@ const ModDetailPage = () => {
               )}
             </div>
           </div>
-
           <div className="absolute top-4 right-4 z-10 sm:hidden">
             <button
               onClick={handleFavorite}
               disabled={favoriteLoading}
               className={`p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm ${
-                isFavorite 
-                  ? 'text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20' 
-                  : 'text-gray-400 hover:text-red-500 bg-gray-500/10 hover:bg-red-500/10'
+                isFavorite
+                  ? __STRING_PLACEHOLDER_164__
+                  : __STRING_PLACEHOLDER_165__
               }`}
             >
               {favoriteLoading ? (
                 <Loader2 className="h-6 w-6 animate-spin" />
               ) : (
-                <Heart 
-                  className={`h-6 w-6 ${isFavorite ? 'fill-current' : ''}`} 
+                <Heart
+                  className={`h-6 w-6 ${isFavorite ? __STRING_PLACEHOLDER_166__ : __STRING_PLACEHOLDER_167__}`}
                 />
               )}
             </button>
           </div>
         </div>
-
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-200 ${getCardClasses()} ${
-          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          pageLoaded ? __STRING_PLACEHOLDER_168__ : __STRING_PLACEHOLDER_169__
         }`}>
           <div className="space-y-4">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
               <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.description')}
             </h2>
-            <div 
-              className={`prose max-w-none leading-relaxed ${theme === 'light' ? 'prose-gray' : 'prose-invert'} ${getSubtextClasses()}`}
-              style={{ 
+            <div
+              className={`prose max-w-none leading-relaxed ${theme === __STRING_PLACEHOLDER_171__ ? __STRING_PLACEHOLDER_172__ : __STRING_PLACEHOLDER_173__} ${getSubtextClasses()}`}
+              style={{
                 whiteSpace: 'pre-wrap',
                 lineHeight: '1.6'
               }}
-              dangerouslySetInnerHTML={{ 
+              dangerouslySetInnerHTML={{
                 __html: processHtmlComplete(mod.full_description || mod.description || t('mods.noDescription'))
               }}
             />
@@ -919,12 +792,10 @@ const ModDetailPage = () => {
             `}</style>
           </div>
         </div>
-
-
-        {/* secao de video*/}
+        {}
         {mod.video_url && (
           <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-250 ${getCardClasses()} ${
-            pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            pageLoaded ? __STRING_PLACEHOLDER_177__ : __STRING_PLACEHOLDER_178__
           }`}>
             <div className="space-y-4">
               <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
@@ -943,18 +814,16 @@ const ModDetailPage = () => {
             </div>
           </div>
         )}
-
-        {/* secao de informacoes*/}
+        {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
-          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          pageLoaded ? __STRING_PLACEHOLDER_188__ : __STRING_PLACEHOLDER_189__
         }`}>
           <div className="space-y-6">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
               <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.information')}
             </h2>
-
-            {/* informacoes tecnicas*/}
+            {}
             <div className="space-y-4">
               <h3 className={`text-lg font-semibold flex items-center ${getTextClasses()}`}>
                 <Package className="h-5 w-5 mr-2 text-primary" />
@@ -979,8 +848,7 @@ const ModDetailPage = () => {
                 </div>
               </div>
             </div>
-
-            {/* tags/categorias*/}
+            {}
             {mod.tags && Array.isArray(mod.tags) && mod.tags.length > 0 && (
               <div className="space-y-4">
                 <h3 className={`text-lg font-semibold flex items-center ${getTextClasses()}`}>
@@ -989,9 +857,9 @@ const ModDetailPage = () => {
                 </h3>
                 <div className="flex flex-wrap gap-2 sm:gap-3">
                   {mod.tags.map((tag, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="outline" 
+                    <Badge
+                      key={index}
+                      variant="outline"
                       className="bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 transition-all duration-300 text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-1.5"
                     >
                       {tag}
@@ -1000,8 +868,7 @@ const ModDetailPage = () => {
                 </div>
               </div>
             )}
-
-            {/* autor*/}
+            {}
             <div className="space-y-4">
               <h3 className={`text-lg font-semibold flex items-center ${getTextClasses()}`}>
                 <User className="h-5 w-5 mr-2 text-primary" />
@@ -1011,8 +878,8 @@ const ModDetailPage = () => {
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/20 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
                   {mod.author_avatar_url && mod.author_avatar_url.trim() !== '' ? (
                     <>
-                      <img 
-                        src={buildAvatarUrl(mod.author_avatar_url)} 
+                      <img
+                        src={buildAvatarUrl(mod.author_avatar_url)}
                         alt={mod.author_display_name || mod.author_name}
                         className="w-full h-full object-cover rounded-full select-none pointer-events-none"
                         draggable="false"
@@ -1032,17 +899,16 @@ const ModDetailPage = () => {
                 <div className="min-w-0 flex-1">
                   <p className={`font-semibold text-sm sm:text-base ${getTextClasses()} truncate`}>{mod.author_display_name || mod.author_name || t('modDetail.unknown')}</p>
                   <p className={`text-xs sm:text-sm ${getSubtextClasses()}`}>
-                    {mod.content_type === 'addons' 
-                      ? t('modDetail.addonCreator') 
+                    {mod.content_type === 'addons'
+                      ? t('modDetail.addonCreator')
                       : t('modDetail.modCreator')
                     }
                   </p>
                 </div>
               </div>
             </div>
-
-            {/* estatisticas */}
-            <div className={`flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6 py-3 pt-4 ${theme === 'light' ? 'border-t border-gray-200/50' : 'border-t border-gray-700/50'}`}>
+            {}
+            <div className={`flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6 py-3 pt-4 ${theme === __STRING_PLACEHOLDER_207__ ? __STRING_PLACEHOLDER_208__ : __STRING_PLACEHOLDER_209__}`}>
               <div className={`flex items-center space-x-2 ${getSubtextClasses()}`}>
                 <Download className="h-4 w-4 text-primary" />
                 <span className="text-xs sm:text-sm font-medium">{mod.download_count || 0}</span>
@@ -1058,18 +924,16 @@ const ModDetailPage = () => {
             </div>
           </div>
         </div>
-
-        {/* secao de download*/}
+        {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
-          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          pageLoaded ? __STRING_PLACEHOLDER_210__ : __STRING_PLACEHOLDER_211__
         }`}>
           <div className="space-y-4 sm:space-y-6">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
               <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.download')}
             </h2>
-            
-            {/* download direto*/}
+            {}
             <div className="text-center">
               <div className="flex justify-center mb-3 sm:mb-4">
                 <Download className="h-10 w-10 sm:h-12 sm:w-12 text-primary" />
@@ -1078,14 +942,13 @@ const ModDetailPage = () => {
                 {t('modDetail.directDownload')}
               </h3>
               <p className={`mb-4 sm:mb-6 text-sm sm:text-base ${getSubtextClasses()} max-w-2xl mx-auto`}>
-                {mod.content_type_id === 2 
+                {mod.content_type_id === 2
                   ? t('modDetail.addonDownloadDescription')
                   : t('modDetail.modDownloadDescription')
                 }
               </p>
-              
               {recommendedDownload ? (
-                <Button 
+                <Button
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
                   className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 w-full sm:w-auto max-w-xs sm:max-w-none"
                 >
@@ -1098,26 +961,25 @@ const ModDetailPage = () => {
                 </div>
               )}
             </div>
-
-            {/* instrucoes para instalar*/}
-            <div className={`pt-4 sm:pt-6 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
+            {}
+            <div className={`pt-4 sm:pt-6 ${theme === __STRING_PLACEHOLDER_219__ ? __STRING_PLACEHOLDER_220__ : __STRING_PLACEHOLDER_221__}`}>
               <h4 className={`text-base sm:text-lg font-semibold mb-3 sm:mb-4 ${getTextClasses()}`}>{t('modDetail.installationInstructions')}</h4>
-              <div className={`rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3 text-xs sm:text-sm ${theme === 'light' ? 'bg-gray-50/80' : 'bg-gray-900/50'}`}>
+              <div className={`rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3 text-xs sm:text-sm ${theme === __STRING_PLACEHOLDER_223__ ? __STRING_PLACEHOLDER_224__ : __STRING_PLACEHOLDER_225__}`}>
                 <p className={`${getSubtextClasses()} leading-relaxed`}>
-                  <strong>1.</strong> {mod.content_type_id === 2 
-                    ? t('modDetail.addonStep1') 
+                  <strong>1.</strong> {mod.content_type_id === 2
+                    ? t('modDetail.addonStep1')
                     : t('modDetail.modStep1')
                   }
                 </p>
                 <p className={`${getSubtextClasses()} leading-relaxed`}>
-                  <strong>2.</strong> {mod.content_type_id === 2 
-                    ? t('modDetail.addonStep2') 
+                  <strong>2.</strong> {mod.content_type_id === 2
+                    ? t('modDetail.addonStep2')
                     : t('modDetail.modStep2')
                   }
                 </p>
                 <p className={`${getSubtextClasses()} leading-relaxed`}>
-                  <strong>3.</strong> {mod.content_type_id === 2 
-                    ? t('modDetail.addonStep3') 
+                  <strong>3.</strong> {mod.content_type_id === 2
+                    ? t('modDetail.addonStep3')
                     : t('modDetail.modStep3', { loader: mod.mod_loader })
                   }
                 </p>
@@ -1128,18 +990,16 @@ const ModDetailPage = () => {
             </div>
           </div>
         </div>
-
-        {/* secao de comentarios*/}
+        {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-500 ${getCardClasses()} ${
-          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          pageLoaded ? __STRING_PLACEHOLDER_233__ : __STRING_PLACEHOLDER_234__
         }`}>
           <div className="space-y-6">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
               <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.comments')}
             </h2>
-
-            {/* input do comentario*/}
+            {}
             {isAuthenticated ? (
               <div className="space-y-3 sm:space-y-4">
                 <div className="relative">
@@ -1151,8 +1011,7 @@ const ModDetailPage = () => {
                     className={`w-full border rounded-xl p-3 sm:p-4 pr-14 sm:pr-16 md:pr-20 resize-none transition-all duration-300 hover:border-gray-600 text-sm sm:text-base ${getInputClasses()}`}
                     rows={3}
                   />
-                  
-                  {/* botao de enviar*/}
+                  {}
                   <button
                     onClick={handleSubmitComment}
                     disabled={!newComment.trim() || isSubmittingComment || commentCooldown > 0}
@@ -1167,21 +1026,18 @@ const ModDetailPage = () => {
                       <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                     )}
                   </button>
-                  
-                  {/* indicador de caracteres*/}
+                  {}
                   <div className="absolute bottom-2 left-3 text-xs text-gray-500">
                     {newComment.length}/500
                   </div>
-                  
-                  {/* indicador de cooldown (INATIVO)*/}
+                  {}
                   {commentCooldown > 0 && (
                     <div className="absolute top-2 right-2 px-2 py-1 bg-red-500/20 border border-red-500/30 rounded-lg text-xs text-red-400">
                       ⏰ {formatCooldownTime(commentCooldown)}
                     </div>
                   )}
                 </div>
-                
-                {/* Dicas para o usuario sobre os comentarios */}
+                {}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs text-gray-500">
                   <div className="flex items-center space-x-1">
                     <MessageSquare className="h-3 w-3" />
@@ -1194,14 +1050,13 @@ const ModDetailPage = () => {
                 </div>
               </div>
             ) : (
-              /* mensagem para usuarios nao logados*/
               <div className="text-center py-6 sm:py-8 bg-gradient-to-r from-gray-900/40 to-gray-800/40 rounded-2xl border border-gray-700/50 backdrop-blur-sm">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                   <LogIn className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                 </div>
                 <h3 className={`text-base sm:text-lg font-semibold mb-2 ${getTextClasses()}`}>{t('modDetail.loginToComment')}</h3>
                 <p className={`mb-4 text-xs sm:text-sm ${getSubtextClasses()}`}>{t('modDetail.loginToShareOpinion')}</p>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => navigate('/login')}
                   className="border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/60 hover:scale-105 transition-all duration-300 text-sm sm:text-base px-4 py-2"
@@ -1211,8 +1066,7 @@ const ModDetailPage = () => {
                 </Button>
               </div>
             )}
-
-            {/* lista de comentarios*/}
+            {}
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                 <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
@@ -1220,7 +1074,6 @@ const ModDetailPage = () => {
                   {comments?.length || 0} {t('modDetail.commentsCount')}
                 </span>
               </div>
-
               {loadingComments ? (
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
@@ -1249,7 +1102,6 @@ const ModDetailPage = () => {
                           <Reply className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                         </button>
                       )}
-                      
                       {isAuthenticated && (currentUser?.id === comment.user_id || currentUser?.role === 'super_admin') && (
                         <button
                           onClick={() => handleDeleteComment(comment.id)}
@@ -1260,7 +1112,6 @@ const ModDetailPage = () => {
                         </button>
                       )}
                     </div>
-                    
                     <div className="flex items-start space-x-2 sm:space-x-3">
                       <div className="flex-shrink-0 relative">
                         {comment.avatar_url && (
@@ -1278,10 +1129,9 @@ const ModDetailPage = () => {
                             }}
                           />
                         )}
-                        
-                        <div 
+                        <div
                           className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-lg ${
-                            comment.avatar_url ? 'hidden' : 'flex'
+                            comment.avatar_url ? __STRING_PLACEHOLDER_248__ : __STRING_PLACEHOLDER_249__
                           }`}
                         >
                           <span className={`font-semibold text-xs sm:text-sm ${getTextClasses()}`}>
@@ -1307,62 +1157,59 @@ const ModDetailPage = () => {
                         <p className={`text-xs sm:text-sm leading-relaxed break-words overflow-wrap-anywhere ${getSubtextClasses()}`}>
                           {comment.content}
                         </p>
-
-                        {/* sistema de votos (REAL)*/}
+                        {}
                         <div className="flex items-center space-x-3 sm:space-x-4 mt-2 sm:mt-3">
-                          {/* upvote  (PRA CIMA)*/}
+                          {}
                           <button
                             onClick={() => handleVoteComment(comment.id, 'upvote')}
                             className={`group flex items-center space-x-1 text-xs transition-colors duration-200 ${
-                              comment.user_vote === 'upvote' 
-                                ? 'text-green-400' 
-                                : 'text-gray-400'
+                              comment.user_vote === __STRING_PLACEHOLDER_259__
+                                ? __STRING_PLACEHOLDER_260__
+                                : __STRING_PLACEHOLDER_261__
                             }`}
                             title="Votar positivamente"
                           >
                             <i className={`fa-solid fa-caret-up text-sm sm:text-lg transition-colors duration-200 ${
-                              comment.user_vote === 'upvote' 
-                                ? 'text-green-400' 
-                                : 'text-gray-400 group-hover:text-green-400'
+                              comment.user_vote === __STRING_PLACEHOLDER_262__
+                                ? __STRING_PLACEHOLDER_263__
+                                : __STRING_PLACEHOLDER_264__
                             }`}></i>
                             <span className={`font-medium transition-colors duration-200 ${
-                              comment.user_vote === 'upvote' 
-                                ? 'text-green-400' 
-                                : 'text-gray-400 group-hover:text-green-400'
+                              comment.user_vote === __STRING_PLACEHOLDER_265__
+                                ? __STRING_PLACEHOLDER_266__
+                                : __STRING_PLACEHOLDER_267__
                             }`}>{comment.like_count || 0}</span>
                           </button>
-
-                          {/* downvote (PRA BAIXO)*/}
+                          {}
                           <button
                             onClick={() => handleVoteComment(comment.id, 'downvote')}
                             className={`group flex items-center space-x-1 text-xs transition-colors duration-200 ${
-                              comment.user_vote === 'downvote' 
-                                ? 'text-red-400' 
-                                : 'text-gray-400'
+                              comment.user_vote === __STRING_PLACEHOLDER_269__
+                                ? __STRING_PLACEHOLDER_270__
+                                : __STRING_PLACEHOLDER_271__
                             }`}
                             title="Votar negativamente"
                           >
                             <i className={`fa-solid fa-caret-down text-sm sm:text-lg transition-colors duration-200 ${
-                              comment.user_vote === 'downvote' 
-                                ? 'text-red-400' 
-                                : ' group-hover:text-red-400'
+                              comment.user_vote === __STRING_PLACEHOLDER_272__
+                                ? __STRING_PLACEHOLDER_273__
+                                : __STRING_PLACEHOLDER_274__
                             }`}></i>
                             <span className={`font-medium transition-colors duration-200 ${
-                              comment.user_vote === 'downvote' 
-                                ? 'text-red-400' 
-                                :  'group-hover:text-red-400'
+                              comment.user_vote === __STRING_PLACEHOLDER_275__
+                                ? __STRING_PLACEHOLDER_276__
+                                :  __STRING_PLACEHOLDER_277__
                             }`}>{comment.dislike_count || 0}</span>
                           </button>
                         </div>
                       </div>
                     </div>
-                    
-                    {/* campo de resposta*/}
+                    {}
                     {replyingToComment?.id === comment.id && (
                       <div className={`mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg border border-primary/30 ${
-                        theme === 'light' 
-                          ? 'bg-gray-50/80' 
-                          : 'bg-gray-800/50'
+                        theme === __STRING_PLACEHOLDER_278__
+                          ? __STRING_PLACEHOLDER_279__
+                          : __STRING_PLACEHOLDER_280__
                       }`}>
                         <div className="flex items-start space-x-2 sm:space-x-3">
                           <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/20 rounded-full flex items-center justify-center border border-primary/30 flex-shrink-0">
@@ -1386,9 +1233,9 @@ const ModDetailPage = () => {
                                   type="button"
                                   onClick={cancelReply}
                                   className={`px-3 py-2 text-xs sm:text-sm transition-colors ${
-                                    theme === 'light' 
-                                      ? 'text-gray-600 hover:text-gray-800' 
-                                      : 'text-gray-400 hover:text-white'
+                                    theme === __STRING_PLACEHOLDER_281__
+                                      ? __STRING_PLACEHOLDER_282__
+                                      : __STRING_PLACEHOLDER_283__
                                   }`}
                                   disabled={isSubmittingReply}
                                 >
@@ -1412,13 +1259,11 @@ const ModDetailPage = () => {
                         </div>
                       </div>
                     )}
-                    
-                    {/* exibir respostas do comentario*/}
+                    {}
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="mt-3 space-y-2">
                         {comment.replies.map((reply) => (
                           <div key={reply.id} className="ml-4 sm:ml-6 md:ml-8 p-2 sm:p-3 bg-gradient-to-r from-primary/10 to-primary/5 border-l-4 border-primary rounded-r-lg">
-
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center space-x-2 min-w-0 flex-1">
                                 <div className="flex-shrink-0 relative">
@@ -1437,10 +1282,9 @@ const ModDetailPage = () => {
                                       }}
                                     />
                                   )}
-                                  
-                                  <div 
+                                  <div
                                     className={`w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-sm ${
-                                      reply.avatar_url ? 'hidden' : 'flex'
+                                      reply.avatar_url ? __STRING_PLACEHOLDER_288__ : __STRING_PLACEHOLDER_289__
                                     }`}
                                   >
                                     <span className={`font-semibold text-xs ${getTextClasses()}`}>
@@ -1455,7 +1299,6 @@ const ModDetailPage = () => {
                                   <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
                                 </div>
                               </div>
-
                               {isAuthenticated && (currentUser?.id === reply.user_id || currentUser?.role === 'super_admin') && (
                                 <button
                                   onClick={() => handleDeleteComment(reply.id)}
@@ -1466,11 +1309,9 @@ const ModDetailPage = () => {
                                 </button>
                               )}
                             </div>
-
                             <div className={`text-xs sm:text-sm leading-relaxed ${getSubtextClasses()}`}>
                               {reply.content}
                             </div>
-
                             <div className="mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-2">
                               <span className={`text-xs ${getSubtextClasses()}`}>
                                 {new Date(reply.created_at).toLocaleString('pt-BR', {
@@ -1503,13 +1344,12 @@ const ModDetailPage = () => {
           </div>
         </div>
             </div>
-
       {showDeleteModal && commentToDelete && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className={`rounded-xl p-6 w-full max-w-lg mx-4 shadow-2xl ${
-            theme === 'light' 
-              ? 'bg-white border-2 border-red-500/30 shadow-red-500/20' 
-              : 'bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-red-500/30 shadow-red-500/20'
+            theme === __STRING_PLACEHOLDER_299__
+              ? __STRING_PLACEHOLDER_300__
+              : __STRING_PLACEHOLDER_301__
           }`}>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
@@ -1524,21 +1364,19 @@ const ModDetailPage = () => {
               <button
                 onClick={cancelDeleteComment}
                 className={`transition-colors p-2 rounded-lg ${
-                  theme === 'light' 
-                    ? 'text-gray-500 hover:text-gray-700 hover:bg-gray-100' 
-                    : 'text-gray-400 hover:text-white hover:bg-gray-700'
+                  theme === __STRING_PLACEHOLDER_302__
+                    ? __STRING_PLACEHOLDER_303__
+                    : __STRING_PLACEHOLDER_304__
                 }`}
               >
                 <X size={24} />
               </button>
             </div>
-
             <div className="space-y-6">
-
               <div className={`rounded-lg p-5 ${
-                theme === 'light' 
-                  ? 'bg-gray-50 border border-gray-200' 
-                  : 'bg-gray-800/50 border border-gray-600/50'
+                theme === __STRING_PLACEHOLDER_305__
+                  ? __STRING_PLACEHOLDER_306__
+                  : __STRING_PLACEHOLDER_307__
               }`}>
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="flex-shrink-0 relative">
@@ -1573,23 +1411,22 @@ const ModDetailPage = () => {
                   </div>
                 </div>
                 <div className={`rounded-lg p-4 border-l-4 ${
-                  theme === 'light' 
-                    ? 'bg-gray-100 border-gray-300' 
-                    : 'bg-gray-700/30 border-gray-500'
+                  theme === __STRING_PLACEHOLDER_316__
+                    ? __STRING_PLACEHOLDER_317__
+                    : __STRING_PLACEHOLDER_318__
                 }`}>
                   <p className={`leading-relaxed break-words overflow-wrap-anywhere ${getSubtextClasses()}`}>
                     "{commentToDelete.content}"
                   </p>
                 </div>
               </div>
-
               <div className="flex gap-4 pt-2">
                 <button
                   onClick={cancelDeleteComment}
                   className={`flex-1 px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 ${
-                    theme === 'light' 
-                      ? 'text-gray-600 hover:text-gray-800 border-2 border-gray-300 hover:bg-gray-100' 
-                      : 'text-gray-300 hover:text-white border-2 border-gray-600 hover:bg-gray-700/50'
+                    theme === __STRING_PLACEHOLDER_319__
+                      ? __STRING_PLACEHOLDER_320__
+                      : __STRING_PLACEHOLDER_321__
                   }`}
                 >
                   <X className="w-4 h-4" />
@@ -1607,7 +1444,6 @@ const ModDetailPage = () => {
           </div>
         </div>
       )}
-
       {false && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-primary/30 rounded-xl p-6 w-full max-w-2xl mx-4 shadow-2xl shadow-primary/20">
@@ -1628,7 +1464,6 @@ const ModDetailPage = () => {
                 <X size={24} />
               </button>
             </div>
-
             <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-600/50 mb-6">
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
@@ -1647,8 +1482,7 @@ const ModDetailPage = () => {
                 "{commentToReply?.content}"
               </p>
             </div>
-
-            {/* formulario para enviar uma resposta oficial */}
+            {}
             <form onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.target);
@@ -1672,7 +1506,6 @@ const ModDetailPage = () => {
                   Esta resposta será marcada como oficial e aparecerá destacada.
                 </p>
               </div>
-
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"
@@ -1697,8 +1530,7 @@ const ModDetailPage = () => {
                 </button>
               </div>
             </form>
-
-            {/* aviso de permissao somente para adm*/}
+            {}
             <div className="mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="w-4 h-4 text-primary" />
@@ -1713,8 +1545,4 @@ const ModDetailPage = () => {
     </div>
   );
 };
-
 export default ModDetailPage;
-
-
-

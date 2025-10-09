@@ -5,14 +5,14 @@ import { useThemeMods } from '@/contexts/ThemeContextMods';
 import { useAuth } from '@/contexts/AuthContextMods';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '../../../hooks/useTranslation';
-import { 
-  Sun, 
-  Moon, 
-  Menu, 
-  X, 
-  Home, 
-  Users, 
-  Package, 
+import {
+  Sun,
+  Moon,
+  Menu,
+  X,
+  Home,
+  Users,
+  Package,
   LogOut,
   Shield,
   Activity,
@@ -21,7 +21,6 @@ import {
   Clock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
 const AdminLayout = () => {
   const { t } = useTranslation();
   const { theme, changeTheme } = useThemeMods();
@@ -29,12 +28,10 @@ const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
   const handleLogout = async () => {
     await logout();
     navigate('/');
   };
-
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: Home },
     { name: 'Usuários', href: '/admin/users', icon: Users },
@@ -44,31 +41,28 @@ const AdminLayout = () => {
     { name: t('modDetail.comments'), href: '/admin/comments-moderation', icon: MessageSquare },
     { name: 'Logs', href: '/admin/logs', icon: Activity },
   ];
-
   const isActiveRoute = (href) => {
     if (href === '/admin') {
       return location.pathname === '/admin';
     }
     return location.pathname.startsWith(href);
   };
-
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Sidebar Mobile Overlay */}
+      {}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
-
-      {/* Sidebar */}
+      {}
       <div className={cn(
         "fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border/40 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:relative lg:inset-0 lg:flex-shrink-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex h-full flex-col">
-          {/* Header do Sidebar */}
+          {}
           <div className="flex h-16 items-center justify-between px-6 border-b border-border/40">
             <div className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-primary" />
@@ -83,8 +77,7 @@ const AdminLayout = () => {
               <X className="h-5 w-5" />
             </Button>
           </div>
-
-          {/* Navegação */}
+          {}
           <nav className="flex-1 space-y-1 px-3 py-4">
             {navigation.map((item) => {
               const Icon = item.icon;
@@ -106,8 +99,7 @@ const AdminLayout = () => {
               );
             })}
           </nav>
-
-          {/* Footer do Sidebar */}
+          {}
           <div className="border-t border-border/40 p-4">
             <div className="flex items-center space-x-3 mb-3">
               <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
@@ -124,7 +116,6 @@ const AdminLayout = () => {
                 </p>
               </div>
             </div>
-            
             <Button
               variant="ghost"
               onClick={handleLogout}
@@ -136,13 +127,12 @@ const AdminLayout = () => {
           </div>
         </div>
       </div>
-
-      {/* Conteúdo Principal */}
+      {}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Header Principal */}
+        {}
         <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40">
           <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
-            {/* Botão Menu Mobile + Título */}
+            {}
             <div className="flex items-center space-x-3">
               <Button
                 variant="ghost"
@@ -152,19 +142,16 @@ const AdminLayout = () => {
               >
                 <Menu className="h-5 w-5" />
               </Button>
-
-              {/* Título da Página - Agora mais próximo do menu */}
+              {}
               <h1 className="text-lg font-semibold text-foreground">
                 {navigation.find(item => isActiveRoute(item.href))?.name || 'Admin'}
               </h1>
             </div>
-
-            {/* Spacer para empurrar botões para a direita */}
+            {}
             <div className="flex-1"></div>
-
-            {/* Botões da Direita */}
+            {}
             <div className="flex items-center space-x-3">
-              {/* Botão de Tema */}
+              {}
               <Button
                 variant="ghost"
                 size="icon"
@@ -177,8 +164,7 @@ const AdminLayout = () => {
                   <Moon className="h-5 w-5" />
                 )}
               </Button>
-
-              {/* Botão Voltar para Home */}
+              {}
               <Button variant="ghost" asChild>
                 <Link to="/" className="text-muted-foreground hover:text-foreground hover:bg-primary/10">
                   <Home className="h-5 w-5" />
@@ -187,8 +173,7 @@ const AdminLayout = () => {
             </div>
           </div>
         </header>
-
-        {/* Conteúdo da Página */}
+        {}
         <main className="flex-1 py-6">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Outlet />
@@ -198,5 +183,4 @@ const AdminLayout = () => {
     </div>
   );
 };
-
 export default AdminLayout;
