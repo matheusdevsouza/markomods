@@ -43,7 +43,6 @@ const ModDetailPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Funções auxiliares para classes condicionais baseadas no tema
   const getCardClasses = () => {
     return theme === 'light' 
       ? 'bg-white/90 border-gray-200/50 shadow-lg' 
@@ -87,11 +86,11 @@ const ModDetailPage = () => {
 
   const [imageError, setImageError] = useState(false);
   
-  // Estado para favoritos
+  // estados para favoritos
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   
-  // Estados para comentários
+  // estados para comentarios
   const [comments, setComments] = useState([]);
   const [loadingComments, setLoadingComments] = useState(false);
   const [newComment, setNewComment] = useState('');
@@ -100,12 +99,12 @@ const ModDetailPage = () => {
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [commentCooldown, setCommentCooldown] = useState(0);
   
-  // Estados para sistema de respostas
+  // estados para o sistema de respostas dos comentarios
   const [replyingToComment, setReplyingToComment] = useState(null);
   const [replyContent, setReplyContent] = useState('');
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
-  // Estados para controlar animações
+  // estados para nimacoes
   const [pageLoaded, setPageLoaded] = useState(false);
 
   useEffect(() => {
@@ -114,28 +113,28 @@ const ModDetailPage = () => {
     }
   }, [slug, currentUser]);
 
-  // Registrar visualização quando o mod for carregado
+  // contar visualizacao quando o mod for carregado
   useEffect(() => {
     if (mod && !loading) {
       registerView(mod.id);
     }
   }, [mod, loading]);
 
-  // Carregar comentários quando o mod for carregado
+  // carregar comentarios quando o mod for carregado
   useEffect(() => {
     if (mod && !loading) {
       fetchComments();
     }
   }, [mod, loading]);
 
-  // Verificar status de favorito quando o mod for carregado
+  // verificar o status dde favorito quando o mod for carregado
   useEffect(() => {
     if (mod && !loading && isAuthenticated) {
       checkFavoriteStatus();
     }
   }, [mod, loading, isAuthenticated]);
 
-  // Controla animações de entrada da página
+  // animacoes de entrada da pagina
   useEffect(() => {
     if (!loading && mod) {
       const timer = setTimeout(() => setPageLoaded(true), 100);
@@ -146,7 +145,7 @@ const ModDetailPage = () => {
     }
   }, [loading, mod]);
 
-  // Controla o cooldown de comentários
+  // cooldown de comentarios
   useEffect(() => {
     if (commentCooldown > 0) {
       const timer = setInterval(() => {
@@ -183,7 +182,6 @@ const ModDetailPage = () => {
         const data = await response.json();
         setMod(data.data);
       } else {
-        // Tentar obter mais detalhes do erro
         try {
           const errorData = await response.json();
           setError(errorData.message || `Erro ${response.status}: ${response.statusText}`);
@@ -206,7 +204,7 @@ const ModDetailPage = () => {
       return;
     }
     
-    // Redirecionar para a página de download
+    // redirecionar para a pagina de download
     navigate(`/mods/${mod.slug}/download`);
   };
 
@@ -214,7 +212,7 @@ const ModDetailPage = () => {
 
 
 
-  // Registrar visualização do mod
+  // contar visualizacao do mod
   const registerView = async (modId) => {
     try {
       const response = await fetch(`/api/mods/mod/${mod.id}/view`, {
@@ -228,11 +226,10 @@ const ModDetailPage = () => {
         const data = await response.json();
       }
     } catch (error) {
-      // Erro silencioso para visualização
     }
   };
 
-  // Verificar se o mod é favorito para o usuário atual
+  // verificar se o mod é favorito para o usuario atual
   const checkFavoriteStatus = async () => {
     try {
       const token = localStorage.getItem('authToken');
@@ -250,11 +247,10 @@ const ModDetailPage = () => {
         setIsFavorite(data.data.isFavorite);
       }
     } catch (error) {
-      // Erro silencioso para verificação de favorito
     }
   };
 
-  // Função para favoritar/desfavoritar mod
+  // funcao para favoritar/desfavoritar mod
   const handleFavorite = async () => {
     if (!isAuthenticated) {
       toast.error(t('mods.loginRequired'));
@@ -331,7 +327,7 @@ const ModDetailPage = () => {
     return 'bg-gray-500/20 text-gray-600 border-gray-500/30';
   };
 
-  // Funções para gerenciar comentários
+  // funcoes para gerenciar comentarios
   const fetchComments = async () => {
     try {
       setLoadingComments(true);
@@ -384,27 +380,22 @@ const ModDetailPage = () => {
       } else {
         const errorData = await response.json();
         
-        // Verificar se é erro de cooldown
         if (errorData.cooldown) {
           toast.error(errorData.message, { 
             duration: 8000,
             icon: '⏰'
           });
           
-          // Extrair tempo restante da mensagem (suporte para diferentes formatos)
           let cooldownSeconds = 0;
           
-          // Tentar extrair dias
           const daysMatch = errorData.message.match(/(\d+)\s*dia\(s\)/);
           if (daysMatch) {
             cooldownSeconds = parseInt(daysMatch[1]) * 24 * 60 * 60;
           } else {
-            // Tentar extrair horas
             const hoursMatch = errorData.message.match(/(\d+)\s*hora\(s\)/);
             if (hoursMatch) {
               cooldownSeconds = parseInt(hoursMatch[1]) * 60 * 60;
             } else {
-              // Tentar extrair minutos
               const minutesMatch = errorData.message.match(/(\d+)\s*minuto\(s\)/);
               if (minutesMatch) {
                 cooldownSeconds = parseInt(minutesMatch[1]) * 60;
@@ -460,10 +451,10 @@ const ModDetailPage = () => {
   };
 
   const handleDeleteComment = (commentId) => {
-    // Procurar primeiro nos comentários principais
+    // procurar primeiro nos comentarios principais
     let comment = comments.find(c => c.id === commentId);
     
-    // Se não encontrou, procurar nas respostas
+    // procurar nas respostas (somente se nao encontrar nos principaiss)
     if (!comment) {
       for (const mainComment of comments) {
         if (mainComment.replies) {
@@ -498,11 +489,11 @@ const ModDetailPage = () => {
       });
 
       if (response.ok) {
-        // Verificar se é uma resposta ou comentário principal
+        // verificar se é uma resposta ou comentario principal
         const isReply = commentToDelete.is_reply || commentToDelete.parent_id;
         
         if (isReply) {
-          // Remover resposta da lista de respostas do comentário pai
+          // remover resposta da lista de respostas do comentario principal
           setComments(prev => prev.map(comment => {
             if (comment.replies) {
               return {
@@ -514,7 +505,7 @@ const ModDetailPage = () => {
           }));
           toast.success(t('modDetail.replyDeletedSuccess'));
         } else {
-          // Remover comentário principal
+          // remover comentario principal
           setComments(prev => prev.filter(comment => comment.id !== commentToDelete.id));
           toast.success('Comentário excluído com sucesso!');
         }
@@ -535,7 +526,7 @@ const ModDetailPage = () => {
     setCommentToDelete(null);
   };
 
-  // Funções para sistema de respostas
+  // funcoes para sistema de respostas
   const handleReplyClick = (comment) => {
     setReplyingToComment(comment);
     setReplyContent('');
@@ -565,7 +556,6 @@ const ModDetailPage = () => {
         toast.success(t('modDetail.replySentSuccess'));
         setReplyingToComment(null);
         setReplyContent('');
-        // Recarregar comentários para mostrar a nova resposta
         fetchComments();
       } else {
         const error = await response.json();
@@ -583,27 +573,26 @@ const ModDetailPage = () => {
     setReplyContent('');
   };
 
-  // Função para formatar o tempo de cooldown de forma legível
   const formatCooldownTime = (seconds) => {
-    if (seconds >= 86400) { // 1 dia ou mais
+    if (seconds >= 86400) { 
       const days = Math.floor(seconds / 86400);
       const hours = Math.floor((seconds % 86400) / 3600);
       if (days > 0) {
         return `${days}d ${hours}h`;
       }
       return `${hours}h`;
-    } else if (seconds >= 3600) { // 1 hora ou mais
+    } else if (seconds >= 3600) { 
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
       return `${hours}h ${minutes}m`;
-    } else { // Menos de 1 hora
+    } else { 
       const minutes = Math.floor(seconds / 60);
       const secs = seconds % 60;
       return `${minutes}m ${secs}s`;
     }
   };
 
-  // Votar em comentário
+  // sistema de votacao nos comentarios
   const handleVoteComment = async (commentId, voteType) => {
     if (!isAuthenticated) {
       toast.error('Faça login para votar em comentários');
@@ -624,10 +613,8 @@ const ModDetailPage = () => {
       if (response.ok) {
         const data = await response.json();
         
-        // Recarregar comentários para obter dados atualizados
         await fetchComments();
 
-        // Mostrar mensagem baseada na ação
         if (data.data && data.data.action === 'added') {
           toast.success(`Voto ${voteType === 'upvote' ? 'positivo' : 'negativo'} registrado!`);
         } else if (data.data && data.data.action === 'removed') {
@@ -645,12 +632,11 @@ const ModDetailPage = () => {
     }
   };
 
-  // Função para construir URL completa do avatar
+  // funcao para fazer url completa do avatar
   const getAvatarUrl = (avatarUrl) => {
     if (!avatarUrl) return null;
     if (avatarUrl.startsWith('http')) return avatarUrl;
-    
-    // Para desenvolvimento local, usar a porta do backend
+
     if (window.location.origin.includes('localhost:5173')) {
       return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001'}${avatarUrl}`;
     }
@@ -658,24 +644,23 @@ const ModDetailPage = () => {
     return `${window.location.origin}${avatarUrl}`;
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-background fixed inset-0 overflow-y-auto pt-32">
         <div className="flex w-full h-full">
           <div className="flex-1 px-4">
             <div className={`max-w-4xl mx-auto space-y-6 rounded-xl p-6 ${getCardClasses()}`}>
-              {/* Header skeleton */}
+              {/* skeleton do header */}
               <div className="space-y-4 animate-pulse">
                 <Skeleton className="h-8 w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <Skeleton className="h-12 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
                 <Skeleton className="h-6 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
               </div>
               
-              {/* Image skeleton */}
+              {/* skeleton da imagem */}
               <Skeleton className="h-80 w-full rounded-lg bg-gradient-to-r from-gray-700 to-gray-600 animate-pulse" />
               
-              {/* Tabs skeleton */}
+              {/* skeleton das abas */}
               <div className="space-y-4">
                 <div className="flex space-x-2">
                   <Skeleton className="h-10 w-24 bg-gradient-to-r from-gray-700 to-gray-600" />
@@ -689,7 +674,7 @@ const ModDetailPage = () => {
           
           <div className="w-80 flex-shrink-0">
             <div className="space-y-6 ml-8">
-              {/* Statistics skeleton */}
+              {/* skeleton das estatisticas */}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="grid grid-cols-3 gap-4">
@@ -699,7 +684,7 @@ const ModDetailPage = () => {
                 </div>
               </div>
               
-              {/* Categories skeleton */}
+              {/* skeleton das categorias */}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-1/2 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="flex flex-wrap gap-2">
@@ -709,7 +694,7 @@ const ModDetailPage = () => {
                 </div>
               </div>
               
-              {/* Technical info skeleton */}
+              {/* skeleton das informacoes tec. */}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-2/3 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="space-y-2">
@@ -725,14 +710,11 @@ const ModDetailPage = () => {
     );
   }
 
-  // Error state
   if (error || !mod) {
     return (
       <div className="min-h-screen bg-background fixed inset-0 overflow-y-auto pt-32">
         <div className="flex w-full h-full items-center justify-center">
-          {/* Error Content */}
           <div className="text-center space-y-8 max-w-4xl">
-            {/* Icon */}
             <div className="flex justify-center">
               <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-primary/20 rounded-full flex items-center justify-center border border-primary/30">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary rounded-full flex items-center justify-center">
@@ -743,7 +725,6 @@ const ModDetailPage = () => {
               </div>
             </div>
             
-            {/* Text */}
             <div className="space-y-4">
               <h1 className="text-4xl lg:text-5xl font-bold text-primary">
                 {error || 'Mod não encontrado'}
@@ -756,7 +737,6 @@ const ModDetailPage = () => {
               </p>
             </div>
             
-            {/* Actions */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Link to="/mods">
                 <Button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg h-auto shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105">
@@ -780,10 +760,8 @@ const ModDetailPage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Meta tags do Google AdSense */}
       <GoogleAdsenseMeta />
       
-      {/* Container de Anúncios - Largura total */}
       <div className="w-full px-4 py-6">
         <AdSpace 
           page="mod-detail" 
@@ -792,9 +770,7 @@ const ModDetailPage = () => {
         />
       </div>
       
-      {/* Layout em coluna única - Com limitação */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6 py-4 sm:py-6">
-        {/* Botão Voltar - Fora do container */}
         <div className={`transition-all duration-700 ease-out ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}>
@@ -807,13 +783,10 @@ const ModDetailPage = () => {
           </Link>
         </div>
 
-        {/* Seção do Título com Layout Responsivo */}
         <div className={`rounded-xl p-4 sm:p-6 md:p-8 transition-all duration-1000 ease-out relative ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
-          {/* Layout Mobile/Tablet: Centralizado */}
           <div className="flex flex-col items-center text-center space-y-4 sm:hidden">
-            {/* Ícone do Mod - Centralizado */}
             <div className="relative">
               <div className="w-24 h-24 rounded-xl overflow-hidden shadow-2xl ring-4 ring-primary/20 hover:ring-primary/40 transition-all duration-300 hover:scale-105">
                 <img
@@ -823,18 +796,15 @@ const ModDetailPage = () => {
                   onError={() => setImageError(true)}
                 />
               </div>
-              {/* Efeito de brilho sutil */}
               <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
             </div>
 
-            {/* Título - Centralizado */}
             <div className="space-y-2">
               <h1 className={`text-3xl font-bold ${getTextClasses()} break-words leading-tight`}>
                 {mod.title}
               </h1>
             </div>
 
-            {/* Botão de Download - Centralizado */}
             {recommendedDownload && (
               <div className="pt-2">
                 <Button 
@@ -848,11 +818,8 @@ const ModDetailPage = () => {
             )}
           </div>
 
-          {/* Layout Desktop: Horizontal Original [FOTO] [TÍTULO] [FAVORITO] [DOWNLOAD] */}
           <div className="hidden sm:flex items-center justify-between space-x-6">
-            {/* Seção Esquerda: Ícone + Título */}
             <div className="flex items-center space-x-4 md:space-x-6">
-              {/* Ícone do Mod */}
               <div className="relative">
                 <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-xl overflow-hidden shadow-2xl ring-4 ring-primary/20 hover:ring-primary/40 transition-all duration-300 hover:scale-105">
                   <img
@@ -862,11 +829,9 @@ const ModDetailPage = () => {
                     onError={() => setImageError(true)}
                   />
                 </div>
-                {/* Efeito de brilho sutil */}
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
               </div>
 
-              {/* Título */}
               <div>
                 <h1 className={`text-2xl md:text-3xl lg:text-4xl font-bold ${getTextClasses()} break-words leading-tight`}>
                   {mod.title}
@@ -874,9 +839,7 @@ const ModDetailPage = () => {
               </div>
             </div>
 
-            {/* Seção Direita: Favorito + Download */}
             <div className="flex items-center space-x-3 md:space-x-4">
-              {/* Botão de Favorito */}
               <button
                 onClick={handleFavorite}
                 disabled={favoriteLoading}
@@ -895,7 +858,6 @@ const ModDetailPage = () => {
                 )}
               </button>
 
-              {/* Botão de Download */}
               {recommendedDownload && (
                 <Button 
                   onClick={() => handleDownload(recommendedDownload, 'desktop')}
@@ -908,7 +870,6 @@ const ModDetailPage = () => {
             </div>
           </div>
 
-          {/* Botão de Favorito - Canto Superior Direito (apenas mobile) */}
           <div className="absolute top-4 right-4 z-10 sm:hidden">
             <button
               onClick={handleFavorite}
@@ -930,7 +891,6 @@ const ModDetailPage = () => {
           </div>
         </div>
 
-        {/* Seção de Descrição (desc) */}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-200 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -961,7 +921,7 @@ const ModDetailPage = () => {
         </div>
 
 
-        {/* Seção de Vídeo (logo abaixo da descrição) */}
+        {/* secao de video*/}
         {mod.video_url && (
           <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-250 ${getCardClasses()} ${
             pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -984,7 +944,7 @@ const ModDetailPage = () => {
           </div>
         )}
 
-        {/* Seção de Informações (infos) */}
+        {/* secao de informacoes*/}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -994,7 +954,7 @@ const ModDetailPage = () => {
               {t('modDetail.information')}
             </h2>
 
-            {/* Informações Técnicas */}
+            {/* informacoes tecnicas*/}
             <div className="space-y-4">
               <h3 className={`text-lg font-semibold flex items-center ${getTextClasses()}`}>
                 <Package className="h-5 w-5 mr-2 text-primary" />
@@ -1020,7 +980,7 @@ const ModDetailPage = () => {
               </div>
             </div>
 
-            {/* Tags/Categorias */}
+            {/* tags/categorias*/}
             {mod.tags && Array.isArray(mod.tags) && mod.tags.length > 0 && (
               <div className="space-y-4">
                 <h3 className={`text-lg font-semibold flex items-center ${getTextClasses()}`}>
@@ -1041,7 +1001,7 @@ const ModDetailPage = () => {
               </div>
             )}
 
-            {/* Autor */}
+            {/* autor*/}
             <div className="space-y-4">
               <h3 className={`text-lg font-semibold flex items-center ${getTextClasses()}`}>
                 <User className="h-5 w-5 mr-2 text-primary" />
@@ -1081,7 +1041,7 @@ const ModDetailPage = () => {
               </div>
             </div>
 
-            {/* Estatísticas - Versão Compacta (por último) */}
+            {/* estatisticas */}
             <div className={`flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6 py-3 pt-4 ${theme === 'light' ? 'border-t border-gray-200/50' : 'border-t border-gray-700/50'}`}>
               <div className={`flex items-center space-x-2 ${getSubtextClasses()}`}>
                 <Download className="h-4 w-4 text-primary" />
@@ -1099,7 +1059,7 @@ const ModDetailPage = () => {
           </div>
         </div>
 
-        {/* Seção de Download */}
+        {/* secao de download*/}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -1109,7 +1069,7 @@ const ModDetailPage = () => {
               {t('modDetail.download')}
             </h2>
             
-            {/* Download direto */}
+            {/* download direto*/}
             <div className="text-center">
               <div className="flex justify-center mb-3 sm:mb-4">
                 <Download className="h-10 w-10 sm:h-12 sm:w-12 text-primary" />
@@ -1139,7 +1099,7 @@ const ModDetailPage = () => {
               )}
             </div>
 
-            {/* Instruções de instalação */}
+            {/* instrucoes para instalar*/}
             <div className={`pt-4 sm:pt-6 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
               <h4 className={`text-base sm:text-lg font-semibold mb-3 sm:mb-4 ${getTextClasses()}`}>{t('modDetail.installationInstructions')}</h4>
               <div className={`rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3 text-xs sm:text-sm ${theme === 'light' ? 'bg-gray-50/80' : 'bg-gray-900/50'}`}>
@@ -1169,7 +1129,7 @@ const ModDetailPage = () => {
           </div>
         </div>
 
-        {/* Seção de Comentários (comments) */}
+        {/* secao de comentarios*/}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-500 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -1179,7 +1139,7 @@ const ModDetailPage = () => {
               {t('modDetail.comments')}
             </h2>
 
-            {/* Input de Comentário */}
+            {/* input do comentario*/}
             {isAuthenticated ? (
               <div className="space-y-3 sm:space-y-4">
                 <div className="relative">
@@ -1192,7 +1152,7 @@ const ModDetailPage = () => {
                     rows={3}
                   />
                   
-                  {/* Botão de enviar integrado */}
+                  {/* botao de enviar*/}
                   <button
                     onClick={handleSubmitComment}
                     disabled={!newComment.trim() || isSubmittingComment || commentCooldown > 0}
@@ -1208,12 +1168,12 @@ const ModDetailPage = () => {
                     )}
                   </button>
                   
-                  {/* Indicador de caracteres */}
+                  {/* indicador de caracteres*/}
                   <div className="absolute bottom-2 left-3 text-xs text-gray-500">
                     {newComment.length}/500
                   </div>
                   
-                  {/* Indicador de cooldown */}
+                  {/* indicador de cooldown (INATIVO)*/}
                   {commentCooldown > 0 && (
                     <div className="absolute top-2 right-2 px-2 py-1 bg-red-500/20 border border-red-500/30 rounded-lg text-xs text-red-400">
                       ⏰ {formatCooldownTime(commentCooldown)}
@@ -1221,7 +1181,7 @@ const ModDetailPage = () => {
                   )}
                 </div>
                 
-                {/* Dicas de uso */}
+                {/* Dicas para o usuario sobre os comentarios */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs text-gray-500">
                   <div className="flex items-center space-x-1">
                     <MessageSquare className="h-3 w-3" />
@@ -1234,7 +1194,7 @@ const ModDetailPage = () => {
                 </div>
               </div>
             ) : (
-              /* Mensagem para usuários não logados */
+              /* mensagem para usuarios nao logados*/
               <div className="text-center py-6 sm:py-8 bg-gradient-to-r from-gray-900/40 to-gray-800/40 rounded-2xl border border-gray-700/50 backdrop-blur-sm">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                   <LogIn className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
@@ -1252,7 +1212,7 @@ const ModDetailPage = () => {
               </div>
             )}
 
-            {/* Lista de comentários */}
+            {/* lista de comentarios*/}
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                 <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
@@ -1279,9 +1239,7 @@ const ModDetailPage = () => {
               ) : comments && comments.length > 0 ? (
                 comments.map((comment) => (
                   <div key={comment.id} className={`rounded-lg p-3 sm:p-4 relative ${getCommentCardClasses()}`}>
-                    {/* Botões de ação no canto superior direito */}
                     <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
-                      {/* Botão de resposta (apenas super admins) */}
                       {currentUser?.role === 'super_admin' && (
                         <button
                           onClick={() => handleReplyClick(comment)}
@@ -1292,7 +1250,6 @@ const ModDetailPage = () => {
                         </button>
                       )}
                       
-                      {/* Botão de excluir */}
                       {isAuthenticated && (currentUser?.id === comment.user_id || currentUser?.role === 'super_admin') && (
                         <button
                           onClick={() => handleDeleteComment(comment.id)}
@@ -1306,7 +1263,6 @@ const ModDetailPage = () => {
                     
                     <div className="flex items-start space-x-2 sm:space-x-3">
                       <div className="flex-shrink-0 relative">
-                        {/* Avatar com imagem */}
                         {comment.avatar_url && (
                           <img
                             src={getAvatarUrl(comment.avatar_url)}
@@ -1316,7 +1272,6 @@ const ModDetailPage = () => {
                             onContextMenu={(e) => e.preventDefault()}
                             onDragStart={(e) => e.preventDefault()}
                             onError={(e) => {
-                              // Se a imagem falhar, esconder e mostrar o fallback
                               e.target.style.display = 'none';
                               const fallback = e.target.nextElementSibling;
                               if (fallback) fallback.style.display = 'flex';
@@ -1324,7 +1279,6 @@ const ModDetailPage = () => {
                           />
                         )}
                         
-                        {/* Avatar fallback com inicial */}
                         <div 
                           className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-lg ${
                             comment.avatar_url ? 'hidden' : 'flex'
@@ -1354,9 +1308,9 @@ const ModDetailPage = () => {
                           {comment.content}
                         </p>
 
-                        {/* Sistema de votos */}
+                        {/* sistema de votos (REAL)*/}
                         <div className="flex items-center space-x-3 sm:space-x-4 mt-2 sm:mt-3">
-                          {/* Upvote */}
+                          {/* upvote  (PRA CIMA)*/}
                           <button
                             onClick={() => handleVoteComment(comment.id, 'upvote')}
                             className={`group flex items-center space-x-1 text-xs transition-colors duration-200 ${
@@ -1378,7 +1332,7 @@ const ModDetailPage = () => {
                             }`}>{comment.like_count || 0}</span>
                           </button>
 
-                          {/* Downvote */}
+                          {/* downvote (PRA BAIXO)*/}
                           <button
                             onClick={() => handleVoteComment(comment.id, 'downvote')}
                             className={`group flex items-center space-x-1 text-xs transition-colors duration-200 ${
@@ -1403,7 +1357,7 @@ const ModDetailPage = () => {
                       </div>
                     </div>
                     
-                    {/* Campo de resposta inline */}
+                    {/* campo de resposta*/}
                     {replyingToComment?.id === comment.id && (
                       <div className={`mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg border border-primary/30 ${
                         theme === 'light' 
@@ -1459,17 +1413,15 @@ const ModDetailPage = () => {
                       </div>
                     )}
                     
-                    {/* Exibir respostas do comentário */}
+                    {/* exibir respostas do comentario*/}
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="mt-3 space-y-2">
                         {comment.replies.map((reply) => (
                           <div key={reply.id} className="ml-4 sm:ml-6 md:ml-8 p-2 sm:p-3 bg-gradient-to-r from-primary/10 to-primary/5 border-l-4 border-primary rounded-r-lg">
 
-                            {/* Header da resposta */}
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center space-x-2 min-w-0 flex-1">
                                 <div className="flex-shrink-0 relative">
-                                  {/* Avatar com imagem */}
                                   {reply.avatar_url && (
                                     <img
                                       src={getAvatarUrl(reply.avatar_url)}
@@ -1479,7 +1431,6 @@ const ModDetailPage = () => {
                                       onContextMenu={(e) => e.preventDefault()}
                                       onDragStart={(e) => e.preventDefault()}
                                       onError={(e) => {
-                                        // Se a imagem falhar, esconder e mostrar o fallback
                                         e.target.style.display = 'none';
                                         const fallback = e.target.nextElementSibling;
                                         if (fallback) fallback.style.display = 'flex';
@@ -1487,7 +1438,6 @@ const ModDetailPage = () => {
                                     />
                                   )}
                                   
-                                  {/* Avatar fallback com inicial */}
                                   <div 
                                     className={`w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-sm ${
                                       reply.avatar_url ? 'hidden' : 'flex'
@@ -1506,7 +1456,6 @@ const ModDetailPage = () => {
                                 </div>
                               </div>
 
-                              {/* Botão de deletar resposta */}
                               {isAuthenticated && (currentUser?.id === reply.user_id || currentUser?.role === 'super_admin') && (
                                 <button
                                   onClick={() => handleDeleteComment(reply.id)}
@@ -1518,12 +1467,10 @@ const ModDetailPage = () => {
                               )}
                             </div>
 
-                            {/* Conteúdo da resposta */}
                             <div className={`text-xs sm:text-sm leading-relaxed ${getSubtextClasses()}`}>
                               {reply.content}
                             </div>
 
-                            {/* Badge de resposta oficial e horário */}
                             <div className="mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-2">
                               <span className={`text-xs ${getSubtextClasses()}`}>
                                 {new Date(reply.created_at).toLocaleString('pt-BR', {
@@ -1557,7 +1504,6 @@ const ModDetailPage = () => {
         </div>
             </div>
 
-      {/* Modal de confirmação de exclusão */}
       {showDeleteModal && commentToDelete && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className={`rounded-xl p-6 w-full max-w-lg mx-4 shadow-2xl ${
@@ -1565,7 +1511,6 @@ const ModDetailPage = () => {
               ? 'bg-white border-2 border-red-500/30 shadow-red-500/20' 
               : 'bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-red-500/30 shadow-red-500/20'
           }`}>
-            {/* Header com ícone de alerta */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center border-2 border-red-500/50">
@@ -1590,7 +1535,6 @@ const ModDetailPage = () => {
 
             <div className="space-y-6">
 
-              {/* Preview do comentário */}
               <div className={`rounded-lg p-5 ${
                 theme === 'light' 
                   ? 'bg-gray-50 border border-gray-200' 
@@ -1639,7 +1583,6 @@ const ModDetailPage = () => {
                 </div>
               </div>
 
-              {/* Botões de ação */}
               <div className="flex gap-4 pt-2">
                 <button
                   onClick={cancelDeleteComment}
@@ -1665,11 +1608,9 @@ const ModDetailPage = () => {
         </div>
       )}
 
-      {/* Modal de Resposta - REMOVIDO */}
       {false && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-primary/30 rounded-xl p-6 w-full max-w-2xl mx-4 shadow-2xl shadow-primary/20">
-            {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center border-2 border-primary/50">
@@ -1688,7 +1629,6 @@ const ModDetailPage = () => {
               </button>
             </div>
 
-            {/* Comentário original */}
             <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-600/50 mb-6">
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
@@ -1708,7 +1648,7 @@ const ModDetailPage = () => {
               </p>
             </div>
 
-            {/* Formulário de resposta */}
+            {/* formulario para enviar uma resposta oficial */}
             <form onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.target);
@@ -1733,7 +1673,6 @@ const ModDetailPage = () => {
                 </p>
               </div>
 
-              {/* Botões */}
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"
@@ -1759,7 +1698,7 @@ const ModDetailPage = () => {
               </div>
             </form>
 
-            {/* Aviso de permissão */}
+            {/* aviso de permissao somente para adm*/}
             <div className="mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="w-4 h-4 text-primary" />

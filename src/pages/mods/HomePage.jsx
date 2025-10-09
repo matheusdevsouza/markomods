@@ -55,14 +55,14 @@ const SectionTitle = ({ title, icon: Icon, viewAllLink }) => {
 const AdPlaceholder = ({ isAdmin, hasAd }) => {
   const { t } = useTranslation();
   
-  // Se não for admin, mostra espaço invisível grande
+  // se nao tiver cargo de administrador, mostra um espaço invisivel no lugar
   if (!isAdmin) {
     return (
       <div className="my-16" aria-hidden="true"></div>
     );
   }
   
-  // Se for admin mas não há anúncio, mostra placeholder pequeno
+  // se tiver cargo de administrador mas nao tiver anuncio, mostra um placeholder
   if (!hasAd) {
     return (
       <motion.div 
@@ -75,7 +75,7 @@ const AdPlaceholder = ({ isAdmin, hasAd }) => {
     );
   }
   
-  // Se há anúncio, mostra normalmente
+  // se tiver anuncio, mostra normalmente
   return (
     <motion.div 
       variants={itemVariants}
@@ -93,9 +93,9 @@ const AdPlaceholder = ({ isAdmin, hasAd }) => {
 const ModsCarousel = ({ mods }) => {
   const { t } = useTranslation();
   
-  // Basic placeholder for carousel - a real carousel would need a library or more complex logic
+  // placeholder para o carrossel
   if (!mods || mods.length === 0) return null;
-  const featuredMod = mods[0]; // Just show the first "featured" mod
+  const featuredMod = mods[0]; 
 
   return (
     <motion.div 
@@ -136,11 +136,10 @@ const HomePage = () => {
   const { t } = useTranslation();
   const { currentUser } = useAuth();
   
-  // Simular verificação de admin (em produção, isso viria do contexto de autenticação)
-  const isAdmin = false; // Mude para true para testar como admin
-  const hasAd = false; // Mude para true para simular anúncio ativo
+  const isAdmin = false; 
+  const hasAd = false; 
 
-  // Buscar apenas mods públicos (não rascunhos)
+  // buscar apenas mods publicos
   useEffect(() => {
     const fetchPublicMods = async () => {
       try {
@@ -163,7 +162,7 @@ const HomePage = () => {
     fetchPublicMods();
   }, []);
 
-  // Carregar configuração do banner
+  // buscar a configuracao do banner
   useEffect(() => {
     const fetchBannerConfig = async () => {
       try {
@@ -175,7 +174,7 @@ const HomePage = () => {
           }
         }
       } catch (error) {
-        // Em caso de erro, manter a URL padrão
+        // se der erro, manter a url padrao
       }
     };
 
@@ -190,22 +189,22 @@ const HomePage = () => {
     );
   }
   
-  const featuredMods = mods.filter(mod => mod.is_featured).slice(0, 1); // For carousel
+  const featuredMods = mods.filter(mod => mod.is_featured).slice(0, 1);
   
-  // Últimos mods com paginação
+  // ultimos mods com paginação
   const allLatestMods = [...mods].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
   const modsPerPage = 4;
   const totalLatestPages = Math.ceil(allLatestMods.length / modsPerPage);
   const latestMods = allLatestMods.slice((latestModsPage - 1) * modsPerPage, latestModsPage * modsPerPage);
   
-  // Mods mais baixados com paginação
+  // mods mais baixados com paginação
   const allPopularMods = [...mods].sort((a, b) => (b.download_count || 0) - (a.download_count || 0));
   const totalPopularPages = Math.ceil(allPopularMods.length / modsPerPage);
   const mostDownloadedMods = allPopularMods.slice((popularModsPage - 1) * modsPerPage, popularModsPage * modsPerPage);
 
   const totalDownloadsAllMods = mods.reduce((sum, mod) => sum + (mod.download_count || 0), 0);
 
-  // Função para lidar com mudanças de página
+  // funcao para mudancas de paginas
   const handleLatestModsPageChange = (newPage) => {
     setLatestModsPage(newPage);
   };
@@ -225,7 +224,7 @@ const HomePage = () => {
       animate="visible"
       variants={containerVariants}
     >
-      {/* Banner da Plataforma */}
+      {/* banner da plataforma */}
       <EditableBanner
         bannerUrl={bannerUrl}
         onBannerUpdate={handleBannerUpdate}
@@ -265,7 +264,7 @@ const HomePage = () => {
               {latestMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} />)}
             </motion.div>
             
-            {/* Navegação por páginas - só aparece se houver mais de 4 mods */}
+            {/* navegacao por paginas (4+ mods) */}
             {allLatestMods.length > 4 && (
               <motion.div 
                 variants={itemVariants} 
@@ -295,7 +294,7 @@ const HomePage = () => {
               {mostDownloadedMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} />)}
             </motion.div>
             
-            {/* Navegação por páginas - só aparece se houver mais de 4 mods */}
+            {/* navegacao por paginas (4+ mods) */}
             {allPopularMods.length > 4 && (
               <motion.div 
                 variants={itemVariants} 
