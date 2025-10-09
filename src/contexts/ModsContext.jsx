@@ -1,9 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContextMods';
-
 const ModsContext = createContext();
-
 export const useMods = () => {
   const context = useContext(ModsContext);
   if (!context) {
@@ -11,45 +9,31 @@ export const useMods = () => {
   }
   return context;
 };
-
 export const ModsProvider = ({ children }) => {
   const [mods, setMods] = useState([]);
   const [loadingMods, setLoadingMods] = useState(true);
   const { currentUser } = useAuth();
-
-  // Buscar mods quando o componente montar
   useEffect(() => {
-    // Detectar se o usuário é admin e buscar mods apropriados
     const isAdmin = currentUser?.role === 'super_admin';
     fetchMods(isAdmin);
   }, [currentUser]);
-
-  // Buscar mods do banco de dados
   const fetchMods = useCallback(async (isAdmin = false) => {
     try {
       setLoadingMods(true);
       const token = localStorage.getItem('authToken');
-      
       let url = '/api/mods/public';
       if (isAdmin && token) {
         url = '/api/mods/admin';
       }
-
-
       const headers = {
         'Content-Type': 'application/json'
       };
-
-      // Adicionar token apenas se existir
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-
       const response = await fetch(url, {
         headers
       });
-
-
       if (response.ok) {
         const data = await response.json();
         setMods(data.data || []);
@@ -62,32 +46,23 @@ export const ModsProvider = ({ children }) => {
       setLoadingMods(false);
     }
   }, []);
-
-  // Buscar mods por tipo de conteúdo
   const fetchModsByType = useCallback(async (contentType, isAdmin = false) => {
-    
     try {
       setLoadingMods(true);
       const token = localStorage.getItem('authToken');
-      
       let url = `/api/mods/public?content_type=${contentType}`;
       if (isAdmin && token) {
         url = `/api/mods/admin?content_type=${contentType}`;
       }
-
-
       const headers = {
         'Content-Type': 'application/json'
       };
-
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-
       const response = await fetch(url, {
         headers
       });
-
       if (response.ok) {
         const data = await response.json();
         setMods(data.data || []);
@@ -100,8 +75,6 @@ export const ModsProvider = ({ children }) => {
       setLoadingMods(false);
     }
   }, []);
-
-  // Criar novo mod
   const addMod = async (modData) => {
     try {
       const token = localStorage.getItem('authToken');
@@ -113,7 +86,6 @@ export const ModsProvider = ({ children }) => {
         },
         body: JSON.stringify(modData)
       });
-
       if (response.ok) {
         const data = await response.json();
         setMods(prev => [data.data, ...prev]);
@@ -125,8 +97,6 @@ export const ModsProvider = ({ children }) => {
       throw error;
     }
   };
-
-  // Atualizar mod
   const updateMod = async (modId, updateData) => {
     try {
       const token = localStorage.getItem('authToken');
@@ -138,10 +108,9 @@ export const ModsProvider = ({ children }) => {
         },
         body: JSON.stringify(updateData)
       });
-
       if (response.ok) {
         const data = await response.json();
-        setMods(prev => prev.map(mod => 
+        setMods(prev => prev.map(mod =>
           mod.id === modId ? data.data : mod
         ));
         return data;
@@ -152,8 +121,6 @@ export const ModsProvider = ({ children }) => {
       throw error;
     }
   };
-
-  // Excluir mod
   const deleteMod = async (modId) => {
     try {
       const token = localStorage.getItem('authToken');
@@ -164,7 +131,6 @@ export const ModsProvider = ({ children }) => {
           'Content-Type': 'application/json'
         }
       });
-
       if (response.ok) {
         setMods(prev => prev.filter(mod => mod.id !== modId));
         return true;
@@ -175,7 +141,6 @@ export const ModsProvider = ({ children }) => {
       throw error;
     }
   };
-
   const value = {
     mods,
     loadingMods,
@@ -185,7 +150,6 @@ export const ModsProvider = ({ children }) => {
     updateMod,
     deleteMod
   };
-
   return (
     <ModsContext.Provider value={value}>
       {children}
