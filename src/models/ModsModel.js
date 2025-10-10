@@ -247,7 +247,7 @@ export default class ModsModel {
         throw new Error('Nenhum campo válido para atualização');
       }
       params.push(id);
-      const sql = `UPDATE mods SET ${updates.join(__STRING_PLACEHOLDER_68__)}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+      const sql = `UPDATE mods SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       await executeQuery(sql, params);
       logInfo('Mod atualizado com sucesso', { modId: id, updates: Object.keys(updateData) });
       return await this.findByIdAdmin(id);

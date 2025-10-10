@@ -38,7 +38,6 @@ const DownloadsPage = React.lazy(() => import('@/pages/mods/DownloadsPage'));
 const AdminDashboardPage = React.lazy(() => import('@/pages/mods/admin/AdminDashboardPage'));
 const AdminUsersPage = React.lazy(() => import('@/pages/mods/admin/AdminUsersPage'));
 const AdminModsPage = React.lazy(() => import('@/pages/mods/admin/AdminModsPage'));
-const AdminAdsPage = React.lazy(() => import('@/pages/mods/admin/AdminAdsPage'));
 const AdminLogsPage = React.lazy(() => import('@/pages/mods/admin/AdminLogsPage'));
 const AdminCommentsModerationPage = React.lazy(() => import('@/pages/mods/admin/AdminCommentsModerationPage'));
 const AdminChangelogsPage = React.lazy(() => import('@/pages/mods/admin/AdminChangelogsPage'));
@@ -138,7 +137,6 @@ function App() {
                   <Route index element={<AdminDashboardPage />} />
                   <Route path="users" element={<AdminUsersPage />} />
                   <Route path="mods" element={<AdminModsPage />} />
-                  <Route path="ads" element={<AdminAdsPage />} />
                   <Route path="changelogs" element={<AdminChangelogsPage />} />
                   <Route path="comments-moderation" element={<AdminCommentsModerationPage />} />
                   <Route path="logs" element={<AdminLogsPage />} />

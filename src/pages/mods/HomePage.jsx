@@ -52,43 +52,8 @@ const SectionTitle = ({ title, icon: Icon, viewAllLink }) => {
   );
 };
 
-const AdPlaceholder = ({ isAdmin, hasAd }) => {
-  const { t } = useTranslation();
-  
-  // se nao tiver cargo de administrador, mostra um espaço invisivel no lugar
-  if (!isAdmin) {
-    return (
-      <div className="my-16" aria-hidden="true"></div>
-    );
-  }
-  
-  // se tiver cargo de administrador mas nao tiver anuncio, mostra um placeholder
-  if (!hasAd) {
-    return (
-      <motion.div 
-        variants={itemVariants}
-        className="my-8 p-3 bg-card/30 border border-dashed border-muted-foreground/30 rounded-lg text-center text-muted-foreground/60"
-      >
-        <p className="font-minecraft text-xs">{t('home.adAreaEmpty')}</p>
-        <p className="text-xs opacity-60">{t('home.addAdToSeparateSections')}</p>
-      </motion.div>
-    );
-  }
-  
-  // se tiver anuncio, mostra normalmente
-  return (
-    <motion.div 
-      variants={itemVariants}
-      className="my-8 p-4 bg-card/50 border-2 border-dashed border-border rounded-lg text-center text-muted-foreground"
-    >
-      <p className="font-minecraft text-sm">{t('home.adArea')}</p>
-      <p className="text-xs">{t('home.googleAdsOrSponsor')}</p>
-      <div className="mt-2 aspect-video bg-muted/30 max-w-xs mx-auto flex items-center justify-center">
-        <span className="text-xs">728x90 ou 300x250</span>
-      </div>
-    </motion.div>
-  );
-};
+// Componente removido - placeholders de anúncios são considerados enganosos pelo Google AdSense
+// Se não há anúncio real configurado, não deve mostrar nada
 
 const ModsCarousel = ({ mods }) => {
   const { t } = useTranslation();
@@ -284,7 +249,7 @@ const HomePage = () => {
         )}
       </section>
 
-      <AdPlaceholder isAdmin={isAdmin} hasAd={hasAd} />
+      {/* Espaço para anúncios removido - placeholders são considerados enganosos pelo Google AdSense */}
 
       <section>
         <SectionTitle title={t('home.mostDownloadedMods')} icon={Flame} viewAllLink="/mods?sort=downloads" />

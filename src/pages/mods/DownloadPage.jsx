@@ -15,7 +15,7 @@ import {
 import { Button } from '../../components/ui/button';
 import { Skeleton } from '../../components/ui/skeleton';
 import { toast } from 'sonner';
-import AdSpace from '../../components/ads/AdSpace';
+import GoogleAdSense from '../../components/ads/GoogleAdSense';
 import GoogleAdsenseMeta from '../../components/ads/GoogleAdsenseMeta';
 
 const DownloadPage = () => {
@@ -262,12 +262,11 @@ const DownloadPage = () => {
       {/* tags do google ads */}
       <GoogleAdsenseMeta />
       
-      {/* container de anuncios */}
-      <div className="w-full px-4 py-6">
-        <AdSpace 
-          page="mod-download" 
-          position="top-banner"
-          fallbackText="Nenhum anúncio configurado"
+      <div className="w-full px-4 py-6 mb-8">
+        <GoogleAdSense 
+          position="TOP_BANNER"
+          adFormat="auto"
+          fullWidthResponsive={true}
         />
       </div>
       

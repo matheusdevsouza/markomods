@@ -30,7 +30,7 @@ import {
 import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Skeleton } from '../../components/ui/skeleton';
-import AdSpace from '../../components/ads/AdSpace';
+import GoogleAdSense from '../../components/ads/GoogleAdSense';
 import GoogleAdsenseMeta from '../../components/ads/GoogleAdsenseMeta';
 import { Textarea } from '../../components/ui/textarea';
 import { toast } from 'sonner';
@@ -166,7 +166,7 @@ const ModDetailPage = () => {
   };
   const handleDownload = async (url, platform) => {
     if (!url) {
-      toast.error(`${t(__STRING_PLACEHOLDER_43__)} ${platform === __STRING_PLACEHOLDER_44__ ? __STRING_PLACEHOLDER_45__ : __STRING_PLACEHOLDER_46__}`);
+      toast.error(`${t('modDetail.downloadNotAvailable')} ${platform === 'pc' ? 'PC' : 'Mobile'}`);
       return;
     }
     navigate(`/mods/${mod.slug}/download`);
@@ -515,11 +515,11 @@ const ModDetailPage = () => {
         const data = await response.json();
         await fetchComments();
         if (data.data && data.data.action === 'added') {
-          toast.success(`Voto ${voteType === __STRING_PLACEHOLDER_131__ ? __STRING_PLACEHOLDER_132__ : __STRING_PLACEHOLDER_133__} registrado!`);
+          toast.success(`Voto ${voteType === 'upvote' ? 'positivo' : 'negativo'} registrado!`);
         } else if (data.data && data.data.action === 'removed') {
           toast.success('Voto removido!');
         } else if (data.data && data.data.action === 'changed') {
-          toast.success(`Voto alterado para ${voteType === __STRING_PLACEHOLDER_137__ ? __STRING_PLACEHOLDER_138__ : __STRING_PLACEHOLDER_139__}!`);
+          toast.success(`Voto alterado para ${voteType === 'upvote' ? 'positivo' : 'negativo'}!`);
         } else {
           toast.success('Voto registrado!');
         }
@@ -534,7 +534,7 @@ const ModDetailPage = () => {
     if (!avatarUrl) return null;
     if (avatarUrl.startsWith('http')) return avatarUrl;
     if (window.location.origin.includes('localhost:5173')) {
-      return `${import.meta.env.VITE_API_URL?.replace(__STRING_PLACEHOLDER_145__, __STRING_PLACEHOLDER_146__) || __STRING_PLACEHOLDER_147__}${avatarUrl}`;
+      return `${import.meta.env.VITE_API_URL?.replace('localhost:3001', 'localhost:5173') || 'http://localhost:3001'}${avatarUrl}`;
     }
     return `${window.location.origin}${avatarUrl}`;
   };
@@ -645,16 +645,17 @@ const ModDetailPage = () => {
   return (
     <div className="min-h-screen">
       <GoogleAdsenseMeta />
-      <div className="w-full px-4 py-6">
-        <AdSpace
-          page="mod-detail"
-          position="top-banner"
-          fallbackText="Nenhum anúncio configurado"
+      {/* Anúncio oficial do Google AdSense - área isolada */}
+      <div className="w-full px-4 py-6 mb-8">
+        <GoogleAdSense 
+          position="TOP_BANNER"
+          adFormat="auto"
+          fullWidthResponsive={true}
         />
       </div>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6 py-4 sm:py-6">
         <div className={`transition-all duration-700 ease-out ${
-          pageLoaded ? __STRING_PLACEHOLDER_150__ : __STRING_PLACEHOLDER_151__
+          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <Link to={mod?.content_type_id === 2 ? "/addons" : "/mods"} className={`inline-flex items-center text-sm hover:text-primary transition-colors ${getSubtextClasses()}`}>
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -665,7 +666,7 @@ const ModDetailPage = () => {
           </Link>
         </div>
         <div className={`rounded-xl p-4 sm:p-6 md:p-8 transition-all duration-1000 ease-out relative ${getCardClasses()} ${
-          pageLoaded ? __STRING_PLACEHOLDER_154__ : __STRING_PLACEHOLDER_155__
+          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="flex flex-col items-center text-center space-y-4 sm:hidden">
             <div className="relative">
@@ -721,15 +722,15 @@ const ModDetailPage = () => {
                 disabled={favoriteLoading}
                 className={`p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm ${
                   isFavorite
-                    ? __STRING_PLACEHOLDER_158__
-                    : __STRING_PLACEHOLDER_159__
+                    ? 'bg-red-500/20 border-red-500/50 text-red-500'
+                    : 'bg-muted/20 border-muted/50 text-muted-foreground hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-500'
                 }`}
               >
                 {favoriteLoading ? (
                   <Loader2 className="h-5 w-5 md:h-6 md:w-6 animate-spin" />
                 ) : (
                   <Heart
-                    className={`h-5 w-5 md:h-6 md:w-6 ${isFavorite ? __STRING_PLACEHOLDER_160__ : __STRING_PLACEHOLDER_161__}`}
+                    className={`h-5 w-5 md:h-6 md:w-6 ${isFavorite ? 'text-red-500 fill-red-500' : 'text-muted-foreground'}`}
                   />
                 )}
               </button>
@@ -750,22 +751,22 @@ const ModDetailPage = () => {
               disabled={favoriteLoading}
               className={`p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg backdrop-blur-sm ${
                 isFavorite
-                  ? __STRING_PLACEHOLDER_164__
-                  : __STRING_PLACEHOLDER_165__
+                  ? 'bg-red-500/20 border-red-500/50 text-red-500'
+                  : 'bg-muted/20 border-muted/50 text-muted-foreground hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-500'
               }`}
             >
               {favoriteLoading ? (
                 <Loader2 className="h-6 w-6 animate-spin" />
               ) : (
                 <Heart
-                  className={`h-6 w-6 ${isFavorite ? __STRING_PLACEHOLDER_166__ : __STRING_PLACEHOLDER_167__}`}
+                  className={`h-6 w-6 ${isFavorite ? 'text-red-500 fill-red-500' : 'text-muted-foreground'}`}
                 />
               )}
             </button>
           </div>
         </div>
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-200 ${getCardClasses()} ${
-          pageLoaded ? __STRING_PLACEHOLDER_168__ : __STRING_PLACEHOLDER_169__
+          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-4">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
@@ -773,7 +774,7 @@ const ModDetailPage = () => {
               {t('modDetail.description')}
             </h2>
             <div
-              className={`prose max-w-none leading-relaxed ${theme === __STRING_PLACEHOLDER_171__ ? __STRING_PLACEHOLDER_172__ : __STRING_PLACEHOLDER_173__} ${getSubtextClasses()}`}
+              className={`prose max-w-none leading-relaxed ${theme === 'light' ? 'prose-gray' : 'prose-invert'} ${getSubtextClasses()}`}
               style={{
                 whiteSpace: 'pre-wrap',
                 lineHeight: '1.6'
@@ -795,7 +796,7 @@ const ModDetailPage = () => {
         {}
         {mod.video_url && (
           <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-250 ${getCardClasses()} ${
-            pageLoaded ? __STRING_PLACEHOLDER_177__ : __STRING_PLACEHOLDER_178__
+            pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
             <div className="space-y-4">
               <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
@@ -816,7 +817,7 @@ const ModDetailPage = () => {
         )}
         {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
-          pageLoaded ? __STRING_PLACEHOLDER_188__ : __STRING_PLACEHOLDER_189__
+          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-6">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
@@ -908,7 +909,7 @@ const ModDetailPage = () => {
               </div>
             </div>
             {}
-            <div className={`flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6 py-3 pt-4 ${theme === __STRING_PLACEHOLDER_207__ ? __STRING_PLACEHOLDER_208__ : __STRING_PLACEHOLDER_209__}`}>
+            <div className={`flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6 py-3 pt-4 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
               <div className={`flex items-center space-x-2 ${getSubtextClasses()}`}>
                 <Download className="h-4 w-4 text-primary" />
                 <span className="text-xs sm:text-sm font-medium">{mod.download_count || 0}</span>
@@ -926,7 +927,7 @@ const ModDetailPage = () => {
         </div>
         {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
-          pageLoaded ? __STRING_PLACEHOLDER_210__ : __STRING_PLACEHOLDER_211__
+          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-4 sm:space-y-6">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
@@ -962,9 +963,9 @@ const ModDetailPage = () => {
               )}
             </div>
             {}
-            <div className={`pt-4 sm:pt-6 ${theme === __STRING_PLACEHOLDER_219__ ? __STRING_PLACEHOLDER_220__ : __STRING_PLACEHOLDER_221__}`}>
+            <div className={`pt-4 sm:pt-6 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
               <h4 className={`text-base sm:text-lg font-semibold mb-3 sm:mb-4 ${getTextClasses()}`}>{t('modDetail.installationInstructions')}</h4>
-              <div className={`rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3 text-xs sm:text-sm ${theme === __STRING_PLACEHOLDER_223__ ? __STRING_PLACEHOLDER_224__ : __STRING_PLACEHOLDER_225__}`}>
+              <div className={`rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3 text-xs sm:text-sm ${theme === 'light' ? 'bg-gray-50 border border-gray-200' : 'bg-gray-800/50 border border-gray-700'}`}>
                 <p className={`${getSubtextClasses()} leading-relaxed`}>
                   <strong>1.</strong> {mod.content_type_id === 2
                     ? t('modDetail.addonStep1')
@@ -992,7 +993,7 @@ const ModDetailPage = () => {
         </div>
         {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-500 ${getCardClasses()} ${
-          pageLoaded ? __STRING_PLACEHOLDER_233__ : __STRING_PLACEHOLDER_234__
+          pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-6">
             <h2 className={`text-xl sm:text-2xl font-bold flex items-center ${getTextClasses()}`}>
@@ -1131,7 +1132,7 @@ const ModDetailPage = () => {
                         )}
                         <div
                           className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-lg ${
-                            comment.avatar_url ? __STRING_PLACEHOLDER_248__ : __STRING_PLACEHOLDER_249__
+                            comment.avatar_url ? 'bg-primary/20' : 'bg-gray-500/20'
                           }`}
                         >
                           <span className={`font-semibold text-xs sm:text-sm ${getTextClasses()}`}>
@@ -1163,42 +1164,42 @@ const ModDetailPage = () => {
                           <button
                             onClick={() => handleVoteComment(comment.id, 'upvote')}
                             className={`group flex items-center space-x-1 text-xs transition-colors duration-200 ${
-                              comment.user_vote === __STRING_PLACEHOLDER_259__
-                                ? __STRING_PLACEHOLDER_260__
-                                : __STRING_PLACEHOLDER_261__
+                              comment.user_vote === 'upvote'
+                                ? 'text-green-500 hover:text-green-400'
+                                : 'text-muted-foreground hover:text-green-500'
                             }`}
                             title="Votar positivamente"
                           >
                             <i className={`fa-solid fa-caret-up text-sm sm:text-lg transition-colors duration-200 ${
-                              comment.user_vote === __STRING_PLACEHOLDER_262__
-                                ? __STRING_PLACEHOLDER_263__
-                                : __STRING_PLACEHOLDER_264__
+                              comment.user_vote === 'upvote'
+                                ? 'text-green-500'
+                                : 'text-muted-foreground'
                             }`}></i>
                             <span className={`font-medium transition-colors duration-200 ${
-                              comment.user_vote === __STRING_PLACEHOLDER_265__
-                                ? __STRING_PLACEHOLDER_266__
-                                : __STRING_PLACEHOLDER_267__
+                              comment.user_vote === 'upvote'
+                                ? 'text-green-500'
+                                : 'text-muted-foreground'
                             }`}>{comment.like_count || 0}</span>
                           </button>
                           {}
                           <button
                             onClick={() => handleVoteComment(comment.id, 'downvote')}
                             className={`group flex items-center space-x-1 text-xs transition-colors duration-200 ${
-                              comment.user_vote === __STRING_PLACEHOLDER_269__
-                                ? __STRING_PLACEHOLDER_270__
-                                : __STRING_PLACEHOLDER_271__
+                              comment.user_vote === 'downvote'
+                                ? 'text-red-500 hover:text-red-400'
+                                : 'text-muted-foreground hover:text-red-500'
                             }`}
                             title="Votar negativamente"
                           >
                             <i className={`fa-solid fa-caret-down text-sm sm:text-lg transition-colors duration-200 ${
-                              comment.user_vote === __STRING_PLACEHOLDER_272__
-                                ? __STRING_PLACEHOLDER_273__
-                                : __STRING_PLACEHOLDER_274__
+                              comment.user_vote === 'downvote'
+                                ? 'text-red-500'
+                                : 'text-muted-foreground'
                             }`}></i>
                             <span className={`font-medium transition-colors duration-200 ${
-                              comment.user_vote === __STRING_PLACEHOLDER_275__
-                                ? __STRING_PLACEHOLDER_276__
-                                :  __STRING_PLACEHOLDER_277__
+                              comment.user_vote === 'downvote'
+                                ? 'text-red-500'
+                                : 'text-muted-foreground'
                             }`}>{comment.dislike_count || 0}</span>
                           </button>
                         </div>
@@ -1207,9 +1208,9 @@ const ModDetailPage = () => {
                     {}
                     {replyingToComment?.id === comment.id && (
                       <div className={`mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg border border-primary/30 ${
-                        theme === __STRING_PLACEHOLDER_278__
-                          ? __STRING_PLACEHOLDER_279__
-                          : __STRING_PLACEHOLDER_280__
+                        theme === 'light'
+                          ? 'bg-gray-50'
+                          : 'bg-gray-800/50'
                       }`}>
                         <div className="flex items-start space-x-2 sm:space-x-3">
                           <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/20 rounded-full flex items-center justify-center border border-primary/30 flex-shrink-0">
@@ -1233,9 +1234,9 @@ const ModDetailPage = () => {
                                   type="button"
                                   onClick={cancelReply}
                                   className={`px-3 py-2 text-xs sm:text-sm transition-colors ${
-                                    theme === __STRING_PLACEHOLDER_281__
-                                      ? __STRING_PLACEHOLDER_282__
-                                      : __STRING_PLACEHOLDER_283__
+                                    theme === 'light'
+                                      ? 'text-gray-600 hover:text-gray-800'
+                                      : 'text-gray-400 hover:text-gray-200'
                                   }`}
                                   disabled={isSubmittingReply}
                                 >
@@ -1284,7 +1285,7 @@ const ModDetailPage = () => {
                                   )}
                                   <div
                                     className={`w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-sm ${
-                                      reply.avatar_url ? __STRING_PLACEHOLDER_288__ : __STRING_PLACEHOLDER_289__
+                                      reply.avatar_url ? 'bg-primary/20' : 'bg-gray-500/20'
                                     }`}
                                   >
                                     <span className={`font-semibold text-xs ${getTextClasses()}`}>
@@ -1347,9 +1348,9 @@ const ModDetailPage = () => {
       {showDeleteModal && commentToDelete && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className={`rounded-xl p-6 w-full max-w-lg mx-4 shadow-2xl ${
-            theme === __STRING_PLACEHOLDER_299__
-              ? __STRING_PLACEHOLDER_300__
-              : __STRING_PLACEHOLDER_301__
+            theme === 'light'
+              ? 'bg-white border border-gray-200'
+              : 'bg-gray-800/50 border border-gray-700'
           }`}>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
@@ -1364,9 +1365,9 @@ const ModDetailPage = () => {
               <button
                 onClick={cancelDeleteComment}
                 className={`transition-colors p-2 rounded-lg ${
-                  theme === __STRING_PLACEHOLDER_302__
-                    ? __STRING_PLACEHOLDER_303__
-                    : __STRING_PLACEHOLDER_304__
+                  theme === 'light'
+                    ? 'text-gray-600 hover:text-gray-800'
+                    : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
                 <X size={24} />
@@ -1374,9 +1375,9 @@ const ModDetailPage = () => {
             </div>
             <div className="space-y-6">
               <div className={`rounded-lg p-5 ${
-                theme === __STRING_PLACEHOLDER_305__
-                  ? __STRING_PLACEHOLDER_306__
-                  : __STRING_PLACEHOLDER_307__
+                theme === 'light'
+                  ? 'text-gray-600 hover:text-gray-800'
+                  : 'text-gray-400 hover:text-gray-200'
               }`}>
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="flex-shrink-0 relative">
@@ -1411,9 +1412,9 @@ const ModDetailPage = () => {
                   </div>
                 </div>
                 <div className={`rounded-lg p-4 border-l-4 ${
-                  theme === __STRING_PLACEHOLDER_316__
-                    ? __STRING_PLACEHOLDER_317__
-                    : __STRING_PLACEHOLDER_318__
+                  theme === 'light'
+                    ? 'text-gray-600 hover:text-gray-800'
+                    : 'text-gray-400 hover:text-gray-200'
                 }`}>
                   <p className={`leading-relaxed break-words overflow-wrap-anywhere ${getSubtextClasses()}`}>
                     "{commentToDelete.content}"
@@ -1424,9 +1425,9 @@ const ModDetailPage = () => {
                 <button
                   onClick={cancelDeleteComment}
                   className={`flex-1 px-6 py-3 text-sm font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 ${
-                    theme === __STRING_PLACEHOLDER_319__
-                      ? __STRING_PLACEHOLDER_320__
-                      : __STRING_PLACEHOLDER_321__
+                    theme === 'light'
+                      ? 'text-gray-600 hover:text-gray-800'
+                      : 'text-gray-400 hover:text-gray-200'
                   }`}
                 >
                   <X className="w-4 h-4" />
