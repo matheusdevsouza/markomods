@@ -242,7 +242,7 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
             >
               <Heart
                 size={14}
-                className={`transition-colors duration-200 ${isFavorited ? __STRING_PLACEHOLDER_46__ : __STRING_PLACEHOLDER_47__}`}
+                className={`transition-colors duration-200 ${isFavorited ? 'text-red-500 fill-red-500' : 'text-muted-foreground hover:text-red-500'}`}
               />
             </button>
             {}

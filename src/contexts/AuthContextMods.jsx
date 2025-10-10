@@ -41,7 +41,7 @@ export const AuthProviderMods = ({ children }) => {
             if (user.is_banned) {
               toast({
                 title: "Conta banida",
-                description: `Sua conta foi banida da plataforma. Motivo: ${user.ban_reason || __STRING_PLACEHOLDER_9__}. Para mais informações, entre em contato através do e-mail ou outros meios de contato disponíveis.`,
+                description: `Sua conta foi banida da plataforma. Motivo: ${user.ban_reason || 'Não especificado'}. Para mais informações, entre em contato através do e-mail ou outros meios de contato disponíveis.`,
                 variant: "destructive"
               });
               localStorage.removeItem('authToken');
