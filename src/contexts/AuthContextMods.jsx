@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { API_BASE_URL } from '../config/api.js';
-
 const AuthContextMods = createContext();
-
 export const useAuth = () => {
   const context = useContext(AuthContextMods);
   if (!context) {
@@ -11,32 +9,24 @@ export const useAuth = () => {
   }
   return context;
 };
-
 export const AuthProviderMods = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
   const [verificationModalOpen, setVerificationModalOpen] = useState(false);
-
   const openVerificationModal = () => setVerificationModalOpen(true);
   const closeVerificationModal = () => setVerificationModalOpen(false);
-
-  // Configuração da API
-
-  // Verificar se há uma sessão ativa ao carregar
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        
         if (!token) {
           setIsAuthenticated(false);
           setCurrentUser(null);
           setLoading(false);
           return;
         }
-
         const response = await fetch(`${API_BASE_URL}/auth/verify`, {
           method: 'GET',
           headers: {
@@ -44,46 +34,35 @@ export const AuthProviderMods = ({ children }) => {
             'Content-Type': 'application/json'
           }
         });
-
         if (response.ok) {
           const data = await response.json();
-          
           if (data.data && data.data.user) {
             const user = data.data.user;
-            
-            // Verificar se o usuário foi banido
             if (user.is_banned) {
-              // Usuário banido - fazer logout automático
               toast({
                 title: "Conta banida",
-                description: `Sua conta foi banida da plataforma. Motivo: ${user.ban_reason || 'Banimento administrativo'}. Para mais informações, entre em contato através do e-mail ou outros meios de contato disponíveis.`,
+                description: `Sua conta foi banida da plataforma. Motivo: ${user.ban_reason || 'Não especificado'}. Para mais informações, entre em contato através do e-mail ou outros meios de contato disponíveis.`,
                 variant: "destructive"
               });
-              
-              // Fazer logout automático
               localStorage.removeItem('authToken');
               setCurrentUser(null);
               setIsAuthenticated(false);
               setLoading(false);
               return;
             }
-            
             setCurrentUser(user);
             setIsAuthenticated(true);
           } else {
-            // Token válido mas sem dados do usuário, fazer logout
             localStorage.removeItem('authToken');
             setCurrentUser(null);
             setIsAuthenticated(false);
           }
         } else {
-          // Token inválido ou expirado
           localStorage.removeItem('authToken');
           setCurrentUser(null);
           setIsAuthenticated(false);
         }
       } catch (error) {
-        // Em caso de erro, limpar estado
         localStorage.removeItem('authToken');
         setCurrentUser(null);
         setIsAuthenticated(false);
@@ -91,16 +70,11 @@ export const AuthProviderMods = ({ children }) => {
         setLoading(false);
       }
     };
-
     initializeAuth();
   }, []);
-
-  // Registro
   const register = async (userData) => {
     try {
       setLoading(true);
-      
-      
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
@@ -108,35 +82,24 @@ export const AuthProviderMods = ({ children }) => {
         },
         body: JSON.stringify(userData)
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        // Verificar se data.data.user existe (estrutura do backend)
         if (!data.data || !data.data.user) {
           throw new Error('Dados do usuário não recebidos do servidor');
         }
-
         const user = data.data.user;
         const token = data.data.tokens?.accessToken || data.data.tokens?.access_token;
-
         if (!token) {
           throw new Error('Token de acesso não recebido do servidor');
         }
-
-        // Salvar token e definir usuário, mas não marcar como autenticado até verificação
         localStorage.setItem('authToken', token);
         setCurrentUser(user);
-        // Abrir modal de verificação e manter o usuário na página
         openVerificationModal();
         toast({ title: 'Conta criada!', description: 'Enviamos um e-mail para verificação.' });
-        
-        
         return { success: true, message: data.message };
       } else {
         throw new Error(data.message || 'Erro ao criar conta');
       }
-      
     } catch (error) {
       toast({
         title: "Erro no registro",
@@ -148,12 +111,9 @@ export const AuthProviderMods = ({ children }) => {
       setLoading(false);
     }
   };
-
-  // Login
   const login = async (credentials) => {
     try {
       setLoading(true);
-      
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -161,40 +121,28 @@ export const AuthProviderMods = ({ children }) => {
         },
         body: JSON.stringify(credentials)
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        // Verificar se data.data.user existe (estrutura do backend)
         if (!data.data || !data.data.user) {
           throw new Error('Dados do usuário não recebidos do servidor');
         }
-
         const user = data.data.user;
         const token = data.data.tokens?.accessToken || data.data.tokens?.access_token;
-
         if (!token) {
           throw new Error('Token de acesso não recebido do servidor');
         }
-
-        // Salvar token
         localStorage.setItem('authToken', token);
-        
-        // Definir usuário e estado de autenticação
         setCurrentUser(user);
         setIsAuthenticated(true);
-        
         toast({
           title: "Login realizado com sucesso!",
           description: `Bem-vindo, ${user.display_name || user.username}!`,
           variant: "default"
         });
-        
         return { success: true, message: data.message, user };
       } else {
         throw new Error(data.message || 'Erro ao fazer login');
       }
-      
     } catch (error) {
       toast({
         title: "Erro no login",
@@ -206,29 +154,22 @@ export const AuthProviderMods = ({ children }) => {
       setLoading(false);
     }
   };
-
-  // Função para determinar o redirecionamento baseado no cargo
   const getRedirectPath = (user) => {
     if (!user || !user.role) return '/dashboard';
-    
     switch (user.role) {
       case 'super_admin':
       case 'admin':
         return '/admin';
       case 'moderator':
-        return '/admin'; // Moderadores também acessam o admin
+        return '/admin';
       default:
-        return '/dashboard'; // Usuários comuns vão para dashboard normal
+        return '/dashboard';
     }
   };
-
-  // Logout
   const logout = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      
       if (token) {
-        // Chamar endpoint de logout no backend
         await fetch(`${API_BASE_URL}/auth/logout`, {
           method: 'POST',
           headers: {
@@ -237,26 +178,20 @@ export const AuthProviderMods = ({ children }) => {
           }
         });
       }
-      
-      // Limpar estado local
       localStorage.removeItem('authToken');
       setCurrentUser(null);
       setIsAuthenticated(false);
-      
       toast({
         title: "Logout realizado",
         description: "Você foi desconectado com sucesso",
         variant: "default"
       });
     } catch (error) {
-      // Mesmo com erro, limpar estado local
       localStorage.removeItem('authToken');
       setCurrentUser(null);
       setIsAuthenticated(false);
     }
   };
-
-  // Solicitar recuperação de senha (não usar loading global para evitar overlay na UI)
   const requestPasswordReset = async (email) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
@@ -266,19 +201,15 @@ export const AuthProviderMods = ({ children }) => {
         },
         body: JSON.stringify({ email })
       });
-
       const data = await response.json();
-
       if (response.ok) {
         toast({
           title: "Email enviado!",
           description: "Se o email estiver cadastrado, você receberá instruções de recuperação",
           variant: "default"
         });
-        
         return { success: true, message: data.message };
       } else if (response.status === 429) {
-        // Rate limit excedido
         toast({
           title: "Muitas tentativas",
           description: data.message || "Tente novamente em alguns minutos",
@@ -288,10 +219,7 @@ export const AuthProviderMods = ({ children }) => {
       } else {
         throw new Error(data.message || 'Erro ao enviar email de recuperação');
       }
-      
     } catch (error) {
-      
-      // Não mostrar toast se já foi mostrado acima
       if (!error.message.includes('Muitas tentativas')) {
         toast({
           title: "Erro ao enviar email",
@@ -299,14 +227,10 @@ export const AuthProviderMods = ({ children }) => {
           variant: "destructive"
         });
       }
-      
       throw error;
     } finally {
-      // não alterar loading global aqui
     }
   };
-
-  // Redefinir senha (não usar loading global para evitar overlay na UI)
   const resetPassword = async (token, newPassword) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
@@ -316,19 +240,15 @@ export const AuthProviderMods = ({ children }) => {
         },
         body: JSON.stringify({ token, password: newPassword })
       });
-
       const data = await response.json();
-
       if (response.ok) {
         toast({
           title: "Senha redefinida!",
           description: "Sua senha foi alterada com sucesso. Faça login com a nova senha.",
           variant: "default"
         });
-        
         return { success: true, message: data.message };
       } else if (response.status === 429) {
-        // Rate limit excedido
         toast({
           title: "Muitas tentativas",
           description: data.message || "Tente novamente em alguns minutos",
@@ -338,10 +258,7 @@ export const AuthProviderMods = ({ children }) => {
       } else {
         throw new Error(data.message || 'Erro ao redefinir senha');
       }
-      
     } catch (error) {
-      
-      // Não mostrar toast se já foi mostrado acima
       if (!error.message.includes('Muitas tentativas')) {
         toast({
           title: "Erro ao redefinir senha",
@@ -349,14 +266,10 @@ export const AuthProviderMods = ({ children }) => {
           variant: "destructive"
         });
       }
-      
       throw error;
     } finally {
-      // não alterar loading global aqui
     }
   };
-
-  // Verificar token de reset
   const verifyResetToken = async (token) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/verify-reset-token/${token}`, {
@@ -365,34 +278,25 @@ export const AuthProviderMods = ({ children }) => {
           'Content-Type': 'application/json'
         }
       });
-
       const data = await response.json();
-      
       if (response.status === 429) {
-        // Rate limit excedido
-        return { 
-          success: false, 
-          message: data.message || 'Muitas tentativas. Tente novamente mais tarde.' 
+        return {
+          success: false,
+          message: data.message || 'Muitas tentativas. Tente novamente mais tarde.'
         };
       }
-      
       return { success: response.ok, message: data.message };
-      
     } catch (error) {
       return { success: false, message: 'Erro ao verificar token' };
     }
   };
-
-    // Atualizar perfil
   const updateProfile = async (profileData) => {
     try {
       setLoading(true);
-      
       const token = localStorage.getItem('authToken');
       if (!token) {
         throw new Error('Usuário não autenticado');
       }
-
       const response = await fetch(`${API_BASE_URL}/user/profile`, {
         method: 'PUT',
         headers: {
@@ -401,23 +305,18 @@ export const AuthProviderMods = ({ children }) => {
         },
         body: JSON.stringify(profileData)
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setCurrentUser(data.user);
-        
         toast({
           title: "Perfil atualizado!",
           description: "Suas informações foram salvas com sucesso",
           variant: "default"
         });
-        
         return { success: true, message: data.message };
       } else {
         throw new Error(data.message || 'Erro ao atualizar perfil');
       }
-      
     } catch (error) {
       toast({
         title: "Erro ao atualizar perfil",
@@ -429,32 +328,22 @@ export const AuthProviderMods = ({ children }) => {
       setLoading(false);
     }
   };
-
-  // Atualizar usuário no contexto (para uso interno)
   const updateUser = (userData) => {
     if (userData) {
-      // Atualizar o estado do usuário
       setCurrentUser(userData);
-      
-      // Atualizar também o estado de autenticação se necessário
       if (userData.id) {
         setIsAuthenticated(true);
       }
     } else {
-      // Se userData for null, limpar o estado
       setCurrentUser(null);
       setIsAuthenticated(false);
     }
   };
-
-  // Função para fazer requisições autenticadas
   const authenticatedFetch = async (url, options = {}) => {
     const token = localStorage.getItem('authToken');
-    
     if (!token) {
       throw new Error('Usuário não autenticado');
     }
-
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -463,12 +352,8 @@ export const AuthProviderMods = ({ children }) => {
         'Content-Type': 'application/json'
       }
     });
-
-    // Não deslogar automaticamente aqui para evitar logout ao abrir páginas que podem falhar temporariamente
-    // Deixe a verificação periódica /auth/verify cuidar de invalidar sessões
     return response;
   };
-
   const value = {
     currentUser,
     loading,
@@ -488,11 +373,9 @@ export const AuthProviderMods = ({ children }) => {
     openVerificationModal,
     closeVerificationModal,
   };
-
   return (
     <AuthContextMods.Provider value={value}>
       {children}
     </AuthContextMods.Provider>
   );
 };
-

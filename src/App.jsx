@@ -11,16 +11,10 @@ import { useTranslation } from './hooks/useTranslation';
 import { Toaster } from 'sonner';
 import EmailVerificationModal from '@/components/auth/EmailVerificationModal';
 import { useAuth } from '@/contexts/AuthContextMods';
-
-// Layouts
 import MainLayout from '@/components/mods/layout/MainLayout';
 import AdminLayout from '@/components/mods/layout/AdminLayout';
 import PublicLayout from '@/components/layout/PublicLayout';
-
-// Componente de rota protegida
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-
-// Páginas principais (lazy loading)
 const HomePage = React.lazy(() => import('@/pages/mods/HomePage'));
 const ModDetailPage = React.lazy(() => import('@/pages/mods/ModDetailPage'));
 const DownloadPage = React.lazy(() => import('./pages/mods/DownloadPage'));
@@ -32,35 +26,24 @@ const ContactPage = React.lazy(() => import('@/pages/mods/ContactPage'));
 const FAQPage = React.lazy(() => import('@/pages/mods/FAQPage'));
 const BannedPage = React.lazy(() => import('@/pages/mods/BannedPage'));
 const NotFoundPage = React.lazy(() => import('@/pages/mods/NotFoundPage'));
-
-// Páginas de autenticação
 const LoginPage = React.lazy(() => import('@/pages/mods/LoginPage'));
 const RegisterPage = React.lazy(() => import('@/pages/mods/RegisterPage'));
 const ForgotPasswordPage = React.lazy(() => import('@/pages/mods/ForgotPasswordPage'));
 const ResetPasswordPage = React.lazy(() => import('@/pages/mods/ResetPasswordPage'));
 const VerifyEmailPage = React.lazy(() => import('@/pages/mods/VerifyEmailPage'));
-
-// Páginas do usuário
 const UserDashboardPage = React.lazy(() => import('@/pages/mods/UserDashboardPage'));
 const EditProfilePage = React.lazy(() => import('@/pages/mods/EditProfilePage'));
 const FavoritesPage = React.lazy(() => import('@/pages/mods/FavoritesPage'));
 const DownloadsPage = React.lazy(() => import('@/pages/mods/DownloadsPage'));
-
-// Páginas administrativas
 const AdminDashboardPage = React.lazy(() => import('@/pages/mods/admin/AdminDashboardPage'));
 const AdminUsersPage = React.lazy(() => import('@/pages/mods/admin/AdminUsersPage'));
 const AdminModsPage = React.lazy(() => import('@/pages/mods/admin/AdminModsPage'));
-const AdminAdsPage = React.lazy(() => import('@/pages/mods/admin/AdminAdsPage'));
 const AdminLogsPage = React.lazy(() => import('@/pages/mods/admin/AdminLogsPage'));
 const AdminCommentsModerationPage = React.lazy(() => import('@/pages/mods/admin/AdminCommentsModerationPage'));
 const AdminChangelogsPage = React.lazy(() => import('@/pages/mods/admin/AdminChangelogsPage'));
-
-// Páginas públicas
 const MediaKitPage = React.lazy(() => import('@/pages/MediaKitPage'));
 const ChangelogPage = React.lazy(() => import('@/pages/ChangelogPage'));
 const ChangelogDetailPage = React.lazy(() => import('@/pages/ChangelogDetailPage'));
-
-// Componente de loading
 const LoadingSpinner = () => {
   const { t } = useTranslation();
   return (
@@ -72,12 +55,10 @@ const LoadingSpinner = () => {
     </div>
   );
 };
-
 const AuthModalOutlet = () => {
   const { verificationModalOpen, closeVerificationModal } = useAuth();
   return <EmailVerificationModal open={verificationModalOpen} onOpenChange={closeVerificationModal} />;
 };
-
 function App() {
   return (
     <ThemeProviderMods>
@@ -89,7 +70,7 @@ function App() {
               <AuthModalOutlet />
               <Suspense fallback={<LoadingSpinner />}>
                 <Routes>
-                {/* Rotas principais com MainLayout */}
+                {}
                 <Route path="/" element={<MainLayout />}>
                   <Route index element={<HomePage />} />
                   <Route path="mods" element={<ModsListingPage />} />
@@ -103,8 +84,7 @@ function App() {
                   <Route path="changelog" element={<ChangelogPage />} />
                   <Route path="changelog/:slug" element={<ChangelogDetailPage />} />
                   <Route path="banned" element={<BannedPage />} />
-                  
-                  {/* Rotas de autenticação (não requerem login) */}
+                  {}
                   <Route path="login" element={
                     <ProtectedRoute requireAuth={false}>
                       <LoginPage />
@@ -126,9 +106,7 @@ function App() {
                     </ProtectedRoute>
                   } />
                   <Route path="verify-email" element={<VerifyEmailPage />} />
-
-                  
-                  {/* Rotas do usuário (requerem login) */}
+                  {}
                   <Route path="dashboard" element={
                     <ProtectedRoute requireAuth={true}>
                       <UserDashboardPage />
@@ -150,8 +128,7 @@ function App() {
                     </ProtectedRoute>
                   } />
                 </Route>
-
-                {/* Rotas administrativas */}
+                {}
                 <Route path="/admin" element={
                   <ProtectedRoute requireAuth={true} requireSuperAdmin={true}>
                     <AdminLayout />
@@ -160,26 +137,22 @@ function App() {
                   <Route index element={<AdminDashboardPage />} />
                   <Route path="users" element={<AdminUsersPage />} />
                   <Route path="mods" element={<AdminModsPage />} />
-                  <Route path="ads" element={<AdminAdsPage />} />
                   <Route path="changelogs" element={<AdminChangelogsPage />} />
                   <Route path="comments-moderation" element={<AdminCommentsModerationPage />} />
                   <Route path="logs" element={<AdminLogsPage />} />
                 </Route>
-
-                {/* Rotas públicas com PublicLayout */}
+                {}
                 <Route path="/public" element={<PublicLayout />}>
                   <Route path="media-kit" element={<MediaKitPage />} />
                   <Route path="contact" element={<ContactPage />} />
                 </Route>
-
-                {/* Rota 404 */}
+                {}
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
-            
-            <Toaster 
-              richColors 
-              position="bottom-right" 
+            <Toaster
+              richColors
+              position="bottom-right"
               toastOptions={{
                 style: {
                   marginBottom: '12px',
@@ -201,5 +174,4 @@ function App() {
     </ThemeProviderMods>
   );
 }
-
 export default App;

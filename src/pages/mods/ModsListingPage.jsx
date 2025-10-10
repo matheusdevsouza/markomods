@@ -54,10 +54,8 @@ const ModsListingPage = () => {
   const [mods, setMods] = useState([]);
   const [loadingMods, setLoadingMods] = useState(true);
   
-  // Estado para contagem de addons
   const [addonsCount, setAddonsCount] = useState(0);
   
-  // Estados dos filtros
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'recent');
   const [viewMode, setViewMode] = useState(searchParams.get('view') || 'grid');
@@ -72,11 +70,9 @@ const ModsListingPage = () => {
     category: false
   });
 
-  // Estados para paginação
   const [currentPage, setCurrentPage] = useState(1);
   const modsPerPage = 20;
 
-  // Buscar apenas mods públicos (content_type_id = 1)
   useEffect(() => {
     const fetchPublicMods = async () => {
       try {
@@ -85,7 +81,6 @@ const ModsListingPage = () => {
         
         if (response.ok) {
           const data = await response.json();
-          // Filtrar apenas mods (content_type_id = 1)
           const modsOnly = (data.data || []).filter(mod => mod.content_type_id === 1);
           setMods(modsOnly);
         } else {
@@ -101,7 +96,6 @@ const ModsListingPage = () => {
     fetchPublicMods();
   }, []);
 
-  // Buscar contagem de addons
   useEffect(() => {
     const fetchAddonsCount = async () => {
       try {
@@ -109,7 +103,6 @@ const ModsListingPage = () => {
         
         if (response.ok) {
           const data = await response.json();
-          // Filtrar apenas addons (content_type_id = 2)
           const addonsOnly = (data.data || []).filter(addon => addon.content_type_id === 2);
           setAddonsCount(addonsOnly.length);
         } else {
@@ -123,7 +116,6 @@ const ModsListingPage = () => {
     fetchAddonsCount();
   }, []);
 
-  // Filtros disponíveis
   const availableVersions = useMemo(() => {
     if (loadingMods) return [];
     const versions = new Set(mods.map(mod => mod.minecraft_version).filter(Boolean));
@@ -142,15 +134,11 @@ const ModsListingPage = () => {
     return ['all', ...Array.from(categories).sort()];
   }, [mods, loadingMods]);
 
-  // Aplicar filtros e ordenação
   const filteredAndSortedMods = useMemo(() => {
     if (loadingMods) return [];
 
     let filtered = [...mods];
 
-    // Não há mais filtro por tipo de conteúdo - todos os mods são mostrados
-
-    // Filtro por termo de busca
     if (searchTerm) {
       filtered = filtered.filter(mod =>
         mod.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,22 +147,18 @@ const ModsListingPage = () => {
       );
     }
 
-    // Filtro por versão do Minecraft
     if (!minecraftVersion.includes('all')) {
       filtered = filtered.filter(mod => minecraftVersion.includes(mod.minecraft_version));
     }
 
-    // Filtro por loader
     if (!modLoader.includes('all')) {
       filtered = filtered.filter(mod => modLoader.includes(mod.mod_loader));
     }
 
-    // Filtro por categoria
     if (!category.includes('all')) {
       filtered = filtered.filter(mod => mod.tags?.some(tag => category.includes(tag)));
     }
 
-    // Ordenação
     switch (sortBy) {
       case 'recent':
         filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
@@ -195,14 +179,12 @@ const ModsListingPage = () => {
     return filtered;
   }, [mods, loadingMods, searchTerm, minecraftVersion, modLoader, category, sortBy]);
 
-  // Paginação
   const totalPages = Math.ceil(filteredAndSortedMods.length / modsPerPage);
   const paginatedMods = filteredAndSortedMods.slice(
     (currentPage - 1) * modsPerPage,
     currentPage * modsPerPage
   );
 
-  // Atualizar URL quando filtros mudarem
   useEffect(() => {
     const params = new URLSearchParams();
     if (searchTerm) params.set('q', searchTerm);
@@ -213,10 +195,9 @@ const ModsListingPage = () => {
     if (!category.includes('all')) params.set('category', category.join(','));
     
     setSearchParams(params);
-    setCurrentPage(1); // Reset para primeira página quando filtros mudarem
+    setCurrentPage(1);
   }, [searchTerm, sortBy, viewMode, minecraftVersion, modLoader, category, setSearchParams]);
 
-  // Aplicar filtros iniciais baseados na URL
   useEffect(() => {
     const sortParam = searchParams.get('sort');
     if (sortParam) {
@@ -224,8 +205,6 @@ const ModsListingPage = () => {
     }
   }, [searchParams]);
 
-  // Os mods já foram carregados no useEffect anterior
-  // Não há mais abas para filtrar
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -260,7 +239,6 @@ const ModsListingPage = () => {
         variants={containerVariants}
       >
                 <div className="flex w-full h-full pt-16 md:pt-32">
-           {/* Sidebar de filtros - responsiva */}
            <motion.div variants={itemVariants} className="w-80 flex-shrink-0 flex-col hidden lg:flex">
              <Card className="sticky top-4 ml-4 flex-1 mb-10">
              <CardHeader>
@@ -270,9 +248,7 @@ const ModsListingPage = () => {
                </CardTitle>
              </CardHeader>
              <CardContent className="space-y-6 flex-1 flex flex-col">
-               {/* Filtros expansíveis */}
                <div className="space-y-4">
-                 {/* Ordenação */}
                  <div className="border border-border rounded-lg overflow-hidden">
                    <button
                      onClick={() => setExpandedFilters(prev => ({ ...prev, sort: !prev.sort }))}
@@ -385,10 +361,8 @@ const ModsListingPage = () => {
                    )}
                  </div>
 
-                 {/* Linha divisória */}
                  <div className="border-t border-border/50 my-4"></div>
 
-                 {/* Versão do Minecraft */}
                  <div className="border border-border rounded-lg overflow-hidden">
                    <button
                      onClick={() => setExpandedFilters(prev => ({ ...prev, version: !prev.version }))}
@@ -473,7 +447,6 @@ const ModsListingPage = () => {
                    )}
                  </div>
 
-                 {/* Loader do Mod */}
                  <div className="border border-border rounded-lg overflow-hidden">
                    <button
                      onClick={() => setExpandedFilters(prev => ({ ...prev, loader: !prev.loader }))}
@@ -558,7 +531,6 @@ const ModsListingPage = () => {
                    )}
                  </div>
 
-                 {/* Categoria */}
                  <div className="border border-border rounded-lg overflow-hidden">
                    <button
                      onClick={() => setExpandedFilters(prev => ({ ...prev, category: !prev.category }))}
@@ -644,7 +616,6 @@ const ModsListingPage = () => {
                  </div>
                </div>
 
-               {/* Botão limpar filtros - sempre no final */}
                <div className="mt-auto pt-4 border-t border-border/50">
                  <Button 
                    variant="outline" 
@@ -659,9 +630,7 @@ const ModsListingPage = () => {
            </Card>
          </motion.div>
 
-         {/* Área principal com header e mods */}
          <motion.div variants={itemVariants} className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8">
-           {/* Header da página */}
            <div className="mb-8">
              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
                <div>
@@ -673,9 +642,7 @@ const ModsListingPage = () => {
                  </p>
                </div>
                
-               {/* Controles de visualização */}
                <div className="flex items-center space-x-2">
-                 {/* Botão de filtros para mobile */}
                  <Button
                    variant="outline"
                    size="sm"
@@ -707,7 +674,6 @@ const ModsListingPage = () => {
                </div>
              </div>
 
-             {/* Barra de busca */}
              <div className="relative w-full sm:w-80 mb-6">
                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
                <Input
@@ -718,7 +684,6 @@ const ModsListingPage = () => {
                />
              </div>
 
-             {/* Navegação entre Mods e Addons */}
             <div className="mb-6">
               <div className="inline-flex space-x-1 bg-muted/30 rounded-lg p-1 w-full sm:w-auto">
                 <div className="px-3 sm:px-6 py-2 rounded-md text-sm font-medium bg-primary text-white shadow-sm flex-1 sm:flex-none">
@@ -747,7 +712,6 @@ const ModsListingPage = () => {
            </div>
           {paginatedMods.length > 0 ? (
             <>
-                             {/* Grid/Lista de mods */}
                <div className={viewMode === 'grid' 
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6 justify-items-center max-w-none" 
                  : "space-y-3 sm:space-y-4"
@@ -769,7 +733,6 @@ const ModsListingPage = () => {
                 )}
               </div>
 
-              {/* Paginação */}
               {totalPages > 1 && (
                 <motion.div variants={itemVariants} className="mt-6 sm:mt-8 flex justify-center">
                   <div className="flex items-center space-x-1 sm:space-x-2">
@@ -840,12 +803,10 @@ const ModsListingPage = () => {
         </motion.div>
       </div>
 
-      {/* Modal de Filtros para Mobile */}
       {showFilters && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
           <div className="absolute inset-x-0 top-0 bottom-0 bg-background border-r border-border shadow-xl overflow-y-auto">
             <div className="p-4 pb-20">
-              {/* Header do modal */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold flex items-center space-x-2">
                   <Filter size={20} />
@@ -861,9 +822,7 @@ const ModsListingPage = () => {
                 </Button>
               </div>
 
-                {/* Filtros móveis */}
                 <div className="space-y-3">
-                {/* Ordenação */}
                 <div className="border border-border rounded-lg overflow-hidden">
                   <button
                     onClick={() => setExpandedFilters(prev => ({ ...prev, sort: !prev.sort }))}
@@ -916,7 +875,6 @@ const ModsListingPage = () => {
                   )}
                 </div>
 
-                {/* Versão do Minecraft */}
                 <div className="border border-border rounded-lg overflow-hidden">
                   <button
                     onClick={() => setExpandedFilters(prev => ({ ...prev, version: !prev.version }))}
@@ -969,7 +927,6 @@ const ModsListingPage = () => {
                   )}
                 </div>
 
-                {/* Loader do Mod */}
                 <div className="border border-border rounded-lg overflow-hidden">
                   <button
                     onClick={() => setExpandedFilters(prev => ({ ...prev, loader: !prev.loader }))}

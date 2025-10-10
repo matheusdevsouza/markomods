@@ -52,50 +52,15 @@ const SectionTitle = ({ title, icon: Icon, viewAllLink }) => {
   );
 };
 
-const AdPlaceholder = ({ isAdmin, hasAd }) => {
-  const { t } = useTranslation();
-  
-  // Se não for admin, mostra espaço invisível grande
-  if (!isAdmin) {
-    return (
-      <div className="my-16" aria-hidden="true"></div>
-    );
-  }
-  
-  // Se for admin mas não há anúncio, mostra placeholder pequeno
-  if (!hasAd) {
-    return (
-      <motion.div 
-        variants={itemVariants}
-        className="my-8 p-3 bg-card/30 border border-dashed border-muted-foreground/30 rounded-lg text-center text-muted-foreground/60"
-      >
-        <p className="font-minecraft text-xs">{t('home.adAreaEmpty')}</p>
-        <p className="text-xs opacity-60">{t('home.addAdToSeparateSections')}</p>
-      </motion.div>
-    );
-  }
-  
-  // Se há anúncio, mostra normalmente
-  return (
-    <motion.div 
-      variants={itemVariants}
-      className="my-8 p-4 bg-card/50 border-2 border-dashed border-border rounded-lg text-center text-muted-foreground"
-    >
-      <p className="font-minecraft text-sm">{t('home.adArea')}</p>
-      <p className="text-xs">{t('home.googleAdsOrSponsor')}</p>
-      <div className="mt-2 aspect-video bg-muted/30 max-w-xs mx-auto flex items-center justify-center">
-        <span className="text-xs">728x90 ou 300x250</span>
-      </div>
-    </motion.div>
-  );
-};
+// Componente removido - placeholders de anúncios são considerados enganosos pelo Google AdSense
+// Se não há anúncio real configurado, não deve mostrar nada
 
 const ModsCarousel = ({ mods }) => {
   const { t } = useTranslation();
   
-  // Basic placeholder for carousel - a real carousel would need a library or more complex logic
+  // placeholder para o carrossel
   if (!mods || mods.length === 0) return null;
-  const featuredMod = mods[0]; // Just show the first "featured" mod
+  const featuredMod = mods[0]; 
 
   return (
     <motion.div 
@@ -136,11 +101,10 @@ const HomePage = () => {
   const { t } = useTranslation();
   const { currentUser } = useAuth();
   
-  // Simular verificação de admin (em produção, isso viria do contexto de autenticação)
-  const isAdmin = false; // Mude para true para testar como admin
-  const hasAd = false; // Mude para true para simular anúncio ativo
+  const isAdmin = false; 
+  const hasAd = false; 
 
-  // Buscar apenas mods públicos (não rascunhos)
+  // buscar apenas mods publicos
   useEffect(() => {
     const fetchPublicMods = async () => {
       try {
@@ -163,7 +127,7 @@ const HomePage = () => {
     fetchPublicMods();
   }, []);
 
-  // Carregar configuração do banner
+  // buscar a configuracao do banner
   useEffect(() => {
     const fetchBannerConfig = async () => {
       try {
@@ -175,7 +139,7 @@ const HomePage = () => {
           }
         }
       } catch (error) {
-        // Em caso de erro, manter a URL padrão
+        // se der erro, manter a url padrao
       }
     };
 
@@ -190,22 +154,22 @@ const HomePage = () => {
     );
   }
   
-  const featuredMods = mods.filter(mod => mod.is_featured).slice(0, 1); // For carousel
+  const featuredMods = mods.filter(mod => mod.is_featured).slice(0, 1);
   
-  // Últimos mods com paginação
+  // ultimos mods com paginação
   const allLatestMods = [...mods].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
   const modsPerPage = 4;
   const totalLatestPages = Math.ceil(allLatestMods.length / modsPerPage);
   const latestMods = allLatestMods.slice((latestModsPage - 1) * modsPerPage, latestModsPage * modsPerPage);
   
-  // Mods mais baixados com paginação
+  // mods mais baixados com paginação
   const allPopularMods = [...mods].sort((a, b) => (b.download_count || 0) - (a.download_count || 0));
   const totalPopularPages = Math.ceil(allPopularMods.length / modsPerPage);
   const mostDownloadedMods = allPopularMods.slice((popularModsPage - 1) * modsPerPage, popularModsPage * modsPerPage);
 
   const totalDownloadsAllMods = mods.reduce((sum, mod) => sum + (mod.download_count || 0), 0);
 
-  // Função para lidar com mudanças de página
+  // funcao para mudancas de paginas
   const handleLatestModsPageChange = (newPage) => {
     setLatestModsPage(newPage);
   };
@@ -225,7 +189,7 @@ const HomePage = () => {
       animate="visible"
       variants={containerVariants}
     >
-      {/* Banner da Plataforma */}
+      {/* banner da plataforma */}
       <EditableBanner
         bannerUrl={bannerUrl}
         onBannerUpdate={handleBannerUpdate}
@@ -265,7 +229,7 @@ const HomePage = () => {
               {latestMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} />)}
             </motion.div>
             
-            {/* Navegação por páginas - só aparece se houver mais de 4 mods */}
+            {/* navegacao por paginas (4+ mods) */}
             {allLatestMods.length > 4 && (
               <motion.div 
                 variants={itemVariants} 
@@ -285,7 +249,7 @@ const HomePage = () => {
         )}
       </section>
 
-      <AdPlaceholder isAdmin={isAdmin} hasAd={hasAd} />
+      {/* Espaço para anúncios removido - placeholders são considerados enganosos pelo Google AdSense */}
 
       <section>
         <SectionTitle title={t('home.mostDownloadedMods')} icon={Flame} viewAllLink="/mods?sort=downloads" />
@@ -295,7 +259,7 @@ const HomePage = () => {
               {mostDownloadedMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} />)}
             </motion.div>
             
-            {/* Navegação por páginas - só aparece se houver mais de 4 mods */}
+            {/* navegacao por paginas (4+ mods) */}
             {allPopularMods.length > 4 && (
               <motion.div 
                 variants={itemVariants} 

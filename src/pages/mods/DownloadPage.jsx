@@ -15,7 +15,7 @@ import {
 import { Button } from '../../components/ui/button';
 import { Skeleton } from '../../components/ui/skeleton';
 import { toast } from 'sonner';
-import AdSpace from '../../components/ads/AdSpace';
+import GoogleAdSense from '../../components/ads/GoogleAdSense';
 import GoogleAdsenseMeta from '../../components/ads/GoogleAdsenseMeta';
 
 const DownloadPage = () => {
@@ -32,10 +32,9 @@ const DownloadPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadStarted, setDownloadStarted] = useState(false);
 
-  // Estados para controlar animações
+
   const [pageLoaded, setPageLoaded] = useState(false);
 
-  // Funções helper para classes condicionais
   const getCardClasses = () => {
     return theme === 'light'
       ? 'bg-white/90 border-gray-200/50 shadow-lg'
@@ -82,7 +81,6 @@ const DownloadPage = () => {
       }, 1000);
       return () => clearTimeout(timer);
     } else if (countdown === 0 && !downloadStarted) {
-      // Apenas mostrar que o download está disponível, sem iniciar automaticamente
       setDownloadStarted(true);
     }
   }, [countdown, downloadStarted]);
@@ -125,11 +123,12 @@ const DownloadPage = () => {
     setIsDownloading(true);
 
     try {
-      // Determinar URL de download
+      // url de download (pc / mobile)
       const downloadUrl = mod.download_url_pc || mod.download_url_mobile;
       
       if (downloadUrl) {
-        // Registrar download no backend
+
+        // funcao para registrar download
         const token = localStorage.getItem('authToken');
         const headers = {
           'Content-Type': 'application/json'
@@ -146,13 +145,16 @@ const DownloadPage = () => {
           });
 
           if (response.ok) {
-            // Atualizar contador de downloads no mod
+
+            // atualizar o contador de downloads totais dos mods
+
             setMod(prev => ({
               ...prev,
               download_count: (prev.download_count || 0) + 1
             }));
             
-            // Salvar histórico local
+            // salvar no historico
+
             try {
               const historyKey = 'userDownloadHistory';
               const raw = localStorage.getItem(historyKey);
@@ -172,7 +174,6 @@ const DownloadPage = () => {
               localStorage.setItem(historyKey, JSON.stringify(dedup));
               localStorage.setItem('downloadsUpdated', String(Date.now()));
 
-              // Incrementar contador local
               const totalKey = 'userDownloadTotalLocal';
               const prev = parseInt(localStorage.getItem(totalKey) || '0', 10);
               localStorage.setItem(totalKey, String(prev + 1));
@@ -183,7 +184,6 @@ const DownloadPage = () => {
         } catch (error) {
         }
 
-        // Abrir link em nova aba (não fechar o site)
         window.open(downloadUrl, '_blank', 'noopener,noreferrer');
         
         toast.success(t('downloadPage.toast.linkOpened'));
@@ -201,19 +201,18 @@ const DownloadPage = () => {
     setCountdown(0);
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="space-y-6">
-            {/* Header skeleton */}
+            {/* skeleton de loading do header */}
             <div className="space-y-4 animate-pulse">
               <Skeleton className="h-8 w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
               <Skeleton className="h-12 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
             </div>
             
-            {/* Content skeleton */}
+            {/* skeleton de loading do conteudo */}
             <Skeleton className="h-96 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
           </div>
         </div>
@@ -221,7 +220,6 @@ const DownloadPage = () => {
     );
   }
 
-  // Error state
   if (error || !mod) {
     return (
       <div className="min-h-screen">
@@ -261,21 +259,20 @@ const DownloadPage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Meta tags do Google AdSense */}
+      {/* tags do google ads */}
       <GoogleAdsenseMeta />
       
-      {/* Container de Anúncios - Largura total */}
-      <div className="w-full px-4 py-6">
-        <AdSpace 
-          page="mod-download" 
-          position="top-banner"
-          fallbackText="Nenhum anúncio configurado"
+      <div className="w-full px-4 py-6 mb-8">
+        <GoogleAdSense 
+          position="TOP_BANNER"
+          adFormat="auto"
+          fullWidthResponsive={true}
         />
       </div>
       
-      {/* Conteúdo principal - Com limitação */}
+      {/* conteudo principal */}
       <div className="max-w-4xl mx-auto px-4 pb-8 space-y-6">
-        {/* Contagem Regressiva */}
+        {/* contagem regressiva */}
         <div className={`rounded-xl p-8 transition-all duration-1000 ease-out delay-200 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -368,7 +365,7 @@ const DownloadPage = () => {
           </div>
         </div>
 
-        {/* Informações do Mod */}
+        {/* informacoes do mod */}
         <div className={`rounded-xl p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
