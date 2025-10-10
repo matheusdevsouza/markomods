@@ -15,6 +15,7 @@ import MainLayout from '@/components/mods/layout/MainLayout';
 import AdminLayout from '@/components/mods/layout/AdminLayout';
 import PublicLayout from '@/components/layout/PublicLayout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import DomainValidator from '@/components/security/DomainValidator';
 const HomePage = React.lazy(() => import('@/pages/mods/HomePage'));
 const ModDetailPage = React.lazy(() => import('@/pages/mods/ModDetailPage'));
 const DownloadPage = React.lazy(() => import('./pages/mods/DownloadPage'));
@@ -67,6 +68,7 @@ function App() {
           <DownloadsProvider>
             <I18nextProvider i18n={i18n}>
             <div className="App">
+              <DomainValidator />
               <AuthModalOutlet />
               <Suspense fallback={<LoadingSpinner />}>
                 <Routes>

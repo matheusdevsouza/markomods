@@ -14,6 +14,7 @@ import { uploadEditorImage } from './middleware/upload.js';
 import { requestLogger } from './config/logger.js';
 import { securityMiddleware } from './services/SecurityService.js';
 import { adminSecurityMiddleware } from './middleware/adminSecurity.js';
+import { validateDomain, logSuspiciousActivity } from './middleware/domainValidation.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
 import logRoutes from './routes/logs.js';
@@ -41,18 +42,18 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["__STRING_PLACEHOLDER_32__"],
-      styleSrc: ["__STRING_PLACEHOLDER_33__", "__STRING_PLACEHOLDER_34__"],
-      scriptSrc: ["__STRING_PLACEHOLDER_35__", "https://www.youtube.com", "https://*.youtube.com"],
-      imgSrc: ["__STRING_PLACEHOLDER_36__", "data:", "https:"],
-      connectSrc: ["__STRING_PLACEHOLDER_37__", "https://www.youtube.com", "https://*.youtube.com"],
-      fontSrc: ["__STRING_PLACEHOLDER_38__"],
-      objectSrc: ["__STRING_PLACEHOLDER_39__"],
-      mediaSrc: ["__STRING_PLACEHOLDER_40__"],
-      frameSrc: ["__STRING_PLACEHOLDER_41__", "https://www.youtube.com", "https://youtube.com", "https://*.youtube.com"],
-      baseUri: ["__STRING_PLACEHOLDER_42__"],
-      formAction: ["__STRING_PLACEHOLDER_43__"],
-      frameAncestors: ["__STRING_PLACEHOLDER_44__"],
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://www.youtube.com", "https://*.youtube.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://www.youtube.com", "https://*.youtube.com"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com", "https://*.youtube.com"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      frameAncestors: ["'none'"],
       upgradeInsecureRequests: [],
     },
   },
@@ -64,14 +65,14 @@ app.use(helmet({
   noSniff: true,
   xssFilter: true,
   permissionsPolicy: {
-    fullscreen: ["__STRING_PLACEHOLDER_45__", "https://www.youtube.com"],
-    gyroscope: ["__STRING_PLACEHOLDER_46__", "https://www.youtube.com"],
-    accelerometer: ["__STRING_PLACEHOLDER_47__", "https://www.youtube.com"],
-    camera: ["__STRING_PLACEHOLDER_48__"],
-    microphone: ["__STRING_PLACEHOLDER_49__"],
-    geolocation: ["__STRING_PLACEHOLDER_50__"],
-    payment: ["__STRING_PLACEHOLDER_51__"],
-    usb: ["__STRING_PLACEHOLDER_52__"]
+    fullscreen: ["'self'", "https://www.youtube.com"],
+    gyroscope: ["'self'", "https://www.youtube.com"],
+    accelerometer: ["'self'", "https://www.youtube.com"],
+    camera: ["'self'"],
+    microphone: ["'self'"],
+    geolocation: ["'self'"],
+    payment: ["'self'"],
+    usb: ["'self'"]
   },
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   crossOriginResourcePolicy: { policy: "same-origin" },
@@ -89,18 +90,18 @@ app.use(helmet({
 app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Content-Security-Policy',
-    "default-src __STRING_PLACEHOLDER_57__; " +
-    "script-src __STRING_PLACEHOLDER_58__ __STRING_PLACEHOLDER_59__ https://www.youtube.com https://*.youtube.com; " +
-    "style-src __STRING_PLACEHOLDER_60__ __STRING_PLACEHOLDER_61__ https://fonts.googleapis.com; " +
-    "img-src __STRING_PLACEHOLDER_62__ data: https:; " +
-    "connect-src __STRING_PLACEHOLDER_63__ https://www.youtube.com https://*.youtube.com; " +
-    "font-src __STRING_PLACEHOLDER_64__ https://fonts.gstatic.com; " +
-    "frame-src __STRING_PLACEHOLDER_65__ https://www.youtube.com https://youtube.com https://*.youtube.com; " +
-    "object-src __STRING_PLACEHOLDER_66__; " +
-    "media-src __STRING_PLACEHOLDER_67__; " +
-    "base-uri __STRING_PLACEHOLDER_68__; " +
-    "form-action __STRING_PLACEHOLDER_69__; " +
-    "frame-ancestors __STRING_PLACEHOLDER_70__"
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' https://www.youtube.com https://*.youtube.com; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "img-src 'self' data: https:; " +
+    "connect-src 'self' https://www.youtube.com https://*.youtube.com; " +
+    "font-src 'self' https://fonts.gstatic.com; " +
+    "frame-src 'self' https://www.youtube.com https://youtube.com https://*.youtube.com; " +
+    "object-src 'none'; " +
+    "media-src 'self'; " +
+    "base-uri 'self'; " +
+    "form-action 'self'; " +
+    "frame-ancestors 'none'"
   );
   next();
 });
@@ -126,6 +127,8 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
+app.use(logSuspiciousActivity);
+app.use(validateDomain);
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 1000,
@@ -240,7 +243,7 @@ app.post('/api/mods/editor/upload-image', authenticateToken, uploadEditorImage, 
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'Nenhum arquivo enviado' });
     }
-    const baseUrl = `${req.protocol}://${req.get(__STRING_PLACEHOLDER_127__)}`;
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
     const imagePath = `/uploads/editor-images/${req.file.filename}`;
     const absoluteUrl = `${baseUrl}${imagePath}`;
     return res.status(201).json({ success: true, url: absoluteUrl, path: imagePath });
@@ -328,8 +331,8 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log('🚀 Servidor iniciado com sucesso!');
       console.log(`📡 Porta: ${PORT}`);
-      console.log(`🌍 Ambiente: ${process.env.NODE_ENV || __STRING_PLACEHOLDER_189__}`);
-      console.log(`🗄️ Banco: ${process.env.DB_NAME || __STRING_PLACEHOLDER_190__}`);
+      console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`🗄️ Banco: ${process.env.DB_NAME || 'markomods'}`);
       console.log(`🔗 URL: http://localhost:${PORT}`);
       console.log(`📚 API: http://localhost:${PORT}/api`);
       console.log('✅ Backend pronto para receber requisições!');
