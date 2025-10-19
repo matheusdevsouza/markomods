@@ -6,7 +6,7 @@ import { usePlatform } from '../../hooks/usePlatform';
 const PlatformDownloadButton = ({ mod, className = '', variant = 'default', size = 'default' }) => {
   const { platform, isMobile, isDesktop } = usePlatform();
 
-  // Determinar qual URL de download usar
+  // definir qual url de download usar
   const getDownloadUrl = () => {
     if (isMobile && mod.download_url_mobile) {
       return mod.download_url_mobile;
@@ -14,7 +14,8 @@ const PlatformDownloadButton = ({ mod, className = '', variant = 'default', size
     if (isDesktop && mod.download_url_pc) {
       return mod.download_url_pc;
     }
-    // Fallback: usar PC se mobile não estiver disponível, ou vice-versa
+
+    // usar pc se mobile não estiver disponível (ou ao contrariio)
     if (mod.download_url_pc) {
       return mod.download_url_pc;
     }
@@ -24,7 +25,7 @@ const PlatformDownloadButton = ({ mod, className = '', variant = 'default', size
     return null;
   };
 
-  // Determinar o texto do botão
+  // definir o texto do botão
   const getButtonText = () => {
     if (isMobile && mod.download_url_mobile) {
       return '';
@@ -44,7 +45,7 @@ const PlatformDownloadButton = ({ mod, className = '', variant = 'default', size
     return '';
   };
 
-  // Determinar o ícone
+  // definir o ícone
   const getIcon = () => {
     if (isMobile && mod.download_url_mobile) {
       return <Smartphone className="h-4 w-4" />;
@@ -64,10 +65,10 @@ const PlatformDownloadButton = ({ mod, className = '', variant = 'default', size
     return <AlertCircle className="h-4 w-4" />;
   };
 
-  // Determinar se o botão deve estar desabilitado
+  // definir se o botão deve estar desabilitado
   const isDisabled = !getDownloadUrl();
 
-  // Determinar a variante do botão
+  // definir a variante do botão
   const getButtonVariant = () => {
     if (isDisabled) {
       return 'outline';
@@ -81,19 +82,17 @@ const PlatformDownloadButton = ({ mod, className = '', variant = 'default', size
     return variant;
   };
 
-  // Função para lidar com o download
+  // função para lidar com o download
   const handleDownload = () => {
     const downloadUrl = getDownloadUrl();
     if (downloadUrl) {
-      // Abrir em nova aba para downloads
+
       window.open(downloadUrl, '_blank');
       
-      // Opcional: registrar o download
-      // Aqui você pode adicionar lógica para registrar o download no backend
     }
   };
 
-  // Determinar a cor baseada na plataforma
+  // definir a cor baseada na plataforma
   const getButtonClassName = () => {
     let baseClasses = className;
     

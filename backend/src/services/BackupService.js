@@ -9,21 +9,16 @@ const execAsync = promisify(exec);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/**
- * Serviço de Backup Automatizado
- * Cria backups regulares do banco de dados e arquivos importantes
- */
-
 class BackupService {
   constructor() {
     this.backupDir = path.join(__dirname, '../../backups');
-    this.maxBackups = 30; // Manter apenas 30 backups
-    this.backupInterval = 24 * 60 * 60 * 1000; // 24 horas
+    this.maxBackups = 30; 
+    this.backupInterval = 24 * 60 * 60 * 1000; 
     
-    // Criar diretório de backup se não existir
+    // criar diretório de backup se não existir
     this.ensureBackupDirectory();
     
-    // Iniciar backup automático apenas em produção
+    // iniciar backup automático 
     if (process.env.NODE_ENV === 'production') {
       this.startAutomaticBackup();
     } else {
@@ -31,9 +26,6 @@ class BackupService {
     }
   }
 
-  /**
-   * Garante que o diretório de backup existe
-   */
   ensureBackupDirectory() {
     if (!fs.existsSync(this.backupDir)) {
       fs.mkdirSync(this.backupDir, { recursive: true });
@@ -41,23 +33,17 @@ class BackupService {
     }
   }
 
-  /**
-   * Cria backup do banco de dados
-   */
   async createDatabaseBackup() {
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const backupFile = `database-backup-${timestamp}.sql`;
       const backupPath = path.join(this.backupDir, backupFile);
-      
-      // Comando mysqldump
       const command = `mysqldump -u ${process.env.DB_USER || 'root'} -p${process.env.DB_PASSWORD || ''} ${process.env.DB_NAME || 'markomods_db'} > "${backupPath}"`;
       
       logInfo('🔄 Iniciando backup do banco de dados...', { backupFile });
       
       await execAsync(command);
       
-      // Verificar se o arquivo foi criado e tem conteúdo
       const stats = fs.statSync(backupPath);
       if (stats.size === 0) {
         throw new Error('Backup vazio - possível erro na conexão com o banco');
@@ -69,7 +55,7 @@ class BackupService {
         path: backupPath
       });
       
-      // Limpar backups antigos
+      // limpar backups antigos
       await this.cleanupOldBackups();
       
       return {
@@ -86,9 +72,6 @@ class BackupService {
     }
   }
 
-  /**
-   * Cria backup dos arquivos de upload
-   */
   async createFilesBackup() {
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -96,20 +79,17 @@ class BackupService {
       const backupPath = path.join(this.backupDir, backupFile);
       const uploadsDir = path.join(__dirname, '../../uploads');
       
-      // Verificar se o diretório de uploads existe
       if (!fs.existsSync(uploadsDir)) {
         logWarn('⚠️ Diretório de uploads não encontrado', { uploadsDir });
         return null;
       }
       
-      // Comando tar para comprimir arquivos
       const command = `tar -czf "${backupPath}" -C "${path.dirname(uploadsDir)}" "${path.basename(uploadsDir)}"`;
       
       logInfo('🔄 Iniciando backup dos arquivos...', { backupFile });
       
       await execAsync(command);
       
-      // Verificar se o arquivo foi criado
       const stats = fs.statSync(backupPath);
       
       logInfo('✅ Backup dos arquivos criado com sucesso', {
@@ -132,9 +112,6 @@ class BackupService {
     }
   }
 
-  /**
-   * Cria backup completo (banco + arquivos)
-   */
   async createFullBackup() {
     try {
       logInfo('🚀 Iniciando backup completo...');
@@ -145,7 +122,7 @@ class BackupService {
         timestamp: new Date().toISOString()
       };
       
-      // Backup do banco de dados
+      // backup do banco de dados
       try {
         results.database = await this.createDatabaseBackup();
       } catch (error) {
@@ -153,7 +130,7 @@ class BackupService {
         results.database = { success: false, error: error.message };
       }
       
-      // Backup dos arquivos
+      // backup dos arquivos
       try {
         results.files = await this.createFilesBackup();
       } catch (error) {
@@ -177,9 +154,6 @@ class BackupService {
     }
   }
 
-  /**
-   * Limpa backups antigos
-   */
   async cleanupOldBackups() {
     try {
       const files = fs.readdirSync(this.backupDir);
@@ -190,9 +164,9 @@ class BackupService {
           path: path.join(this.backupDir, file),
           stats: fs.statSync(path.join(this.backupDir, file))
         }))
-        .sort((a, b) => b.stats.mtime - a.stats.mtime); // Mais recentes primeiro
+        .sort((a, b) => b.stats.mtime - a.stats.mtime); 
       
-      // Manter apenas os backups mais recentes
+      // deixar somente os backups mais recentes
       if (backupFiles.length > this.maxBackups) {
         const filesToDelete = backupFiles.slice(this.maxBackups);
         
@@ -213,9 +187,6 @@ class BackupService {
     }
   }
 
-  /**
-   * Lista backups disponíveis
-   */
   listBackups() {
     try {
       const files = fs.readdirSync(this.backupDir);
@@ -242,9 +213,6 @@ class BackupService {
     }
   }
 
-  /**
-   * Restaura backup do banco de dados
-   */
   async restoreDatabaseBackup(backupFile) {
     try {
       const backupPath = path.join(this.backupDir, backupFile);
@@ -269,16 +237,12 @@ class BackupService {
     }
   }
 
-  /**
-   * Inicia backup automático
-   */
   startAutomaticBackup() {
-    // Executar backup imediatamente
     this.createFullBackup().catch(error => {
       logError('❌ Erro no backup automático inicial', error);
     });
     
-    // Agendar backups regulares
+    // backups regulares
     setInterval(() => {
       this.createFullBackup().catch(error => {
         logError('❌ Erro no backup automático agendado', error);
@@ -291,9 +255,6 @@ class BackupService {
     });
   }
 
-  /**
-   * Gera relatório de backup
-   */
   generateBackupReport() {
     const backups = this.listBackups();
     const databaseBackups = backups.filter(b => b.type === 'database');
@@ -310,17 +271,17 @@ class BackupService {
       totalSizeMB: (totalSize / 1024 / 1024).toFixed(2),
       oldestBackup: backups.length > 0 ? backups[backups.length - 1].created : null,
       newestBackup: backups.length > 0 ? backups[0].created : null,
-      backups: backups.slice(0, 10) // Últimos 10 backups
+      backups: backups.slice(0, 10) 
     };
   }
 }
 
-// Instância singleton
+// instancia singleton
 const backupService = new BackupService();
 
 export default backupService;
 
-// Funções de conveniência
+// funcoes de conveniencia
 export const createDatabaseBackup = () => backupService.createDatabaseBackup();
 export const createFilesBackup = () => backupService.createFilesBackup();
 export const createFullBackup = () => backupService.createFullBackup();

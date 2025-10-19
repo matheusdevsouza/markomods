@@ -28,7 +28,7 @@ const BackgroundEffects = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-background via-transparent to-background opacity-50" />
       
-      {/* Subtle floating orbs - Ajustados para lightmode */}
+      {/* orbs flutuantes */}
       {[
         { top: '15%', left: '20%', width: 180, height: 180, animX: 30, animY: 20, duration: 18 },
         { top: '65%', left: '75%', width: 220, height: 220, animX: -25, animY: 15, duration: 22 },
@@ -63,7 +63,7 @@ const BackgroundEffects = () => {
         />
       ))}
 
-      {/* Orbs adicionais para lightmode com cores diferentes */}
+      {/* orbs adicionais */}
       {isLight && [
         { top: '25%', left: '60%', width: 120, height: 120, animX: 35, animY: -20, duration: 24 },
         { top: '70%', left: '60%', width: 100, height: 100, animX: -30, animY: 25, duration: 26 },
@@ -92,7 +92,7 @@ const BackgroundEffects = () => {
         />
       ))}
 
-      {/* Gradientes sutis para lightmode */}
+      {/* gradientes */}
       {isLight && (
         <>
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-100/10 via-transparent to-blue-100/10" />

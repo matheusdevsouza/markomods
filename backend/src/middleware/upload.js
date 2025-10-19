@@ -6,7 +6,7 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Função para verificar magic numbers (assinatura real do arquivo)
+// função para verificar os magicnumbers
 const checkMagicNumbers = (filePath, expectedMimeType) => {
   try {
     const buffer = fs.readFileSync(filePath);
@@ -15,14 +15,14 @@ const checkMagicNumbers = (filePath, expectedMimeType) => {
     const magicNumbers = {
       'image/jpeg': [0xFF, 0xD8, 0xFF],
       'image/png': [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
-      'image/webp': [0x52, 0x49, 0x46, 0x46], // RIFF
-      'image/gif': [0x47, 0x49, 0x46, 0x38] // GIF8
+      'image/webp': [0x52, 0x49, 0x46, 0x46], 
+      'image/gif': [0x47, 0x49, 0x46, 0x38] 
     };
     
     const expectedSignature = magicNumbers[expectedMimeType];
     if (!expectedSignature) return false;
     
-    // Verificar se a assinatura corresponde
+    // verificar se a assinatura corresponde
     return expectedSignature.every((byte, index) => signature[index] === byte);
   } catch (error) {
     console.error('Erro ao verificar magic numbers:', error);
@@ -30,7 +30,7 @@ const checkMagicNumbers = (filePath, expectedMimeType) => {
   }
 };
 
-// Utilitário: garantir diretório
+// garantir diretório
 const ensureDir = (dirPath) => {
   try {
     if (!fs.existsSync(dirPath)) {
@@ -39,7 +39,7 @@ const ensureDir = (dirPath) => {
   } catch {}
 };
 
-// Configuração de storage única para múltiplos campos (thumbnail e vídeo)
+// configuração de armazenamento para thumbnail e vídeo
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isThumbnail = file.fieldname === 'thumbnail_file';
@@ -57,7 +57,7 @@ const storage = multer.diskStorage({
   }
 });
 
-// Filtro de arquivos com regras específicas por campo
+// filtro de arquivos com regras específicas por campo
 const fileFilter = (req, file, cb) => {
   const isThumbnail = file.fieldname === 'thumbnail_file';
   const isVideo = file.fieldname === 'video_file';
@@ -91,23 +91,23 @@ const fileFilter = (req, file, cb) => {
   cb(null, true);
 };
 
-// Configuração do multer (limite geral alto para suportar vídeo)
+// configuração do limite geralpara suportar vídeo
 const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 210 * 1024 * 1024, // 210MB
+    fileSize: 210 * 1024 * 1024, 
     files: 2
   }
 });
 
-// Middleware unificado para upload de mídia de mod (thumbnail + vídeo)
+// middleware para upload de thumb/video de mod
 export const uploadModMedia = upload.fields([
   { name: 'thumbnail_file', maxCount: 1 },
   { name: 'video_file', maxCount: 1 }
 ]);
 
-// Validação e anexação de metadados dos arquivos
+// validação e anexação de metadados dos arquivos
 export const validateModMedia = (req, res, next) => {
   const files = req.files || {};
 
@@ -141,13 +141,14 @@ export const validateModMedia = (req, res, next) => {
   next();
 };
 
-// Configuração para upload de avatares
+// configuração para upload de avatares
 const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, '../../uploads/avatars'));
   },
   filename: (req, file, cb) => {
-    // Gerar nome único para o arquivo
+
+    // gerar um nome único para o arquivo (padronizar e evitar uma possivel duplicaçao)
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const ext = path.extname(file.originalname);
     cb(null, `avatar-${uniqueSuffix}${ext}`);
@@ -158,23 +159,22 @@ const avatarUpload = multer({
   storage: avatarStorage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB para avatares
+    fileSize: 2 * 1024 * 1024, 
     files: 1
   }
 });
 
 
 
-// Middleware para upload de avatar
+// middleware para upload de avatar
 export const uploadAvatar = avatarUpload.single('avatar');
 
-// Configuração para upload de imagens do editor
+// configuração para upload de imagens do editor
 const editorStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, '../../uploads/editor-images'));
   },
   filename: (req, file, cb) => {
-    // Gerar nome único para o arquivo
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const ext = path.extname(file.originalname);
     cb(null, `editor-${uniqueSuffix}${ext}`);
@@ -185,17 +185,17 @@ const editorUpload = multer({
   storage: editorStorage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB para imagens do editor
+    fileSize: 10 * 1024 * 1024, 
     files: 1
   }
 });
 
-// Middleware para upload de imagens do editor
+// middleware para upload de imagens do editor
 export const uploadEditorImage = editorUpload.single('image');
 
 export default upload;
 
 
 
-// Removidos: middlewares separados de vídeo (substituídos por uploadModMedia/validateModMedia)
+
 

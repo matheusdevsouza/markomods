@@ -122,8 +122,8 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
   };
   if (compact) {
     return (
-      <motion.div variants={variants} className="h-full max-w-sm mx-auto">
-        <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
+      <motion.div variants={variants} className="mod-card-container h-full">
+        <Card className="minecraft-card h-full w-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
           {}
           <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick} className="block relative">
             <div className="relative overflow-hidden mod-image-container aspect-[4/3] w-full bg-gradient-to-br from-gray-800 to-gray-900">
@@ -221,8 +221,8 @@ const ModCard = ({ mod, variants, compact = false, imageSize = 'default', showSt
     );
   }
   return (
-    <motion.div variants={variants} className="h-full max-w-sm mx-auto">
-      <Card className="minecraft-card h-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
+    <motion.div variants={variants} className="mod-card-container h-full">
+      <Card className="minecraft-card h-full w-full flex flex-col overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/50 hover:scale-[1.02] group bg-card/50 backdrop-blur-sm border-border/50">
         <Link to={`/mods/${mod.slug}`} onClick={handleViewDetailsClick} className="block">
           <div className="relative overflow-hidden mod-image-container aspect-[4/3] w-full bg-gradient-to-br from-gray-800 to-gray-900">
             <img

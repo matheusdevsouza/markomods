@@ -74,7 +74,6 @@ const AdminUsersPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
-  // Buscar usuários reais do banco de dados
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -110,11 +109,9 @@ const AdminUsersPage = () => {
     fetchUsers();
   }, []);
 
-  // Filtrar usuários baseado na busca e filtros
   useEffect(() => {
     let filtered = users;
 
-    // Filtro por termo de busca
     if (searchTerm) {
       filtered = filtered.filter(user => 
         user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -123,12 +120,10 @@ const AdminUsersPage = () => {
       );
     }
 
-    // Filtro por role
     if (selectedRole !== 'all') {
       filtered = filtered.filter(user => user.role === selectedRole);
     }
 
-    // Filtro por status
     if (selectedStatus !== 'all') {
       if (selectedStatus === 'verified') {
         filtered = filtered.filter(user => user.is_verified);
@@ -225,7 +220,6 @@ const AdminUsersPage = () => {
       if (response.ok) {
         const result = await response.json();
         
-        // Atualizar lista de usuários
         setUsers(prev => prev.map(user => 
           user.id === userId ? { 
             ...user, 
@@ -235,14 +229,11 @@ const AdminUsersPage = () => {
           } : user
         ));
         
-        // Fechar modal se estiver aberto
         if (banModalOpen) {
           setBanModalOpen(false);
           setSelectedUser(null);
           setBanReason('');
         }
-        
-        // Mostrar toast de sucesso
         toast({
           title: ban ? 'Usuário banido' : 'Usuário desbanido',
           description: result.message,
@@ -285,7 +276,6 @@ const AdminUsersPage = () => {
       if (response.ok) {
         const result = await response.json();
         
-        // Atualizar lista de usuários
         setUsers(prev => prev.map(user => 
           user.id === selectedUser.id ? { ...user, ...editForm } : user
         ));
@@ -379,7 +369,6 @@ const AdminUsersPage = () => {
       });
 
       if (response.ok) {
-        // Remover usuário da lista local
         setUsers(prev => prev.filter(user => user.id !== selectedUser.id));
         
         setDeleteModalOpen(false);
@@ -441,7 +430,6 @@ const AdminUsersPage = () => {
       transition={{ duration: 0.5 }}
       className="space-y-4 sm:space-y-6 p-4 sm:p-6"
     >
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap mb-2">
@@ -449,7 +437,7 @@ const AdminUsersPage = () => {
             Gerenciar Usuários
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Gerencie todos os usuários da plataforma Eu, Marko! Mods
+            Gerencie todos os usuários da plataforma Eu, Marko!
           </p>
         </div>
         <Button
@@ -462,7 +450,6 @@ const AdminUsersPage = () => {
         </Button>
       </div>
 
-      {/* Filtros e Busca */}
       <Card className="minecraft-card">
         <CardHeader>
           <CardTitle className="flex items-center text-lg sm:text-xl">
@@ -522,7 +509,6 @@ const AdminUsersPage = () => {
         </CardContent>
       </Card>
 
-      {/* Lista de Usuários */}
       <Card className="minecraft-card">
         <CardHeader>
           <CardTitle className="flex items-center text-lg sm:text-xl">
@@ -661,7 +647,6 @@ const AdminUsersPage = () => {
         </CardContent>
       </Card>
 
-      {/* Modal de Banimento */}
       <Dialog open={banModalOpen} onOpenChange={setBanModalOpen}>
         <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-md">
           <DialogHeader>
@@ -720,7 +705,6 @@ const AdminUsersPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Modal de Edição */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -819,7 +803,6 @@ const AdminUsersPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Modal de Exclusão */}
       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>

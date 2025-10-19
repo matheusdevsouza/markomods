@@ -2,15 +2,10 @@ import { logWarn, logError } from '../config/logger.js';
 import { LogService } from '../services/LogService.js';
 import { recordFailedLogin, recordRateLimitViolation } from '../services/SecurityService.js';
 
-/**
- * Middleware de Segurança Administrativa
- * Implementa medidas extras de segurança para rotas administrativas
- */
-
-// Lista de IPs suspeitos conhecidos (pode ser expandida)
+// lista de IPs suspeitos conhecidos
 const suspiciousIPs = new Set();
 
-// Lista de user agents suspeitos
+// lista de agents suspeitos
 const suspiciousUserAgents = [
   /bot/i,
   /crawler/i,
@@ -29,16 +24,14 @@ const suspiciousUserAgents = [
   /nginx/i
 ];
 
-/**
- * Middleware para detectar tentativas de acesso administrativo suspeitas
- */
+// middleware para detectar tentativas de acesso administrativo suspeitas
 export const detectSuspiciousAdminAccess = (req, res, next) => {
   const ip = req.ip;
   const userAgent = req.get('User-Agent') || '';
   const userId = req.user?.id;
   const userRole = req.user?.role;
   
-  // Verificar se é uma rota administrativa
+  // verificar se é uma rota administrativa
   const isAdminRoute = req.path.includes('/admin') || 
                       req.path.includes('/security') ||
                       req.path.includes('/logs') ||
@@ -48,7 +41,7 @@ export const detectSuspiciousAdminAccess = (req, res, next) => {
     return next();
   }
   
-  // Verificar user agent suspeito
+  // verificar agent suspeito
   const isSuspiciousUserAgent = suspiciousUserAgents.some(pattern => pattern.test(userAgent));
   
   if (isSuspiciousUserAgent) {
@@ -60,10 +53,10 @@ export const detectSuspiciousAdminAccess = (req, res, next) => {
       path: req.path
     });
     
-    // Marcar IP como suspeito
+    // deixar IP como suspeito
     suspiciousIPs.add(ip);
     
-    // Registrar tentativa suspeita
+    // registrar tentativa de acesso suspeita
     recordRateLimitViolation(ip, 'suspicious_admin_access', userAgent);
     
     return res.status(403).json({
@@ -72,7 +65,7 @@ export const detectSuspiciousAdminAccess = (req, res, next) => {
     });
   }
   
-  // Verificar se IP está na lista de suspeitos
+  // verificar se IP está na lista de suspeitos
   if (suspiciousIPs.has(ip)) {
     logWarn('🚨 IP suspeito tentando acessar rota administrativa', {
       ip,
@@ -90,16 +83,14 @@ export const detectSuspiciousAdminAccess = (req, res, next) => {
   next();
 };
 
-/**
- * Middleware para verificar padrões de acesso administrativo
- */
+// middleware para verificar padrões de acesso administrativo
 export const validateAdminAccessPattern = (req, res, next) => {
   const ip = req.ip;
   const userAgent = req.get('User-Agent') || '';
   const userId = req.user?.id;
   const userRole = req.user?.role;
   
-  // Verificar se é uma rota administrativa
+  // verificar se é uma rota administrativa
   const isAdminRoute = req.path.includes('/admin') || 
                       req.path.includes('/security') ||
                       req.path.includes('/logs') ||
@@ -109,7 +100,7 @@ export const validateAdminAccessPattern = (req, res, next) => {
     return next();
   }
   
-  // Verificar se o usuário tem role de admin
+  // verificar se o usuário tem cargo de admin
   const isAdmin = ['admin', 'super_admin', 'moderator'].includes(userRole);
   
   if (!isAdmin) {
@@ -121,10 +112,10 @@ export const validateAdminAccessPattern = (req, res, next) => {
       userAgent
     });
     
-    // Registrar tentativa de escalação de privilégios
+    // registrar tentativa de escalação de privilégios
     recordRateLimitViolation(ip, 'privilege_escalation_attempt', userAgent);
     
-    // Log de segurança
+    // log de segurança
     LogService.logSecurity(
       userId,
       'Tentativa de escalação de privilégios',
@@ -142,14 +133,12 @@ export const validateAdminAccessPattern = (req, res, next) => {
   next();
 };
 
-/**
- * Middleware para verificar frequência de acesso administrativo
- */
+// middleware para verificar frequência de acesso administrativo
 export const checkAdminAccessFrequency = (req, res, next) => {
   const ip = req.ip;
   const userId = req.user?.id;
   
-  // Verificar se é uma rota administrativa
+  // verificar se é uma rota administrativa
   const isAdminRoute = req.path.includes('/admin') || 
                       req.path.includes('/security') ||
                       req.path.includes('/logs') ||
@@ -159,12 +148,11 @@ export const checkAdminAccessFrequency = (req, res, next) => {
     return next();
   }
   
-  // Implementar rate limiting específico para rotas administrativas
+  // implementar rate limiting específico para rotas administrativas
   const now = Date.now();
-  const windowMs = 5 * 60 * 1000; // 5 minutos
-  const maxRequests = 10; // 10 requisições por 5 minutos
+  const windowMs = 5 * 60 * 1000; 
+  const maxRequests = 10; 
   
-  // Simular rate limiting (em produção, usar Redis)
   const key = `admin_access_${ip}_${userId}`;
   const requests = global.adminAccessRequests || new Map();
   
@@ -174,16 +162,16 @@ export const checkAdminAccessFrequency = (req, res, next) => {
   
   const requestData = requests.get(key);
   
-  // Resetar contador se a janela expirou
+  // resetar contador se a janela expirou
   if (now > requestData.resetTime) {
     requestData.count = 0;
     requestData.resetTime = now + windowMs;
   }
   
-  // Incrementar contador
+  // aumentar contador
   requestData.count++;
   
-  // Verificar se excedeu o limite
+  // verificar se passou do limite
   if (requestData.count > maxRequests) {
     logWarn('🚨 Rate limit excedido para acesso administrativo', {
       ip,
@@ -193,7 +181,7 @@ export const checkAdminAccessFrequency = (req, res, next) => {
       path: req.path
     });
     
-    // Marcar IP como suspeito
+    // deixar IP como suspeito
     suspiciousIPs.add(ip);
     
     return res.status(429).json({
@@ -206,15 +194,13 @@ export const checkAdminAccessFrequency = (req, res, next) => {
   next();
 };
 
-/**
- * Middleware para verificar origem da requisição
- */
+// middleware para verificar origem da requisição
 export const validateRequestOrigin = (req, res, next) => {
   const origin = req.get('Origin');
   const referer = req.get('Referer');
   const host = req.get('Host');
   
-  // Verificar se é uma rota administrativa
+  // verificar se é uma rota administrativa
   const isAdminRoute = req.path.includes('/admin') || 
                       req.path.includes('/security') ||
                       req.path.includes('/logs') ||
@@ -224,16 +210,15 @@ export const validateRequestOrigin = (req, res, next) => {
     return next();
   }
   
-  // Lista de origens permitidas (configurar conforme necessário)
+  // lista de origens permitidas
   const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
     'http://127.0.0.1:5173',
     'http://127.0.0.1:3000',
-    // Adicionar domínio de produção aqui
   ];
   
-  // Verificar origem
+  // verificar origem
   if (origin && !allowedOrigins.includes(origin)) {
     logWarn('🚨 Origem não autorizada em rota administrativa', {
       origin,
@@ -252,16 +237,14 @@ export const validateRequestOrigin = (req, res, next) => {
   next();
 };
 
-/**
- * Middleware para verificar headers de segurança
- */
+// middleware para verificar headers de segurança
 export const validateSecurityHeaders = (req, res, next) => {
   const userAgent = req.get('User-Agent') || '';
   const accept = req.get('Accept') || '';
   const acceptLanguage = req.get('Accept-Language') || '';
   const acceptEncoding = req.get('Accept-Encoding') || '';
   
-  // Verificar se é uma rota administrativa
+  // verificar se é uma rota administrativa
   const isAdminRoute = req.path.includes('/admin') || 
                       req.path.includes('/security') ||
                       req.path.includes('/logs') ||
@@ -271,7 +254,7 @@ export const validateSecurityHeaders = (req, res, next) => {
     return next();
   }
   
-  // Verificar se headers parecem legítimos
+  // verificar se headers parecem legítimos
   const hasValidHeaders = userAgent && 
                          accept && 
                          acceptLanguage && 
@@ -296,9 +279,7 @@ export const validateSecurityHeaders = (req, res, next) => {
   next();
 };
 
-/**
- * Middleware principal de segurança administrativa
- */
+// middleware principal de segurança administrativa
 export const adminSecurityMiddleware = [
   detectSuspiciousAdminAccess,
   validateAdminAccessPattern,

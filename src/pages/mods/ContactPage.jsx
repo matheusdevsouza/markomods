@@ -18,7 +18,6 @@ const ContactPage = () => {
   const { t } = useTranslation();
   const [expandedFaq, setExpandedFaq] = useState(null);
 
-  // Função para obter tradução com fallback
   const getTranslation = (key, fallback = '') => {
     try {
       return t(key) || fallback;
@@ -28,12 +27,11 @@ const ContactPage = () => {
     }
   };
 
-  // FAQ - Perguntas Frequentes (5 principais)
   const faqItems = [
     {
       id: 'what-is-markomods',
-      title: getTranslation('contact.faq.whatIsEuMarkoMods.title', 'O que é o Eu, Marko! Mods?'),
-      content: getTranslation('contact.faq.whatIsEuMarkoMods.content', 'O Eu, Marko! Mods é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
+      title: getTranslation('contact.faq.whatIsEuMarkoMods.title', 'O que é o Eu, Marko!?'),
+      content: getTranslation('contact.faq.whatIsEuMarkoMods.content', 'O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
       category: 'Geral'
     },
     {
@@ -71,10 +69,10 @@ const ContactPage = () => {
       id: 'email',
       title: getTranslation('contact.methods.email.title', 'Email de Suporte'),
       description: getTranslation('contact.methods.email.description', 'Envie-nos um email para suporte técnico'),
-      value: 'contato@eumarko.com',
+      value: 'mods@eumarko.com',
       icon: Mail,
       color: 'bg-purple-500',
-      action: 'mailto:contato@eumarko.com'
+      action: 'mailto:mods@eumarko.com'
     },
     {
       id: 'discord',
@@ -98,7 +96,6 @@ const ContactPage = () => {
       className="min-h-screen"
     >
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* Cabeçalho */}
         <div className="text-center mb-8 sm:mb-12">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -116,9 +113,7 @@ const ContactPage = () => {
           </p>
         </div>
 
-        {/* FAQ e Contatos - Layout em duas colunas */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 max-w-6xl mx-auto mb-8 sm:mb-12">
-          {/* FAQ - Lado Esquerdo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -183,7 +178,6 @@ const ContactPage = () => {
             </Card>
           </motion.div>
 
-          {/* Outras Formas de Contato - Lado Direito */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -233,7 +227,6 @@ const ContactPage = () => {
               </CardContent>
             </Card>
 
-            {/* Informações Adicionais */}
             <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
               <CardContent className="p-4 sm:p-6">
                 <h3 className="text-base sm:text-lg font-semibold mb-3">
@@ -258,7 +251,6 @@ const ContactPage = () => {
           </motion.div>
         </div>
 
-        {/* Container "Ainda está com dúvidas?" */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -275,7 +267,7 @@ const ContactPage = () => {
                 <Button 
                   size="lg" 
                   className="bg-primary hover:bg-primary/90 text-sm sm:text-base w-full sm:w-auto"
-                  onClick={() => window.open('mailto:contato@eumarko.com', '_blank')}
+                  onClick={() => window.open('mailto:mods@eumarko.com', '_blank')}
                 >
                   <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   {getTranslation('contact.stillNeedHelp.contactSupport', 'Contatar Suporte')}

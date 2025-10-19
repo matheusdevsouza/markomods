@@ -58,14 +58,10 @@ const SearchResultsPage = () => {
   const [filtersLoading, setFiltersLoading] = useState(false);
   const [searchTimeout, setSearchTimeout] = useState(null);
 
-
-
-  // Sincronizar filtros locais com os filtros do hook
   useEffect(() => {
     setLocalFilters(filters);
   }, [filters]);
 
-  // Limpar timeout ao desmontar componente
   useEffect(() => {
     return () => {
       if (searchTimeout) {
@@ -74,30 +70,23 @@ const SearchResultsPage = () => {
     };
   }, [searchTimeout]);
 
-
-
-  // Atualizar filtros locais e aplicar automaticamente
   const handleFilterChange = (key, value) => {
     const newFilters = { ...localFilters, [key]: value };
     setLocalFilters(newFilters);
     
-    // Se for o campo de busca, implementar debounce
     if (key === 'q') {
-      // Limpar timeout anterior se existir
       if (searchTimeout) {
         clearTimeout(searchTimeout);
       }
       
-      // Criar novo timeout para busca
       const timeout = setTimeout(() => {
         setFiltersLoading(true);
         updateFilters(newFilters);
         setFiltersLoading(false);
-      }, 800); // 800ms de delay para busca
+      }, 800);
       
       setSearchTimeout(timeout);
     } else {
-      // Para outros filtros, aplicar imediatamente
       setFiltersLoading(true);
       setTimeout(() => {
         updateFilters(newFilters);
@@ -106,9 +95,7 @@ const SearchResultsPage = () => {
     }
   };
 
-  // Resetar filtros
   const handleResetFilters = () => {
-    // Limpar timeout de busca se existir
     if (searchTimeout) {
       clearTimeout(searchTimeout);
       setSearchTimeout(null);
@@ -126,17 +113,14 @@ const SearchResultsPage = () => {
     });
   };
 
-  // Opções de versão do Minecraft (baseadas nos dados reais do banco)
   const minecraftVersions = [
     'all', '1.20.1', '1.19', '1.5.2'
   ];
 
-  // Opções de loader (baseadas na estrutura real da tabela)
   const loaderOptions = [
     'all', 'forge', 'fabric', 'quilt', 'other'
   ];
 
-  // Opções de categoria (baseadas nas tags únicas dos mods)
   const categoryOptions = [
     'all', 'Marko', 'Tech', 'Robot', 'Gun'
   ];
@@ -156,7 +140,6 @@ const SearchResultsPage = () => {
   return (
     <motion.div initial="hidden" animate="visible" variants={containerVariants} className="space-y-4 sm:space-y-8">
 
-      {/* Header da Busca */}
       <motion.section variants={itemVariants} className="p-4 sm:p-6 bg-card/70 rounded-lg shadow-md border border-border">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center">
@@ -173,10 +156,8 @@ const SearchResultsPage = () => {
           </Button>
         </div>
 
-        {/* Formulário de Busca Principal */}
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Termo de Busca */}
             <div className="sm:col-span-2 lg:col-span-2">
               <label htmlFor="search-term" className="block text-sm font-medium text-muted-foreground mb-1">
                 {t('search.whatAreYouLookingFor')}
@@ -203,7 +184,6 @@ const SearchResultsPage = () => {
               </div>
             </div>
 
-            {/* Botão de Busca */}
             <div className="flex items-end">
               <Button 
                 type="button" 
@@ -225,7 +205,6 @@ const SearchResultsPage = () => {
             </div>
           </div>
 
-          {/* Filtros Avançados */}
           {showAdvancedFilters && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
@@ -233,7 +212,6 @@ const SearchResultsPage = () => {
               exit={{ opacity: 0, height: 0 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4"
             >
-              {/* Versão do Minecraft */}
               <div>
                 <label htmlFor="version-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Versão Minecraft
@@ -252,7 +230,6 @@ const SearchResultsPage = () => {
                 </Select>
               </div>
 
-              {/* Tipo de Loader */}
               <div>
                 <label htmlFor="loader-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Tipo de Loader
@@ -271,7 +248,6 @@ const SearchResultsPage = () => {
                 </Select>
               </div>
 
-              {/* Categoria */}
               <div>
                 <label htmlFor="category-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Categoria
@@ -290,7 +266,6 @@ const SearchResultsPage = () => {
                 </Select>
               </div>
 
-              {/* Ordenação */}
               <div>
                 <label htmlFor="sort-order" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Ordenar Por
@@ -309,7 +284,6 @@ const SearchResultsPage = () => {
                 </Select>
               </div>
 
-              {/* Filtros Adicionais */}
               <div className="sm:col-span-2 lg:col-span-2">
                 <label htmlFor="featured-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   Destaque
@@ -328,7 +302,6 @@ const SearchResultsPage = () => {
                 </Select>
               </div>
 
-              {/* Autor */}
               <div className="sm:col-span-2 lg:col-span-2">
                 <label htmlFor="author-filter" className="block text-xs sm:text-sm font-medium text-muted-foreground mb-1">
                   {t('modDetail.author')}
@@ -349,9 +322,7 @@ const SearchResultsPage = () => {
         </div>
       </motion.section>
 
-      {/* Resultados da Busca */}
       <motion.section variants={itemVariants}>
-        {/* Header dos Resultados */}
         <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
             <h2 className="text-xl sm:text-2xl font-minecraft text-foreground">
@@ -365,8 +336,6 @@ const SearchResultsPage = () => {
           </div>
           
 
-          
-          {/* Filtros Ativos */}
           {Object.entries(filters).some(([key, value]) => value && value !== 'all') && (
             <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:space-x-3">
               <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-center sm:space-x-2">
@@ -384,7 +353,6 @@ const SearchResultsPage = () => {
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(filters).map(([key, value]) => {
                     if (value && value !== 'all') {
-                      // Mapear chaves para nomes mais amigáveis
                       const keyLabels = {
                         'q': 'Busca',
                         'version': 'Versão',
@@ -398,7 +366,6 @@ const SearchResultsPage = () => {
                       const displayKey = keyLabels[key] || key;
                       let displayValue = value;
                       
-                      // Melhorar a exibição de alguns valores
                       if (key === 'sort') {
                         const sortLabels = {
                           'relevance': 'Relevância',
@@ -418,7 +385,6 @@ const SearchResultsPage = () => {
                           variant="secondary"
                           className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 hover:border-primary/30 cursor-pointer transition-all duration-200 group"
                           onClick={() => {
-                            // Limpar filtro individual
                             const newFilters = { ...filters };
                             if (key === 'sort') {
                               newFilters[key] = 'relevance';
@@ -443,7 +409,6 @@ const SearchResultsPage = () => {
                 </div>
               </div>
               
-              {/* Botão para limpar todos os filtros */}
               <Button
                 variant="outline"
                 size="sm"
@@ -457,7 +422,6 @@ const SearchResultsPage = () => {
           )}
         </div>
 
-        {/* Mensagem de Erro */}
         {error && (
           <motion.div variants={itemVariants} className="text-center py-6 sm:py-10 bg-destructive/10 rounded-lg border border-destructive/20">
             <XCircle size={40} className="mx-auto text-destructive mb-3 sm:mb-4" />
@@ -484,16 +448,14 @@ const SearchResultsPage = () => {
           </motion.div>
         )}
 
-        {/* Resultados */}
         {!error && searchResults.length > 0 ? (
           <>
-            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center" variants={containerVariants}>
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" variants={containerVariants}>
               {searchResults.map(mod => (
                 <ModCard key={mod.id} mod={mod} variants={itemVariants} />
               ))}
             </motion.div>
 
-            {/* Paginação */}
             {totalPages > 1 && (
               <motion.div variants={itemVariants} className="mt-8">
                 <Pagination
@@ -504,7 +466,6 @@ const SearchResultsPage = () => {
               </motion.div>
             )}
 
-            {/* Dica sobre filtros */}
             {Object.entries(filters).some(([key, value]) => value && value !== 'all') && (
               <motion.div variants={itemVariants} className="mt-8 p-6 bg-muted/20 rounded-lg border border-border/30">
                 <div className="flex items-start space-x-3">
@@ -554,7 +515,6 @@ const SearchResultsPage = () => {
               )}
             </motion.div>
 
-            {/* Dica sobre filtros quando não há resultados - sempre aparece */}
             <motion.div variants={itemVariants} className="mt-6 p-6 bg-muted/20 rounded-lg border border-border/30">
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0 w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center">

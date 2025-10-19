@@ -4,7 +4,8 @@ import crypto from 'crypto';
 
 export default class CommentsModel {
   static async ensureTables() {
-    // Tabela de comentários
+
+    // tabela de comentários
     const commentsTable = `
       CREATE TABLE IF NOT EXISTS comments (
         id CHAR(36) PRIMARY KEY,
@@ -23,7 +24,7 @@ export default class CommentsModel {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `;
 
-    // Tabela de palavras proibidas
+    // tabela de palavras proibidas
     const forbiddenWordsTable = `
       CREATE TABLE IF NOT EXISTS forbidden_words (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -35,7 +36,7 @@ export default class CommentsModel {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `;
 
-    // Tabela de timeouts de usuários
+    // tabela de timeouts de usuários
     const userTimeoutsTable = `
       CREATE TABLE IF NOT EXISTS user_timeouts (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,7 +51,7 @@ export default class CommentsModel {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `;
 
-    // Tabela de votos em comentários
+    // tabela de votos em comentários
     const commentVotesTable = `
       CREATE TABLE IF NOT EXISTS comment_votes (
         id VARCHAR(36) PRIMARY KEY,
@@ -71,7 +72,7 @@ export default class CommentsModel {
       await executeQuery(userTimeoutsTable, []);
       await executeQuery(commentVotesTable, []);
       
-      // Inserir palavras proibidas padrão se a tabela estiver vazia
+      // inserir palavras proibidas padrão se a tabela estiver vazia
       await this.ensureDefaultForbiddenWords();
     } catch (error) {
       logError('Erro ao criar tabelas de comentários', error);
@@ -114,10 +115,11 @@ export default class CommentsModel {
 
   static async create({ id, modId, userId, content, rating = null }) {
     try {
-      // Verificar se o sistema de moderação está ativado
+
+      // verificar se o sistema de moderação está ativado
       const moderationEnabled = await this.isModerationEnabled();
       
-      // Se moderação estiver ativada, comentário fica pendente
+      // se moderação estiver ativada, comentário fica pendente
       const isApproved = !moderationEnabled;
       
       const sql = `INSERT INTO comments (id, mod_id, user_id, content, rating, is_approved, like_count, dislike_count, created_at) VALUES (?, ?, ?, ?, ?, ?, 0, 0, CURRENT_TIMESTAMP)`;
@@ -131,21 +133,21 @@ export default class CommentsModel {
     }
   }
 
-  // Verificar se o sistema de moderação está ativado
+  // verificar se o sistema de moderação está ativado
   static async isModerationEnabled() {
     try {
       const sql = 'SELECT setting_value FROM system_settings WHERE setting_key = ?';
       const result = await executeQuery(sql, ['moderation_enabled']);
       
-      if (result.length === 0) return true; // Padrão: moderação ativada
+      if (result.length === 0) return true; 
       return result[0].setting_value === 'true';
     } catch (error) {
       logError('Erro ao verificar status da moderação', error);
-      return true; // Em caso de erro, manter moderação ativada
+      return true; 
     }
   }
 
-  // Buscar comentários por mod com status de aprovação
+  // buscar comentários por mod com status de aprovação
   static async findByModId(modId, userId = null, includePending = false) {
     try {
       let sql = `
@@ -164,7 +166,8 @@ export default class CommentsModel {
       if (!includePending) {
         sql += ' AND c.is_approved = TRUE';
       } else if (userId) {
-        // Incluir comentários pendentes do usuário logado
+
+        // incluir comentários pendentes do usuário logado
         sql += ' AND (c.is_approved = TRUE OR c.user_id = ?)';
         params.push(userId);
       } else {
@@ -187,7 +190,7 @@ export default class CommentsModel {
     }
   }
 
-  // Buscar comentários pendentes para moderação
+  // buscar comentários pendentes para moderação
   static async findPendingForModeration(limit = 50, offset = 0) {
     try {
       const sql = `
@@ -216,7 +219,7 @@ export default class CommentsModel {
     }
   }
 
-  // Buscar comentários rejeitados
+  // buscar comentários rejeitados
   static async findRejectedComments(limit = 50, offset = 0) {
     try {
       const sql = `
@@ -245,13 +248,12 @@ export default class CommentsModel {
     }
   }
 
-  // Aprovar comentário
+  // aprovar comentário
   static async approveComment(commentId, moderatorId) {
     try {
       const sql = `UPDATE comments SET is_approved = TRUE, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       await executeQuery(sql, [commentId]);
       
-      // Incrementar contador de comentários no mod
       const comment = await this.findById(commentId);
       if (comment) {
         await executeQuery(
@@ -268,7 +270,7 @@ export default class CommentsModel {
     }
   }
 
-  // Rejeitar comentário
+  // rejeitar comentário
   static async rejectComment(commentId, moderatorId, reason) {
     try {
       const sql = `UPDATE comments SET is_approved = FALSE, rejection_reason = ?, rejected_at = CURRENT_TIMESTAMP, rejected_by = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
@@ -282,10 +284,9 @@ export default class CommentsModel {
     }
   }
 
-  // Deletar comentário (apenas autor ou admin)
+  // deletar comentário
   static async deleteComment(commentId, userId, userRole) {
     try {
-      // Verificar se pode deletar
       const comment = await this.findById(commentId);
       if (!comment) {
         throw new Error('Comentário não encontrado');
@@ -296,14 +297,11 @@ export default class CommentsModel {
         throw new Error('Sem permissão para deletar este comentário');
       }
       
-      // Deletar votos primeiro
       await executeQuery('DELETE FROM comment_votes WHERE comment_id = ?', [commentId]);
       
-      // Deletar comentário
       const sql = 'DELETE FROM comments WHERE id = ?';
       await executeQuery(sql, [commentId]);
       
-      // Se o comentário estava aprovado, decrementar contador no mod
       if (comment.is_approved) {
         await executeQuery(
           'UPDATE mods SET comment_count = GREATEST(COALESCE(comment_count, 0) - 1, 0) WHERE id = ?',
@@ -378,7 +376,7 @@ export default class CommentsModel {
     return rows[0]?.total || 0;
   }
 
-  // Verificar se usuário está em timeout
+  // verificar se usuário está em timeout
   static async isUserInTimeout(userId) {
     await this.ensureTables();
     const sql = `
@@ -393,7 +391,7 @@ export default class CommentsModel {
     return rows.length > 0 ? rows[0] : null;
   }
 
-  // Aplicar timeout ao usuário
+  // aplicar timeout ao usuário
   static async applyUserTimeout(userId, reason, severity = 'medium', durationMinutes = 30) {
     await this.ensureTables();
     const sql = `
@@ -403,7 +401,7 @@ export default class CommentsModel {
     await executeQuery(sql, [userId, reason, severity, durationMinutes]);
   }
 
-  // Verificar se texto contém palavras proibidas
+  // verificar se texto contém palavras proibidas
   static async containsForbiddenWords(text) {
     await this.ensureTables();
     if (!text || typeof text !== 'string') return null;
@@ -419,7 +417,7 @@ export default class CommentsModel {
     return forbiddenWords.length > 0 ? forbiddenWords : null;
   }
 
-  // Gerenciar palavras proibidas (admin)
+  // gerenciar palavras proibidas (admin)
   static async addForbiddenWord(word, severity = 'medium') {
     await this.ensureTables();
     const sql = 'INSERT INTO forbidden_words (word, severity) VALUES (?, ?) ON DUPLICATE KEY UPDATE severity = ?';
@@ -438,23 +436,20 @@ export default class CommentsModel {
     return executeQuery(sql, []);
   }
 
-  // Limpar timeouts expirados
+  // limpar timeouts expirados
   static async cleanupExpiredTimeouts() {
     await this.ensureTables();
     const sql = 'DELETE FROM user_timeouts WHERE timeout_until <= NOW()';
     await executeQuery(sql, []);
   }
 
-  // =====================================================
-  // SISTEMA DE VOTOS
-  // =====================================================
-
-  // Votar em um comentário
+  // sistema de votos: votar em um comentário (upvote/downvote)
   static async vote(commentId, userId, voteType) {
     await this.ensureTables();
     
     try {
-      // Verificar se o usuário já votou neste comentário
+
+      // verificar se o usuário já votou neste comentário
       const existingVote = await executeQuery(
         'SELECT id, vote_type FROM comment_votes WHERE comment_id = ? AND user_id = ?',
         [commentId, userId]
@@ -464,13 +459,14 @@ export default class CommentsModel {
         const currentVote = existingVote[0];
         
         if (currentVote.vote_type === voteType) {
-          // Remover voto se for o mesmo tipo
+
+          // remover voto se for o mesmo tipo
           await executeQuery(
             'DELETE FROM comment_votes WHERE id = ?',
             [currentVote.id]
           );
           
-          // Atualizar contadores
+          // atualizar contadores
           if (voteType === 'upvote') {
             await executeQuery(
               'UPDATE comments SET like_count = GREATEST(0, like_count - 1) WHERE id = ?',
@@ -485,13 +481,13 @@ export default class CommentsModel {
           
           return { action: 'removed', voteType };
         } else {
-          // Mudar tipo de voto
+
+          // mudar tipo de voto
           await executeQuery(
             'UPDATE comment_votes SET vote_type = ? WHERE id = ?',
             [voteType, currentVote.id]
           );
           
-          // Atualizar contadores
           if (voteType === 'upvote') {
             await executeQuery(
               'UPDATE comments SET like_count = like_count + 1, dislike_count = GREATEST(0, dislike_count - 1) WHERE id = ?',
@@ -507,14 +503,14 @@ export default class CommentsModel {
           return { action: 'changed', voteType, previousVote: currentVote.vote_type };
         }
       } else {
-        // Novo voto
+
+        // novo voto
         const voteId = crypto.randomUUID();
         await executeQuery(
           'INSERT INTO comment_votes (id, comment_id, user_id, vote_type) VALUES (?, ?, ?, ?)',
           [voteId, commentId, userId, voteType]
         );
-        
-        // Atualizar contadores
+
         if (voteType === 'upvote') {
           await executeQuery(
             'UPDATE comments SET like_count = like_count + 1 WHERE id = ?',
@@ -535,7 +531,6 @@ export default class CommentsModel {
     }
   }
 
-  // Obter voto do usuário em um comentário
   static async getUserVote(commentId, userId) {
     await this.ensureTables();
     
@@ -552,7 +547,7 @@ export default class CommentsModel {
     }
   }
 
-  // Atualizar listByMod para incluir informações de voto do usuário atual
+  // atualizar listByMod para incluir informações de voto do usuário atual
   static async listByModWithUserVotes(modId, userId = null, limit = 100) {
     await this.ensureTables();
     
@@ -570,7 +565,7 @@ export default class CommentsModel {
       
       const comments = await executeQuery(sql, [modId, parseInt(limit)]);
       
-      // Se o usuário estiver logado, adicionar informações de voto
+      // se o usuário estiver logado, adicionar informações de voto
       if (userId) {
         for (const comment of comments) {
           comment.user_vote = await this.getUserVote(comment.id, userId);
@@ -584,7 +579,7 @@ export default class CommentsModel {
     }
   }
 
-  // Criar resposta de comentário
+  // criar resposta de comentário
   static async createReply(commentData) {
     try {
       const { 
@@ -622,7 +617,7 @@ export default class CommentsModel {
     }
   }
 
-  // Buscar respostas de um comentário específico
+  // buscar respostas de um comentário específico
   static async findRepliesByParentId(parentId) {
     try {
       const sql = `
@@ -649,7 +644,7 @@ export default class CommentsModel {
     }
   }
 
-  // Buscar comentários por mod com respostas organizadas hierarquicamente
+  // buscar comentários por mod 
   static async findByModIdWithReplies(modId, userId = null) {
     try {
       let sql = `
@@ -671,7 +666,6 @@ export default class CommentsModel {
       const params = [userId, modId];
       const allComments = await executeQuery(sql, params);
       
-      // Organizar hierarquicamente
       return this.organizeCommentsHierarchy(allComments);
     } catch (error) {
       logError('Erro ao buscar comentários com respostas', error, { modId, userId });
@@ -679,24 +673,20 @@ export default class CommentsModel {
     }
   }
 
-  // Organizar comentários em hierarquia (comentários principais e suas respostas)
+  // organizar comentários em formato de "hierarquia"
   static organizeCommentsHierarchy(comments) {
     const commentMap = new Map();
     const rootComments = [];
 
-    // Primeiro, mapear todos os comentários
     comments.forEach(comment => {
       comment.replies = [];
       commentMap.set(comment.id, comment);
     });
 
-    // Depois, organizar hierarquicamente
     comments.forEach(comment => {
       if (comment.parent_id && commentMap.has(comment.parent_id)) {
-        // É uma resposta
         commentMap.get(comment.parent_id).replies.push(comment);
       } else {
-        // É um comentário principal
         rootComments.push(comment);
       }
     });
@@ -704,7 +694,7 @@ export default class CommentsModel {
     return rootComments;
   }
 
-  // Buscar comentários recentes aprovados para moderação
+  // buscar comentários recentes aprovados
   static async findRecentApprovedComments(limit = 50, offset = 0) {
     await this.ensureTables();
     
@@ -731,7 +721,7 @@ export default class CommentsModel {
     }
   }
 
-  // Buscar comentários do usuário com paginação e filtros
+  // buscar comentários do usuário com paginação e filtros
   static async getUserComments({ userId, offset = 0, limit = 10, search = '', dateCondition = '' }) {
     await this.ensureTables();
     
@@ -739,13 +729,11 @@ export default class CommentsModel {
       let whereClause = 'WHERE c.user_id = ?';
       let params = [userId];
       
-      // Adicionar filtro de busca
       if (search && search.trim()) {
         whereClause += ' AND c.content LIKE ?';
         params.push(`%${search.trim()}%`);
       }
       
-      // Adicionar filtro de data
       if (dateCondition) {
         whereClause += ` ${dateCondition}`;
       }
@@ -762,7 +750,6 @@ export default class CommentsModel {
         LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
       
-      // Parâmetros LIMIT e OFFSET já foram aplicados na query
       const comments = await executeQuery(sql, params);
       return comments;
     } catch (error) {
@@ -771,7 +758,7 @@ export default class CommentsModel {
     }
   }
 
-  // Contar comentários do usuário
+  // contar comentários do usuário
   static async getUserCommentsCount({ userId, search = '', dateCondition = '' }) {
     await this.ensureTables();
     
@@ -779,13 +766,11 @@ export default class CommentsModel {
       let whereClause = 'WHERE c.user_id = ?';
       let params = [userId];
       
-      // Adicionar filtro de busca
       if (search && search.trim()) {
         whereClause += ' AND c.content LIKE ?';
         params.push(`%${search.trim()}%`);
       }
       
-      // Adicionar filtro de data
       if (dateCondition) {
         whereClause += ` ${dateCondition}`;
       }

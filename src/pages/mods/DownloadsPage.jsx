@@ -39,15 +39,12 @@ const DownloadsPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
   
-  // Estados para paginação
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12); // 12 downloads por página
+  const [itemsPerPage] = useState(12);
   
-  // Estados para controle de exibição
   const [hasAnyDownloads, setHasAnyDownloads] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
 
-  // Buscar downloads quando filtros mudarem (com debounce para busca)
   useEffect(() => {
     if (isAuthenticated && currentUser) {
       const timeoutId = setTimeout(() => {
@@ -58,13 +55,12 @@ const DownloadsPage = () => {
           period: selectedPeriod,
           type: selectedType
         });
-      }, searchTerm ? 500 : 0); // Debounce de 500ms para busca
+      }, searchTerm ? 500 : 0);
       
       return () => clearTimeout(timeoutId);
     }
   }, [currentPage, searchTerm, selectedPeriod, selectedType, itemsPerPage, isAuthenticated, currentUser]);
 
-  // Verificar se há downloads e filtros aplicados
   useEffect(() => {
     if (downloadHistory.length > 0) {
       setHasAnyDownloads(true);
@@ -98,17 +94,14 @@ const DownloadsPage = () => {
     );
   }
 
-  // Filtrar downloads baseado na busca, período e tipo (agora os filtros são aplicados no backend)
   const filteredDownloads = downloadHistory;
 
-  // Lógica de paginação
   const totalPages = Math.ceil(filteredDownloads.length / itemsPerPage);
   const paginatedDownloads = filteredDownloads.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Funções para paginação
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
@@ -135,11 +128,8 @@ const DownloadsPage = () => {
   ];
 
   const getTotalDownloads = () => {
-    // Sempre usar a contagem do contexto, que vem do banco de dados
     return totalDownloads;
   };
-
-  // Remover o return early - sempre mostrar o container principal
 
   return (
     <motion.div 
@@ -148,7 +138,6 @@ const DownloadsPage = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6 sm:space-y-8 px-4 sm:px-6"
     >
-      {/* Header */}
       <div className="text-center">
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-3 sm:mb-4">
           <Download className="inline-block mr-2 sm:mr-3 text-blue-500 h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8" />
@@ -159,7 +148,6 @@ const DownloadsPage = () => {
         </p>
       </div>
 
-      {/* Estatísticas */}
       <Card className="minecraft-card">
         <CardContent className="p-4 sm:p-6 text-center">
           <Download className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 mx-auto mb-2" />
@@ -168,11 +156,9 @@ const DownloadsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Filtros e Busca */}
       <Card className="minecraft-card">
         <CardContent className="p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            {/* Busca */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -189,9 +175,7 @@ const DownloadsPage = () => {
               )}
             </div>
 
-            {/* Filtros em linha para mobile */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:flex-shrink-0">
-              {/* Filtro de Período */}
               <div className="w-full sm:w-48">
                 <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                   <SelectTrigger className="text-sm sm:text-base">
@@ -208,7 +192,6 @@ const DownloadsPage = () => {
                 </Select>
               </div>
 
-              {/* Filtro de Tipo */}
               <div className="w-full sm:w-48">
                 <Select value={selectedType} onValueChange={setSelectedType}>
                   <SelectTrigger className="text-sm sm:text-base">
@@ -225,7 +208,6 @@ const DownloadsPage = () => {
                 </Select>
               </div>
 
-              {/* Botão Limpar */}
               <Button
                 variant="outline"
                 size="sm"
@@ -239,7 +221,6 @@ const DownloadsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Lista de Downloads */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
           <h2 className="text-xl sm:text-2xl font-minecraft text-primary">
@@ -269,7 +250,6 @@ const DownloadsPage = () => {
           <Card className="minecraft-card">
             <CardContent className="p-6 sm:p-12 text-center">
               {!hasAnyDownloads ? (
-                // Usuário não tem nenhum download
                 <>
                   <Download size={40} className="mx-auto mb-3 sm:mb-4 text-muted-foreground/50 sm:h-12 sm:w-12" />
                   <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{t('downloads.empty.title')}</h3>
@@ -284,7 +264,6 @@ const DownloadsPage = () => {
                   </Button>
                 </>
               ) : (
-                // Usuário tem downloads, mas filtros não retornaram resultados
                 <>
                   <Search size={40} className="mx-auto mb-3 sm:mb-4 text-muted-foreground/50 sm:h-12 sm:w-12" />
                   <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">Nenhum resultado encontrado</h3>
@@ -320,7 +299,6 @@ const DownloadsPage = () => {
                   <Card className="minecraft-card hover:shadow-lg transition-all duration-300">
                     <CardContent className="p-4 sm:p-6">
                       <div className="flex flex-col sm:flex-row gap-4">
-                        {/* Imagem do Mod */}
                         <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-muted/30 flex-shrink-0">
                           {download.thumbnail_url ? (
                             <img
@@ -335,7 +313,6 @@ const DownloadsPage = () => {
                           )}
                         </div>
 
-                        {/* Informações do Mod */}
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 space-y-2 sm:space-y-0">
                             <div className="flex-1 min-w-0">
@@ -353,7 +330,6 @@ const DownloadsPage = () => {
                             </div>
                           </div>
 
-                          {/* Metadados do Download */}
                           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
                             <div className="flex items-center">
                               <Calendar size={12} className="mr-2 sm:h-3.5 sm:w-3.5" />
@@ -370,7 +346,6 @@ const DownloadsPage = () => {
                           </div>
                         </div>
 
-                        {/* Botões de Ação */}
                         <div className="flex flex-col gap-2 flex-shrink-0">
                           <Button asChild className="minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm w-full">
                             <Link to={`/mods/${download.modId}`}>
@@ -392,8 +367,6 @@ const DownloadsPage = () => {
               ))}
             </div>
 
-            {/* Paginação */}
-            {/* Controles de Paginação */}
             {filteredDownloads.length > itemsPerPage && (
               <div className="mt-6 sm:mt-8">
                 <PaginationControls

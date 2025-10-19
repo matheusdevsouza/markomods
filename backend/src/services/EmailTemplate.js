@@ -1,5 +1,3 @@
-// Email HTML template centralizado para toda a aplicação
-
 const BRAND = {
   primary: '#6D28D9',
   bgLight: '#FFFFFF',
@@ -18,7 +16,7 @@ export function renderEmailTemplate({
   buttonText = null,
   buttonUrl = null,
   secondary = '',
-  brandName = 'Eu, Marko! Mods',
+  brandName = 'Eu, Marko!',
   timingNote = 'Link válido por 24 horas.',
 }) {
   const buttonBlock = buttonText && buttonUrl ? `

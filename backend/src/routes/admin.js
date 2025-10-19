@@ -8,11 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const router = express.Router();
 
-// Middleware de autenticação
+// middleware de autenticação
 import { authenticateToken } from '../middleware/auth.js';
 import { requireRole } from '../middleware/roleAuth.js';
 
-// Configuração do multer para upload de imagens
+// configuração do multer para upload de imagens  
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(__dirname, '../../uploads/banners');
@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB
+    fileSize: 5 * 1024 * 1024
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
@@ -38,7 +38,7 @@ const upload = multer({
   }
 });
 
-// Garantir que o diretório de upload existe
+// garantir que o diretório de upload existe
 const ensureUploadDir = async () => {
   const uploadDir = path.join(__dirname, '../../uploads/banners');
   try {
@@ -48,7 +48,7 @@ const ensureUploadDir = async () => {
   }
 };
 
-// Upload de banner
+// upload de banner
 router.post('/banner/upload', authenticateToken, requireRole(['super_admin']), async (req, res) => {
   try {
     await ensureUploadDir();
@@ -68,7 +68,7 @@ router.post('/banner/upload', authenticateToken, requireRole(['super_admin']), a
         });
       }
 
-      // Retornar a URL do arquivo
+      // retornar a URL do arquivo
       const fileUrl = `/uploads/banners/${req.file.filename}`;
       
       res.json({
@@ -87,7 +87,7 @@ router.post('/banner/upload', authenticateToken, requireRole(['super_admin']), a
   }
 });
 
-// Atualizar URL do banner
+// atualizar URL do banner
 router.post('/banner/update', authenticateToken, requireRole(['super_admin']), async (req, res) => {
   try {
     const { banner_url } = req.body;
@@ -99,7 +99,7 @@ router.post('/banner/update', authenticateToken, requireRole(['super_admin']), a
       });
     }
 
-    // Salvar a URL do banner em um arquivo de configuração
+    // salvar a URL do banner em um arquivo de configuração
     const configPath = path.join(__dirname, '../../config/banner.json');
     const bannerConfig = {
       banner_url: banner_url,
@@ -122,7 +122,7 @@ router.post('/banner/update', authenticateToken, requireRole(['super_admin']), a
   }
 });
 
-// Obter configurações do banner
+// obter configurações do banner
 router.get('/banner/config', authenticateToken, requireRole(['super_admin']), async (req, res) => {
   try {
     const configPath = path.join(__dirname, '../../config/banner.json');
@@ -135,7 +135,7 @@ router.get('/banner/config', authenticateToken, requireRole(['super_admin']), as
         ...config
       });
     } catch (fileError) {
-      // Se o arquivo não existir, retornar configuração padrão
+      // se o arquivo não existir, retornar configuração padrão
       res.json({
         success: true,
         banner_url: '/src/assets/images/markomods-banner.png'
@@ -150,7 +150,7 @@ router.get('/banner/config', authenticateToken, requireRole(['super_admin']), as
   }
 });
 
-// Rota pública para obter configuração do banner (sem autenticação)
+// rota pública para pegar a configuração do banner
 router.get('/banner/public-config', async (req, res) => {
   try {
     const configPath = path.join(__dirname, '../../config/banner.json');
@@ -163,7 +163,6 @@ router.get('/banner/public-config', async (req, res) => {
         ...config
       });
     } catch (fileError) {
-      // Se o arquivo não existir, retornar configuração padrão
       res.json({
         success: true,
         banner_url: '/src/assets/images/markomods-banner.png'

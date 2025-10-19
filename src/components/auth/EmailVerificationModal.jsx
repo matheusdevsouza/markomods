@@ -33,7 +33,6 @@ const EmailVerificationModal = ({ open, onOpenChange }) => {
 
   const shouldOpen = open && currentUser && (currentUser.is_verified === 0 || currentUser.is_verified === false);
 
-  // Cooldown timer
   useEffect(() => {
     if (cooldown <= 0) return;
     const timer = setInterval(() => setCooldown((c) => (c > 0 ? c - 1 : 0)), 1000);
@@ -43,14 +42,12 @@ const EmailVerificationModal = ({ open, onOpenChange }) => {
   return (
     <Dialog open={!!shouldOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md rounded-[24px] border border-primary/20 bg-background/95 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(109,40,217,.35)] animate-in fade-in-0 zoom-in-95 p-0 overflow-hidden">
-        {/* Header com gradiente */}
         <div className="relative px-8 pt-8 pb-6 bg-gradient-to-b from-primary/12 via-primary/5 to-transparent">
           <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/20 text-primary flex items-center justify-center ring-1 ring-primary/30 shadow-inner">
             <Mail className="h-7 w-7" />
           </div>
         </div>
 
-        {/* Corpo */}
         <div className="px-8 pb-7 text-center">
           <h3 className="text-[22px] font-bold tracking-tight mb-2">Verifique seu e-mail</h3>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-[34ch] mx-auto">
@@ -59,7 +56,6 @@ const EmailVerificationModal = ({ open, onOpenChange }) => {
             Conclua a verificação para liberar todos os recursos da plataforma.
           </p>
 
-          {/* Banner de feedback elegante */}
           {message && (
             <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/30 px-4 py-2 text-xs">
               <CheckCircle className="h-4 w-4" />
@@ -73,7 +69,6 @@ const EmailVerificationModal = ({ open, onOpenChange }) => {
             </div>
           )}
 
-          {/* Ação */}
           <div className="mt-6 flex items-center justify-center">
             <Button
               onClick={handleResend}

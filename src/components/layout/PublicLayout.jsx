@@ -27,7 +27,6 @@ const PublicLayout = () => {
             <span className="font-bold sm:inline-block gradient-text">Media Kit</span>
           </Link>
           <nav className="flex flex-1 items-center space-x-4">
-            {/* Add public navigation links here if needed later */}
           </nav>
           <div className="flex items-center space-x-3">
             {loadingAuth ? (

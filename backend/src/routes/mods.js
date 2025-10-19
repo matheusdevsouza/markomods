@@ -28,19 +28,18 @@ import {
 
 const router = express.Router();
 
-// Rotas públicas (não requerem autenticação)
-router.get('/public', getPublicMods); // Listar todos os mods públicos
-router.get('/public/:slug', getModBySlug); // Buscar mod por slug
-router.get('/search', advancedSearch); // Busca avançada
-router.get('/content-types', getContentTypes); // Buscar tipos de conteúdo
-router.get('/stats/count', getModsCount); // Buscar contagem total de mods
+// rotas públicas (nao precisa de autenticaçao)
+router.get('/public', getPublicMods);
+router.get('/public/:slug', getModBySlug);
+router.get('/search', advancedSearch);
+router.get('/content-types', getContentTypes);
+router.get('/stats/count', getModsCount);
 
-// Rota de teste pública
+// testes
 router.get('/test', (req, res) => {
   res.json({ success: true, message: 'Rota pública funcionando!' });
 });
 
-// Rota de teste para mod específico
 router.get('/test-mod/:id', (req, res) => {
   const { id } = req.params;
   res.json({ 
@@ -51,42 +50,43 @@ router.get('/test-mod/:id', (req, res) => {
   });
 });
 
-// Rota para buscar mod por ID (público) - DEVE vir ANTES das rotas autenticadas
+// buscar mod por ID 
 router.get('/mod/:id', (req, res) => {
   getModById(req, res);
 });
 
-// Rotas para registrar visualização (públicas)
-// Compatível com duas formas usadas no frontend (/mod/:id/view e /:id/view)
+// registrar visualização
 router.post('/mod/:id/view', registerView);
 router.post('/:id/view', registerView);
 
-// IMPORTANTE: Todas as rotas abaixo desta linha usam middleware que permite acesso público para GET /:id
-// Rotas que requerem autenticação ou permitem acesso público
+// servir arquivos de thumbnail
+router.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+// middleware para permitir acesso público para GET /id
 router.use(publicOrAuthenticated);
 
-// Rotas administrativas (requerem admin + segurança extra)
+// rotas administrativas (precisa de admin e segurança)
 router.get('/admin', adminSecurityMiddleware, requireAdmin, getAllMods);
 router.get('/admin/stats', adminSecurityMiddleware, requireAdmin, getModStats);
 router.get('/admin/:id', adminSecurityMiddleware, requireAdmin, getModById);
 
-// Rotas para usuários autenticados
+// rotas para usuários autenticados
 router.post('/:id/download', downloadMod);
 router.get('/user/downloads/count', authenticateToken, getUserDownloadsCount);
 router.get('/user/downloads/history', authenticateToken, getUserDownloadHistory);
 
-// Rotas para favoritos (requerem autenticação)
+// rotas para favoritos
 router.post('/:id/favorite', authenticateToken, toggleFavorite);
 router.get('/:id/favorite', authenticateToken, checkFavorite);
 router.get('/user/favorites', authenticateToken, getUserFavorites);
 
-// Rotas de criação/edição (requerem admin + segurança extra)
+// rotas de criação/edição
 router.post('/', adminSecurityMiddleware, requireAdmin, uploadModMedia, validateModMedia, createMod);
 router.put('/:id', adminSecurityMiddleware, requireAdmin, uploadModMedia, validateModMedia, updateMod);
 router.delete('/:id', adminSecurityMiddleware, requireAdmin, deleteMod);
 router.patch('/:id/status', adminSecurityMiddleware, requireAdmin, toggleModStatus);
 
-// Upload de imagens do editor (TipTap/Quill). Requer usuário autenticado.
+// upload de imagens do editor
 router.post('/editor/upload-image', authenticateToken, uploadEditorImage, (req, res) => {
   try {
     if (!req.file) {

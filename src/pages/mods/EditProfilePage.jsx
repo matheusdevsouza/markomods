@@ -35,14 +35,12 @@ const EditProfilePage = () => {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
   
-  // Estados do formulário
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     display_name: ''
   });
   
-  // Estados para alteração de senha
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -50,15 +48,12 @@ const EditProfilePage = () => {
   });
   
   
-  // Estados para validação
   const [errors, setErrors] = useState({});
   const [passwordErrors, setPasswordErrors] = useState({});
   
-  // Estado para preview do avatar
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   
-  // Estados para visibilidade das senhas
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -66,7 +61,6 @@ const EditProfilePage = () => {
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
-  // Carregar dados do usuário
   useEffect(() => {
     if (currentUser) {
       setFormData({
@@ -77,7 +71,6 @@ const EditProfilePage = () => {
     }
   }, [currentUser]);
 
-  // Validação do formulário principal
   const validateForm = () => {
     const newErrors = {};
     
@@ -101,7 +94,6 @@ const EditProfilePage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Validação da senha
   const validatePassword = () => {
     const newErrors = {};
     
@@ -133,8 +125,6 @@ const EditProfilePage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-
-  // Atualizar perfil
   const handleUpdateProfile = async () => {
     if (!validateForm()) return;
     
@@ -182,7 +172,6 @@ const EditProfilePage = () => {
     }
   };
 
-  // Upload de avatar
   const handleAvatarUpload = async () => {
     if (!selectedFile) return;
     
@@ -210,18 +199,15 @@ const EditProfilePage = () => {
           variant: "default"
         });
         
-        // Atualizar usuário no contexto
         if (updateUser && data.data?.user) {
           console.log('Dados do usuário atualizados:', data.data.user);
           updateUser(data.data.user);
           
-          // Verificar se o estado foi atualizado
           setTimeout(() => {
             console.log('Estado atual do usuário:', currentUser);
           }, 100);
         }
         
-        // Limpar preview e arquivo selecionado
         setAvatarPreview(null);
         setSelectedFile(null);
       } else {
@@ -243,7 +229,6 @@ const EditProfilePage = () => {
     }
   };
 
-  // Alterar senha
   const handleChangePassword = async () => {
     if (!validatePassword()) return;
     
@@ -271,7 +256,6 @@ const EditProfilePage = () => {
           variant: "default"
         });
         
-        // Limpar formulário
         setPasswordData({
           currentPassword: '',
           newPassword: '',
@@ -296,8 +280,6 @@ const EditProfilePage = () => {
     }
   };
 
-
-  // Selecionar arquivo de avatar
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -312,7 +294,6 @@ const EditProfilePage = () => {
       
       setSelectedFile(file);
       
-      // Criar preview
       const reader = new FileReader();
       reader.onload = (e) => {
         setAvatarPreview(e.target.result);
@@ -321,7 +302,6 @@ const EditProfilePage = () => {
     }
   };
 
-  // Limpar arquivo selecionado
   const clearSelectedFile = () => {
     setSelectedFile(null);
     setAvatarPreview(null);
@@ -337,7 +317,6 @@ const EditProfilePage = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
-      {/* Botão Voltar - Posicionado em cima do título */}
       <div className="mb-6">
         <button 
           onClick={() => navigate('/dashboard')}
@@ -348,14 +327,12 @@ const EditProfilePage = () => {
         </button>
       </div>
 
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-primary">{t('editProfile.title')}</h1>
         <p className="text-muted-foreground">{t('editProfile.subtitle')}</p>
       </div>
 
       <div className="grid gap-8">
-        {/* Seção de Avatar */}
         <Card className="minecraft-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -368,8 +345,7 @@ const EditProfilePage = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-6">
-                             {/* Avatar atual */}
-               <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center gap-2">
                                    <Avatar className="h-24 w-24 border-4 border-primary/20">
                     <AvatarImage 
                       src={getAvatarUrl(currentUser.avatar_url) || getDefaultAvatarUrl()} 
@@ -381,7 +357,6 @@ const EditProfilePage = () => {
                                    <span className="text-sm text-muted-foreground">Avatar Atual</span>
                </div>
 
-              {/* Preview do novo avatar */}
               {avatarPreview && (
                 <div className="flex flex-col items-center gap-2">
                   <Avatar className="h-24 w-24 border-4 border-green-500/20">
@@ -394,9 +369,7 @@ const EditProfilePage = () => {
                 </div>
               )}
 
-              {/* Controles de upload */}
               <div className="flex flex-col gap-3">
-                {/* Nome de exibição do usuário */}
                 <div className="text-left mb-2">
                   <p className="text-lg font-semibold text-foreground">
                     {currentUser.display_name || currentUser.username}
@@ -459,7 +432,6 @@ const EditProfilePage = () => {
           </CardContent>
         </Card>
 
-        {/* Seção de Informações Pessoais */}
         <Card className="minecraft-card">
                      <CardHeader>
                            <CardTitle className="flex items-center gap-2">
@@ -559,7 +531,6 @@ const EditProfilePage = () => {
           </CardContent>
         </Card>
 
-        {/* Seção de Alteração de Senha */}
         <Card className="minecraft-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

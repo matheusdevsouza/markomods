@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuração dos formatos
+// configuracao dos formatos
 const logFormat = winston.format.combine(
   winston.format.timestamp({
     format: 'YYYY-MM-DD HH:mm:ss'
@@ -28,12 +28,13 @@ const consoleFormat = winston.format.combine(
   })
 );
 
-// Criar logger
+// criaçao do logger
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: logFormat,
   transports: [
-    // Log de erros
+    
+    // erros
     new winston.transports.File({
       filename: path.join(__dirname, '../../logs/error.log'),
       level: 'error',
@@ -41,7 +42,7 @@ const logger = winston.createLogger({
       maxFiles: 5
     }),
     
-    // Log geral
+    // geral
     new winston.transports.File({
       filename: path.join(__dirname, '../../logs/app.log'),
       maxsize: 5242880, // 5MB
@@ -50,14 +51,14 @@ const logger = winston.createLogger({
   ]
 });
 
-// Adicionar console em desenvolvimento
+// console (somente em desenvolvimento)
 if (process.env.NODE_ENV !== 'production') {
   logger.add(new winston.transports.Console({
     format: consoleFormat
   }));
 }
 
-// Funções de log específicas
+// logs especificas
 export const logInfo = (message, meta = {}) => {
   logger.info(message, meta);
 };
@@ -81,7 +82,7 @@ export const logDebug = (message, meta = {}) => {
   logger.debug(message, meta);
 };
 
-// Middleware para log de requests
+// middleware dos requests de logs
 export const requestLogger = (req, res, next) => {
   const start = Date.now();
   

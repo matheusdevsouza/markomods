@@ -1,7 +1,7 @@
 {
   "name": "markomods-backend",
   "version": "1.0.0",
-  "description": "Backend da plataforma Eu, Marko! Mods",
+  "description": "Backend da plataforma Eu, Marko!",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -21,7 +21,7 @@
     "express",
     "mysql"
   ],
-  "author": "Eu, Marko! Mods",
+  "author": "Eu, Marko!",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^3.0.2",

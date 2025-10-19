@@ -1,7 +1,7 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
-// Configurar dotenv com prioridade para .env
+// configuraçao do dotenv mas com prioridade para o .env
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: './production.env' });
 } else {
@@ -26,32 +26,28 @@ const dbConfig = {
   queueLimit: 0
 };
 
-// Criar pool de conexões (apenas se não for produção)
+// testar pool de conexões
 let pool;
 if (process.env.NODE_ENV === 'production') {
-  // Em produção, usar conexão direta para evitar problemas de permissão
   pool = null;
 } else {
   pool = mysql.createPool(dbConfig);
 }
 
-// Testar conexão
+// testar conexão
 export const testConnection = async () => {
   try {
     console.log('🔍 Tentando conectar com MySQL...');
     console.log(`📊 Configuração: ${dbConfig.user}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`);
     
-    // Tentar conexão direta primeiro
     const directConnection = await mysql.createConnection(dbConfig);
     console.log('✅ Conexão direta estabelecida!');
     
-    // Testar uma query simples
     const [rows] = await directConnection.execute('SELECT 1 as test');
     console.log('✅ Query de teste executada com sucesso:', rows);
     
     await directConnection.end();
     
-    // Testar o pool apenas se não for produção
     if (pool) {
       const connection = await pool.getConnection();
       console.log('✅ Pool de conexões funcionando!');
@@ -71,7 +67,7 @@ export const testConnection = async () => {
       port: dbConfig.port
     });
     
-    // Tentar conexão alternativa com 127.0.0.1 se localhost falhar
+    // tentar conexão alternativa se o localhost nao funcionar
     if (dbConfig.host === 'localhost' && error.code === 'ER_ACCESS_DENIED_ERROR') {
       console.log('🔄 Tentando conexão alternativa com 127.0.0.1...');
       try {
@@ -89,14 +85,14 @@ export const testConnection = async () => {
   }
 };
 
-// Executar query com pool ou conexão direta
+// query com pool ou conexão direta
 export const executeQuery = async (sql, params = []) => {
   try {
     if (pool) {
       const [rows] = await pool.execute(sql, params);
       return rows;
     } else {
-      // Em produção, usar conexão direta
+      
       const connection = await mysql.createConnection(dbConfig);
       const [rows] = await connection.execute(sql, params);
       await connection.end();
@@ -108,7 +104,7 @@ export const executeQuery = async (sql, params = []) => {
   }
 };
 
-// Executar query com transação
+// query com transação
 export const executeTransaction = async (queries) => {
   const connection = pool ? await pool.getConnection() : await mysql.createConnection(dbConfig);
   try {
@@ -134,7 +130,7 @@ export const executeTransaction = async (queries) => {
   }
 };
 
-// Obter conexão individual (para casos específicos)
+// conexão individual em casos especificos
 export const getConnection = () => {
   if (pool) {
     return pool.getConnection();

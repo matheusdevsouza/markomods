@@ -52,13 +52,9 @@ const SectionTitle = ({ title, icon: Icon, viewAllLink }) => {
   );
 };
 
-// Componente removido - placeholders de anúncios são considerados enganosos pelo Google AdSense
-// Se não há anúncio real configurado, não deve mostrar nada
-
 const ModsCarousel = ({ mods }) => {
   const { t } = useTranslation();
   
-  // placeholder para o carrossel
   if (!mods || mods.length === 0) return null;
   const featuredMod = mods[0]; 
 
@@ -104,7 +100,6 @@ const HomePage = () => {
   const isAdmin = false; 
   const hasAd = false; 
 
-  // buscar apenas mods publicos
   useEffect(() => {
     const fetchPublicMods = async () => {
       try {
@@ -127,7 +122,6 @@ const HomePage = () => {
     fetchPublicMods();
   }, []);
 
-  // buscar a configuracao do banner
   useEffect(() => {
     const fetchBannerConfig = async () => {
       try {
@@ -139,7 +133,6 @@ const HomePage = () => {
           }
         }
       } catch (error) {
-        // se der erro, manter a url padrao
       }
     };
 
@@ -156,20 +149,17 @@ const HomePage = () => {
   
   const featuredMods = mods.filter(mod => mod.is_featured).slice(0, 1);
   
-  // ultimos mods com paginação
   const allLatestMods = [...mods].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
   const modsPerPage = 4;
   const totalLatestPages = Math.ceil(allLatestMods.length / modsPerPage);
   const latestMods = allLatestMods.slice((latestModsPage - 1) * modsPerPage, latestModsPage * modsPerPage);
   
-  // mods mais baixados com paginação
   const allPopularMods = [...mods].sort((a, b) => (b.download_count || 0) - (a.download_count || 0));
   const totalPopularPages = Math.ceil(allPopularMods.length / modsPerPage);
   const mostDownloadedMods = allPopularMods.slice((popularModsPage - 1) * modsPerPage, popularModsPage * modsPerPage);
 
   const totalDownloadsAllMods = mods.reduce((sum, mod) => sum + (mod.download_count || 0), 0);
 
-  // funcao para mudancas de paginas
   const handleLatestModsPageChange = (newPage) => {
     setLatestModsPage(newPage);
   };
@@ -189,7 +179,6 @@ const HomePage = () => {
       animate="visible"
       variants={containerVariants}
     >
-      {/* banner da plataforma */}
       <EditableBanner
         bannerUrl={bannerUrl}
         onBannerUpdate={handleBannerUpdate}
@@ -225,11 +214,10 @@ const HomePage = () => {
         <SectionTitle title={t('home.latestModsAdded')} icon={History} viewAllLink="/mods?sort=recent" />
         {latestMods.length > 0 ? (
           <>
-            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center" variants={containerVariants}>
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" variants={containerVariants}>
               {latestMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} />)}
             </motion.div>
             
-            {/* navegacao por paginas (4+ mods) */}
             {allLatestMods.length > 4 && (
               <motion.div 
                 variants={itemVariants} 
@@ -249,17 +237,14 @@ const HomePage = () => {
         )}
       </section>
 
-      {/* Espaço para anúncios removido - placeholders são considerados enganosos pelo Google AdSense */}
-
       <section>
         <SectionTitle title={t('home.mostDownloadedMods')} icon={Flame} viewAllLink="/mods?sort=downloads" />
          {mostDownloadedMods.length > 0 ? (
           <>
-            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center" variants={containerVariants}>
+            <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" variants={containerVariants}>
               {mostDownloadedMods.map((mod) => <ModCard key={mod.id} mod={mod} variants={itemVariants} />)}
             </motion.div>
             
-            {/* navegacao por paginas (4+ mods) */}
             {allPopularMods.length > 4 && (
               <motion.div 
                 variants={itemVariants} 

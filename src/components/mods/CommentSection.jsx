@@ -24,8 +24,6 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
   const { toast } = useToast();
   const { isAuthenticated, currentUser } = useAuth();
-
-  // Verificar se usuário está banido
   const isUserBanned = currentUser && currentUser.is_banned;
 
 
@@ -106,7 +104,6 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
 
       const data = await resp.json();
       if (!resp.ok) {
-        // Verificar se é um erro de timeout
         if (data.timeout) {
           setUserTimeout({
             reason: data.timeout.reason,
@@ -118,31 +115,25 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
         throw new Error(data.message || 'Falha ao enviar comentário');
       }
 
-      // Verificar se o comentário está pendente
       if (data.data && data.data.isPending) {
-        // Comentário pendente - mostrar apenas toast amarelo
         toast({ 
           title: 'Comentário pendente de moderação', 
           description: 'Seu comentário foi enviado e está sendo analisado por um moderador. Ele será aprovado ou rejeitado em breve.',
           variant: "destructive"
         });
         
-        // Não adicionar o comentário à lista local - apenas limpar o formulário
         setNewComment('');
         setRating(null);
         
-        // Dispara evento para dashboard atualizar contagem
         window.dispatchEvent(new CustomEvent('commentsUpdated'));
         return;
       }
 
-      // Comentário aprovado automaticamente
       setNewComment('');
       setRating(null);
       await fetchComments();
       if (onCommentPosted) onCommentPosted();
       
-      // Dispara evento para dashboard atualizar contagem
       window.dispatchEvent(new CustomEvent('commentsUpdated'));
       toast({ title: 'Comentário enviado!', description: 'Seu comentário foi publicado.' });
     } catch (error) {
@@ -206,7 +197,6 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
     setCommentToDelete(null);
   };
 
-  // Funções para sistema de respostas
   const handleReplyClick = (comment) => {
     setCommentToReply(comment);
     setShowReplyModal(true);
@@ -239,7 +229,6 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
           variant: "default"
         });
         
-        // Recarregar comentários para mostrar a nova resposta
         await fetchComments();
         setShowReplyModal(false);
         setCommentToReply(null);
@@ -283,7 +272,6 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
       .slice(0, 2);
   };
 
-  // Se usuário está em timeout, mostrar mensagem de bloqueio
   if (userTimeout) {
     return (
       <div className="space-y-6">
@@ -314,7 +302,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
           </CardContent>
         </Card>
 
-        {/* Lista de Comentários */}
+        {/* lista de comentários */}
         <div className="space-y-4">
           {comments.length === 0 ? (
             <Card className="minecraft-card">
@@ -353,7 +341,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                               {comment.display_name || comment.username}
                             </span>
                             
-                            {/* Status do comentário */}
+                            {/* status do comentário */}
                             {comment.is_pending && (
                               <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 border border-yellow-500/30 rounded-full">
                                 <Clock size={12} className="text-yellow-500" />
@@ -388,12 +376,12 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                           </div>
                         </div>
                         
-                        {/* Conteúdo do comentário */}
+                          {/* conteúdo do comentário */}
                         <p className="text-foreground leading-relaxed break-words overflow-wrap-anywhere">
                           {comment.content}
                         </p>
                         
-                        {/* Motivo da rejeição (se aplicável) */}
+                        {/* motivo da rejeição */}
                         {comment.rejection_reason && (
                           <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
                             <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
@@ -406,11 +394,11 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                           </div>
                         )}
                         
-                        {/* Ações do comentário */}
+                        {/* ações do comentário */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4 text-sm text-muted-foreground">
 
-                            {/* Botões de voto (desabilitados para comentários pendentes) */}
+                            {/* botões de voto */}
                             {!comment.is_pending && (
                               <>
                                 <button className="flex items-center gap-1 hover:text-primary transition-colors">
@@ -424,7 +412,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                               </>
                             )}
                             
-                            {/* Botão de resposta (apenas super admins) */}
+                            {/* botão de resposta */}
                             {currentUser?.role === 'super_admin' && !comment.is_pending && (
                               <button
                                 onClick={() => handleReplyClick(comment)}
@@ -439,7 +427,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                             
 
 
-                            {/* Botão de exclusão */}
+                            {/* botão de exclusão */}
                             {comment.can_delete && (
                               <button
                                 onClick={() => handleDeleteComment(comment.id)}
@@ -451,7 +439,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                             )}
                           </div>
                           
-                          {/* Informações adicionais para comentários pendentes */}
+                          {/* informações para comentários pendentes */}
                           {comment.is_pending && (
                             <div className="flex items-center gap-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                               <div className="flex items-center justify-center w-5 h-5 bg-yellow-500 rounded-full">
@@ -468,7 +456,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                   </CardContent>
                 </Card>
 
-                {/* Exibir respostas do comentário */}
+                {/* exibir respostas do comentário */}
                 {comment.replies && comment.replies.length > 0 && (
                   <div className="mt-2 space-y-2">
                     {comment.replies.map((reply) => (
@@ -499,7 +487,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
         </CardTitle>
       </CardHeader>
 
-      {/* Formulário de Comentário */}
+      {/* formulário de comentário */}
       <Card className="minecraft-card">
         <CardContent className="p-6">
           {isUserBanned ? (
@@ -540,7 +528,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                     disabled={isSubmitting}
                   />
 
-                  {/* Avaliação opcional */}
+                  {/* avaliação opcional */}
                   <div className="flex items-center gap-2">
                     {[1,2,3,4,5].map((star) => (
                       <button type="button" key={star} onClick={() => setRating(rating === star ? null : star)} className={`w-5 h-5 rounded-full ${rating && star <= rating ? 'bg-yellow-400' : 'bg-gray-600/50'} hover:bg-yellow-400 transition-colors`} aria-label={`Avaliar ${star}`}></button>
@@ -574,7 +562,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
         </CardContent>
       </Card>
 
-      {/* Lista de Comentários */}
+      {/* lista de comentários */}
       <div className="space-y-4">
         {comments.length === 0 ? (
           <Card className="minecraft-card">
@@ -591,13 +579,8 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
         ) : (
           comments
             .filter(comment => {
-              // Mostrar comentários aprovados para todos
               if (!comment.is_pending && !comment.is_rejected) return true;
-              
-              // Mostrar comentários pendentes apenas para o autor
               if (comment.is_pending && currentUser && comment.user_id === currentUser.id) return true;
-              
-              // Mostrar comentários rejeitados apenas para o autor
               if (comment.is_rejected && currentUser && comment.user_id === currentUser.id) return true;
               
               return false;
@@ -629,7 +612,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                             {comment.display_name || comment.username}
                           </span>
                           
-                          {/* Status do comentário */}
+                          {/* status do comentário */}
                           {comment.is_pending && (
                             <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 border border-yellow-500/30 rounded-full">
                               <Clock size={12} className="text-yellow-500" />
@@ -664,12 +647,12 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                         </div>
                       </div>
                       
-                      {/* Conteúdo do comentário */}
+                      {/* conteúdo do comentário */}
                       <p className="text-foreground leading-relaxed break-words overflow-wrap-anywhere">
                         {comment.content}
                       </p>
                       
-                      {/* Motivo da rejeição (se aplicável) */}
+                      {/* motivo da rejeição */}
                       {comment.rejection_reason && (
                         <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
                           <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
@@ -682,10 +665,11 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                         </div>
                       )}
                       
-                      {/* Ações do comentário */}
+                      {/* ações do comentário */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          {/* Botões de voto (desabilitados para comentários pendentes/rejeitados) */}
+
+                          {/* botões de voto */}
                           {!comment.is_pending && !comment.is_rejected && (
                             <>
                               <button className="flex items-center gap-1 hover:text-primary transition-colors">
@@ -699,7 +683,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                             </>
                           )}
                           
-                          {/* Botão de exclusão */}
+                          {/* botão de exclusão */}
                           {comment.can_delete && (
                             <button
                               onClick={() => handleDeleteComment(comment.id)}
@@ -711,7 +695,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                           )}
                         </div>
                         
-                        {/* Informações adicionais para comentários pendentes */}
+                        {/* informações para comentários pendentes */}
                         {comment.is_pending && (
                           <div className="flex items-center gap-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                             <div className="flex items-center justify-center w-5 h-5 bg-yellow-500 rounded-full">
@@ -732,11 +716,10 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
         )}
       </div>
 
-      {/* Modal de confirmação de exclusão */}
+      {/* modal de confirmação de exclusão */}
       {showDeleteModal && commentToDelete && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-red-500/30 rounded-xl p-6 w-full max-w-lg mx-4 shadow-2xl shadow-red-500/20">
-            {/* Header com ícone de alerta */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center border-2 border-red-500/50">
@@ -757,7 +740,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
 
             <div className="space-y-6">
 
-              {/* Preview do comentário */}
+              {/* preview do comentário */}
               <div className="bg-gray-800/50 rounded-lg p-5 border border-gray-600/50">
                 <div className="flex items-center space-x-4 mb-4">
                   <Avatar className="w-12 h-12">
@@ -783,7 +766,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                 </div>
               </div>
 
-              {/* Botões de ação */}
+              {/* botões de ação */}
               <div className="flex gap-4 pt-2">
                 <button
                   onClick={cancelDeleteComment}
@@ -805,7 +788,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
         </div>
       )}
 
-      {/* Modal de Resposta */}
+      {/* modal de resposta */}
       <ReplyModal
         isOpen={showReplyModal}
         onClose={cancelReply}

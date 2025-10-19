@@ -29,7 +29,6 @@ const RegisterPage = () => {
       [name]: value
     }));
     
-    // Limpar erro do campo quando usuário começa a digitar
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -41,7 +40,6 @@ const RegisterPage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validar username
     if (!formData.username) {
       newErrors.username = 'Username é obrigatório';
     } else if (formData.username.length < 3) {
@@ -52,7 +50,6 @@ const RegisterPage = () => {
       newErrors.username = 'Username deve conter apenas letras, números e underscore';
     }
 
-    // Validar nome de exibição
     if (!formData.display_name) {
       newErrors.display_name = 'Nome de exibição é obrigatório';
     } else if (formData.display_name.length < 2) {
@@ -61,14 +58,12 @@ const RegisterPage = () => {
       newErrors.display_name = 'Nome de exibição deve ter no máximo 100 caracteres';
     }
 
-    // Validar email
     if (!formData.email) {
       newErrors.email = 'Email é obrigatório';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Email inválido';
     }
 
-    // Validar senha
     if (!formData.password) {
       newErrors.password = 'Senha é obrigatória';
     } else if (formData.password.length < 8) {
@@ -81,7 +76,6 @@ const RegisterPage = () => {
       newErrors.password = 'Senha deve conter pelo menos um número';
     }
 
-    // Validar confirmação de senha
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'As senhas não coincidem';
     }
@@ -105,8 +99,6 @@ const RegisterPage = () => {
         password: formData.password
       });
       
-      // Não redirecionar aqui; o modal de verificação abrirá e, após verificação,
-      // a página de verificação fará o redirect para o dashboard.
     } catch (error) {
       console.error('Erro no registro:', error);
     }
@@ -115,7 +107,6 @@ const RegisterPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <div className="w-full max-w-md relative">
-        {/* Botão Voltar - Posicionado em cima do formulário */}
         <div className="absolute -top-12 left-0 z-10">
           <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -135,7 +126,6 @@ const RegisterPage = () => {
           
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Username */}
               <div className="space-y-2">
                 <Label htmlFor="username" className="text-sm font-medium">
                   Username
@@ -158,7 +148,6 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              {/* Nome de Exibição */}
               <div className="space-y-2">
                 <Label htmlFor="display_name" className="text-sm font-medium">
                   Nome de Exibição
@@ -181,7 +170,6 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
                   Email
@@ -204,7 +192,6 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              {/* Senha */}
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">
                   Senha
@@ -240,7 +227,6 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              {/* Confirmar Senha */}
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-sm font-medium">
                   Confirmar Senha
@@ -276,7 +262,6 @@ const RegisterPage = () => {
                 )}
               </div>
 
-              {/* Botão de Registro */}
               <Button
                 type="submit"
                 className="w-full minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground"
@@ -286,7 +271,6 @@ const RegisterPage = () => {
               </Button>
             </form>
 
-            {/* Link para Login */}
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
                 Já tem uma conta?{' '}

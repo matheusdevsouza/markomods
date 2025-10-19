@@ -3,7 +3,8 @@ import { logError, logInfo } from '../config/logger.js';
 import bcrypt from 'bcryptjs';
 
 export class UserModel {
-  // Buscar usuário por ID
+
+  // buscar o usuário por ID
   static async findById(id) {
     try {
       const sql = `
@@ -26,7 +27,7 @@ export class UserModel {
     }
   }
 
-  // Buscar usuário por email
+  // buscar o usuário por email
   static async findByEmail(email) {
     try {
       const sql = `
@@ -49,7 +50,7 @@ export class UserModel {
     }
   }
 
-  // Buscar usuário por username
+  // buscar o usuário por username
   static async findByUsername(username) {
     try {
       const sql = `
@@ -72,12 +73,11 @@ export class UserModel {
     }
   }
 
-  // Criar novo usuário
+  // criar novo usuário
   static async create(userData) {
     try {
       const { id, username, email, password, display_name } = userData;
       
-      // Hash da senha
       const passwordHash = await bcrypt.hash(password, 12);
       
       const sql = `
@@ -95,7 +95,6 @@ export class UserModel {
       
       await executeQuery(sql, params);
       
-      // Buscar usuário criado
       const user = await this.findById(id);
       
       logInfo('Usuário criado com sucesso', { userId: id, username, email });
@@ -107,7 +106,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar usuário
+  // atualizar usuário
   static async update(id, updateData) {
     try {
       const allowedFields = [
@@ -142,7 +141,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar senha
+  // atualizar senha
   static async updatePassword(id, newPassword) {
     try {
       const saltRounds = 12;
@@ -159,7 +158,7 @@ export class UserModel {
     }
   }
 
-  // Verificar senha
+  // verificar senha
   static async verifyPassword(password, password_hash) {
     try {
       return await bcrypt.compare(password, password_hash);
@@ -169,7 +168,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar último login
+  // atualizar último login
   static async updateLastLogin(id) {
     try {
       const sql = `UPDATE users SET last_login = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
@@ -182,7 +181,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar role (apenas admin)
+  // atualizar cargo (apenas admin)
   static async updateRole(id, newRole) {
     try {
       const allowedRoles = ['member', 'moderator', 'admin', 'super_admin'];
@@ -201,7 +200,7 @@ export class UserModel {
     }
   }
 
-  // Banir/desbanir usuário
+  // banir/desbanir usuário
   static async updateBanStatus(id, isBanned, banReason = null) {
     try {
       const sql = `UPDATE users SET is_banned = ?, ban_reason = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
@@ -216,7 +215,7 @@ export class UserModel {
     }
   }
 
-  // Buscar todos os usuários com filtros
+  // buscar todos os usuários (filtro)
   static async findAll(filters = {}) {
     try {
       let sql = `
@@ -254,7 +253,6 @@ export class UserModel {
         params.push(filters.is_banned);
       }
       
-      // Ordenar por data de criação
       sql += ` ORDER BY created_at DESC`;
       
       const users = await executeQuery(sql, params);
@@ -267,13 +265,13 @@ export class UserModel {
     }
   }
 
-  // Deletar usuário (soft delete)
+  // deletar usuário ()
   static async delete(id) {
     try {
       const sql = `UPDATE users SET is_banned = TRUE, ban_reason = 'Conta deletada', updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       await executeQuery(sql, [id]);
       
-      logInfo('Usuário deletado (soft delete)', { userId: id });
+      logInfo('Usuário deletado', { userId: id });
       return true;
     } catch (error) {
       logError('Erro ao deletar usuário', error, { userId: id });
@@ -281,31 +279,25 @@ export class UserModel {
     }
   }
 
-  // Deletar conta completamente (hard delete) - Versão simplificada
+  // deletar conta completamente
   static async deleteAccountCompletely(userId) {
     try {
 
-      // 1. Deletar comentários do usuário
       const deleteCommentsSql = `DELETE FROM comments WHERE user_id = ?`;
       await executeQuery(deleteCommentsSql, [userId]);
-
-      // 2. Deletar downloads do usuário
 
       const deleteDownloadsSql = `DELETE FROM downloads WHERE user_id = ?`;
       await executeQuery(deleteDownloadsSql, [userId]);
 
-      // 3. Deletar favoritos do usuário
       const deleteFavoritesSql = `DELETE FROM favorites WHERE user_id = ?`;
       await executeQuery(deleteFavoritesSql, [userId]);
 
-      // 4. Deletar atividades do usuário (se a tabela existir)
       try {
         const deleteActivitiesSql = `DELETE FROM activities WHERE user_id = ?`;
         await executeQuery(deleteActivitiesSql, [userId]);
       } catch (activityError) {
       }
 
-      // 5. Deletar o usuário
       const deleteUserSql = `DELETE FROM users WHERE id = ?`;
       const result = await executeQuery(deleteUserSql, [userId]);
 
@@ -318,13 +310,12 @@ export class UserModel {
     }
   }
 
-  // Atualizar usuário (admin)
+  // atualizar usuário (admin)
   static async updateUser(userId, updateData) {
     try {
       
       const { username, display_name, email, role, is_verified } = updateData;
       
-      // Construir query dinamicamente
       const fields = [];
       const values = [];
       
@@ -367,8 +358,6 @@ export class UserModel {
         throw new Error('Usuário não encontrado');
       }
       
-      
-      // Buscar usuário atualizado
       const updatedUser = await this.findById(userId);
       return updatedUser;
       
@@ -378,7 +367,7 @@ export class UserModel {
     }
   }
 
-  // Verificar se email existe
+  // verificar se email existe
   static async emailExists(email) {
     try {
       const sql = `SELECT COUNT(*) as count FROM users WHERE email = ?`;
@@ -390,7 +379,7 @@ export class UserModel {
     }
   }
 
-  // Verificar se username existe
+  // verificar se username existe
   static async usernameExists(username) {
     try {
       const sql = `SELECT COUNT(*) as count FROM users WHERE username = ?`;
@@ -402,7 +391,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar perfil do usuário
+  // atualizar perfil do usuário
   static async updateProfile(userId, profileData) {
     try {
       const {
@@ -435,7 +424,6 @@ export class UserModel {
         userId
       ]);
 
-      // Retornar usuário atualizado
       return await this.findById(userId);
     } catch (error) {
       logError('Erro ao atualizar perfil', error, { userId, profileData });
@@ -443,9 +431,7 @@ export class UserModel {
     }
   }
 
-  // (Removido método duplicado sem hash)
-
-  // Atualizar configurações de privacidade
+  // atualizar configurações de privacidade
   static async updatePrivacySettings(userId, privacySettings) {
     try {
       const {
@@ -479,7 +465,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar configurações de notificações
+  // atualizar configurações de notificações
   static async updateNotificationSettings(userId, notificationSettings) {
     try {
       const {
@@ -515,7 +501,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar configurações de tema
+  // atualizar configurações de tema
   static async updateThemeSettings(userId, themeSettings) {
     try {
       const {
@@ -547,7 +533,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar configurações de idioma
+  // atualizar configurações de idioma
   static async updateLanguageSettings(userId, languageSettings) {
     try {
       const {
@@ -577,7 +563,7 @@ export class UserModel {
     }
   }
 
-  // Atualizar configurações de conta
+  // atualizar configurações de conta
   static async updateAccountSettings(userId, accountSettings) {
     try {
       const {
@@ -605,24 +591,18 @@ export class UserModel {
     }
   }
 
-  // Excluir conta do usuário
+  // excluir conta do usuário
   static async deleteAccount(userId) {
     try {
-      // Usar transação para garantir consistência
       await executeTransaction(async (connection) => {
-        // Excluir atividades
         await connection.execute('DELETE FROM activities WHERE user_id = ?', [userId]);
         
-        // Excluir favoritos
         await connection.execute('DELETE FROM favorites WHERE user_id = ?', [userId]);
         
-        // Excluir downloads
         await connection.execute('DELETE FROM downloads WHERE user_id = ?', [userId]);
-        
-        // Excluir comentários
+          
         await connection.execute('DELETE FROM comments WHERE user_id = ?', [userId]);
         
-        // Excluir usuário
         await connection.execute('DELETE FROM users WHERE id = ?', [userId]);
       });
     } catch (error) {

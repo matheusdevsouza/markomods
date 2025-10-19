@@ -107,7 +107,6 @@ const AdminCommentsModerationPage = () => {
           description: 'O comentário foi publicado com sucesso.' 
         });
         
-        // Remover da lista de pendentes
         setPendingComments(prev => prev.filter(c => c.id !== commentId));
       } else {
         const error = await response.json();
@@ -146,7 +145,6 @@ const AdminCommentsModerationPage = () => {
           description: 'O comentário foi rejeitado e não será publicado.' 
         });
         
-        // Mover para lista de rejeitados
         const rejectedComment = {
           ...selectedComment,
           rejection_reason: rejectReason.trim(),
@@ -200,7 +198,6 @@ const AdminCommentsModerationPage = () => {
           description: 'O usuário foi banido da plataforma e será deslogado automaticamente.' 
         });
         
-        // Remover comentários do usuário banido
         setPendingComments(prev => prev.filter(c => c.user_id !== selectedComment.user_id));
         setRejectedComments(prev => prev.filter(c => c.user_id !== selectedComment.user_id));
         
@@ -689,7 +686,6 @@ const AdminCommentsModerationPage = () => {
         </Tabs>
       </motion.div>
 
-      {/* Modal de Rejeição */}
       <Dialog open={rejectModalOpen} onOpenChange={setRejectModalOpen}>
         <DialogContent>
           <DialogHeader>
@@ -740,7 +736,6 @@ const AdminCommentsModerationPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Modal de Banimento */}
       <Dialog open={banModalOpen} onOpenChange={setBanModalOpen}>
         <DialogContent>
           <DialogHeader>

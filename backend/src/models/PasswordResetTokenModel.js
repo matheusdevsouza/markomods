@@ -3,19 +3,18 @@ import { logError, logInfo } from '../config/logger.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export class PasswordResetTokenModel {
-  // Criar token de reset com medidas de segurança
+
+  // criar token de reset com segurança (mais segurança do que ja tem)
   static async create(userId, ipAddress = null, userAgent = null) {
     try {
-      // Verificar se já existe um token ativo para este usuário
       const existingToken = await this.findActiveTokenByUserId(userId);
       if (existingToken) {
-        // Invalidar token existente
         await this.markAsUsed(existingToken.id);
       }
 
       const id = uuidv4();
       const token = uuidv4();
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 horas
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); 
       
       const sql = `
         INSERT INTO password_reset_tokens (id, user_id, token, expires_at, ip_address, user_agent, attempts)
@@ -37,7 +36,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Buscar token por valor
+  // buscar token pelo valor
   static async findByToken(token) {
     try {
       const sql = `
@@ -55,7 +54,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Marcar token como usado
+  // marcar token como usado
   static async markAsUsed(tokenId) {
     try {
       const sql = `UPDATE password_reset_tokens SET used_at = CURRENT_TIMESTAMP WHERE id = ?`;
@@ -69,7 +68,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Limpar tokens expirados
+  // limpar tokens expirados
   static async cleanExpiredTokens() {
     try {
       const sql = `DELETE FROM password_reset_tokens WHERE expires_at < CURRENT_TIMESTAMP`;
@@ -86,7 +85,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Verificar se token é válido
+  // verificar se token é válido
   static async isValidToken(token) {
     try {
       const tokenData = await this.findByToken(token);
@@ -95,12 +94,10 @@ export class PasswordResetTokenModel {
         return false;
       }
       
-      // Verificar se não expirou
       if (new Date() > new Date(tokenData.expires_at)) {
         return false;
       }
       
-      // Verificar se não foi usado
       if (tokenData.used_at) {
         return false;
       }
@@ -112,7 +109,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Remover token específico
+  // remover um token específico
   static async removeToken(tokenId) {
     try {
       const sql = `DELETE FROM password_reset_tokens WHERE id = ?`;
@@ -126,7 +123,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Remover todos os tokens de um usuário
+  // remover todos os tokens de um usuário
   static async removeUserTokens(userId) {
     try {
       const sql = `DELETE FROM password_reset_tokens WHERE user_id = ?`;
@@ -140,7 +137,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Buscar token ativo por usuário
+  // buscar token ativo por usuário
   static async findActiveTokenByUserId(userId) {
     try {
       const sql = `
@@ -158,7 +155,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Incrementar tentativas de uso do token
+  // incrementar tentativas de uso do token
   static async incrementAttempts(tokenId) {
     try {
       const sql = `
@@ -177,7 +174,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Verificar se token excedeu tentativas máximas
+  // verificar se token alcançou as tentativas máximas
   static async hasExceededMaxAttempts(tokenId, maxAttempts = 5) {
     try {
       const sql = `
@@ -195,7 +192,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Verificar rate limiting por IP
+  // verificar rate limiting por IP
   static async checkRateLimit(ipAddress, maxRequests = 3, windowMinutes = 15) {
     try {
       const windowStart = new Date(Date.now() - (windowMinutes * 60 * 1000));
@@ -216,14 +213,12 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Limpar tokens expirados e antigos
+  // limpar tokens expirados e antigos
   static async cleanExpiredAndOldTokens() {
     try {
-      // Remover tokens expirados
       const expiredSql = `DELETE FROM password_reset_tokens WHERE expires_at < CURRENT_TIMESTAMP`;
       const expiredResult = await executeQuery(expiredSql);
       
-      // Remover tokens antigos (mais de 7 dias)
       const oldSql = `DELETE FROM password_reset_tokens WHERE created_at < DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)`;
       const oldResult = await executeQuery(oldSql);
       
@@ -240,7 +235,7 @@ export class PasswordResetTokenModel {
     }
   }
 
-  // Obter estatísticas de tokens
+  // obter estatísticas de tokens
   static async getStats() {
     try {
       const sql = `

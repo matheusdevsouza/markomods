@@ -2,7 +2,8 @@ import jwt from 'jsonwebtoken';
 import { logError, logInfo, logWarn } from '../config/logger.js';
 
 export class JWTService {
-  // Gerar access token
+
+  // gerar access token
   static generateAccessToken(payload) {
     try {
       const secret = process.env.JWT_SECRET;
@@ -23,7 +24,7 @@ export class JWTService {
     }
   }
 
-  // Gerar refresh token
+  // gerar refresh token
   static generateRefreshToken(payload) {
     try {
       const secret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
@@ -44,7 +45,7 @@ export class JWTService {
     }
   }
 
-  // Verificar access token
+  // verificar access token
   static verifyAccessToken(token) {
     try {
       const secret = process.env.JWT_SECRET;
@@ -84,7 +85,7 @@ export class JWTService {
     }
   }
 
-  // Verificar refresh token
+  // verificar refresh token
   static verifyRefreshToken(token) {
     try {
       const secret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
@@ -124,7 +125,7 @@ export class JWTService {
     }
   }
 
-  // Decodificar token (sem verificar assinatura)
+  // decodificar token  
   static decodeToken(token) {
     try {
       const decoded = jwt.decode(token);
@@ -135,7 +136,7 @@ export class JWTService {
     }
   }
 
-  // Extrair payload do token
+  // extrair seu payload
   static extractPayload(token) {
     try {
       const decoded = jwt.decode(token);
@@ -156,7 +157,7 @@ export class JWTService {
     }
   }
 
-  // Verificar se token está próximo de expirar
+  // verificar se seu token esta quase expirando
   static isTokenNearExpiry(token, thresholdMinutes = 30) {
     try {
       const decoded = jwt.decode(token);
@@ -175,7 +176,7 @@ export class JWTService {
     }
   }
 
-  // Gerar par de tokens (access + refresh)
+  // gerar par de tokens (access + refresh)
   static generateTokenPair(payload) {
     try {
       const accessToken = this.generateAccessToken(payload);
@@ -192,7 +193,7 @@ export class JWTService {
     }
   }
 
-  // Renovar tokens
+  // renovar tokens
   static refreshTokens(refreshToken) {
     try {
       const verification = this.verifyRefreshToken(refreshToken);
@@ -203,7 +204,7 @@ export class JWTService {
       
       const payload = verification.payload;
       
-      // Gerar novos tokens
+      // gerar novos tokens
       const newAccessToken = this.generateAccessToken(payload);
       const newRefreshToken = this.generateRefreshToken(payload);
       

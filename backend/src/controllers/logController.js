@@ -186,7 +186,7 @@ export const getLogsSummary = async (req, res) => {
   try {
     const { period = '24h' } = req.query;
     
-    // Buscar logs das últimas 24 horas por padrão
+    // buscar logs das últimas 24 horas (padrão)
     let dateFrom = new Date();
     if (period === '7d') {
       dateFrom.setDate(dateFrom.getDate() - 7);
@@ -203,7 +203,7 @@ export const getLogsSummary = async (req, res) => {
     
     const logs = await LogService.getLogs(filters);
     
-    // Agrupar por categoria e nível
+    // agrupar por categoria, nivel e hora
     const summary = {
       total: logs.length,
       byCategory: {},
@@ -213,19 +213,17 @@ export const getLogsSummary = async (req, res) => {
     };
     
     logs.forEach(log => {
-      // Por categoria
+
       if (!summary.byCategory[log.category]) {
         summary.byCategory[log.category] = 0;
       }
       summary.byCategory[log.category]++;
       
-      // Por nível
       if (!summary.byLevel[log.level]) {
         summary.byLevel[log.level] = 0;
       }
       summary.byLevel[log.level]++;
       
-      // Por hora
       const hour = new Date(log.created_at).getHours();
       if (!summary.byHour[hour]) {
         summary.byHour[hour] = 0;
@@ -263,7 +261,7 @@ export const exportLogs = async (req, res) => {
       search: search || '',
       dateFrom: dateFrom || null,
       dateTo: dateTo || null,
-      limit: 10000 // Limite maior para exportação
+      limit: 10000 
     };
     
     const logs = await LogService.getLogs(filters);
@@ -279,7 +277,8 @@ export const exportLogs = async (req, res) => {
         }
       });
     } else {
-      // Exportar como CSV
+
+      // exportar csv (inativo por enquanto)
       const csvContent = [
         ['Timestamp', 'Nível', 'Categoria', 'Ação', 'Usuário', 'IP', 'Recurso', 'Detalhes', 'Metadados'],
         ...logs.map(log => [
@@ -311,9 +310,6 @@ export const exportLogs = async (req, res) => {
 export const clearOldLogs = async (req, res) => {
   try {
     const { days = 30 } = req.query;
-    
-    // Esta funcionalidade seria implementada no LogService
-    // Por enquanto, retornamos uma mensagem informativa
     
     res.json({
       success: true,

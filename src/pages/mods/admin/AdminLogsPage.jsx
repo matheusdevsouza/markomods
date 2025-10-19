@@ -53,7 +53,6 @@ const AdminLogsPage = () => {
   const [summary, setSummary] = useState(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
-  // Buscar logs reais do sistema
   useEffect(() => {
     fetchLogs();
     fetchSummary();
@@ -101,11 +100,9 @@ const AdminLogsPage = () => {
     }
   };
 
-  // Filtrar logs baseado na busca e filtros
   useEffect(() => {
     let filtered = logs;
 
-    // Filtro por termo de busca
     if (searchTerm) {
       filtered = filtered.filter(log => 
         log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -115,22 +112,18 @@ const AdminLogsPage = () => {
       );
     }
 
-    // Filtro por nível
     if (selectedLevel !== 'all') {
       filtered = filtered.filter(log => log.level === selectedLevel);
     }
 
-    // Filtro por categoria
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(log => log.category === selectedCategory);
     }
 
-    // Filtro por tipo de recurso
     if (selectedResourceType !== 'all') {
       filtered = filtered.filter(log => log.resource_type === selectedResourceType);
     }
 
-    // Filtro por data
     if (dateFrom) {
       filtered = filtered.filter(log => new Date(log.created_at) >= new Date(dateFrom));
     }
@@ -286,7 +279,6 @@ const AdminLogsPage = () => {
       transition={{ duration: 0.5 }}
       className="space-y-4 sm:space-y-8 p-4 sm:p-6"
     >
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div>
           <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap mb-2">
@@ -294,7 +286,7 @@ const AdminLogsPage = () => {
             Logs do Sistema
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Monitore todas as atividades e eventos da plataforma Eu, Marko! Mods
+            Monitore todas as atividades e eventos da plataforma Eu, Marko!
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2 sm:space-y-0">
@@ -317,7 +309,6 @@ const AdminLogsPage = () => {
         </div>
       </div>
 
-      {/* Resumo dos Logs */}
       {summary && (
         <Card className="minecraft-card">
           <CardHeader>
@@ -343,7 +334,6 @@ const AdminLogsPage = () => {
         </Card>
       )}
 
-      {/* Filtros e Busca */}
       <Card className="minecraft-card">
         <CardHeader>
           <CardTitle className="flex items-center text-lg sm:text-xl">
@@ -352,7 +342,6 @@ const AdminLogsPage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Filtros Básicos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="search" className="text-sm sm:text-base">Buscar nos Logs</Label>
@@ -406,7 +395,6 @@ const AdminLogsPage = () => {
             </div>
           </div>
 
-          {/* Filtros Avançados */}
           <div className="space-y-4">
             <Button
               variant="outline"
@@ -477,8 +465,7 @@ const AdminLogsPage = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Lista de Logs */}
+            
       <Card className="minecraft-card">
         <CardHeader>
           <CardTitle className="flex items-center text-lg sm:text-xl">

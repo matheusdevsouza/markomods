@@ -23,12 +23,13 @@ const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
 
   return (
     <div className="ml-8 mt-3 p-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-l-4 border-blue-500 rounded-r-lg relative">
-      {/* Indicador de resposta */}
+
+      {/* indicador de resposta */}
       <div className="absolute -left-2 top-4 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
         <MessageSquare className="w-2.5 h-2.5 text-white" />
       </div>
 
-      {/* Header da resposta */}
+      {/* header da resposta */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-3">
           <Avatar className="w-8 h-8">
@@ -57,7 +58,7 @@ const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
           </div>
         </div>
 
-        {/* Botão de deletar */}
+        {/* botão de deletar */}
         {canDelete && (
           <button
             onClick={() => onDelete(reply.id)}
@@ -71,12 +72,12 @@ const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
         )}
       </div>
 
-      {/* Conteúdo da resposta */}
+      {/* conteúdo da resposta */}
       <div className="text-sm text-gray-200 leading-relaxed">
         {reply.content}
       </div>
 
-      {/* Badge de resposta oficial */}
+      {/* badge de resposta oficial */}
       <div className="mt-3 flex justify-end">
         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
           <Shield className="w-3 h-3 mr-1" />

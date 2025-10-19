@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       password: userData.password, 
       username: userData.username,
       role: users.length === 0 ? 'admin' : 'member',
-      is_verified: users.length === 0, // First user is admin and verified
+      is_verified: users.length === 0,
       avatar_url: '', 
       full_name: userData.username,
       bio: 'Novo membro!',
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{ session, currentUserProfile, loadingAuth, login, register, logout, fetchUserProfile, users, updateUserProfileInList, setUsers /* For admin user management */ }}>
+    <AuthContext.Provider value={{ session, currentUserProfile, loadingAuth, login, register, logout, fetchUserProfile, users, updateUserProfileInList, setUsers }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,12 +1,8 @@
-/**
- * Middleware para verificar se o usuário tem as roles necessárias
- * @param {string[]} allowedRoles - Array de roles permitidas
- * @returns {Function} Middleware function
- */
+// middleware para verificar se o usuário tem os cargos permitidas
 export const requireRole = (allowedRoles) => {
   return (req, res, next) => {
     try {
-      // Verificar se o usuário está autenticado
+
       if (!req.user) {
         return res.status(401).json({
           success: false,
@@ -14,7 +10,7 @@ export const requireRole = (allowedRoles) => {
         });
       }
 
-      // Verificar se o usuário tem uma das roles permitidas
+      // verificar se tem algum cargo permitido
       const userRole = req.user.role;
       
       if (!allowedRoles.includes(userRole)) {
@@ -24,7 +20,7 @@ export const requireRole = (allowedRoles) => {
         });
       }
 
-      // Se chegou até aqui, o usuário tem permissão
+      // se ele chegou até aqui, tem permissão
       next();
     } catch (error) {
       console.error('Erro na verificação de role:', error);
@@ -36,4 +32,3 @@ export const requireRole = (allowedRoles) => {
   };
 };
 
-// Export já foi feito acima com export const requireRole

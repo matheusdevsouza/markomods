@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link, NavLink } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Youtube, Instagram, Download, Mail, Home, Package, UserCircle } from 'lucide-react';
+import { Youtube, Instagram, Download, Mail, Home, Package, UserCircle, Shield } from 'lucide-react';
 import { useData } from "@/contexts/DataContext";
 import { useTranslation } from "@/hooks/useTranslation";
 
@@ -54,7 +54,8 @@ const Header = ({ profileUsername }) => {
 
   return (
     <>
-      {/* Header Fixo */}
+
+      {/* header fixo */}
       <motion.header 
         className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center justify-center py-8 md:py-12 px-4 text-center relative overflow-hidden min-h-[40vh] md:min-h-[50vh] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40"
         initial={{ opacity: 0 }}
@@ -151,7 +152,7 @@ const Header = ({ profileUsername }) => {
       </motion.div>
       </motion.header>
 
-      {/* Menu de Navegação */}
+      {/* menu de navegação */}
       <motion.nav 
         className="fixed top-[40vh] md:top-[50vh] left-0 right-0 z-40 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border/40 shadow-lg"
         initial={{ opacity: 0, y: -20 }}
@@ -231,11 +232,35 @@ const Header = ({ profileUsername }) => {
               <UserCircle size={18} className="mr-2" />
               <span>{t('header.nav.about')}</span>
             </NavLink>
+
+            <NavLink 
+              to="/terms" 
+              className={({isActive}) => 
+                `flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary/20 hover:text-primary ${
+                  isActive ? 'bg-primary/20 text-primary shadow-lg' : 'text-foreground/80 hover:text-foreground'
+                }`
+              }
+            >
+              <Shield size={18} className="mr-2" />
+              <span>Termos</span>
+            </NavLink>
+
+            <NavLink 
+              to="/privacy-policy" 
+              className={({isActive}) => 
+                `flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-primary/20 hover:text-primary ${
+                  isActive ? 'bg-primary/20 text-primary shadow-lg' : 'text-foreground/80 hover:text-foreground'
+                }`
+              }
+            >
+              <Shield size={18} className="mr-2" />
+              <span>Privacidade</span>
+            </NavLink>
           </div>
         </div>
       </motion.nav>
 
-      {/* Espaçador para compensar o header fixo */}
+      {/* espaçador para compensar o header */}
       <div className="h-[40vh] md:h-[50vh]"></div>
     </>
   );

@@ -15,6 +15,7 @@ import MainLayout from '@/components/mods/layout/MainLayout';
 import AdminLayout from '@/components/mods/layout/AdminLayout';
 import PublicLayout from '@/components/layout/PublicLayout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import DomainValidator from '@/components/security/DomainValidator';
 const HomePage = React.lazy(() => import('@/pages/mods/HomePage'));
 const ModDetailPage = React.lazy(() => import('@/pages/mods/ModDetailPage'));
 const DownloadPage = React.lazy(() => import('./pages/mods/DownloadPage'));
@@ -22,6 +23,8 @@ const ModsListingPage = React.lazy(() => import('@/pages/mods/ModsListingPage'))
 const AddonsListingPage = React.lazy(() => import('@/pages/mods/AddonsListingPage'));
 const SearchResultsPage = React.lazy(() => import('@/pages/mods/SearchResultsPage'));
 const TermsOfServicePage = React.lazy(() => import('@/pages/mods/TermsOfServicePage'));
+const PrivacyPolicyPage = React.lazy(() => import('@/pages/mods/PrivacyPolicyPage'));
+const AboutPage = React.lazy(() => import('@/pages/mods/AboutPage'));
 const ContactPage = React.lazy(() => import('@/pages/mods/ContactPage'));
 const FAQPage = React.lazy(() => import('@/pages/mods/FAQPage'));
 const BannedPage = React.lazy(() => import('@/pages/mods/BannedPage'));
@@ -67,6 +70,7 @@ function App() {
           <DownloadsProvider>
             <I18nextProvider i18n={i18n}>
             <div className="App">
+              <DomainValidator />
               <AuthModalOutlet />
               <Suspense fallback={<LoadingSpinner />}>
                 <Routes>
@@ -79,6 +83,8 @@ function App() {
                   <Route path="mods/:slug/download" element={<DownloadPage />} />
                   <Route path="search" element={<SearchResultsPage />} />
                   <Route path="terms" element={<TermsOfServicePage />} />
+                  <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
+                  <Route path="about" element={<AboutPage />} />
                   <Route path="contact" element={<ContactPage />} />
                   <Route path="faq" element={<FAQPage />} />
                   <Route path="changelog" element={<ChangelogPage />} />

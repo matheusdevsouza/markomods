@@ -16,11 +16,9 @@ const VerifyEmailPage = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   
-  // Ref para controlar se a verificação já foi executada (evita duplicação do StrictMode)
   const hasVerified = useRef(false);
 
   useEffect(() => {
-    // Se já verificou ou não há token, não executar novamente
     if (hasVerified.current || !token) {
       if (!token) {
         setError('Token de verificação não encontrado.');
@@ -29,7 +27,6 @@ const VerifyEmailPage = () => {
       return;
     }
     
-    // Marcar como verificação em andamento
     hasVerified.current = true;
     
     const run = async () => {
@@ -39,10 +36,8 @@ const VerifyEmailPage = () => {
         
         if (res.ok) {
           setSuccess(true);
-          // Fechar modal (caso aberto na tela anterior)
           try { closeVerificationModal(); } catch {}
           
-          // Buscar dados do usuário e fazer login automático
           try {
             const userResponse = await fetch(`/api/auth/verify`, {
               method: 'GET',
@@ -55,26 +50,20 @@ const VerifyEmailPage = () => {
             if (userResponse.ok) {
               const userData = await userResponse.json();
               if (userData.data && userData.data.user) {
-                // Atualizar contexto com usuário verificado e marcar como autenticado
                 updateUser({ ...userData.data.user, is_verified: true });
                 setIsAuthenticated(true);
-                // Redirecionar para dashboard logado
                 setTimeout(() => navigate('/dashboard', { replace: true }), 1500);
               } else {
-                // Se não conseguir buscar dados, redirecionar para login
                 setTimeout(() => navigate('/login', { replace: true }), 1500);
               }
             } else {
-              // Se não conseguir buscar dados, redirecionar para login
               setTimeout(() => navigate('/login', { replace: true }), 1500);
             }
           } catch (error) {
             console.error('Erro ao buscar dados do usuário:', error);
-            // Em caso de erro, redirecionar para login
             setTimeout(() => navigate('/login', { replace: true }), 1500);
           }
         } else {
-          // Tratar diferentes tipos de erro
           if (data.message === 'Token já utilizado') {
             setError('Este link já foi usado. Faça login para acessar sua conta.');
           } else if (data.message === 'Token expirado') {

@@ -40,7 +40,8 @@ const Pagination = ({
 
   return (
     <div className={`flex items-center justify-center space-x-2 ${className}`}>
-      {/* Botão Anterior */}
+
+      {/* botão anterior */}
       <Button
         variant="outline"
         size="sm"
@@ -52,7 +53,7 @@ const Pagination = ({
         Anterior
       </Button>
 
-      {/* Páginas */}
+      {/* páginas */}
       {visiblePages.map((page, index) => (
         <React.Fragment key={index}>
           {page === '...' ? (
@@ -76,7 +77,7 @@ const Pagination = ({
         </React.Fragment>
       ))}
 
-      {/* Botão Próximo */}
+      {/* botão próximo */}
       <Button
         variant="outline"
         size="sm"

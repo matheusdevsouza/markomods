@@ -79,7 +79,7 @@
     }
   },
   "footer": {
-    "brandName": "Eu, Marko! Mods",
+    "brandName": "Eu, Marko!",
     "brandDescription": "Confira já todos os nossos mods!",
     "quickLinks": "Links Rápidos",
     "home": "Início",
@@ -707,8 +707,8 @@
       "title": "Perguntas Frequentes",
       "subtitle": "Encontre respostas para as dúvidas mais comuns",
       "whatIsEuMarkoMods": {
-        "title": "O que é o Eu, Marko! Mods?",
-        "content": "O Eu, Marko! Mods é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores."
+        "title": "O que é o Eu, Marko!?",
+        "content": "O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores."
       },
       "howToRegister": {
         "title": "Como me registrar?",
@@ -736,7 +736,7 @@
       },
       "systemRequirements": {
         "title": "Quais são os requisitos do sistema?",
-        "content": "Para usar o Eu, Marko! Mods, você precisa de: Minecraft Java Edition, Java 8 ou superior, conexão com internet e um navegador moderno. Para mods específicos, consulte os requisitos individuais de cada mod."
+        "content": "Para usar o Eu, Marko!, você precisa de: Minecraft Java Edition, Java 8 ou superior, conexão com internet e um navegador moderno. Para mods específicos, consulte os requisitos individuais de cada mod."
       },
       "modIssues": {
         "title": "O que fazer se um mod não funcionar?",
@@ -756,7 +756,7 @@
   },
   "faq": {
     "title": "Perguntas Frequentes",
-    "subtitle": "Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko! Mods",
+    "subtitle": "Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko!",
     "searchPlaceholder": "Pesquisar nas perguntas frequentes...",
     "categories": {
       "all": "Todas",
@@ -767,16 +767,16 @@
       "community": "Comunidade"
     },
     "whatIsMarkoMods": {
-      "title": "O que é o Eu, Marko! Mods?",
-      "content": "O Eu, Marko! Mods é uma plataforma dedicada a mods para Minecraft, onde você pode descobrir, baixar e compartilhar mods incríveis. Nossa missão é facilitar o acesso a mods de qualidade e criar uma comunidade vibrante de jogadores e desenvolvedores."
+      "title": "O que é o Eu, Marko!?",
+      "content": "O Eu, Marko! é uma plataforma dedicada a mods para Minecraft, onde você pode descobrir, baixar e compartilhar mods incríveis. Nossa missão é facilitar o acesso a mods de qualidade e criar uma comunidade vibrante de jogadores e desenvolvedores."
     },
     "howToStart": {
-      "title": "Como começar a usar o Eu, Marko! Mods?",
+      "title": "Como começar a usar o Eu, Marko!?",
       "content": "Para começar:\n\n1) Crie uma conta gratuita\n2) Explore nossa biblioteca de mods\n3) Baixe mods que te interessam\n4) Instale seguindo nossas instruções\n\nÉ simples e gratuito!"
     },
     "isFree": {
-      "title": "O Eu, Marko! Mods é gratuito?",
-      "content": "Sim! O Eu, Marko! Mods é completamente gratuito. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum."
+      "title": "O Eu, Marko! é gratuito?",
+      "content": "Sim! O Eu, Marko! é completamente gratuito. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum."
     },
     "howToRegister": {
       "title": "Como me registrar?",
@@ -812,7 +812,7 @@
     },
     "systemRequirements": {
       "title": "Quais são os requisitos do sistema?",
-      "content": "Para usar o Eu, Marko! Mods: Minecraft Java Edition, Java 8 ou superior, conexão com internet e navegador moderno. Para mods específicos, consulte os requisitos individuais."
+      "content": "Para usar o Eu, Marko!: Minecraft Java Edition, Java 8 ou superior, conexão com internet e navegador moderno. Para mods específicos, consulte os requisitos individuais."
     },
     "modIssues": {
       "title": "O que fazer se um mod não funcionar?",

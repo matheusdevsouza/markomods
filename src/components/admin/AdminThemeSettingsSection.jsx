@@ -35,7 +35,6 @@ const AdminThemeSettingsSection = ({ themeSettingsData, onThemeSettingsChange })
           <Input id="themeBackground" name="background" value={themeSettingsData?.background || ''} onChange={handleInputChange} />
         </div>
       </div>
-      {/* O botão de salvar tema foi removido daqui, pois o salvamento é global no AdminDashboardPage */}
     </SectionWrapper>
   );
 };

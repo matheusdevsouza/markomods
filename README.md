@@ -1,4 +1,4 @@
-# 🎮 Eu, Marko! Mods
+# 🎮 Eu, Marko!
 
 Plataforma completa para gerenciamento e distribuição de mods para Minecraft.
 

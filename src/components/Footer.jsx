@@ -30,11 +30,11 @@ const Footer = React.memo(() => {
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
     >
-      {/* Conteúdo Principal */}
+      {/* conteúdo principal */}
       <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-8 md:py-12">
-        {/* Layout Mobile: Seção Sobre centralizada + outras seções com background */}
+
+        {/* layout mobile*/}
         <div className="md:hidden">
-          {/* Seção Sobre - Centralizada */}
           <div className="flex justify-center mb-6">
             <div className="space-y-3 max-w-xs text-center">
               <div className="flex items-center justify-center space-x-2">
@@ -57,10 +57,9 @@ const Footer = React.memo(() => {
             </div>
           </div>
 
-          {/* Outras seções com background conjunto */}
+          {/* outras seções */}
           <div className="bg-muted/30 rounded-lg p-4">
             <div className="grid grid-cols-1 gap-6">
-              {/* Links Rápidos */}
               <div className="space-y-3">
                 <h3 className="text-base font-semibold text-foreground">{t('footer.quickLinks')}</h3>
                 <ul className="space-y-1.5">
@@ -91,7 +90,7 @@ const Footer = React.memo(() => {
                 </ul>
               </div>
 
-              {/* Redes Sociais */}
+              {/* redes sociais */}
               <div className="space-y-3">
                 <h3 className="text-base font-semibold text-foreground">Redes Sociais</h3>
                 <ul className="space-y-1.5">
@@ -114,7 +113,7 @@ const Footer = React.memo(() => {
                     </a>
                   </li>
                   <li>
-                    <a href="https://eumarko.com/pt" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
+                    <a href="https://eumarko.com/" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
                       <i className="fas fa-globe h-3 w-3 mr-2 flex-shrink-0"></i>
                       Site Oficial
                     </a>
@@ -122,7 +121,7 @@ const Footer = React.memo(() => {
                 </ul>
               </div>
 
-              {/* Suporte */}
+              {/* suporte */}
               <div className="space-y-3">
                 <h3 className="text-base font-semibold text-foreground">{t('footer.support')}</h3>
                 <ul className="space-y-1.5">
@@ -133,9 +132,34 @@ const Footer = React.memo(() => {
                     </Link>
                   </li>
                   <li>
+                    <Link to="/about" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
+                      <Shield className="h-3 w-3 mr-2 flex-shrink-0" />
+                      Sobre Nós
+                    </Link>
+                  </li>
+                  <li>
                     <Link to="/faq" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
                       <Shield className="h-3 w-3 mr-2 flex-shrink-0" />
                       {t('footer.faq')}
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* legal */}
+              <div className="space-y-3">
+                <h3 className="text-base font-semibold text-foreground">Legal</h3>
+                <ul className="space-y-1.5">
+                  <li>
+                    <Link to="/terms" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
+                      <Shield className="h-3 w-3 mr-2 flex-shrink-0" />
+                      Termos de Uso
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/privacy-policy" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
+                      <Shield className="h-3 w-3 mr-2 flex-shrink-0" />
+                      Política de Privacidade
                     </Link>
                   </li>
                 </ul>
@@ -144,10 +168,8 @@ const Footer = React.memo(() => {
           </div>
         </div>
 
-        {/* Layout Desktop: Grid tradicional */}
-        <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-8 lg:gap-12 xl:gap-16 2xl:gap-20 pb-12">
-          
-          {/* Seção 1: Sobre */}
+        {/* layout desktop */}
+        <div className="hidden md:grid grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5 gap-8 lg:gap-12 xl:gap-16 2xl:gap-20 pb-12">
           <div className="space-y-4 max-w-xs text-left">
             <div className="flex items-center space-x-2">
               <h3 className="text-lg font-minecraft text-primary">{t('footer.brandName')}</h3>
@@ -168,7 +190,6 @@ const Footer = React.memo(() => {
             </div>
           </div>
 
-          {/* Seção 2: Links Rápidos */}
           <div className="space-y-4 max-w-xs">
             <h3 className="text-lg font-semibold text-foreground">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
@@ -199,7 +220,6 @@ const Footer = React.memo(() => {
             </ul>
           </div>
 
-          {/* Seção 3: Redes Sociais */}
           <div className="space-y-4 max-w-xs">
             <h3 className="text-lg font-semibold text-foreground">Redes Sociais</h3>
             <ul className="space-y-2">
@@ -222,7 +242,7 @@ const Footer = React.memo(() => {
                 </a>
               </li>
               <li>
-                <a href="https://eumarko.com/pt" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
+                <a href="https://eumarko.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
                   <i className="fas fa-globe h-3 w-3 mr-2"></i>
                   Site Oficial
                 </a>
@@ -230,7 +250,6 @@ const Footer = React.memo(() => {
             </ul>
           </div>
 
-          {/* Seção 4: Suporte */}
           <div className="space-y-4 max-w-xs">
             <h3 className="text-lg font-semibold text-foreground">{t('footer.support')}</h3>
             <ul className="space-y-2">
@@ -241,6 +260,12 @@ const Footer = React.memo(() => {
                 </Link>
               </li>
               <li>
+                <Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
+                  <Shield className="h-3 w-3 mr-2" />
+                  Sobre Nós
+                </Link>
+              </li>
+              <li>
                 <Link to="/faq" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
                   <Shield className="h-3 w-3 mr-2" />
                   {t('footer.faq')}
@@ -248,19 +273,37 @@ const Footer = React.memo(() => {
               </li>
             </ul>
           </div>
+
+          <div className="space-y-4 max-w-xs">
+            <h3 className="text-lg font-semibold text-foreground">Legal</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
+                  <Shield className="h-3 w-3 mr-2" />
+                  Termos de Uso
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
+                  <Shield className="h-3 w-3 mr-2" />
+                  Política de Privacidade
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        {/* Separador */}
         <Separator className="w-full bg-border/50" />
         
-        {/* Seção Inferior */}
+        {/* seção inferior */}
         <div className="py-4 md:py-6 flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0">
-          {/* Copyright */}
+
+          {/* copyright */}
           <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-4">
             <span className="text-xs md:text-sm text-muted-foreground text-center sm:text-left">© {year} {t('footer.allRightsReserved')}</span>
           </div>
 
-          {/* Botão Voltar ao Topo */}
+          {/* botão voltar ao topo */}
           <Button
             variant="ghost"
             size="sm"

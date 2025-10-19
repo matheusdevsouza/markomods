@@ -20,7 +20,6 @@ const ImageDebug = ({ mod }) => {
         <div><strong>VITE_API_URL:</strong> {import.meta.env.VITE_API_URL || 'não definido'}</div>
       </div>
       
-      {/* Teste de renderização das imagens */}
       <div className="mt-4 space-y-2">
         <div>
           <strong className="text-red-400">Teste 1 (mod.thumbnail):</strong>

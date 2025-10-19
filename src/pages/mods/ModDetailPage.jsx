@@ -544,15 +544,12 @@ const ModDetailPage = () => {
         <div className="flex w-full h-full">
           <div className="flex-1 px-4">
             <div className={`max-w-4xl mx-auto space-y-6 rounded-xl p-6 ${getCardClasses()}`}>
-              {}
               <div className="space-y-4 animate-pulse">
                 <Skeleton className="h-8 w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <Skeleton className="h-12 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
                 <Skeleton className="h-6 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
               </div>
-              {}
               <Skeleton className="h-80 w-full rounded-lg bg-gradient-to-r from-gray-700 to-gray-600 animate-pulse" />
-              {}
               <div className="space-y-4">
                 <div className="flex space-x-2">
                   <Skeleton className="h-10 w-24 bg-gradient-to-r from-gray-700 to-gray-600" />
@@ -565,7 +562,6 @@ const ModDetailPage = () => {
           </div>
           <div className="w-80 flex-shrink-0">
             <div className="space-y-6 ml-8">
-              {}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="grid grid-cols-3 gap-4">
@@ -574,7 +570,6 @@ const ModDetailPage = () => {
                   <Skeleton className="h-16 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
                 </div>
               </div>
-              {}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-1/2 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="flex flex-wrap gap-2">
@@ -583,7 +578,6 @@ const ModDetailPage = () => {
                   <Skeleton className="h-6 w-14 bg-gradient-to-r from-gray-700 to-gray-600" />
                 </div>
               </div>
-              {}
               <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
                 <Skeleton className="h-6 w-2/3 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <div className="space-y-2">
@@ -645,7 +639,6 @@ const ModDetailPage = () => {
   return (
     <div className="min-h-screen">
       <GoogleAdsenseMeta />
-      {/* Anúncio oficial do Google AdSense - área isolada */}
       <div className="w-full px-4 py-6 mb-8">
         <GoogleAdSense 
           position="TOP_BANNER"
@@ -793,7 +786,6 @@ const ModDetailPage = () => {
             `}</style>
           </div>
         </div>
-        {}
         {mod.video_url && (
           <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-250 ${getCardClasses()} ${
             pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -815,7 +807,6 @@ const ModDetailPage = () => {
             </div>
           </div>
         )}
-        {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -824,7 +815,6 @@ const ModDetailPage = () => {
               <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.information')}
             </h2>
-            {}
             <div className="space-y-4">
               <h3 className={`text-lg font-semibold flex items-center ${getTextClasses()}`}>
                 <Package className="h-5 w-5 mr-2 text-primary" />
@@ -869,7 +859,6 @@ const ModDetailPage = () => {
                 </div>
               </div>
             )}
-            {}
             <div className="space-y-4">
               <h3 className={`text-lg font-semibold flex items-center ${getTextClasses()}`}>
                 <User className="h-5 w-5 mr-2 text-primary" />
@@ -908,7 +897,6 @@ const ModDetailPage = () => {
                 </div>
               </div>
             </div>
-            {}
             <div className={`flex flex-wrap items-center justify-center sm:justify-start gap-4 sm:gap-6 py-3 pt-4 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
               <div className={`flex items-center space-x-2 ${getSubtextClasses()}`}>
                 <Download className="h-4 w-4 text-primary" />
@@ -925,7 +913,6 @@ const ModDetailPage = () => {
             </div>
           </div>
         </div>
-        {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -934,7 +921,6 @@ const ModDetailPage = () => {
               <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.download')}
             </h2>
-            {}
             <div className="text-center">
               <div className="flex justify-center mb-3 sm:mb-4">
                 <Download className="h-10 w-10 sm:h-12 sm:w-12 text-primary" />
@@ -962,7 +948,6 @@ const ModDetailPage = () => {
                 </div>
               )}
             </div>
-            {}
             <div className={`pt-4 sm:pt-6 ${theme === 'light' ? 'border-t border-gray-200' : 'border-t border-gray-700'}`}>
               <h4 className={`text-base sm:text-lg font-semibold mb-3 sm:mb-4 ${getTextClasses()}`}>{t('modDetail.installationInstructions')}</h4>
               <div className={`rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3 text-xs sm:text-sm ${theme === 'light' ? 'bg-gray-50 border border-gray-200' : 'bg-gray-800/50 border border-gray-700'}`}>
@@ -991,7 +976,6 @@ const ModDetailPage = () => {
             </div>
           </div>
         </div>
-        {}
         <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-500 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -1000,7 +984,6 @@ const ModDetailPage = () => {
               <div className="w-2 h-6 sm:h-8 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
               {t('modDetail.comments')}
             </h2>
-            {}
             {isAuthenticated ? (
               <div className="space-y-3 sm:space-y-4">
                 <div className="relative">
@@ -1012,7 +995,6 @@ const ModDetailPage = () => {
                     className={`w-full border rounded-xl p-3 sm:p-4 pr-14 sm:pr-16 md:pr-20 resize-none transition-all duration-300 hover:border-gray-600 text-sm sm:text-base ${getInputClasses()}`}
                     rows={3}
                   />
-                  {}
                   <button
                     onClick={handleSubmitComment}
                     disabled={!newComment.trim() || isSubmittingComment || commentCooldown > 0}
@@ -1027,18 +1009,15 @@ const ModDetailPage = () => {
                       <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                     )}
                   </button>
-                  {}
                   <div className="absolute bottom-2 left-3 text-xs text-gray-500">
                     {newComment.length}/500
                   </div>
-                  {}
                   {commentCooldown > 0 && (
                     <div className="absolute top-2 right-2 px-2 py-1 bg-red-500/20 border border-red-500/30 rounded-lg text-xs text-red-400">
                       ⏰ {formatCooldownTime(commentCooldown)}
                     </div>
                   )}
                 </div>
-                {}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs text-gray-500">
                   <div className="flex items-center space-x-1">
                     <MessageSquare className="h-3 w-3" />
@@ -1067,7 +1046,6 @@ const ModDetailPage = () => {
                 </Button>
               </div>
             )}
-            {}
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                 <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
@@ -1158,9 +1136,7 @@ const ModDetailPage = () => {
                         <p className={`text-xs sm:text-sm leading-relaxed break-words overflow-wrap-anywhere ${getSubtextClasses()}`}>
                           {comment.content}
                         </p>
-                        {}
                         <div className="flex items-center space-x-3 sm:space-x-4 mt-2 sm:mt-3">
-                          {}
                           <button
                             onClick={() => handleVoteComment(comment.id, 'upvote')}
                             className={`group flex items-center space-x-1 text-xs transition-colors duration-200 ${
@@ -1181,7 +1157,6 @@ const ModDetailPage = () => {
                                 : 'text-muted-foreground'
                             }`}>{comment.like_count || 0}</span>
                           </button>
-                          {}
                           <button
                             onClick={() => handleVoteComment(comment.id, 'downvote')}
                             className={`group flex items-center space-x-1 text-xs transition-colors duration-200 ${
@@ -1205,7 +1180,6 @@ const ModDetailPage = () => {
                         </div>
                       </div>
                     </div>
-                    {}
                     {replyingToComment?.id === comment.id && (
                       <div className={`mt-3 sm:mt-4 p-3 sm:p-4 rounded-lg border border-primary/30 ${
                         theme === 'light'
@@ -1260,7 +1234,6 @@ const ModDetailPage = () => {
                         </div>
                       </div>
                     )}
-                    {}
                     {comment.replies && comment.replies.length > 0 && (
                       <div className="mt-3 space-y-2">
                         {comment.replies.map((reply) => (
@@ -1483,7 +1456,6 @@ const ModDetailPage = () => {
                 "{commentToReply?.content}"
               </p>
             </div>
-            {}
             <form onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.target);
@@ -1531,7 +1503,6 @@ const ModDetailPage = () => {
                 </button>
               </div>
             </form>
-            {}
             <div className="mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg">
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="w-4 h-4 text-primary" />

@@ -63,7 +63,6 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    // Verificar se a senha tem pelo menos uma letra maiúscula, uma minúscula e um número
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
     if (!passwordRegex.test(password)) {
       setError('A senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número');
@@ -82,7 +81,6 @@ const ResetPasswordPage = () => {
       await resetPassword(token, password);
       setSuccess(true);
       
-      // Redirecionar para login após 3 segundos
       setTimeout(() => {
         navigate('/login');
       }, 3000);
@@ -97,7 +95,6 @@ const ResetPasswordPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative">
         <div className="w-full max-w-md relative">
-          {/* Botão Voltar com a mesma estilização do login */}
           <div className="absolute -top-12 left-0 z-10">
             <Link to="/login" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -119,7 +116,6 @@ const ResetPasswordPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative">
         <div className="w-full max-w-md relative">
-          {/* Botão Voltar com a mesma estilização do login */}
           <div className="absolute -top-12 left-0 z-10">
             <Link to="/login" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -157,7 +153,6 @@ const ResetPasswordPage = () => {
                   </Link>
                 </Button>
                 
-                {/* Removido botão fantasma inferior para manter consistência com o login */}
               </div>
             </CardContent>
           </Card>
@@ -170,7 +165,6 @@ const ResetPasswordPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 relative">
         <div className="w-full max-w-md relative">
-          {/* Botão Voltar com a mesma estilização do login */}
           <div className="absolute -top-12 left-0 z-10">
             <Link to="/login" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -197,7 +191,6 @@ const ResetPasswordPage = () => {
                 </AlertDescription>
               </Alert>
               
-              {/* Removido botão inferior; mantemos somente o link de topo para consistência */}
             </CardContent>
           </Card>
         </div>
@@ -304,7 +297,6 @@ const ResetPasswordPage = () => {
                 {loading ? 'Redefinindo...' : 'Redefinir senha'}
               </Button>
               
-              {/* Removido botão fantasma inferior para manter consistência com o login */}
             </form>
           </CardContent>
         </Card>

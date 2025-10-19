@@ -14,7 +14,7 @@ const Footer = () => {
         &copy; {year} Minecraft Mod Portal. Feito para fãs de Minecraft.
       </p>
       <p className="text-gray-500 text-xs mt-1">
-        Minecraft é uma marca registrada da Mojang Synergies AB. Este site não é afiliado à Mojang.
+        Minecraft é uma marca registrada da Mojang. Este site não é afiliado à Mojang.
       </p>
     </motion.footer>
   );

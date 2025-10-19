@@ -1,33 +1,22 @@
 import crypto from 'crypto';
 import { logError, logInfo } from '../config/logger.js';
 
-/**
- * Sistema de Criptografia para Dados Sensíveis
- * Implementa AES-256-GCM para máxima segurança
- */
-
 class EncryptionService {
   constructor() {
-    // Usar uma chave derivada do JWT_SECRET para consistência
     this.algorithm = 'aes-256-gcm';
     this.keyLength = 32;
     this.ivLength = 16;
     this.tagLength = 16;
     
-    // Derivar chave de criptografia do JWT_SECRET
     this.key = this.deriveKey(process.env.JWT_SECRET || 'fallback-key');
   }
 
-  /**
-   * Deriva uma chave de criptografia segura
-   */
+  // derivar chave de criptografia segura
   deriveKey(secret) {
     return crypto.scryptSync(secret, 'eu-marko-mods-salt', this.keyLength);
   }
 
-  /**
-   * Criptografa dados sensíveis
-   */
+  // criptografar dados sensíveis
   encrypt(plaintext) {
     try {
       if (!plaintext) return null;
@@ -60,9 +49,7 @@ class EncryptionService {
     }
   }
 
-  /**
-   * Descriptografa dados sensíveis
-   */
+  // descriptografar dados sensíveis
   decrypt(encryptedData) {
     try {
       if (!encryptedData || !encryptedData.encrypted) return null;
@@ -92,17 +79,13 @@ class EncryptionService {
     }
   }
 
-  /**
-   * Criptografa dados para armazenamento no banco
-   */
+  // criptografar dados para armazenamento no banco
   encryptForStorage(plaintext) {
     const encrypted = this.encrypt(plaintext);
     return encrypted ? JSON.stringify(encrypted) : null;
   }
 
-  /**
-   * Descriptografa dados do banco
-   */
+  // descriptografar dados do banco
   decryptFromStorage(encryptedJson) {
     if (!encryptedJson) return null;
     
@@ -115,9 +98,7 @@ class EncryptionService {
     }
   }
 
-  /**
-   * Gera hash seguro para senhas
-   */
+  // gerar hash seguro para senhas
   hashPassword(password, salt = null) {
     const actualSalt = salt || crypto.randomBytes(32).toString('hex');
     const hash = crypto.pbkdf2Sync(password, actualSalt, 100000, 64, 'sha512');
@@ -127,42 +108,34 @@ class EncryptionService {
     };
   }
 
-  /**
-   * Verifica senha contra hash
-   */
+  // verificar senha contra hash
   verifyPassword(password, hash, salt) {
     const newHash = this.hashPassword(password, salt);
     return newHash.hash === hash;
   }
 
-  /**
-   * Gera token seguro para CSRF
-   */
+  // gerar token seguro para CSRF
   generateCSRFToken() {
     return crypto.randomBytes(32).toString('hex');
   }
 
-  /**
-   * Gera nonce seguro
-   */
+  // gerar nonce seguro
   generateNonce() {
     return crypto.randomBytes(16).toString('base64');
   }
 
-  /**
-   * Gera chave de sessão segura
-   */
+  // gerar chave de sessão segura
   generateSessionKey() {
     return crypto.randomBytes(32).toString('hex');
   }
 }
 
-// Instância singleton
+// instância singleton
 const encryptionService = new EncryptionService();
 
 export default encryptionService;
 
-// Funções de conveniência
+// funções de conveniência
 export const encrypt = (data) => encryptionService.encrypt(data);
 export const decrypt = (data) => encryptionService.decrypt(data);
 export const encryptForStorage = (data) => encryptionService.encryptForStorage(data);

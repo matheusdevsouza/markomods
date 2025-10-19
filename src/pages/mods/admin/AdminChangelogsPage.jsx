@@ -206,7 +206,6 @@ const AdminChangelogsPage = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="grid grid-cols-1 lg:grid-cols-2 gap-6"
       >
-        {/* Formulário de Criação/Edição */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -220,7 +219,6 @@ const AdminChangelogsPage = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Informações Básicas */}
             <div className="space-y-4">
               <div>
                 <Label htmlFor="title">Título *</Label>
@@ -272,7 +270,6 @@ const AdminChangelogsPage = () => {
 
             <Separator />
 
-            {/* Entradas */}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <Label className="text-base font-medium">Entradas</Label>
@@ -381,7 +378,6 @@ const AdminChangelogsPage = () => {
 
             <Separator />
 
-            {/* Botões de Ação */}
             <div className="flex gap-3 justify-end">
               <Button 
                 variant="outline" 
@@ -417,7 +413,6 @@ const AdminChangelogsPage = () => {
           </Card>
         </motion.div>
 
-        {/* Lista de Changelogs */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -516,8 +511,7 @@ const AdminChangelogsPage = () => {
           </Card>
         </motion.div>
       </motion.div>
-
-      {/* Modal de Confirmação de Exclusão */}
+              
       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogContent className="sm:max-w-md bg-card/95 border-border/60">
           <DialogHeader>

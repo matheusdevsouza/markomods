@@ -20,8 +20,7 @@ const typeToIcon = {
   chore: Wrench,
   ci: Rocket,
   build: Building2,
-  revert: Undo2,
-  // Compatibilidade com tipos antigos
+  revert: Undo2,  
   feature: Sparkles,
 };
 
@@ -95,14 +94,12 @@ const ChangelogPage = () => {
 
   return (
     <div className="min-h-screen relative">
-      {/* FX de fundo sutil para manter coesão com o site */}
       <div className="pointer-events-none absolute inset-0 opacity-10">
         <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-primary/30 blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-purple-600/20 blur-3xl" />
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-10">
-        {/* Cabeçalho */}
         <div className="mb-8 flex items-start gap-4">
           <div className="w-12 h-12 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
             <History className="h-6 w-6 text-primary" />

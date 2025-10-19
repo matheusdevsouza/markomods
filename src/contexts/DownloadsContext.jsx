@@ -17,7 +17,7 @@ export const DownloadsProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [totalDownloads, setTotalDownloads] = useState(0);
 
-  // Buscar histórico de downloads via API
+  // buscar histórico de downloads via API
   const fetchDownloadHistory = useCallback(async (params = {}) => {
     if (!isAuthenticated || !currentUser) {
       setDownloadHistory([]);
@@ -32,7 +32,7 @@ export const DownloadsProvider = ({ children }) => {
         return;
       }
 
-      // Construir parâmetros da query
+      // construir parâmetros da query
       const queryParams = new URLSearchParams({
         limit: params.limit || '20',
         page: params.page || '1',
@@ -53,19 +53,19 @@ export const DownloadsProvider = ({ children }) => {
         const data = await response.json();
         const apiHistory = data.data || [];
         
-        // Unir com histórico local salvo ao clicar no download, priorizando o mais recente
+        // unir com histórico local salvo ao clicar no download, priorizando o mais recente
         try {
           const localRaw = localStorage.getItem('userDownloadHistory');
           const localList = localRaw ? JSON.parse(localRaw) : [];
           const map = new Map();
           
-          // Adicionar histórico local primeiro (mais recente)
+          // adicionar histórico local primeiro (mais recente)
           localList.forEach(item => {
             const key = item.modId || item.mod_id || item.id;
             if (key) map.set(key, item);
           });
           
-          // Adicionar histórico da API
+          // adicionar histórico da API
           apiHistory.forEach(item => {
             const key = item.modId || item.mod_id || item.id;
             if (key && !map.has(key)) map.set(key, item);
@@ -83,7 +83,7 @@ export const DownloadsProvider = ({ children }) => {
           setDownloadHistory(apiHistory);
         }
         
-        // Buscar contagem total para paginação
+        // buscar contagem total para paginação
         const countResponse = await fetch('/api/mods/user/downloads/count', {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -95,7 +95,7 @@ export const DownloadsProvider = ({ children }) => {
           const countData = await countResponse.json();
           setTotalDownloads(countData.data?.total || 0);
         } else {
-          // Usar contagem do histórico combinado como fallback
+          // usar contagem do histórico combinado como fallback
           setTotalDownloads(combinedHistory.length);
         }
       } else {
@@ -106,7 +106,7 @@ export const DownloadsProvider = ({ children }) => {
     }
   }, [isAuthenticated, currentUser]);
 
-  // Atualizar histórico local quando um download é feito
+  // atualizar histórico local quando um download é feito
   const addDownloadToHistory = (modData) => {
     try {
       const historyKey = 'userDownloadHistory';
@@ -126,15 +126,15 @@ export const DownloadsProvider = ({ children }) => {
         saved_at: new Date().toISOString()
       };
       
-      // Remover duplicatas e adicionar no início
+      // remover duplicatas e adicionar no início
       const dedup = [entry, ...list.filter(i => (i.modId || i.id) !== modData.id)].slice(0, 20);
       localStorage.setItem(historyKey, JSON.stringify(dedup));
       localStorage.setItem('downloadsUpdated', String(Date.now()));
       
-      // Atualizar estado local
+      // atualizar estado local
       setDownloadHistory(prev => [entry, ...prev.filter(i => (i.modId || i.id) !== modData.id)].slice(0, 20));
       
-      // Recarregar dados do servidor para obter contagem atualizada
+      // recarregar dados do servidor para obter contagem atualizada
       if (isAuthenticated && currentUser) {
         fetchDownloadHistory();
       }
@@ -142,11 +142,11 @@ export const DownloadsProvider = ({ children }) => {
     }
   };
 
-  // Listener para mudanças no localStorage
+  // listener para mudanças no localStorage
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === 'downloadsUpdated') {
-        // Recarregar dados do servidor para obter contagem atualizada
+        // recarregar dados do servidor para obter contagem atualizada
         if (isAuthenticated && currentUser) {
           fetchDownloadHistory();
         }
@@ -160,7 +160,7 @@ export const DownloadsProvider = ({ children }) => {
     };
   }, [isAuthenticated, currentUser, fetchDownloadHistory]);
 
-  // Carregar dados iniciais
+  // carregar dados iniciais
   useEffect(() => {
     if (isAuthenticated && currentUser) {
       fetchDownloadHistory();

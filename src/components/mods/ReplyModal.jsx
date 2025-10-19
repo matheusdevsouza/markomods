@@ -30,7 +30,8 @@ const ReplyModal = ({
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-blue-500/30 rounded-xl p-6 w-full max-w-2xl mx-4 shadow-2xl shadow-blue-500/20">
-        {/* Header */}
+
+        {/* header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center border-2 border-blue-500/50">
@@ -49,7 +50,7 @@ const ReplyModal = ({
           </button>
         </div>
 
-        {/* Comentário original */}
+        {/* comentário original */}
         <div className="bg-gray-800/50 rounded-lg p-4 border border-gray-600/50 mb-6">
           <div className="flex items-center space-x-3 mb-3">
             <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
@@ -69,7 +70,7 @@ const ReplyModal = ({
           </p>
         </div>
 
-        {/* Formulário de resposta */}
+        {/* formulário de resposta */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-white mb-2">
@@ -88,7 +89,7 @@ const ReplyModal = ({
             </p>
           </div>
 
-          {/* Botões */}
+          {/* botões */}
           <div className="flex justify-end gap-3 pt-4">
             <button
               type="button"
@@ -114,7 +115,7 @@ const ReplyModal = ({
           </div>
         </form>
 
-        {/* Aviso de permissão */}
+        {/* aviso de permissão */}
         <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
           <div className="flex items-center space-x-2">
             <Shield className="w-4 h-4 text-blue-400" />

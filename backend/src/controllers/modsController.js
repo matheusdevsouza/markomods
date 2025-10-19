@@ -5,6 +5,7 @@ import { logError } from '../config/logger.js';
 import { LogService } from '../services/LogService.js';
 import { trackActivity, untrackActivity } from '../services/ActivityService.js';
 
+// criar novo mod
 export const createMod = async (req, res) => {
   try {
 
@@ -85,6 +86,7 @@ export const createMod = async (req, res) => {
   }
 };
 
+// buscar todos os mods (admin)
 export const getAllMods = async (req, res) => {
   try {
 
@@ -112,6 +114,7 @@ export const getAllMods = async (req, res) => {
   }
 };
 
+// buscar mods públicos (frontend)
 export const getPublicMods = async (req, res) => {
   try {
     const { featured, minecraft_version, search, limit = 50, offset = 0, content_type } = req.query;
@@ -141,6 +144,7 @@ export const getPublicMods = async (req, res) => {
   }
 };
 
+// buscar mod por id
 export const getModById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -175,6 +179,7 @@ export const getModById = async (req, res) => {
   }
 };
 
+// buscar mod por slug (url)
 export const getModBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
@@ -219,6 +224,7 @@ export const getModBySlug = async (req, res) => {
   }
 };
 
+// atualizar mod existente
 export const updateMod = async (req, res) => {
   try {
     const { id } = req.params;
@@ -325,6 +331,7 @@ export const updateMod = async (req, res) => {
   }
 };
 
+// deletar mod
 export const deleteMod = async (req, res) => {
   try {
     const { id } = req.params;
@@ -368,6 +375,7 @@ export const deleteMod = async (req, res) => {
   }
 };
 
+// alternar status do mod (publicado, privado ou destaque)
 export const toggleModStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -423,6 +431,7 @@ export const toggleModStatus = async (req, res) => {
   }
 };
 
+// buscar estatísticas gerais dos mods
 export const getModStats = async (req, res) => {
   try {
     const stats = await ModsModel.getStats();
@@ -441,6 +450,7 @@ export const getModStats = async (req, res) => {
   }
 };
 
+// registrar download do mod
 export const downloadMod = async (req, res) => {
   try {
     const { id } = req.params;
@@ -479,6 +489,7 @@ export const downloadMod = async (req, res) => {
   }
 };
 
+// busca avançada com filtros
 export const advancedSearch = async (req, res) => {
   try {
     const { 
@@ -533,6 +544,7 @@ export const advancedSearch = async (req, res) => {
   }
 };
 
+// buscar tipos de conteúdo disponíveis
 export const getContentTypes = async (req, res) => {
   try {
     const result = await ModsModel.getContentTypes();
@@ -550,6 +562,7 @@ export const getContentTypes = async (req, res) => {
   }
 };
 
+// buscar contagem de mods por categoria
 export const getModsCount = async (req, res) => {
   try {
     const counts = await ModsModel.getModsCount();
@@ -569,6 +582,7 @@ export const getModsCount = async (req, res) => {
 
 const viewCache = new Map();
 
+// registrar visualização do mod
 export const registerView = async (req, res) => {
   try {
     const { id } = req.params;
@@ -614,6 +628,7 @@ export const registerView = async (req, res) => {
   }
 };
 
+// registrar download
 export const registerDownload = async (req, res) => {
   try {
     const { modId } = req.params;
@@ -640,6 +655,7 @@ export const registerDownload = async (req, res) => {
   }
 };
 
+// buscar contagem total de downloads do usuário
 export const getUserDownloadsCount = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -655,6 +671,7 @@ export const getUserDownloadsCount = async (req, res) => {
   }
 };
 
+// buscar histórico de downloads do usuário
 export const getUserDownloadHistory = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -707,6 +724,7 @@ export const getUserDownloadHistory = async (req, res) => {
   }
 };
 
+// alternar favorito do mod
 export const toggleFavorite = async (req, res) => {
   try {
     const { id } = req.params;
@@ -759,6 +777,7 @@ export const toggleFavorite = async (req, res) => {
   }
 };
 
+// verificar se mod está nos favoritos
 export const checkFavorite = async (req, res) => {
   try {
     const { id } = req.params;
@@ -795,6 +814,7 @@ export const checkFavorite = async (req, res) => {
   }
 };
 
+// buscar todos os favoritos do usuário
 export const getUserFavorites = async (req, res) => {
   try {
     const userId = req.user?.id;

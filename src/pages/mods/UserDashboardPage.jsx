@@ -50,14 +50,12 @@ const UserDashboardPage = React.memo(() => {
   const { toast } = useToast();
   const { t } = useTranslation();
   
-  // Estados para dados do usuário
   const [userStats, setUserStats] = useState({
     favoriteMods: [],
     userCommentsCount: 0,
     userComments: []
   });
 
-  // Estados para gerenciamento de comentários
   const [commentsPage, setCommentsPage] = useState(1);
   const [commentsPerPage] = useState(5);
   const [commentsSearch, setCommentsSearch] = useState('');
@@ -68,13 +66,11 @@ const UserDashboardPage = React.memo(() => {
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Estados para paginação dos mods
   const [favoritesPage, setFavoritesPage] = useState(1);
   const [favoritesPerPage] = useState(4);
   const [downloadsPage, setDownloadsPage] = useState(1);
   const [downloadsPerPage] = useState(4);
 
-  // Buscar estatísticas reais do usuário via API
   useEffect(() => {
     if (isAuthenticated && currentUser) {
       fetchUserStats();
@@ -82,14 +78,12 @@ const UserDashboardPage = React.memo(() => {
     }
   }, [isAuthenticated, currentUser]);
 
-  // Buscar comentários quando filtros mudarem
   useEffect(() => {
     if (isAuthenticated && currentUser) {
       fetchUserComments();
     }
   }, [commentsPage, commentsSearch, commentsDateFilter]);
 
-  // Função para buscar comentários do usuário com paginação e filtros
   const fetchUserComments = async () => {
     try {
       setCommentsLoading(true);
@@ -99,7 +93,6 @@ const UserDashboardPage = React.memo(() => {
         return;
       }
 
-      // Construir parâmetros da query
       const params = new URLSearchParams({
         page: commentsPage.toString(),
         limit: commentsPerPage.toString(),
@@ -162,21 +155,17 @@ const UserDashboardPage = React.memo(() => {
       } else {
       }
 
-      // Buscar contagem de downloads do usuário
       try {
         const countResp = await fetch('/api/mods/user/downloads/count', {
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
         });
         if (countResp.ok) {
           const data = await countResp.json();
-          // Somar ao contador local para refletir imediatamente (resetado ao recarregar a página)
           const localExtra = parseInt(localStorage.getItem('userDownloadTotalLocal') || '0', 10);
-          // totalDownloads agora é gerenciado pelo contexto
         }
       } catch (e) {
       }
 
-      // Buscar contagem de comentários do usuário
       try {
         const commentsCountResp = await fetch('/api/comments/user/count', {
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
@@ -188,7 +177,6 @@ const UserDashboardPage = React.memo(() => {
       } catch (e) {
       }
 
-      // Buscar lista de comentários do usuário
       try {
         const listResp = await fetch('/api/comments/user/list?limit=20', {
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
@@ -200,7 +188,6 @@ const UserDashboardPage = React.memo(() => {
       } catch (e) {
       }
 
-      // Buscar histórico de downloads do usuário
       try {
         const histResp = await fetch('/api/mods/user/downloads/history?limit=10', {
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
@@ -208,7 +195,6 @@ const UserDashboardPage = React.memo(() => {
         if (histResp.ok) {
           const data = await histResp.json();
           let history = data.data || [];
-          // Unir com histórico local salvo ao clicar no download, priorizando o mais recente
           try {
             const localRaw = localStorage.getItem('userDownloadHistory');
             const localList = localRaw ? JSON.parse(localRaw) : [];
@@ -219,7 +205,6 @@ const UserDashboardPage = React.memo(() => {
             });
             history = Array.from(map.values()).slice(0, 20);
           } catch {}
-          // downloadHistory agora é gerenciado pelo contexto
         }
       } catch (e) {
       }
@@ -232,7 +217,6 @@ const UserDashboardPage = React.memo(() => {
     }
   };
 
-  // Função para excluir comentário
   const handleDeleteComment = async (commentId) => {
     try {
       const token = localStorage.getItem('authToken');
@@ -266,7 +250,6 @@ const UserDashboardPage = React.memo(() => {
     }
   };
 
-  // Função para confirmar exclusão
   const confirmDeleteComment = () => {
     if (commentToDelete) {
       handleDeleteComment(commentToDelete.id);
@@ -275,87 +258,70 @@ const UserDashboardPage = React.memo(() => {
     }
   };
 
-  // Função para navegar entre páginas
   const handlePageChange = (newPage) => {
     setCommentsPage(newPage);
   };
 
-  // Função para resetar filtros
   const resetFilters = () => {
     setCommentsSearch('');
     setCommentsDateFilter('all');
     setCommentsPage(1);
   };
 
-  // Usar os favoritos reais da API
   const userFavoriteMods = userStats.favoriteMods || [];
 
-
-  // Lógica de paginação para favoritos
   const totalFavoritesPages = Math.ceil(userFavoriteMods.length / favoritesPerPage);
   const paginatedFavorites = userFavoriteMods.slice(
     (favoritesPage - 1) * favoritesPerPage,
     favoritesPage * favoritesPerPage
   );
 
-  // Função para mudar de página dos favoritos
   const handleFavoritesPageChange = (page) => {
     setFavoritesPage(page);
   };
 
-  // Lógica de paginação para downloads
   const totalDownloadsPages = Math.ceil(downloadHistory.length / downloadsPerPage);
   const paginatedDownloads = downloadHistory.slice(
     (downloadsPage - 1) * downloadsPerPage,
     downloadsPage * downloadsPerPage
   );
 
-  // Função para mudar de página dos downloads
   const handleDownloadsPageChange = (page) => {
     setDownloadsPage(page);
   };
 
-  // Lógica de paginação para comentários
   const totalCommentsPages = Math.ceil(commentsData.length / commentsPerPage);
   const paginatedComments = commentsData.slice(
     (commentsPage - 1) * commentsPerPage,
     commentsPage * commentsPerPage
   );
 
-  // Função para mudar de página dos comentários
   const handleCommentsPageChange = (page) => {
     setCommentsPage(page);
   };
 
-  // Função para atualizar favoritos quando mudar
   const handleFavoriteUpdate = () => {
     fetchUserStats();
   };
 
-  // Adicionar listener para mudanças nos favoritos
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === 'favoritesUpdated') {
         handleFavoriteUpdate();
       }
       if (e.key === 'downloadsUpdated') {
-        // Recarregar histórico de downloads local imediatamente
         try {
           const raw = localStorage.getItem('userDownloadHistory');
           const list = raw ? JSON.parse(raw) : [];
-          // downloadHistory agora é gerenciado pelo contexto
           const extra = parseInt(localStorage.getItem('userDownloadTotalLocal') || '0', 10);
-          // totalDownloads agora é gerenciado pelo contexto
         } catch {}
       }
       if (e.key === 'commentsUpdated') {
-        // Recarregar estatísticas de comentários
         fetchUserStats();
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
-    // Adicionar listener para eventos de comentários
     const handleCommentsUpdate = () => {
       fetchUserStats();
     };
@@ -398,10 +364,8 @@ const UserDashboardPage = React.memo(() => {
       transition={{ duration: 0.5 }}
       className="space-y-8"
     >
-      {/* Header com informações do usuário - Estilo melhorado */}
       <div className="bg-gradient-to-br from-primary/20 via-primary/10 to-background rounded-2xl p-8 border border-primary/30 shadow-xl">
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
-          {/* Avatar com borda gradiente */}
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-blue-500 rounded-full p-1 animate-pulse"></div>
             <Avatar className="h-24 w-24 border-4 border-background relative z-10">
@@ -417,7 +381,6 @@ const UserDashboardPage = React.memo(() => {
           </div>
           
           <div className="flex-1 space-y-4">
-            {/* Nome e badges */}
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-4xl font-minecraft text-primary hover:text-white transition-colors duration-300">
                 {currentUser.display_name || currentUser.username || 'Usuário'}
@@ -435,7 +398,6 @@ const UserDashboardPage = React.memo(() => {
               )}
             </div>
             
-            {/* Informações do perfil */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar size={16} className="text-primary" />
@@ -478,7 +440,6 @@ const UserDashboardPage = React.memo(() => {
               )}
             </div>
             
-            {/* Bio do usuário */}
             {currentUser.bio && (
               <div className="bg-background/50 rounded-lg p-4 border border-primary/20">
                 <div className="flex items-start gap-2">
@@ -488,7 +449,6 @@ const UserDashboardPage = React.memo(() => {
               </div>
             )}
             
-            {/* Botão de editar perfil */}
             <Button 
               variant="outline" 
               size="sm" 
@@ -503,7 +463,6 @@ const UserDashboardPage = React.memo(() => {
         </div>
       </div>
 
-      {/* Estatísticas do Usuário - Focadas em interações */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card className="minecraft-card hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -527,7 +486,6 @@ const UserDashboardPage = React.memo(() => {
           </CardContent>
         </Card>
 
-        {/* Comentários do Usuário */}
         <Card className="minecraft-card hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/20">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-minecraft uppercase text-green-600">{t('modDetail.comments')}</CardTitle>
@@ -540,7 +498,6 @@ const UserDashboardPage = React.memo(() => {
         </Card>
       </div>
 
-      {/* Mods Favoritos */}
       <Card className="minecraft-card border-red-500/20 bg-gradient-to-br from-red-500/5 to-red-600/5">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -578,7 +535,6 @@ const UserDashboardPage = React.memo(() => {
                 ))}
               </div>
               
-              {/* Controles de paginação para Favoritos */}
               {userFavoriteMods.length > favoritesPerPage && (
                 <div className="mt-6">
                   <PaginationControls
@@ -613,7 +569,6 @@ const UserDashboardPage = React.memo(() => {
         </CardContent>
       </Card>
 
-      {/* Histórico de Downloads */}
       <Card className="minecraft-card border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-blue-600/5">
         <CardHeader>
           <CardTitle className="text-xl font-minecraft text-primary flex items-center">
@@ -641,7 +596,6 @@ const UserDashboardPage = React.memo(() => {
                   ))}
               </div>
               
-              {/* Controles de paginação para Downloads */}
               {downloadHistory.length > downloadsPerPage && (
                 <div className="mt-6">
                   <PaginationControls
@@ -674,7 +628,6 @@ const UserDashboardPage = React.memo(() => {
         </CardContent>
       </Card>
 
-      {/* Comentários do Usuário */}
       <Card className="minecraft-card border-green-500/20 bg-gradient-to-br from-green-500/5 to-green-600/5">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -697,7 +650,6 @@ const UserDashboardPage = React.memo(() => {
           </div>
         </CardHeader>
         <CardContent>
-          {/* Filtros e Busca */}
           <div className="mb-6 space-y-4">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
@@ -737,7 +689,6 @@ const UserDashboardPage = React.memo(() => {
             </div>
           </div>
 
-          {/* Lista de Comentários */}
           {commentsLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
@@ -793,7 +744,6 @@ const UserDashboardPage = React.memo(() => {
                 </div>
               ))}
 
-              {/* Controles de paginação para Comentários */}
               {commentsData.length > commentsPerPage && (
                 <div className="mt-6">
                   <PaginationControls
@@ -833,7 +783,6 @@ const UserDashboardPage = React.memo(() => {
         </CardContent>
       </Card>
 
-      {/* Modal de Confirmação de Exclusão */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-background border border-red-500/20 rounded-lg p-6 max-w-md w-full mx-4">

@@ -20,7 +20,6 @@ const typeToIcon = {
   ci: Rocket, 
   build: Building2, 
   revert: Undo2,
-  // Compatibilidade com tipos antigos
   feature: Sparkles 
 };
 

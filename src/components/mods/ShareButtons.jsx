@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Share2, MessageCircle, Twitter, Copy } from 'lucide-react'; // Assuming MessageCircle for WhatsApp, Twitter for X
+import { Share2, MessageCircle, Twitter, Copy } from 'lucide-react'; 
 import { useToast } from "@/components/ui/use-toast";
 
 const ShareButtons = ({ modName, modUrl }) => {
@@ -21,8 +21,7 @@ const ShareButtons = ({ modName, modUrl }) => {
       icon: <Twitter size={18} />,
       url: `https://twitter.com/intent/tweet?text=${encodedText}`,
     },
-    // Reddit and Discord links are more complex (need specific subreddits/servers or rely on user copy-pasting)
-    // For now, a copy link button is more universally useful.
+
   ];
 
   const copyToClipboard = () => {

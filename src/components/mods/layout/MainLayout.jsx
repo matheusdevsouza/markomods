@@ -43,10 +43,6 @@ const Header = React.memo(() => {
   const { currentUser, logout, isAuthenticated } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  // Debug: logar o estado do usuário
-  // Debug logs removidos para limpar o console
-
   const handleLogout = async () => {
     await logout();
     navigate('/');
@@ -56,11 +52,10 @@ const Header = React.memo(() => {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="max-w-none flex h-16 sm:h-18 md:h-20 items-center justify-between">
-          {/* Logo - Esquerda */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <img 
               src="/markomods-logo2.png" 
-              alt="Eu, Marko! Mods Logo" 
+              alt="Eu, Marko! Logo" 
               className={`h-8 sm:h-9 md:h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer ${
                 theme === 'dark' 
                   ? 'brightness-75 contrast-125' 
@@ -69,7 +64,7 @@ const Header = React.memo(() => {
             />
           </Link>
           
-          {/* Barra de Busca - Centralizada (Funcional) */}
+          {/* barra de busca */}
           <div className="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
             <div className="w-full">
               <form onSubmit={(e) => {
@@ -97,12 +92,12 @@ const Header = React.memo(() => {
             </div>
           </div>
 
-          {/* Botões - Direita */}
+          {/* botões da direita */}
           <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
-          {/* Usuário Logado */}
+          {/* usuário logado */}
           {currentUser && isAuthenticated ? (
             <>
-              {/* Botão de Tema */}
+              {/* botão de tema */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -116,12 +111,12 @@ const Header = React.memo(() => {
                 )}
               </Button>
               
-              {/* Seletor de Idioma */}
+              {/* seletor de idioma */}
               <div className="hidden sm:block">
                 <LanguageSelector />
               </div>
               
-              {/* Menu do Usuário */}
+              {/* menu do usuário */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="h-8 px-2 sm:h-9 sm:px-3 md:h-10 hover:bg-primary/10 transition-all duration-300 group">
@@ -141,7 +136,7 @@ const Header = React.memo(() => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-72 glass-effect">
-                  {/* Header do Usuário */}
+                  {/* header do usuário */}
                   <DropdownMenuLabel className="font-normal p-4">
                     <div className="flex items-center space-x-3">
                                             <Avatar className="h-12 w-12 border-2 border-primary/20">
@@ -171,7 +166,7 @@ const Header = React.memo(() => {
                   
                   <DropdownMenuSeparator />
                   
-                  {/* Seção Principal */}
+                  {/* seção principal */}
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
                       <Link to="/dashboard" className="cursor-pointer hover:text-white focus:text-white">
@@ -207,7 +202,7 @@ const Header = React.memo(() => {
                   
                   <DropdownMenuSeparator />
                   
-                  {/* Seção Admin */}
+                  {/* seção admin */}
                   {currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && (
                     <>
                       <DropdownMenuGroup>
@@ -225,7 +220,7 @@ const Header = React.memo(() => {
                     </>
                   )}
                   
-                  {/* Seção Configurações */}
+                  {/* seção configurações */}
                   <DropdownMenuGroup>
                     
                     
@@ -262,7 +257,7 @@ const Header = React.memo(() => {
                   
                   <DropdownMenuSeparator />
                   
-                  {/* Logout */}
+                  {/* logout */}
                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 dark:text-red-400">
                     <LogOut className="mr-3 h-4 w-4" />
                     <div className="flex-1">
@@ -274,7 +269,7 @@ const Header = React.memo(() => {
               </DropdownMenu>
             </>
           ) : (
-            /* Botões de Login/Registro para usuários não logados */
+            /* botões de login/registro para usuários não logados */
             <>
               <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg h-10 sm:h-auto" title="Login">
                 <Link to="/login" className="flex items-center justify-center">
@@ -298,7 +293,7 @@ const Header = React.memo(() => {
                 </Link>
               </Button>
 
-              {/* Botão de Tema - Movido para a direita dos botões de autenticação */}
+              {/* botão de tema movido para a direita dos botões de autenticação */}
               <Button
                 variant="ghost"
                 size="icon"
@@ -312,7 +307,7 @@ const Header = React.memo(() => {
                 )}
               </Button>
               
-              {/* Seletor de Idioma */}
+              {/* seletor de idioma */}
               <LanguageSelector />
             </>
           )}
@@ -320,7 +315,7 @@ const Header = React.memo(() => {
         </div>
       </div>
 
-      {/* Barra de Busca Mobile (Funcional) */}
+      {/* barra de busca mobile */}
       <div className="md:hidden border-t border-border/40 px-3 sm:px-4 py-2 sm:py-3">
         <form onSubmit={(e) => {
           e.preventDefault();
@@ -349,20 +344,19 @@ const Header = React.memo(() => {
   );
 });
 
-// Footer component removido - agora usando o componente Footer.jsx importado
-
 const MainLayout = () => {
   const location = useLocation();
   
-  // Páginas onde o footer deve ser desabilitado
   const pagesWithoutFooter = ['/mods', '/addons'];
   const shouldShowFooter = !pagesWithoutFooter.some(page => location.pathname.startsWith(page));
   
   return (
     <div className="flex min-h-screen flex-col relative overflow-hidden">
-      {/* Efeito de Eclipse Roxo no Background */}
+
+      {/* efeito de eclipse roxo no background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        {/* Eclipse Principal - Centro Direito */}
+        
+        {/* eclipse principal - centro direito */}
         <div 
           className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl"
           style={{
@@ -371,7 +365,7 @@ const MainLayout = () => {
           }}
         ></div>
         
-        {/* Eclipse Secundário - Canto Superior Esquerdo */}
+        {/* eclipse secundário - canto superior esquerdo */}
         <div 
           className="absolute top-0 left-0 w-80 h-80 rounded-full blur-3xl animate-float"
           style={{
@@ -380,7 +374,7 @@ const MainLayout = () => {
           }}
         ></div>
         
-        {/* Eclipse Terciário - Centro Inferior */}
+        {/* eclipse terciário - centro inferior */}
         <div 
           className="absolute bottom-1/4 left-1/3 w-72 h-72 rounded-full blur-3xl animate-float"
           style={{
@@ -389,7 +383,7 @@ const MainLayout = () => {
           }}
         ></div>
         
-        {/* Padrões Irregulares - Formas Orgânicas */}
+        {/* padrões irregulares - formas orgânicas */}
         <div 
           className="absolute top-1/3 right-1/3 w-64 h-48 rounded-[100px_50px_120px_80px] blur-2xl transform rotate-12"
           style={{
@@ -411,7 +405,7 @@ const MainLayout = () => {
           }}
         ></div>
         
-        {/* Linhas de Energia Sutil */}
+        {/* linhas de energia sutil */}
         <div 
           className="absolute top-1/4 left-1/2 w-32 h-1 blur-sm transform rotate-12"
           style={{

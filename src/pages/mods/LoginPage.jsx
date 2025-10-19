@@ -24,7 +24,6 @@ const LoginPage = () => {
       [name]: value
     }));
     
-    // Limpar erro do campo quando usuário começa a digitar
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -64,7 +63,6 @@ const LoginPage = () => {
       });
       
       if (result.success) {
-        // Redirecionar baseado no cargo do usuário
         const redirectPath = getRedirectPath(result.user);
         navigate(redirectPath);
       }
@@ -76,7 +74,6 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <div className="w-full max-w-md relative">
-        {/* Botão Voltar - Posicionado em cima do formulário */}
         <div className="absolute -top-12 left-0 z-10">
           <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -96,7 +93,6 @@ const LoginPage = () => {
           
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Erro Geral */}
               {errors.general && (
                 <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
                   <p className="text-sm text-red-600 dark:text-red-400">
@@ -105,7 +101,6 @@ const LoginPage = () => {
                 </div>
               )}
               
-              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
                   Email
@@ -128,7 +123,6 @@ const LoginPage = () => {
                 )}
               </div>
 
-              {/* Senha */}
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">
                   Senha
@@ -164,7 +158,6 @@ const LoginPage = () => {
                 )}
               </div>
 
-              {/* Botão de Login */}
               <Button
                 type="submit"
                 className="w-full minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground"
@@ -174,7 +167,6 @@ const LoginPage = () => {
               </Button>
             </form>
 
-            {/* Links de Ajuda */}
             <div className="mt-4 text-center">
               <Link
                 to="/forgot-password"
@@ -184,7 +176,6 @@ const LoginPage = () => {
               </Link>
             </div>
 
-            {/* Link para Registro */}
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
                 Não tem uma conta?{' '}

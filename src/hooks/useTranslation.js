@@ -1,64 +1,70 @@
 import { useTranslation as useI18nTranslation } from 'react-i18next';
 
 /**
- * Hook personalizado para traduções com funcionalidades adicionais
- * @returns {Object} Objeto com funções de tradução e informações do idioma
+ * hook personalizado para traduções com funcionalidades adicionais
+ * @returns {Object} 
  */
+
 export const useTranslation = () => {
   const { t, i18n } = useI18nTranslation();
 
   /**
-   * Função para traduzir com parâmetros
-   * @param {string} key - Chave de tradução
-   * @param {Object} params - Parâmetros para interpolação
-   * @returns {string} Texto traduzido
+   * função para traduzir com parâmetros
+   * @param {string} key 
+   * @param {Object} params 
+   * @returns {string} 
    */
+  
   const translate = (key, params = {}) => {
     return t(key, params);
   };
 
   /**
-   * Função para traduzir com pluralização
-   * @param {string} key - Chave base de tradução
-   * @param {number} count - Contador para pluralização
-   * @param {Object} params - Parâmetros adicionais
-   * @returns {string} Texto traduzido com pluralização
+   * função para traduzir com pluralização
+   * @param {string} key 
+   * @param {number} count 
+   * @param {Object} params 
+   * @returns {string} 
    */
+
   const translatePlural = (key, count, params = {}) => {
     return t(key, { count, ...params });
   };
 
   /**
-   * Função para traduzir com contexto
-   * @param {string} key - Chave de tradução
-   * @param {string} context - Contexto da tradução
-   * @param {Object} params - Parâmetros adicionais
-   * @returns {string} Texto traduzido com contexto
+   * função para traduzir com contexto
+   * @param {string} key 
+   * @param {string} context 
+   * @param {Object} params 
+   * @returns {string} 
    */
+
   const translateWithContext = (key, context, params = {}) => {
     return t(key, { context, ...params });
   };
 
   /**
-   * Função para verificar se uma chave de tradução existe
-   * @param {string} key - Chave de tradução
-   * @returns {boolean} True se a chave existe
+   * função para verificar se uma chave de tradução existe
+   * @param {string} key 
+   * @returns {boolean} 
    */
+
   const hasTranslation = (key) => {
     return i18n.exists(key);
   };
 
   /**
-   * Função para obter o idioma atual
-   * @returns {string} Código do idioma atual
+   * função para obter o idioma atual
+   * @returns {string} 
    */
+  
   const getCurrentLanguage = () => {
     return i18n.language;
   };
 
   /**
-   * Função para obter o nome nativo do idioma atual
-   * @returns {string} Nome nativo do idioma
+   * função para obter o nome nativo do idioma atual
+   * @returns {string} 
    */
   const getCurrentLanguageName = () => {
     const language = i18n.language;
@@ -74,8 +80,8 @@ export const useTranslation = () => {
   };
 
   /**
-   * Função para obter a direção do texto (LTR/RTL)
-   * @returns {string} Direção do texto
+   * função para obter a direção do texto (LTR/RTL)
+   * @returns {string} 
    */
   const getTextDirection = () => {
     const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
@@ -83,20 +89,20 @@ export const useTranslation = () => {
   };
 
   /**
-   * Função para formatar números de acordo com o idioma
-   * @param {number} number - Número para formatar
-   * @param {Object} options - Opções de formatação
-   * @returns {string} Número formatado
+   * função para formatar números de acordo com o idioma
+   * @param {number} number 
+   * @param {Object} options 
+   * @returns {string} 
    */
   const formatNumber = (number, options = {}) => {
     return new Intl.NumberFormat(i18n.language, options).format(number);
   };
 
   /**
-   * Função para formatar datas de acordo com o idioma
-   * @param {Date|string|number} date - Data para formatar
-   * @param {Object} options - Opções de formatação
-   * @returns {string} Data formatada
+  * função para formatar datas de acordo com o idioma
+   * @param {Date|string|number} date 
+   * @param {Object} options 
+   * @returns {string} 
    */
   const formatDate = (date, options = {}) => {
     const dateObj = new Date(date);
@@ -104,11 +110,11 @@ export const useTranslation = () => {
   };
 
   /**
-   * Função para formatar moeda de acordo com o idioma
-   * @param {number} amount - Valor monetário
-   * @param {string} currency - Código da moeda
-   * @param {Object} options - Opções de formatação
-   * @returns {string} Valor monetário formatado
+   * função para formatar moeda de acordo com o idioma
+   * @param {number} amount 
+   * @param {string} currency 
+   * @param {Object} options 
+   * @returns {string} 
    */
   const formatCurrency = (amount, currency = 'BRL', options = {}) => {
     return new Intl.NumberFormat(i18n.language, {
@@ -119,35 +125,35 @@ export const useTranslation = () => {
   };
 
   return {
-    // Funções de tradução
+    // funções de tradução
     t: translate,
     translate,
     translatePlural,
     translateWithContext,
     
-    // Funções de verificação
+    // funções de verificação
     hasTranslation,
     
-    // Funções de idioma
+    // funções de idioma
     getCurrentLanguage,
     getCurrentLanguageName,
     getTextDirection,
     
-    // Funções de formatação
+    // funções de formatação
     formatNumber,
     formatDate,
     formatCurrency,
     
-    // Objeto i18n original
+    // objeto i18n original
     i18n,
     
-    // Idioma atual
+    // idioma atual
     language: i18n.language,
     
-    // Função para mudar idioma
+    // função para mudar idioma
     changeLanguage: i18n.changeLanguage.bind(i18n),
     
-    // Função para detectar se está carregando
+    // função para detectar se está carregando
     isInitialized: i18n.isInitialized
   };
 };

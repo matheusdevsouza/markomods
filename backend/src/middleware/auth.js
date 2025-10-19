@@ -2,11 +2,11 @@ import { JWTService } from '../services/JWTService.js';
 import { UserModel } from '../models/UserModel.js';
 import { logError, logWarn } from '../config/logger.js';
 
-// Middleware de autenticação básica
+// middleware de autenticação básica
 export const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    const token = authHeader && authHeader.split(' ')[1]; 
     
     if (!token) {
       return res.status(401).json({
@@ -15,7 +15,7 @@ export const authenticateToken = async (req, res, next) => {
       });
     }
     
-    // Verificar token
+    // verificar token
     const verification = JWTService.verifyAccessToken(token);
     
     if (!verification.valid) {
@@ -33,7 +33,7 @@ export const authenticateToken = async (req, res, next) => {
       });
     }
     
-    // Buscar usuário no banco
+    // buscar usuário no banco
     const user = await UserModel.findById(verification.payload.id);
     
     if (!user) {
@@ -50,7 +50,7 @@ export const authenticateToken = async (req, res, next) => {
       });
     }
     
-    // Adicionar usuário ao request
+    // adicionar usuário ao request
     req.user = user;
     req.token = token;
     
@@ -64,7 +64,7 @@ export const authenticateToken = async (req, res, next) => {
   }
 };
 
-// Middleware para verificar se usuário está autenticado (opcional)
+// middleware para verificar se usuário está autenticado
 export const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -90,12 +90,11 @@ export const optionalAuth = async (req, res, next) => {
     
     next();
   } catch (error) {
-    // Em caso de erro, continuar sem autenticação
     next();
   }
 };
 
-// Middleware para verificar permissões de admin
+// middleware para verificar permissões de admin
 export const requireAdmin = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
@@ -123,7 +122,7 @@ export const requireAdmin = (req, res, next) => {
   next();
 };
 
-// Middleware para verificar permissões de super admin
+// middleware para verificar permissões de super admin
 export const requireSuperAdmin = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
@@ -148,7 +147,7 @@ export const requireSuperAdmin = (req, res, next) => {
   next();
 };
 
-// Middleware para verificar permissões de moderador
+// middleware para verificar permissões de moderador
 export const requireModerator = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
@@ -167,7 +166,7 @@ export const requireModerator = (req, res, next) => {
   next();
 };
 
-// Middleware para verificar roles específicos
+// middleware para verificar cargos específicos
 export const requireRole = (allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {
@@ -195,7 +194,6 @@ export const requireRole = (allowedRoles) => {
   };
 };
 
-// Middleware para verificar ownership (usuário só pode acessar seus próprios recursos)
 export const requireOwnership = (resourceType) => {
   return async (req, res, next) => {
     try {
@@ -206,7 +204,6 @@ export const requireOwnership = (resourceType) => {
         });
       }
       
-      // Admins podem acessar qualquer recurso
       if (['admin', 'super_admin', 'moderator'].includes(req.user.role)) {
         return next();
       }
@@ -234,14 +231,10 @@ export const requireOwnership = (resourceType) => {
         });
       }
       
-      // Verificar se o usuário é o dono do recurso
-      // Esta lógica pode ser expandida conforme necessário
       if (resourceType === 'user' && resourceId === req.user.id) {
         return next();
       }
       
-      // Para outros tipos de recursos, implementar verificação específica
-      // Por enquanto, apenas usuários podem acessar seus próprios recursos
       return res.status(403).json({
         success: false,
         message: 'Acesso negado. Você não tem permissão para acessar este recurso.'
@@ -257,7 +250,7 @@ export const requireOwnership = (resourceType) => {
   };
 };
 
-// Middleware para verificar se usuário está verificado
+// middleware para verificar se usuário está verificado
 export const requireVerified = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
@@ -276,15 +269,13 @@ export const requireVerified = (req, res, next) => {
   next();
 };
 
-// Middleware que permite acesso público para GET requests em rotas específicas
+// middleware que permite acesso público para requests especificoas
 export const publicOrAuthenticated = async (req, res, next) => {
   try {
-    // Se for GET request para buscar mod por ID, permitir acesso público
     if (req.method === 'GET' && req.params.id && !isNaN(req.params.id)) {
       return next();
     }
     
-    // Para outras rotas, verificar autenticação
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
     
@@ -295,7 +286,7 @@ export const publicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // Verificar token
+    // verificar token
     const verification = JWTService.verifyAccessToken(token);
     
     if (!verification.valid) {
@@ -313,7 +304,7 @@ export const publicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // Buscar usuário no banco
+    // buscar usuário no banco
     const user = await UserModel.findById(verification.payload.id);
     
     if (!user) {
@@ -330,7 +321,7 @@ export const publicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // Adicionar usuário ao request
+    // adicionar usuário ao request
     req.user = user;
     req.token = token;
     
@@ -344,40 +335,32 @@ export const publicOrAuthenticated = async (req, res, next) => {
   }
 };
 
-// Middleware para comentários: acesso público mas com autenticação opcional
+// middleware para comentários
 export const commentsPublicOrAuthenticated = async (req, res, next) => {
   try {
-    // Permitir acesso público para GET requests
     if (req.method === 'GET') {
-      // Se houver token, processá-lo para obter informações do usuário
       const authHeader = req.headers.authorization;
       const token = authHeader && authHeader.split(' ')[1];
       
       if (token) {
         try {
-          // Verificar token
           const verification = JWTService.verifyAccessToken(token);
           
           if (verification.valid) {
-            // Buscar usuário no banco
             const user = await UserModel.findById(verification.payload.id);
             
             if (user && !user.is_banned) {
-              // Adicionar usuário ao request
               req.user = user;
               req.token = token;
             }
           }
         } catch (tokenError) {
-          // Se houver erro no token, continuar sem autenticação
         }
       }
       
-      // Sempre permitir acesso para GET requests
       return next();
     }
     
-    // Para outros métodos, verificar autenticação
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
     
@@ -388,7 +371,7 @@ export const commentsPublicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // Verificar token
+    // verificar token
     const verification = JWTService.verifyAccessToken(token);
     
     if (!verification.valid) {
@@ -406,7 +389,7 @@ export const commentsPublicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // Buscar usuário no banco
+    // buscar usuário no banco
     const user = await UserModel.findById(verification.payload.id);
     
     if (!user) {
@@ -423,7 +406,7 @@ export const commentsPublicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // Adicionar usuário ao request
+    // adicionar usuário ao request
     req.user = user;
     req.token = token;
     

@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-// Player de vídeo com controles customizados, estilizado no contexto do site
-// Props: src (obrigatório), type (opcional), poster (opcional), className (opcional)
 const VideoPlayer = ({ src, type, poster, className = '' }) => {
   const videoRef = useRef(null);
   const bgVideoRef = useRef(null);
@@ -33,12 +31,10 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     if (!video) return;
     if (video.paused) {
       video.play();
-      // Quando começar a tocar, mostrar controles e depois esconder
       setShowControls(true);
       hideControlsAfterDelay();
     } else {
       video.pause();
-      // Quando pausar, esconder controles imediatamente
       setShowControls(false);
       clearControlsTimeout();
     }
@@ -55,7 +51,7 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
       if (isPlaying) {
         setShowControls(false);
       }
-    }, 2000); // Esconder após 2 segundos
+    }, 2000);
     setControlsTimeout(timeout);
   };
 
@@ -85,7 +81,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
 
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
-      // Speaker off
       return (
         <svg className="h-4 w-4 text-white/90" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M3 10v4h4l5 5V5L7 10H3zM16.5 12l2.25-2.25 1.25 1.25L17.75 13.25 20 15.5l-1.25 1.25L16.5 14.5l-2.25 2.25-1.25-1.25L15.25 13.25 13 11l1.25-1.25L16.5 12z" />
@@ -93,7 +88,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
       );
     }
     if (volume < 0.5) {
-      // Speaker low
       return (
         <svg className="h-4 w-4 text-white/90" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M3 10v4h4l5 5V5L7 10H3z" />
@@ -101,7 +95,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
         </svg>
       );
     }
-    // Speaker high
     return (
       <svg className="h-4 w-4 text-white/90" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M3 10v4h4l5 5V5L7 10H3z" />
@@ -120,20 +113,17 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
   };
 
   const handleVideoClick = (e) => {
-    e.stopPropagation(); // Evitar que o clique se propague para o container
+    e.stopPropagation();
     if (isPlaying) {
       if (isMobile) {
-        // No mobile, sempre mostrar controles quando clicar no vídeo
         showControlsTemporarily();
       } else {
-        // No desktop, mostrar controles temporariamente
         showControlsTemporarily();
       }
     }
   };
 
   const handleContainerClick = (e) => {
-    // Se clicou fora do vídeo (no container), esconder controles no mobile
     if (isMobile && isPlaying && e.target === containerRef.current) {
       setShowControls(false);
       clearControlsTimeout();
@@ -160,13 +150,12 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     }
   };
 
-  // Hotkeys
   useEffect(() => {
     const onKey = (e) => {
       if (!containerRef.current?.contains(document.activeElement)) return;
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
       switch (e.key.toLowerCase()) {
-        case ' ': // espaço
+        case ' ':
         case 'k':
           e.preventDefault();
           togglePlay();
@@ -196,7 +185,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     return () => window.removeEventListener('keydown', onKey);
   }, [currentTime, duration, playbackRate]);
 
-  // Listeners do vídeo
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
@@ -239,7 +227,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     };
   }, []);
 
-  // Sincronizar vídeo de fundo (blur) para preencher laterais
   useEffect(() => {
     const v = videoRef.current;
     const bg = bgVideoRef.current;
@@ -264,7 +251,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     v.addEventListener('pause', onPause);
     v.addEventListener('seeked', onSeeked);
     v.addEventListener('timeupdate', onTimeUpdate);
-    // start with paused background aligned at 0
     syncTime();
     return () => {
       v.removeEventListener('play', onPlay);
@@ -274,10 +260,9 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     };
   }, []);
 
-  // Detectar se é mobile
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // sm breakpoint
+      setIsMobile(window.innerWidth < 768);
     };
     
     checkMobile();
@@ -288,7 +273,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
     };
   }, []);
 
-  // Cleanup timeout ao desmontar
   useEffect(() => {
     return () => {
       clearControlsTimeout();
@@ -304,7 +288,7 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
       className={`group relative w-full h-full bg-black/80 rounded-lg overflow-hidden ${className}`}
       onClick={handleContainerClick}
     >
-      {/* Camada de preenchimento (blur) */}
+
       <video
         ref={bgVideoRef}
         className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl brightness-[.45] z-0"
@@ -315,7 +299,7 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
         aria-hidden="true"
         style={{ zIndex: 0 }}
       />
-      {/* Vídeo principal acima do background */}
+
       <video 
         ref={videoRef} 
         className="relative z-10 w-full h-full object-contain cursor-pointer" 
@@ -326,7 +310,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
         onClick={handleVideoClick}
       />
 
-      {/* Overlay: escurecer e aplicar blur quando pausado */}
       <div
         className={`absolute inset-0 transition-opacity duration-300 ${
           isPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'
@@ -334,22 +317,19 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
         style={{ zIndex: 20 }}
       />
 
-      {/* Controles Inteligentes e Responsivos */}
       <div className={`absolute inset-x-0 bottom-0 p-3 sm:p-4 md:p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-all duration-300 ${
         isPlaying 
           ? (showControls ? 'opacity-100' : 'opacity-0 pointer-events-none') 
           : 'opacity-0 pointer-events-none'
       }`} style={{ zIndex: 40 }} onClick={(e) => e.stopPropagation()}>
-        {/* Barra de progresso - Melhorada */}
+
         <div ref={progressRef} className="relative h-2 sm:h-3 md:h-4 bg-white/10 rounded-full cursor-pointer select-none mb-3 sm:mb-4 md:mb-5" onClick={handleSeek}>
           <div className="absolute inset-y-0 left-0 bg-white/20 rounded-full" style={{ width: `${bufferedPercent}%` }} />
           <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-purple-600 rounded-full" style={{ width: `${progressPercent}%` }} />
           <div className="absolute -top-1 sm:-top-1.5 md:-top-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 bg-white border-2 border-primary rounded-full shadow-lg hover:scale-110 transition-transform" style={{ left: `calc(${progressPercent}% - 8px)` }} />
         </div>
 
-        {/* Controles Principais - Layout Inteligente */}
         <div className="flex items-center justify-between text-white">
-          {/* Seção Esquerda: Play + Tempo */}
           <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
             <button
               onClick={togglePlay}
@@ -371,9 +351,7 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
             </div>
           </div>
 
-          {/* Seção Direita: Controles Secundários */}
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
-            {/* Volume - Layout Inteligente */}
             <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={toggleMute}
@@ -382,7 +360,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
               >
                 {getVolumeIcon()}
             </button>
-              {/* Slider de volume - Responsivo */}
             <input
               type="range"
               min="0"
@@ -394,7 +371,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
             />
           </div>
 
-            {/* Velocidade - Dropdown Elegante (Oculto no Mobile) */}
             <div className="relative hidden sm:block">
               <select
                 value={playbackRate}
@@ -413,7 +389,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
               </span>
             </div>
 
-            {/* Fullscreen - Botão Elegante */}
             <button
               onClick={toggleFullscreen}
               className="h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95" 
@@ -433,7 +408,6 @@ const VideoPlayer = ({ src, type, poster, className = '' }) => {
         </div>
       </div>
 
-      {/* Botão Play central para estado pausado (UX Premium) */}
       {!isPlaying && (
         <button
           onClick={togglePlay}

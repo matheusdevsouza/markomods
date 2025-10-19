@@ -1,30 +1,19 @@
 import { logError, logWarn, logInfo } from '../config/logger.js';
 import { LogService } from './LogService.js';
 
-/**
- * Serviço de Monitoramento de Segurança
- * Detecta e responde a atividades suspeitas
- */
-
 class SecurityService {
   constructor() {
-    this.failedLogins = new Map(); // IP -> { count, lastAttempt, blocked }
+    this.failedLogins = new Map();
     this.suspiciousIPs = new Set();
     this.blockedIPs = new Set();
     this.rateLimitViolations = new Map();
-    
-    // Configurações de segurança
     this.maxFailedLogins = 5;
-    this.blockDuration = 15 * 60 * 1000; // 15 minutos
+    this.blockDuration = 15 * 60 * 1000; 
     this.suspiciousThreshold = 3;
-    
-    // Limpar dados antigos a cada 5 minutos
     setInterval(() => this.cleanupOldData(), 5 * 60 * 1000);
   }
 
-  /**
-   * Registra tentativa de login falhada
-   */
+  // registrar tentativa de login falhada
   recordFailedLogin(ip, email, userAgent) {
     const now = Date.now();
     const existing = this.failedLogins.get(ip) || { count: 0, lastAttempt: 0, blocked: false };
@@ -32,7 +21,7 @@ class SecurityService {
     existing.count++;
     existing.lastAttempt = now;
     
-    // Se excedeu o limite, bloquear IP
+    // se excedeu o limite, bloquear IP
     if (existing.count >= this.maxFailedLogins) {
       existing.blocked = true;
       this.blockedIPs.add(ip);
@@ -44,7 +33,7 @@ class SecurityService {
         userAgent
       });
       
-      // Log de segurança
+      // log de segurança
       LogService.logSecurity(
         null,
         'IP bloqueado por tentativas excessivas',
@@ -63,17 +52,14 @@ class SecurityService {
     
     this.failedLogins.set(ip, existing);
     
-    // Marcar como suspeito se próximo do limite
+    // marcar como suspeito se próximo do limite
     if (existing.count >= this.suspiciousThreshold) {
       this.suspiciousIPs.add(ip);
     }
   }
 
-  /**
-   * Registra login bem-sucedido
-   */
+  // registrar login bem-sucedido
   recordSuccessfulLogin(ip, userId, userAgent) {
-    // Limpar tentativas falhadas para este IP
     this.failedLogins.delete(ip);
     this.suspiciousIPs.delete(ip);
     this.blockedIPs.delete(ip);
@@ -81,17 +67,14 @@ class SecurityService {
     logInfo('✅ Login bem-sucedido', { ip, userId });
   }
 
-  /**
-   * Verifica se IP está bloqueado
-   */
+  // verificar se IP está bloqueado
   isIPBlocked(ip) {
     const data = this.failedLogins.get(ip);
     if (!data || !data.blocked) return false;
     
-    // Verificar se o bloqueio ainda é válido
+    // verificar se o bloqueio ainda é válido
     const now = Date.now();
     if (now - data.lastAttempt > this.blockDuration) {
-      // Bloqueio expirou, remover
       this.failedLogins.delete(ip);
       this.blockedIPs.delete(ip);
       return false;
@@ -100,16 +83,12 @@ class SecurityService {
     return true;
   }
 
-  /**
-   * Verifica se IP é suspeito
-   */
+  // verificar se IP é suspeito
   isIPSuspicious(ip) {
     return this.suspiciousIPs.has(ip);
   }
 
-  /**
-   * Registra violação de rate limit
-   */
+  // registrar violação de rate limit
   recordRateLimitViolation(ip, endpoint, userAgent) {
     const now = Date.now();
     const key = `${ip}-${endpoint}`;
@@ -127,7 +106,7 @@ class SecurityService {
       userAgent
     });
     
-    // Se muitas violações, marcar IP como suspeito
+    // se muitas violações, marcar IP como suspeito
     if (existing.count >= 3) {
       this.suspiciousIPs.add(ip);
       
@@ -141,15 +120,13 @@ class SecurityService {
     }
   }
 
-  /**
-   * Detecta atividade suspeita
-   */
+  // detectar atividade suspeita
   detectSuspiciousActivity(req, activity) {
     const ip = req.ip;
     const userAgent = req.get('User-Agent');
     const userId = req.user?.id;
     
-    // Padrões suspeitos
+    // padrões suspeitos
     const suspiciousPatterns = [
       /script/i,
       /<script/i,
@@ -159,14 +136,14 @@ class SecurityService {
       /eval\(/i,
       /document\.cookie/i,
       /window\.location/i,
-      /\.\.\//, // Path traversal
-      /union.*select/i, // SQL injection
-      /drop.*table/i, // SQL injection
-      /insert.*into/i, // SQL injection
-      /delete.*from/i, // SQL injection
+      /\.\.\//,
+      /union.*select/i,
+      /drop.*table/i,
+      /insert.*into/i,
+      /delete.*from/i
     ];
     
-    // Verificar se a atividade contém padrões suspeitos
+    // verificar se a atividade contém padrões suspeitos
     const activityString = JSON.stringify(activity);
     const suspiciousPattern = suspiciousPatterns.find(pattern => pattern.test(activityString));
     
@@ -179,10 +156,10 @@ class SecurityService {
         userAgent
       });
       
-      // Marcar IP como suspeito
+      // marcar IP como suspeito
       this.suspiciousIPs.add(ip);
       
-      // Log de segurança
+      // log de segurança
       LogService.logSecurity(
         userId,
         'Atividade suspeita detectada',
@@ -197,18 +174,13 @@ class SecurityService {
     return false;
   }
 
-  /**
-   * Analisa logs em busca de padrões de ataque
-   */
-  analyzeAttackPatterns() {
-    // Esta função seria implementada para analisar logs históricos
-    // e detectar padrões de ataque mais complexos
+  // analisar logs em busca de padrões de ataque
+  analyzeAttackPatterns() { 
+
     logInfo('🔍 Analisando padrões de ataque...');
   }
 
-  /**
-   * Gera relatório de segurança
-   */
+  // gerar relatório de segurança
   generateSecurityReport() {
     const report = {
       timestamp: new Date().toISOString(),
@@ -228,14 +200,12 @@ class SecurityService {
     return report;
   }
 
-  /**
-   * Limpa dados antigos
-   */
+  // limpar dados antigos
   cleanupOldData() {
     const now = Date.now();
-    const cleanupThreshold = 60 * 60 * 1000; // 1 hora
+    const cleanupThreshold = 60 * 60 * 1000;
     
-    // Limpar tentativas de login antigas
+    // limpar tentativas de login antigas
     for (const [ip, data] of this.failedLogins.entries()) {
       if (now - data.lastAttempt > cleanupThreshold) {
         this.failedLogins.delete(ip);
@@ -244,7 +214,7 @@ class SecurityService {
       }
     }
     
-    // Limpar violações de rate limit antigas
+    // limpar violações de rate limit antigas
     for (const [key, data] of this.rateLimitViolations.entries()) {
       if (now - data.lastViolation > cleanupThreshold) {
         this.rateLimitViolations.delete(key);
@@ -254,14 +224,12 @@ class SecurityService {
     logInfo('🧹 Dados de segurança antigos limpos');
   }
 
-  /**
-   * Middleware para verificar segurança
-   */
+  // middleware para verificar segurança
   securityMiddleware() {
     return (req, res, next) => {
       const ip = req.ip;
       
-      // Verificar se IP está bloqueado
+      // verificar se IP está bloqueado
       if (this.isIPBlocked(ip)) {
         return res.status(403).json({
           success: false,
@@ -270,7 +238,7 @@ class SecurityService {
         });
       }
       
-      // Verificar se IP é suspeito
+      // verificar se IP é suspeito
       if (this.isIPSuspicious(ip)) {
         logWarn('⚠️ Requisição de IP suspeito', {
           ip,
@@ -279,7 +247,7 @@ class SecurityService {
         });
       }
       
-      // Detectar atividade suspeita
+      // detectar atividade suspeita
       this.detectSuspiciousActivity(req, {
         path: req.path,
         method: req.method,
@@ -293,12 +261,12 @@ class SecurityService {
   }
 }
 
-// Instância singleton
+// instância singleton
 const securityService = new SecurityService();
 
 export default securityService;
 
-// Funções de conveniência
+// funções de conveniência
 export const recordFailedLogin = (ip, email, userAgent) => securityService.recordFailedLogin(ip, email, userAgent);
 export const recordSuccessfulLogin = (ip, userId, userAgent) => securityService.recordSuccessfulLogin(ip, userId, userAgent);
 export const isIPBlocked = (ip) => securityService.isIPBlocked(ip);
@@ -308,13 +276,10 @@ export const detectSuspiciousActivity = (req, activity) => securityService.detec
 export const generateSecurityReport = () => securityService.generateSecurityReport();
 export const securityMiddleware = () => securityService.securityMiddleware();
 
-/**
- * Gera relatório de backup (função de conveniência para compatibilidade)
- */
+// gerar relatório de backup
 export const generateBackupReport = () => {
   logInfo('📊 Gerando relatório de backup...');
   
-  // Em desenvolvimento, retorna dados mockados
   return {
     success: true,
     report: {

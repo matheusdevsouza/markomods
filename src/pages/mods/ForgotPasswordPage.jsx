@@ -17,7 +17,6 @@ const ForgotPasswordPage = () => {
   
   const { requestPasswordReset } = useAuth();
 
-  // Ocultar mensagem de sucesso após 10s
   useEffect(() => {
     if (!success) return;
     const t = setTimeout(() => setSuccess(false), 10000);
@@ -38,7 +37,6 @@ const ForgotPasswordPage = () => {
       
       await requestPasswordReset(email);
       setSuccess(true);
-      // Iniciar cooldown de 30s após envio
       setCooldown(30);
       const interval = setInterval(() => {
         setCooldown(prev => {
@@ -59,7 +57,6 @@ const ForgotPasswordPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <div className="w-full max-w-md relative">
-        {/* Botão Voltar com a mesma estilização do login */}
         <div className="absolute -top-12 left-0 z-10">
           <Link to="/login" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -117,7 +114,6 @@ const ForgotPasswordPage = () => {
                 </div>
               )}
               
-              {/* Removido botão fantasma inferior para manter consistência com o login */}
             </form>
           </CardContent>
         </Card>

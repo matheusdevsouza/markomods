@@ -32,7 +32,6 @@ const DownloadPage = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadStarted, setDownloadStarted] = useState(false);
 
-
   const [pageLoaded, setPageLoaded] = useState(false);
 
   const getCardClasses = () => {
@@ -123,12 +122,10 @@ const DownloadPage = () => {
     setIsDownloading(true);
 
     try {
-      // url de download (pc / mobile)
       const downloadUrl = mod.download_url_pc || mod.download_url_mobile;
       
       if (downloadUrl) {
 
-        // funcao para registrar download
         const token = localStorage.getItem('authToken');
         const headers = {
           'Content-Type': 'application/json'
@@ -146,15 +143,11 @@ const DownloadPage = () => {
 
           if (response.ok) {
 
-            // atualizar o contador de downloads totais dos mods
-
             setMod(prev => ({
               ...prev,
               download_count: (prev.download_count || 0) + 1
             }));
             
-            // salvar no historico
-
             try {
               const historyKey = 'userDownloadHistory';
               const raw = localStorage.getItem(historyKey);
@@ -205,14 +198,12 @@ const DownloadPage = () => {
     return (
       <div className="min-h-screen">
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="space-y-6">
-            {/* skeleton de loading do header */}
-            <div className="space-y-4 animate-pulse">
+        <div className="space-y-6">
+          <div className="space-y-4 animate-pulse">
               <Skeleton className="h-8 w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
               <Skeleton className="h-12 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
             </div>
             
-            {/* skeleton de loading do conteudo */}
             <Skeleton className="h-96 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
           </div>
         </div>
@@ -259,7 +250,6 @@ const DownloadPage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* tags do google ads */}
       <GoogleAdsenseMeta />
       
       <div className="w-full px-4 py-6 mb-8">
@@ -270,9 +260,7 @@ const DownloadPage = () => {
         />
       </div>
       
-      {/* conteudo principal */}
       <div className="max-w-4xl mx-auto px-4 pb-8 space-y-6">
-        {/* contagem regressiva */}
         <div className={`rounded-xl p-8 transition-all duration-1000 ease-out delay-200 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
@@ -365,7 +353,6 @@ const DownloadPage = () => {
           </div>
         </div>
 
-        {/* informacoes do mod */}
         <div className={`rounded-xl p-6 transition-all duration-1000 ease-out delay-300 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>

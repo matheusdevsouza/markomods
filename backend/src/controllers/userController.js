@@ -3,9 +3,8 @@ import { logError, logInfo } from '../config/logger.js';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import { LogService } from '../services/LogService.js';
-// Middleware de upload movido para arquivo separado
 
-// Buscar perfil do usuário
+// buscar perfil do usuário
 export const getUserProfile = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -36,7 +35,7 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-// Atualizar perfil do usuário
+// atualizar perfil do usuário
 export const updateUserProfile = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -51,7 +50,7 @@ export const updateUserProfile = async (req, res) => {
     const userId = req.user.id;
     const { username, email, display_name } = req.body;
 
-    // Verificar se username já existe (se foi alterado)
+    // verificar se username já existe (se foi alterado)
     if (username) {
       const existingUser = await UserModel.findByUsername(username);
       if (existingUser && existingUser.id !== userId) {
@@ -62,7 +61,7 @@ export const updateUserProfile = async (req, res) => {
       }
     }
 
-    // Verificar se email já existe (se foi alterado)
+    // verificar se email já existe (se foi alterado)
     if (email) {
       const existingUser = await UserModel.findByEmail(email);
       if (existingUser && existingUser.id !== userId) {
@@ -73,16 +72,16 @@ export const updateUserProfile = async (req, res) => {
       }
     }
 
-    // Preparar dados para atualização
+    // preparar dados para atualização
     const updateData = {};
     if (username) updateData.username = username;
     if (email) updateData.email = email;
     if (display_name !== undefined) updateData.display_name = display_name;
 
-    // Atualizar usuário
+    // atualizar usuário
     const updatedUser = await UserModel.update(userId, updateData);
     
-    // Remover informações sensíveis
+    // remover informações sensíveis
     const { password_hash, ...userProfile } = updatedUser;
 
     logInfo('Perfil do usuário atualizado', { userId, updates: Object.keys(updateData) });
@@ -103,7 +102,7 @@ export const updateUserProfile = async (req, res) => {
   }
 };
 
-// Upload de avatar
+// upload de avatar
 export const uploadAvatar = async (req, res) => {
   try {
     if (!req.file) {
@@ -115,13 +114,13 @@ export const uploadAvatar = async (req, res) => {
 
     const userId = req.user.id;
     
-    // Construir URL relativa para o avatar (será resolvida pelo frontend)
+    // construir URL para o avatar
     const avatarUrl = `/uploads/avatars/${req.file.filename}`;
 
-    // Atualizar usuário com nova URL do avatar
+    // atualizar usuário com nova URL do avatar
     const updateResult = await UserModel.update(userId, { avatar_url: avatarUrl });
     
-    // Buscar usuário atualizado
+    // buscar usuário atualizado
     const updatedUser = await UserModel.findById(userId);
     if (!updatedUser) {
       throw new Error('Usuário não encontrado após atualização');
@@ -129,7 +128,7 @@ export const uploadAvatar = async (req, res) => {
     
     const { password_hash, ...userProfile } = updatedUser;
 
-    // Log da atividade
+    // log da atividade
     await LogService.logUsers(
       userId,
       'Avatar atualizado',
@@ -157,13 +156,13 @@ export const uploadAvatar = async (req, res) => {
   }
 };
 
-// Atualizar perfil do usuário
+// atualizar perfil 
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
     const updateData = req.body;
 
-    // Remover campos sensíveis
+    // remover campos sensíveis
     delete updateData.password;
     delete updateData.role;
     delete updateData.is_verified;
@@ -177,7 +176,7 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    // Log da atividade
+    // log da atividade
     await LogService.logUsers(
       userId,
       'Perfil atualizado',
@@ -200,13 +199,13 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// Alterar senha
+// alterar senha
 export const changePassword = async (req, res) => {
   try {
     const userId = req.user.id;
     const { currentPassword, newPassword } = req.body;
 
-    // Buscar usuário atual
+    // buscar usuário atual
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -215,7 +214,7 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    // Verificar senha atual
+    // verificar senha atual
     const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password_hash);
     if (!isCurrentPasswordValid) {
       return res.status(400).json({
@@ -224,10 +223,10 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    // Atualizar senha (o método updatePassword já faz o hash internamente)
+    // atualizar senha
     await UserModel.updatePassword(userId, newPassword);
 
-    // Log da atividade
+    // log da atividade
     await LogService.logUsers(
       userId,
       'Senha alterada',
@@ -249,7 +248,7 @@ export const changePassword = async (req, res) => {
   }
 };
 
-// Deletar conta
+// deletar conta
 export const deleteAccount = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -264,7 +263,7 @@ export const deleteAccount = async (req, res) => {
     const userId = req.user.id;
     const { password } = req.body;
 
-    // Verificar senha
+    // verificar senha
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -281,7 +280,7 @@ export const deleteAccount = async (req, res) => {
       });
     }
 
-    // Deletar usuário completamente
+    // deletar usuário completamente
     await UserModel.deleteAccountCompletely(userId);
 
     logInfo('Conta do usuário deletada', { userId });
@@ -299,12 +298,12 @@ export const deleteAccount = async (req, res) => {
   }
 };
 
-// Buscar todos os usuários (admin)
+// buscar todos os usuários (admin)
 export const getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.findAll();
     
-    // Log da atividade
+    // log da atividade
     await LogService.logUsers(
       req.user.id,
       'Lista de usuários consultada',
@@ -326,13 +325,13 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// Banir/Desbanir usuário (admin)
+// banir/desbanir usuário (admin)
 export const toggleUserBan = async (req, res) => {
   try {
     const { userId } = req.params;
     const { is_banned, ban_reason } = req.body;
 
-    // Verificar se não está tentando banir a si próprio
+    // verificar se não está tentando banir a propria conta
     if (userId === req.user.id) {
       return res.status(400).json({
         success: false,
@@ -340,7 +339,7 @@ export const toggleUserBan = async (req, res) => {
       });
     }
 
-    // Buscar usuário para verificar role
+    // buscar usuário para verificar o cargo
     const targetUser = await UserModel.findById(userId);
     if (!targetUser) {
       return res.status(404).json({
@@ -349,7 +348,7 @@ export const toggleUserBan = async (req, res) => {
       });
     }
 
-    // Verificar se não está tentando banir um administrador
+    // verificar se não está tentando banir um administrador
     if (is_banned && ['admin', 'super_admin'].includes(targetUser.role)) {
       return res.status(400).json({
         success: false,
@@ -357,20 +356,22 @@ export const toggleUserBan = async (req, res) => {
       });
     }
 
-    // Preparar dados de atualização
+    // preparar dados de atualização
     const updateData = { 
       is_banned,
       updated_at: new Date()
     };
 
     if (is_banned) {
-      // Usuário sendo banido
+
+      // usuário sendo banido (se nao tiver motivo = banimento administrativo)
       updateData.ban_reason = ban_reason || 'Banimento administrativo';
       updateData.banned_at = new Date();
       updateData.banned_by = req.user.id;
       
     } else {
-      // Usuário sendo desbanido
+
+      // usuário sendo desbanido
       updateData.ban_reason = null;
       updateData.banned_at = null;
       updateData.banned_by = null;
@@ -387,7 +388,7 @@ export const toggleUserBan = async (req, res) => {
     }
 
 
-    // Log da atividade
+    // log da atividade
     await LogService.logUsers(
       req.user.id,
       is_banned ? 'Usuário banido' : 'Usuário desbanido',
@@ -411,7 +412,7 @@ export const toggleUserBan = async (req, res) => {
   }
 };
 
-// Editar usuário (admin)
+// editar usuário (admin)
 export const editUser = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -419,7 +420,7 @@ export const editUser = async (req, res) => {
     const adminId = req.user.id;
 
 
-    // Verificar se o usuário existe
+    // verificar se o usuário existe
     const userToEdit = await UserModel.findById(userId);
     if (!userToEdit) {
       return res.status(404).json({
@@ -429,7 +430,7 @@ export const editUser = async (req, res) => {
     }
 
 
-    // Verificar se não está tentando editar outro admin (apenas super_admin pode editar admins)
+    // verificar se não está tentando editar outro admin
     if ((userToEdit.role === 'admin' || userToEdit.role === 'super_admin') && req.user.role !== 'super_admin') {
       return res.status(400).json({
         success: false,
@@ -438,7 +439,7 @@ export const editUser = async (req, res) => {
     }
 
 
-    // Atualizar usuário
+    // atualizar usuário
     const updatedUser = await UserModel.updateUser(userId, {
       username,
       display_name,
@@ -461,14 +462,14 @@ export const editUser = async (req, res) => {
   }
 };
 
-// Deletar usuário (admin)
+// deletar usuário (admin)
 export const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const adminId = req.user.id;
 
 
-    // Verificar se o usuário a ser deletado existe
+    // verificar se o usuário que está sendo deletado existe
     const userToDelete = await UserModel.findById(userId);
     if (!userToDelete) {
       return res.status(404).json({
@@ -478,7 +479,7 @@ export const deleteUser = async (req, res) => {
     }
 
 
-    // Verificar se não está tentando deletar a si mesmo
+    // verificar se não está tentando deletar a propria conta
     if (userId === adminId) {
       return res.status(400).json({
         success: false,
@@ -486,7 +487,7 @@ export const deleteUser = async (req, res) => {
       });
     }
 
-    // Verificar se não está tentando deletar outro admin
+    // verificar se não está tentando deletar outro admin
     if (userToDelete.role === 'admin' || userToDelete.role === 'super_admin') {
       return res.status(400).json({
         success: false,
@@ -495,7 +496,7 @@ export const deleteUser = async (req, res) => {
     }
 
 
-    // Deletar usuário completamente
+    // deletar usuário completamente
     await UserModel.deleteAccountCompletely(userId);
 
 

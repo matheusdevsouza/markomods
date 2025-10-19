@@ -1,46 +1,51 @@
-# === Segredos e variáveis de ambiente ===
-.env
-.env.*
-production.env
-config.env
-backend/.env
-backend/.env.*
+# configurações sensíveis de anúncios
+src/config/adsense.js
+src/components/ads/
+cors_fix.js
+backend/config/banner.json
 
-# === Backups e dumps ===
+# backups e dumps
 backend/backups/
 backup_modsdomarko_db*.sql
 files-backup-*.tar.gz
 database/**/*.sql
 
-# === Uploads de usuários ===
+# uploads de usuários
 uploads/
 backend/uploads/
 
-# === Logs ===
+# logs
 backend/logs/
 *.log
 *.gz
 
-# === Configs locais que não devem ir para o git ===
+# configs locais
 nginx-config.conf
 nginx-simple.conf
+setup-nginx.sh
+ads.txt
+deploy.sh
+ecosystem.config.cjs
+ecosystem-frontend.config.cjs
 
-# === Build/temporários ===
+# arquivos temporários e sensíveis
+temp_allowed_origins.txt
+FETCH_HEAD
+*.tmp
+*.temp
+temp_*
+
+# build/temporários
 dist/
 node_modules/
 
-# === IDE/SO ===
+# ide/so
 .DS_Store
 .vscode/
 .idea/
 Thumbs.db
 
-# =====================================================
-# GITIGNORE - EU, MARKO! MODS
-# Otimizado para produção
-# =====================================================
-
-# Dependencies (criadas com npm install na VPS)
+# dependências 
 node_modules/
 backend/node_modules/
 npm-debug.log*
@@ -49,7 +54,7 @@ yarn-error.log*
 package-lock.json
 backend/package-lock.json
 
-# Environment variables (SENSÍVEIS - NÃO VERSIONAR)
+# variáveis de ambiente 
 .env
 .env.local
 .env.development.local
@@ -59,12 +64,12 @@ backend/package-lock.json
 production.env
 config.env
 
-# Arquivos de configuração sensíveis
+# arquivos de configuração sensíveis
 backend/.env
 backend/production.env
 backend/config.env
 
-# Logs (SENSÍVEIS - NÃO VERSIONAR)
+# logs 
 logs/
 *.log
 npm-debug.log*
@@ -76,88 +81,72 @@ backend/*.log
 backend/logs/app.log
 backend/logs/error.log
 
-# Runtime data
+# dados de runtime
 pids/
 *.pid
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
+# diretório de cobertura 
 coverage/
 *.lcov
 
-# nyc test coverage
+# cobertura de teste nyc
 .nyc_output
 
-# Dependency directories
+# diretórios de dependências
 node_modules/
 jspm_packages/
 
-# Optional npm cache directory
+# diretório de cache npm opcional
 .npm
 
-# Optional eslint cache
+# cache eslint opcional
 .eslintcache
 
-# Microbundle cache
+# cache microbundle
 .rpt2_cache/
 .rts2_cache_cjs/
 .rts2_cache_es/
 .rts2_cache_umd/
 
-# Optional REPL history
+# histórico repl opcional
 .node_repl_history
 
-# Output of 'npm pack'
+# saída de 'npm pack'
 *.tgz
 
-# Yarn Integrity file
+# arquivo de integridade yarn
 .yarn-integrity
 
-# dotenv environment variables file
+# arquivo de variáveis de ambiente 
 .env
 .env.test
 
-# parcel-bundler cache (https://parceljs.org/)
+# cache parcel-bundler 
 .cache
 .parcel-cache
 
-# Next.js build output
+# saída de build next.js
 .next
 
-# Nuxt.js build / generate output
+# saída de build 
 .nuxt
 dist
 
-# Gatsby files
+# arquivos gatsby
 .cache/
 public
 
-# Storybook build outputs
+# saídas de build 
 .out
 .storybook-out
 
-# Temporary folders
+# pastas temporárias
 tmp/
 temp/
 
-# Editor directories and files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Build outputs (criadas com npm run build na VPS)
+# saídas de build
 dist/
 build/
 .next/
@@ -165,7 +154,7 @@ build/
 out/
 storybook-static/
 
-# Uploads (criadas na VPS com uploads de usuários)
+# uploads
 uploads/*
 !uploads/.gitkeep
 !uploads/thumbnails/.gitkeep
@@ -174,18 +163,18 @@ uploads/*
 backend/uploads/*
 !backend/uploads/.gitkeep
 
-# Backups (criadas automaticamente na VPS)
+# backups
 *.backup
 *.bak
 backup-*
 backend/backups/
 backend/backups/*
 
-# Database
+# banco de dados
 *.sqlite
 *.db
 
-# Test files
+# arquivos de teste
 test-*
 *_test.js
 *_test.jsx
@@ -194,145 +183,138 @@ test-*
 *.spec.js
 *.spec.jsx
 
-# Development files
+# arquivos de desenvolvimento
 debug-*
 dev-*
 local-*
 
-# Documentation (keep only essential)
+# documentação
 *.md
-!README.md
-!PRODUCTION_DEPLOYMENT.md
-!SETUP_INSTRUCTIONS.md
 
-# Scripts de desenvolvimento
+# scripts
 setup-*.sh
 dev-*.sh
 local-*.sh
 
-# Arquivos de configuração local
+# arquivos de configuração local
 config.local.*
 *.local.*
 
-# PM2
+# pm2
 .pm2/
 
-# Logs específicos do projeto
+# logs
 backend/logs/
 logs/
 
-# Arquivos temporários
+# arquivos temporários
 *.tmp
 *.temp
 
-# Arquivos de migração antigos
+# arquivos de migração
 migrations/old/
 database/old/
 
-# Arquivos de exemplo
+# arquivos de exemplo
 example-*
 sample-*
 demo-*
 
-# Arquivos SQL de desenvolvimento/teste
+# arquivos sql
 *.sql
 !backend/database/markomods_db.sql
 !backend/migrations/*.sql
 
-# Arquivos de documentação desnecessários
+# arquivos de documentação
 *.md
 !README.md
 
-# Arquivos de debug
+# arquivos de debug
 debug-*
 trace-*
 
-# Arquivos de teste
+# arquivos de teste
 test-*
 spec-*
 
-# Arquivos de desenvolvimento
+# arquivos de desenvolvimento
 dev-*
 development-*
 
-# Arquivos de staging
+# arquivos de staging
 staging-*
 stage-*
 
-# Arquivos de produção (não versionar)
+# arquivos de produção
 production-*
 prod-*
 
-# Arquivos de backup
+# arquivos de backup
 backup-*
 *.backup
 *.bak
 
-# Arquivos de log
+# arquivos de log
 *.log
 logs/
 
-# Arquivos de cache
+# arquivos de cache
 cache/
 .cache/
 
-# Arquivos de upload (manter estrutura)
+# arquivos de upload
 uploads/*
 !uploads/.gitkeep
 !uploads/thumbnails/.gitkeep
 !uploads/avatars/.gitkeep
 !uploads/editor-images/.gitkeep
 
-# Arquivos de configuração sensíveis
+# arquivos sensíveis
 config.env
 .env.production
 .env.staging
 
-# Arquivos de deploy
+# arquivos de deploy
 deploy-*
 deployment-*
 
-# Arquivos de monitoramento
+# arquivos de monitoramento
 monitor-*
 monitoring-*
 
-# Arquivos de backup
+# arquivos de backup
 backup-*
 *.backup
 
-# Arquivos de migração temporários
+# arquivos de migração
 migrations/temp/
 database/temp/
 
-# Arquivos de seed temporários
+# arquivos de seed
 seeds/temp/
 seed-*.temp
 
-# Arquivos de documentação temporários
+# arquivos de documentação
 docs/temp/
 doc-*.temp
 
-# Arquivos de assets temporários
+# arquivos de assets 
 assets/temp/
 temp-*
 
-# Arquivos de build temporários
+# arquivos de build 
 build/temp/
 temp-build/
 
-# Arquivos de teste temporários
+# arquivos de teste 
 test/temp/
 temp-test/
 
-# Arquivos de configuração temporários
+# arquivos de configuração
 config/temp/
 temp-config/
 
-# =====================================================
-# PASTAS CRIADAS NA VPS (NÃO VERSIONAR)
-# =====================================================
-
-# Dependências (npm install)
+# dependências
 node_modules/
 backend/node_modules/
 package-lock.json
@@ -340,7 +322,7 @@ backend/package-lock.json
 yarn.lock
 backend/yarn.lock
 
-# Builds (npm run build)
+# builds 
 dist/
 build/
 .next/
@@ -348,7 +330,7 @@ build/
 out/
 storybook-static/
 
-# Cache (criado automaticamente)
+# cache 
 .cache/
 .parcel-cache/
 .vite/
@@ -356,7 +338,7 @@ storybook-static/
 .eslintcache
 .stylelintcache
 
-# Uploads de usuários
+# uploads de usuários
 uploads/*
 backend/uploads/*
 !uploads/.gitkeep
@@ -365,16 +347,16 @@ backend/uploads/*
 !uploads/editor-images/.gitkeep
 !backend/uploads/.gitkeep
 
-# Backups automáticos
+# backups automáticos
 backend/backups/
 backend/backups/*
 
-# Logs da aplicação
+# logs da aplicação
 logs/
 backend/logs/
 *.log
 
-# Arquivos temporários do sistema
+# arquivos temporários
 .tmp/
 .temp/
 tmp/
@@ -385,3 +367,10 @@ backend/migrations/**
 !backend/migrations/.gitkeep
 backend/database/migrations/**
 !backend/database/migrations/.gitkeep
+
+# ignorar seeder local do banco
+backend/database/seed.js
+
+# scripts locais 
+scripts/
+backend/scripts/

@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MessageSquare, MapPin } from "lucide-react"; // Using MessageSquare for WhatsApp
+import { Mail, Phone, MessageSquare, MapPin } from "lucide-react";
 
 const ContactSection = ({ contact }) => {
   

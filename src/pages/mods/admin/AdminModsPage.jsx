@@ -34,7 +34,6 @@ import {
   Smartphone,
   Package
 } from 'lucide-react';
-// Editor de texto rico
 import { RichTextEditor } from '../../../components/ui/RichTextEditor';
 import { useAuth } from '../../../contexts/AuthContextMods';
 import { processHtmlComplete, processHtmlForDatabase } from '../../../utils/htmlProcessor';
@@ -56,14 +55,13 @@ const AdminModsPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Estados do formulário
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
     version: '',
     minecraft_version: '',
     mod_loader: '',
-    content_type_id: 1, // 1 = mods, 2 = addons
+    content_type_id: 1, 
     short_description: '',
     full_description: '',
     tags: '',
@@ -75,9 +73,8 @@ const AdminModsPage = () => {
     video_file: null
   });
 
-  const [thumbnailMode, setThumbnailMode] = useState('url'); // 'url' ou 'upload'
+  const [thumbnailMode, setThumbnailMode] = useState('url');
 
-  // Função para gerar slug automaticamente baseado no nome
   const generateSlug = (name) => {
     return name
       .toLowerCase()
@@ -87,12 +84,10 @@ const AdminModsPage = () => {
       .trim('-');
   };
 
-  // Buscar mods do banco de dados
   useEffect(() => {
     fetchMods();
   }, []);
 
-  // Filtrar mods quando os filtros mudarem
   useEffect(() => {
     filterMods();
   }, [mods, searchTerm, selectedStatus, selectedMinecraftVersion]);
@@ -124,7 +119,6 @@ const AdminModsPage = () => {
   const filterMods = () => {
     let filtered = [...mods];
 
-    // Filtro de busca
     if (searchTerm) {
       filtered = filtered.filter(mod => 
           (getSafeValue(mod.title || mod.name).toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -132,7 +126,6 @@ const AdminModsPage = () => {
       );
     }
 
-    // Filtro de status
     if (selectedStatus !== 'all') {
       if (selectedStatus === 'published') {
         filtered = filtered.filter(mod => mod.is_published);
@@ -141,7 +134,6 @@ const AdminModsPage = () => {
       }
     }
 
-    // Filtro de versão do Minecraft
     if (selectedMinecraftVersion !== 'all') {
       filtered = filtered.filter(mod => getSafeValue(mod.minecraft_version) === selectedMinecraftVersion);
     }
@@ -149,13 +141,11 @@ const AdminModsPage = () => {
     setFilteredMods(filtered);
   };
 
-  // Função para obter valor seguro de um campo
   const getSafeValue = (value, defaultValue = '') => {
     if (value === null || value === undefined) return defaultValue;
     return value;
   };
 
-  // Função para obter array seguro de tags
   const getSafeTags = (tags) => {
     if (!tags) return [];
     if (Array.isArray(tags)) return tags;
@@ -174,7 +164,6 @@ const AdminModsPage = () => {
     try {
       const token = localStorage.getItem('authToken');
       
-      // Validar campos obrigatórios
       if (!formData.name || !formData.slug || !formData.version || !formData.minecraft_version || !formData.mod_loader || !formData.short_description || !formData.full_description) {
         const missingFields = [];
         if (!formData.name) missingFields.push('Nome');
@@ -188,20 +177,17 @@ const AdminModsPage = () => {
         setFeedback({ show: true, message: `Campos obrigatórios faltando: ${missingFields.join(', ')}`, type: 'error' });
         return;
       }
-      // Exigir vídeo no cadastro
       if (!formData.video_file) {
         setFeedback({ show: true, message: 'Envie um arquivo de vídeo do mod (MP4/WEBM/OGG/MKV/MOV)', type: 'error' });
         return;
       }
       
-      // Preparar dados para envio
       let requestBody;
       let headers = {
         'Authorization': `Bearer ${token}`
       };
       
       if (thumbnailMode === 'upload' && formData.thumbnail_file) {
-        // Modo upload: usar FormData para arquivo
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
         formDataToSend.append('slug', formData.slug);
@@ -215,14 +201,10 @@ const AdminModsPage = () => {
         formDataToSend.append('thumbnail_file', formData.thumbnail_file);
         formDataToSend.append('download_url_pc', formData.download_url_pc);
         formDataToSend.append('download_url_mobile', formData.download_url_mobile);
-        // vídeo enviado por arquivo
         formDataToSend.append('video_file', formData.video_file);
         
         requestBody = formDataToSend;
-        // Não definir Content-Type para FormData (será definido automaticamente)
       } else {
-        // Modo URL: usar JSON normal
-        // Mesmo que a thumbnail seja por URL, precisamos enviar vídeo por arquivo
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
         formDataToSend.append('slug', formData.slug);
@@ -266,12 +248,10 @@ const AdminModsPage = () => {
       setIsUpdating(true);
       const token = localStorage.getItem('authToken');
       
-      // Debug: log dos dados sendo enviados
       console.log('🔄 Tentando atualizar mod:', editingMod.id);
       console.log('📝 Dados do formulário:', formData);
       console.log('🔑 Token:', token ? `${token.substring(0, 20)}...` : 'Nenhum token encontrado');
       
-      // Validar campos obrigatórios
       console.log('🔍 Validando campos obrigatórios:');
       console.log('  - name:', formData.name, '✅', !!formData.name);
       console.log('  - version:', formData.version, '✅', !!formData.version);
@@ -296,12 +276,9 @@ const AdminModsPage = () => {
       
       console.log('✅ Todos os campos obrigatórios estão preenchidos');
 
-      // Preparar dados para envio
       let requestBody;
       
-      // Em edição, vídeo é opcional (mantém existente se não enviar)
       if (thumbnailMode === 'upload' && formData.thumbnail_file) {
-        // Modo upload: usar FormData para arquivo
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
         formDataToSend.append('slug', formData.slug);
@@ -318,12 +295,10 @@ const AdminModsPage = () => {
         if (formData.video_file) {
           formDataToSend.append('video_file', formData.video_file);
         }
-        // suporte a remoção do vídeo
         formDataToSend.append('video_remove', (!formData.video_file && !formData.video_url) ? 'true' : 'false');
         
         requestBody = formDataToSend;
       } else {
-        // Modo URL: usar JSON normal
         const formDataToSend = new FormData();
         formDataToSend.append('name', formData.name);
         formDataToSend.append('slug', formData.slug);
@@ -340,19 +315,16 @@ const AdminModsPage = () => {
         if (formData.video_file) {
           formDataToSend.append('video_file', formData.video_file);
         }
-        // suporte a remoção do vídeo quando não enviar novo
         formDataToSend.append('video_remove', (!formData.video_file && !formData.video_url) ? 'true' : 'false');
         requestBody = formDataToSend;
       }
 
       console.log('📤 Dados sendo enviados para API:', requestBody);
 
-      // Preparar headers baseados no tipo de conteúdo
       let headers = {
         'Authorization': `Bearer ${token}`
       };
       
-      // Sempre FormData (vídeo pode ser arquivo)
       
       const response = await fetch(`/api/mods/${editingMod.id}`, {
         method: 'PUT',
@@ -436,7 +408,6 @@ const AdminModsPage = () => {
       if (response.ok) {
         const result = await response.json();
         
-        // Mensagens específicas para cada ação
         let message = '';
         if (field === 'is_published') {
           message = result.data.is_published ? 'Mod publicado com sucesso!' : 'Mod despublicado com sucesso!';
@@ -474,24 +445,23 @@ const AdminModsPage = () => {
     
     setEditingMod(mod);
     const formDataToSet = {
-      name: getSafeValue(mod.title || mod.name), // Mapear title para name
+      name: getSafeValue(mod.title || mod.name),
       slug: getSafeValue(mod.slug),
       version: getSafeValue(mod.version),
       minecraft_version: getSafeValue(mod.minecraft_version),
       mod_loader: getSafeValue(mod.mod_loader),
       content_type_id: mod.content_type_id || 1,
       short_description: getSafeValue(mod.short_description),
-      full_description: getSafeValue(mod.full_description || mod.description), // Priorizar full_description
+      full_description: getSafeValue(mod.full_description || mod.description),
       tags: getSafeTags(mod.tags).join(', '),
       thumbnail_url: getSafeValue(mod.thumbnail_url),
       thumbnail_file: null,
-      download_url_pc: getSafeValue(mod.download_url_pc || mod.download_url), // Compatibilidade com versões antigas
+      download_url_pc: getSafeValue(mod.download_url_pc || mod.download_url),
       download_url_mobile: getSafeValue(mod.download_url_mobile),
       video_url: getSafeValue(mod.video_url),
       video_file: null
     };
     
-    // Definir modo baseado se há URL ou não
     setThumbnailMode(mod.thumbnail_url ? 'url' : 'upload');
     
     console.log('📋 Dados do formulário sendo definidos:', formDataToSet);
@@ -551,7 +521,6 @@ const AdminModsPage = () => {
       transition={{ duration: 0.5 }}
       className="space-y-4 sm:space-y-6 p-4 sm:p-6"
     >
-      {/* Feedback Visual */}
       {feedback.show && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -577,7 +546,6 @@ const AdminModsPage = () => {
         </motion.div>
       )}
 
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap">
@@ -593,7 +561,6 @@ const AdminModsPage = () => {
         </Button>
       </div>
 
-      {/* Filtros */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center text-base sm:text-lg">
@@ -656,7 +623,6 @@ const AdminModsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Lista de Mods */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base sm:text-lg">
@@ -674,7 +640,6 @@ const AdminModsPage = () => {
                 <div key={mod.id} className="border border-border/50 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:border-primary/30 transition-all duration-200 group bg-card">
                   <div className="flex flex-col space-y-4">
                     <div className="flex-1">
-                      {/* Header do Card */}
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-3 sm:space-y-0">
                         <div className="flex-1">
                           <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
@@ -692,12 +657,10 @@ const AdminModsPage = () => {
                         </div>
                       </div>
                       
-                      {/* Descrição */}
                       <p className="text-sm sm:text-base text-muted-foreground mb-4 leading-relaxed">
                         {getSafeValue(mod.short_description, 'Sem descrição')}
                       </p>
                       
-                      {/* Tags */}
                       {getSafeTags(mod.tags).length > 0 && (
                         <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
                           {getSafeTags(mod.tags).map((tag, index) => (
@@ -708,9 +671,7 @@ const AdminModsPage = () => {
                         </div>
                       )}
                       
-                      {/* Informações Técnicas e Estatísticas */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
-                        {/* Coluna 1: Minecraft + Versão */}
                         <div className="flex flex-col space-y-2 sm:space-y-3">
                           <div className="flex items-center space-x-2 text-xs sm:text-sm">
                             <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
@@ -732,8 +693,7 @@ const AdminModsPage = () => {
                             </div>
                           </div>
                         </div>
-                        
-                        {/* Coluna 2: Downloads + Visualizações */}
+
                         <div className="flex flex-col space-y-2 sm:space-y-3">
                           <div className="flex items-center space-x-2 text-xs sm:text-sm">
                             <div className="p-1.5 sm:p-2 bg-blue-500/10 rounded-lg">
@@ -756,7 +716,6 @@ const AdminModsPage = () => {
                           </div>
                         </div>
                         
-                        {/* Coluna 3: Autor + Criado */}
                         <div className="flex flex-col space-y-2 sm:space-y-3 sm:col-span-2 lg:col-span-1">
                           <div className="flex items-center space-x-2 text-xs sm:text-sm">
                             <div className="p-1.5 sm:p-2 bg-green-500/10 rounded-lg">
@@ -780,7 +739,6 @@ const AdminModsPage = () => {
                         </div>
                       </div>
                         
-                        {/* Links de Download */}
                         <div className="mt-4 pt-4 border-t border-border/30">
                           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                             {mod.download_url_pc && (
@@ -808,9 +766,7 @@ const AdminModsPage = () => {
                         </div>
                     </div>
                     
-                    {/* Ações */}
                     <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-2">
-                      {/* Botão Publicar/Despublicar */}
                       <Button
                         onClick={() => handleToggleStatus(mod.id, 'is_published')}
                         disabled={loadingActions[`${mod.id}-is_published`]}
@@ -837,7 +793,6 @@ const AdminModsPage = () => {
                         )}
                       </Button>
                       
-                      {/* Botão Adicionar/Remover Destaque */}
                       <Button
                         onClick={() => handleToggleStatus(mod.id, 'is_featured')}
                         disabled={loadingActions[`${mod.id}-is_featured`]}
@@ -864,7 +819,6 @@ const AdminModsPage = () => {
                         )}
                       </Button>
                       
-                      {/* Botão Editar */}
                       <Button
                         onClick={() => openEditModal(mod)}
                         size="sm"
@@ -878,7 +832,6 @@ const AdminModsPage = () => {
                         <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
                       </Button>
                       
-                      {/* Botão Deletar */}
                       <Button
                         onClick={() => openDeleteModal(mod)}
                         size="sm"
@@ -900,7 +853,6 @@ const AdminModsPage = () => {
         </CardContent>
       </Card>
 
-      {/* Modal de Criação/Edição */}
       {(showCreateModal || editingMod) && (
         <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4">
           <motion.div 
@@ -910,7 +862,6 @@ const AdminModsPage = () => {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="bg-background border border-border rounded-xl shadow-2xl w-full max-w-5xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden"
           >
-            {/* Header do Modal */}
             <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -936,9 +887,7 @@ const AdminModsPage = () => {
               </div>
             </div>
             
-            {/* Conteúdo do Modal */}
-            <div className="p-6 max-h-[70vh] overflow-y-auto">
-                            {/* Coluna Esquerda - Informações Básicas */}
+              <div className="p-6 max-h-[70vh] overflow-y-auto">
               <div className="space-y-6">
                 <div className="bg-muted/30 rounded-lg p-4">
                   <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center">
@@ -1087,7 +1036,6 @@ const AdminModsPage = () => {
                 </div>
               </div>
               
-              {/* Coluna Direita - Mídia e Links */}
               <div className="space-y-6">
                 <div className="bg-muted/30 rounded-lg p-4">
                   <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center">
@@ -1095,7 +1043,6 @@ const AdminModsPage = () => {
                     Imagem de Capa
                   </h4>
                   
-                  {/* Seletor de modo */}
                   <div className="flex space-x-2 mb-4">
                     <Button
                       type="button"
@@ -1119,7 +1066,6 @@ const AdminModsPage = () => {
                     </Button>
                   </div>
                   
-                  {/* Campo de URL */}
                   {thumbnailMode === 'url' && (
                     <div className="space-y-3">
                 <Input
@@ -1129,7 +1075,6 @@ const AdminModsPage = () => {
                   placeholder="https://exemplo.com/thumbnail.jpg"
                         className="mt-1"
                       />
-                      {/* Prévia da imagem da URL */}
                       {formData.thumbnail_url && (
                         <div className="relative w-32 h-32 border border-border rounded-lg overflow-hidden shadow-md">
                           <img
@@ -1149,10 +1094,8 @@ const AdminModsPage = () => {
                     </div>
                   )}
                   
-                  {/* Campo de Upload */}
                   {thumbnailMode === 'upload' && (
                     <div className="space-y-3">
-                      {/* Área de Drag & Drop Moderna */}
                       <div className="relative">
                         <input
                           id="thumbnail_file"
@@ -1161,12 +1104,10 @@ const AdminModsPage = () => {
                           onChange={(e) => {
                             const file = e.target.files[0];
                             if (file) {
-                              // Validar tipo de arquivo
                               if (!file.type.startsWith('image/')) {
                                 setFeedback({ show: true, message: 'Por favor, selecione apenas arquivos de imagem', type: 'error' });
                                 return;
-                              }
-                              // Validar tamanho (máximo 5MB)
+                              } 
                               if (file.size > 5 * 1024 * 1024) {
                                 setFeedback({ show: true, message: 'A imagem deve ter no máximo 5MB', type: 'error' });
                                 return;
@@ -1185,10 +1126,8 @@ const AdminModsPage = () => {
                           }
                         `}>
                           
-                          {/* Ícone e Texto */}
                           <div className="space-y-3">
                             {formData.thumbnail_file ? (
-                              // Preview da imagem selecionada
                               <div className="space-y-3">
                                 <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center">
                                   <Image className="h-8 w-8 text-green-500" />
@@ -1203,7 +1142,6 @@ const AdminModsPage = () => {
                                 </div>
                               </div>
                             ) : (
-                              // Estado inicial
                               <div className="space-y-3">
                                 <div className="mx-auto w-16 h-16 bg-muted-foreground/20 rounded-full flex items-center justify-center">
                                   <Image className="h-8 w-8 text-muted-foreground" />
@@ -1220,7 +1158,6 @@ const AdminModsPage = () => {
                             )}
                           </div>
                           
-                          {/* Botão de seleção */}
                           {!formData.thumbnail_file && (
                             <Button
                               type="button"
@@ -1234,7 +1171,6 @@ const AdminModsPage = () => {
                             </Button>
                           )}
                           
-                          {/* Botão para trocar arquivo */}
                           {formData.thumbnail_file && (
                             <Button
                               type="button"
@@ -1253,7 +1189,6 @@ const AdminModsPage = () => {
                         </div>
                       </div>
                       
-                      {/* Preview da imagem */}
                       {formData.thumbnail_file && (
                         <div className="mt-4 p-4 bg-muted/20 rounded-lg border border-green-500/20">
                           <div className="flex items-center space-x-3">
@@ -1342,7 +1277,6 @@ const AdminModsPage = () => {
                   
                   <div className="space-y-4">
                     <div className="relative">
-                      {/* Input real invisível e clicável em toda a área */}
                       <input
                         id="video_file"
                         type="file"
@@ -1373,7 +1307,6 @@ const AdminModsPage = () => {
                         }
                       `}>
                         <div className="space-y-3">
-                          {/* Estado com arquivo selecionado */}
                           {formData.video_file ? (
                             <div className="space-y-2">
                               <div className="mx-auto w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center">
@@ -1400,7 +1333,6 @@ const AdminModsPage = () => {
                               </div>
                             </div>
                           ) : (
-                            // Estado inicial
                             <div className="space-y-3">
                               <div className="mx-auto w-16 h-16 bg-muted-foreground/20 rounded-full flex items-center justify-center">
                                 <Play className="h-8 w-8 text-muted-foreground" />
@@ -1427,7 +1359,6 @@ const AdminModsPage = () => {
                         </div>
                       </div>
 
-                      {/* Informações adicionais quando não selecionar novo arquivo em edição */}
                       {editingMod && !formData.video_file && formData.video_url && (
                         <p className="mt-2 text-xs text-muted-foreground">Vídeo atual manterá: {formData.video_url.split('/').pop()}</p>
                       )}
@@ -1438,7 +1369,6 @@ const AdminModsPage = () => {
             
             </div>
             
-            {/* Footer do Modal */}
             <div className="bg-muted/30 border-t border-border p-6">
               <div className="flex space-x-3">
               <Button
@@ -1476,7 +1406,6 @@ const AdminModsPage = () => {
         </div>
       )}
 
-      {/* Modal de Confirmação de Exclusão */}
       {deleteModalOpen && modToDelete && (
         <div className="fixed inset-0 backdrop-blur-sm bg-black/60 flex items-center justify-center z-50 p-4">
           <motion.div 
@@ -1486,7 +1415,6 @@ const AdminModsPage = () => {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="bg-background border border-border rounded-xl shadow-2xl w-full max-w-md"
           >
-            {/* Header do Modal */}
             <div className="bg-gradient-to-r from-red-500/10 to-red-600/5 border-b border-border p-6">
               <div className="flex items-center space-x-3">
                 <div className="p-3 bg-red-100 rounded-full">
@@ -1499,7 +1427,6 @@ const AdminModsPage = () => {
               </div>
             </div>
             
-            {/* Conteúdo do Modal */}
             <div className="p-6">
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-sm text-red-800 font-medium">
@@ -1511,7 +1438,6 @@ const AdminModsPage = () => {
               </div>
             </div>
             
-            {/* Footer do Modal */}
             <div className="bg-muted/30 border-t border-border p-6">
               <div className="flex space-x-3">
                 <Button

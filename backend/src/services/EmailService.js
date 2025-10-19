@@ -15,18 +15,17 @@ let transporter;
 
 function getTransporter() {
   if (!transporter) {
-    // Verificar se temos configurações SMTP válidas
     if (smtpHost && smtpUser && smtpPass) {
       transporter = nodemailer.createTransport({
         host: smtpHost,
         port: smtpPort,
-        secure: smtpSecure || smtpPort === 465, // 465 = SSL
+        secure: smtpSecure || smtpPort === 465, 
         auth: { 
           user: smtpUser, 
           pass: smtpPass 
         },
         tls: {
-          rejectUnauthorized: false // Para desenvolvimento
+          rejectUnauthorized: false 
         }
       });
       
@@ -36,7 +35,6 @@ function getTransporter() {
         secure: smtpSecure || smtpPort === 465 
       });
     } else {
-      // Fallback para desenvolvimento - usar console.log
       logInfo('SMTP não configurado, usando modo de desenvolvimento');
       transporter = null;
     }
@@ -49,7 +47,6 @@ export class EmailService {
     try {
       const t = getTransporter();
       
-      // Se não há transporter configurado (modo desenvolvimento)
       if (!t) {
         logInfo('📧 [MODO DESENVOLVIMENTO] E-mail simulado', {
           to,
@@ -58,7 +55,6 @@ export class EmailService {
           text: text ? 'Texto presente' : 'Sem texto'
         });
         
-        // Simular delay de envio
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         return {

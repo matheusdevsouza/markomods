@@ -11,17 +11,18 @@ import { recordFailedLogin, recordSuccessfulLogin } from '../services/SecuritySe
 import { sanitizeEmail, sanitizeUsername, sanitizeText } from '../utils/sanitizer.js';
 
 export class AuthController {
-  // Registro de usuário
+
+  // registro de usuario
   static async register(req, res) {
     try {
       const { username, email, password, display_name } = req.body;
       
-      // Sanitizar dados de entrada
+      // sanitizacao dos dados de entrada
       const sanitizedUsername = sanitizeUsername(username);
       const sanitizedEmail = sanitizeEmail(email);
       const sanitizedDisplayName = sanitizeText(display_name);
       
-      // Verificar se email já existe
+      // verificar se o email ja existe
       const emailExists = await UserModel.emailExists(sanitizedEmail);
       if (emailExists) {
         return res.status(400).json({
@@ -30,7 +31,7 @@ export class AuthController {
         });
       }
       
-      // Verificar se username já existe
+      // verificar se o username ja existe
       const usernameExists = await UserModel.usernameExists(sanitizedUsername);
       if (usernameExists) {
         return res.status(400).json({
@@ -39,7 +40,7 @@ export class AuthController {
         });
       }
       
-      // Criar usuário com dados sanitizados
+      // criar usuario com os dados ja sanitizados
       const userData = {
         id: uuidv4(),
         username: sanitizedUsername,
@@ -50,7 +51,7 @@ export class AuthController {
       
       const user = await UserModel.create(userData);
       
-      // Gerar tokens
+      // gerar tokens (usuario registrado)
       const tokenPayload = {
         id: user.id,
         username: user.username,
@@ -60,20 +61,20 @@ export class AuthController {
       
       const tokens = JWTService.generateTokenPair(tokenPayload);
 
-      // Criar token de verificação de e-mail
+      // gerar tokens (verificacao de email)
       const verificationToken = uuidv4() + ':' + uuidv4();
       const expiresAt = new Date(Date.now() + (parseInt(process.env.EMAIL_VERIFICATION_EXPIRES_HOURS || '24') * 60 * 60 * 1000));
       await EmailVerificationTokenModel.invalidateUserTokens(user.id);
       await EmailVerificationTokenModel.create({ id: uuidv4(), userId: user.id, token: verificationToken, expiresAt });
 
-      // URL de verificação
+      // url de verificacao do email
       const baseUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:5173';
       const verifyUrl = `${baseUrl}/verify-email?token=${encodeURIComponent(verificationToken)}`;
 
-      // Enviar e-mail
+      // enviar email de verificacao
       await EmailService.sendMail({
         to: user.email,
-        subject: 'Verifique seu e-mail - Eu, Marko! Mods',
+        subject: 'Verifique seu e-mail - Eu, Marko!',
         html: renderEmailTemplate({
           preheader: 'Confirme seu e-mail para ativar sua conta',
           title: 'Confirme seu e-mail',
@@ -114,18 +115,19 @@ export class AuthController {
     }
   }
 
-  // Login de usuário
+  // login dos usuarios
   static async login(req, res) {
     try {
       const { email, password } = req.body;
       
-      // Sanitizar email
+      // sanitizar o email
       const sanitizedEmail = sanitizeEmail(email);
       
-      // Buscar usuário por email
+      // buscar o usuario pelo email
       const user = await UserModel.findByEmail(sanitizedEmail);
       if (!user) {
-        // Registrar tentativa de login falhada
+
+        // registrar a tentativa de login falhada (email nao encontrado)
         recordFailedLogin(req.ip, sanitizedEmail, req.get('User-Agent'));
         
         logWarn('Tentativa de login com email inexistente', { email: sanitizedEmail, ip: req.ip });
@@ -135,10 +137,11 @@ export class AuthController {
         });
       }
       
-      // Verificar senha
+      // verificar a senha
       const isValidPassword = await UserModel.verifyPassword(password, user.password_hash);
       if (!isValidPassword) {
-        // Registrar tentativa de login falhada
+
+        // registrar a tentativa de login falhada (senha incorreta)
         recordFailedLogin(req.ip, sanitizedEmail, req.get('User-Agent'));
         
         logWarn('Tentativa de login com senha incorreta', { email: sanitizedEmail, userId: user.id, ip: req.ip });
@@ -148,7 +151,7 @@ export class AuthController {
         });
       }
       
-      // Bloquear login se não verificado
+      // bloquear o login se o usuario nao estiver verificado
       if (!user.is_verified) {
         logWarn('Tentativa de login de usuário não verificado', { userId: user.id, email: sanitizedEmail, ip: req.ip });
         return res.status(403).json({
@@ -157,10 +160,10 @@ export class AuthController {
         });
       }
       
-      // Registrar login bem-sucedido
+      // registrar o login feito com sucesso
       recordSuccessfulLogin(req.ip, user.id, req.get('User-Agent'));
       
-      // Verificar se conta está banida
+      // verificar se a conta esta banida
       if (user.is_banned) {
         logWarn('Tentativa de login em conta banida', { email, userId: user.id });
         return res.status(403).json({
@@ -169,10 +172,10 @@ export class AuthController {
         });
       }
       
-      // Atualizar último login
+      // atualizar o ultimo login do usuario
       await UserModel.updateLastLogin(user.id);
       
-      // Gerar tokens
+      // gerar tokens (usuario logado)
       const tokenPayload = {
         id: user.id,
         username: user.username,
@@ -212,11 +215,11 @@ export class AuthController {
     }
   }
 
-  // Logout
+  // logout dos usuarios
   static async logout(req, res) {
     try {
-      // Em uma implementação mais robusta, você pode invalidar o token
-      // Por enquanto, apenas retornamos sucesso
+      
+      // invalidar o token
       logInfo('Usuário fez logout', { userId: req.user.id, username: req.user.username });
       
       res.json({
@@ -233,7 +236,7 @@ export class AuthController {
     }
   }
 
-  // Verificar token
+  // verificar token
   static async verifyToken(req, res) {
     try {
       const user = req.user;
@@ -265,7 +268,7 @@ export class AuthController {
     }
   }
 
-  // Verificar e-mail via token
+  // verificar email via token
   static async verifyEmail(req, res) {
     try {
       const { token } = req.params;
@@ -277,7 +280,8 @@ export class AuthController {
       }
       
       if (record.used) {
-        // Se token já foi usado, verificar se usuário já está verificado
+
+        // verificar se o token ja foi usado e se o usuario ja esta verificado
         const user = await UserModel.findById(record.user_id);
         if (user && user.is_verified) {
           logInfo('Token já utilizado, mas usuário já verificado', { userId: record.user_id });
@@ -290,7 +294,7 @@ export class AuthController {
         return res.status(400).json({ success: false, message: 'Token expirado' });
       }
 
-      // Marcar usuário como verificado (usar 1 para compatibilidade MySQL)
+      // marcar o usuario como verificado
       await UserModel.updateUser(record.user_id, { is_verified: 1 });
       await EmailVerificationTokenModel.markUsed(record.id);
 
@@ -302,7 +306,7 @@ export class AuthController {
     }
   }
 
-  // Reenviar verificação
+  // reenviar verificacao de email
   static async resendVerification(req, res) {
     try {
       const userId = req.user?.id;
@@ -322,7 +326,7 @@ export class AuthController {
       const verifyUrl = `${baseUrl}/verify-email?token=${encodeURIComponent(token)}`;
       await EmailService.sendMail({
         to: user.email,
-        subject: 'Confirme seu e-mail - Eu, Marko! Mods',
+        subject: 'Confirme seu e-mail - Eu, Marko!',
         html: renderEmailTemplate({
           preheader: 'Reenviamos seu link de verificação',
           title: 'Verificação de e-mail',
@@ -343,7 +347,7 @@ export class AuthController {
     }
   }
 
-  // Renovar tokens
+  // renovar tokens
   static async refreshTokens(req, res) {
     try {
       const { refreshToken } = req.body;
@@ -355,7 +359,6 @@ export class AuthController {
         });
       }
       
-      // Renovar tokens
       const newTokens = JWTService.refreshTokens(refreshToken);
       
       logInfo('Tokens renovados com sucesso', { userId: req.user?.id });
@@ -377,17 +380,17 @@ export class AuthController {
     }
   }
 
-  // Solicitar recuperação de senha
+  // solicitar recuperação de senha
   static async forgotPassword(req, res) {
     try {
       const { email } = req.body;
       const ipAddress = req.ip;
       const userAgent = req.get('User-Agent');
       
-      // Sanitizar email
+      // sanitizar o email
       const sanitizedEmail = sanitizeEmail(email);
       
-      // Verificar rate limiting por IP
+      // verificar rate limiting por IP
       const isRateLimited = !(await PasswordResetTokenModel.checkRateLimit(ipAddress, 3, 15));
       if (isRateLimited) {
         logWarn('Rate limit excedido para recuperação de senha', { ipAddress, email: sanitizedEmail });
@@ -397,13 +400,13 @@ export class AuthController {
         });
       }
       
-      // Resposta neutra para evitar timing attacks
+      // resposta neutra para evitar ataques de timing
       const neutral = () => res.json({ 
         success: true, 
         message: 'Se o email estiver cadastrado, você receberá instruções de recuperação' 
       });
       
-      // Buscar usuário por email
+      // buscar o usuario pelo email
       const user = await UserModel.findByEmail(sanitizedEmail);
       if (!user || user.is_banned) {
         logInfo('Solicitação de recuperação de senha - usuário não encontrado ou banido', { 
@@ -414,7 +417,7 @@ export class AuthController {
         return neutral();
       }
       
-      // Verificar se usuário está verificado
+      // verificar se o usuario esta verificado
       if (!user.is_verified) {
         logWarn('Tentativa de recuperação de senha em conta não verificada', { 
           userId: user.id, 
@@ -424,17 +427,17 @@ export class AuthController {
         return neutral();
       }
       
-      // Invalidar tokens anteriores e criar um novo
+      // invalidar tokens anteriores e criar um novo
       await PasswordResetTokenModel.removeUserTokens(user.id);
       const reset = await PasswordResetTokenModel.create(user.id, ipAddress, userAgent);
       
       const baseUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:5173';
       const resetUrl = `${baseUrl}/reset-password?token=${encodeURIComponent(reset.token)}`;
       
-      // Enviar email
+      // enviar email de recuperação de senha
       await EmailService.sendMail({
         to: user.email,
-        subject: 'Redefinir senha - Eu, Marko! Mods',
+        subject: 'Redefinir senha - Eu, Marko!',
         html: renderEmailTemplate({
           preheader: 'Crie uma nova senha com segurança',
           title: 'Redefinir senha',
@@ -467,13 +470,13 @@ export class AuthController {
     }
   }
 
-  // Verificar token de reset
+  // verificar token de reset
   static async verifyResetToken(req, res) {
     try {
       const { token } = req.params;
       const ipAddress = req.ip;
       
-      // Buscar token
+      // buscar o token
       const tokenData = await PasswordResetTokenModel.findByToken(token);
       
       if (!tokenData) {
@@ -484,7 +487,7 @@ export class AuthController {
         });
       }
       
-      // Verificar se token expirou
+      // verificar se o token expirou
       if (new Date() > new Date(tokenData.expires_at)) {
         logWarn('Tentativa de uso de token expirado', { 
           tokenId: tokenData.id, 
@@ -497,7 +500,7 @@ export class AuthController {
         });
       }
       
-      // Verificar se token já foi usado
+      // verificar se o token ja foi usado
       if (tokenData.used_at) {
         logWarn('Tentativa de reutilização de token', { 
           tokenId: tokenData.id, 
@@ -510,7 +513,7 @@ export class AuthController {
         });
       }
       
-      // Verificar se token excedeu tentativas máximas
+      // verificar se o token excedeu as tentativas maximas permitidas
       const hasExceededAttempts = await PasswordResetTokenModel.hasExceededMaxAttempts(tokenData.id, 5);
       if (hasExceededAttempts) {
         logWarn('Token excedeu tentativas máximas', { 
@@ -541,14 +544,14 @@ export class AuthController {
     }
   }
 
-  // Resetar senha
+  // resetar senha
   static async resetPassword(req, res) {
     try {
       const { token, password } = req.body;
       const ipAddress = req.ip;
       const userAgent = req.get('User-Agent');
       
-      // Buscar token
+      // buscar o token
       const tokenData = await PasswordResetTokenModel.findByToken(token);
       
       if (!tokenData) {
@@ -559,7 +562,7 @@ export class AuthController {
         });
       }
       
-      // Verificar se token expirou
+      // verificar se o token expirou
       if (new Date() > new Date(tokenData.expires_at)) {
         logWarn('Tentativa de reset com token expirado', { 
           tokenId: tokenData.id, 
@@ -572,7 +575,7 @@ export class AuthController {
         });
       }
       
-      // Verificar se token já foi usado
+      // verificar se o token ja foi usado
       if (tokenData.used_at) {
         logWarn('Tentativa de reutilização de token para reset', { 
           tokenId: tokenData.id, 
@@ -585,7 +588,7 @@ export class AuthController {
         });
       }
       
-      // Verificar se token excedeu tentativas máximas
+      // verificar se o token excedeu as tentativas maximas permitidas
       const hasExceededAttempts = await PasswordResetTokenModel.hasExceededMaxAttempts(tokenData.id, 5);
       if (hasExceededAttempts) {
         logWarn('Token excedeu tentativas máximas para reset', { 
@@ -599,16 +602,16 @@ export class AuthController {
         });
       }
       
-      // Incrementar tentativas
+      // incrementar as tentativas
       await PasswordResetTokenModel.incrementAttempts(tokenData.id);
       
-      // Atualizar senha
+      // atualizar a senha
       await UserModel.updatePassword(tokenData.user_id, password);
       
-      // Marcar token como usado
+      // marcar o token como usado
       await PasswordResetTokenModel.markAsUsed(tokenData.id);
       
-      // Invalidar todos os outros tokens do usuário
+      // invalidar todos os outros tokens do usuario
       await PasswordResetTokenModel.removeUserTokens(tokenData.user_id);
       
       logInfo('Senha resetada com sucesso', { 
@@ -634,16 +637,16 @@ export class AuthController {
     }
   }
 
-  // Alterar senha (usuário logado)
+  // alterar senha
   static async changePassword(req, res) {
     try {
       const { currentPassword, newPassword } = req.body;
       const userId = req.user.id;
       
-      // Buscar usuário com senha
+      // buscar o usuario com a senha
       const user = await UserModel.findByEmail(req.user.email);
       
-      // Verificar senha atual
+      // verificar a senha atual
       const isValidPassword = await UserModel.verifyPassword(currentPassword, user.password_hash);
       if (!isValidPassword) {
         return res.status(400).json({
@@ -652,7 +655,7 @@ export class AuthController {
         });
       }
       
-      // Atualizar senha
+      // atualizar a senha
       await UserModel.updatePassword(userId, newPassword);
       
       logInfo('Senha alterada pelo usuário', { userId });

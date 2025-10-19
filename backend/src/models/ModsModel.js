@@ -221,7 +221,7 @@ export default class ModsModel {
         throw new Error('Nenhum campo válido para atualização');
       }
       params.push(id);
-      const sql = `UPDATE mods SET ${updates.join(__STRING_PLACEHOLDER_52__)}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+      const sql = `UPDATE mods SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       await executeQuery(sql, params);
       logInfo('Mod atualizado com sucesso', { modId: id, updates: Object.keys(updateData) });
       return await this.findByIdAdmin(id);
@@ -607,7 +607,7 @@ export default class ModsModel {
         await executeQuery(decrementSql, [modId]);
         return { success: true, message: 'Favorito removido', isFavorite: false };
       } else {
-        const favoriteId = uuidv4(); // Gerar ID único
+        const favoriteId = uuidv4(); 
         const insertSql = 'INSERT INTO favorites (id, mod_id, user_id) VALUES (?, ?, ?)';
         await executeQuery(insertSql, [favoriteId, modId, userId]);
         const incrementSql = 'UPDATE mods SET like_count = COALESCE(like_count, 0) + 1 WHERE id = ?';

@@ -1,20 +1,18 @@
 import { logError } from '../config/logger.js';
 
 /**
- * Registra uma atividade do usuário
- * @param {Object} activityData - Dados da atividade
- * @param {number} activityData.userId - ID do usuário
- * @param {number} activityData.modId - ID do mod (opcional)
- * @param {string} activityData.activityType - Tipo da atividade
- * @param {Object} activityData.activityData - Dados adicionais da atividade
+ * registra atividade de um usuário
+ * @param {Object} activityData 
+ * @param {number} activityData.userId 
+ * @param {number} activityData.modId 
+ * @param {string} activityData.activityType 
+ * @param {Object} activityData.activityData 
  */
+
 export const trackActivity = async (activityData) => {
   try {
     const { userId, modId, activityType, activityData: additionalData } = activityData;
     
-    
-    // Em desenvolvimento, apenas logamos a atividade
-    // Em produção, aqui seria salvo no banco de dados
     return {
       success: true,
       message: 'Atividade registrada com sucesso'
@@ -26,19 +24,17 @@ export const trackActivity = async (activityData) => {
 };
 
 /**
- * Remove o rastreamento de uma atividade do usuário
- * @param {Object} activityData - Dados da atividade
- * @param {number} activityData.userId - ID do usuário
- * @param {number} activityData.modId - ID do mod (opcional)
- * @param {string} activityData.activityType - Tipo da atividade
+ * remove o rastreamento de uma atividade do usuário
+ * @param {Object} activityData 
+ * @param {number} activityData.userId 
+ * @param {number} activityData.modId 
+ * @param {string} activityData.activityType 
  */
+
 export const untrackActivity = async (activityData) => {
   try {
     const { userId, modId, activityType } = activityData;
     
-    
-    // Em desenvolvimento, apenas logamos a remoção
-    // Em produção, aqui seria removido do banco de dados
     return {
       success: true,
       message: 'Atividade removida com sucesso'
@@ -50,15 +46,14 @@ export const untrackActivity = async (activityData) => {
 };
 
 /**
- * Obtém atividades de um usuário
- * @param {number} userId - ID do usuário
- * @param {Object} options - Opções de filtro
+ * obtém atividades de um usuário
+ * @param {number} userId 
+ * @param {Object} options 
  */
+
 export const getUserActivities = async (userId, options = {}) => {
   try {
     
-    // Em desenvolvimento, retorna dados mockados
-    // Em produção, aqui seria consultado no banco de dados
     return {
       success: true,
       activities: [],
@@ -71,14 +66,13 @@ export const getUserActivities = async (userId, options = {}) => {
 };
 
 /**
- * Obtém estatísticas de atividades
- * @param {Object} filters - Filtros para as estatísticas
+ * obtém estatísticas de atividades
+ * @param {Object} filters 
  */
+
 export const getActivityStats = async (filters = {}) => {
   try {
     
-    // Em desenvolvimento, retorna dados mockados
-    // Em produção, aqui seria consultado no banco de dados
     return {
       success: true,
       stats: {

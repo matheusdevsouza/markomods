@@ -27,7 +27,6 @@ const FAQPage = () => {
   const [expandedFaq, setExpandedFaq] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Função para obter tradução com fallback
   const getTranslation = (key, fallback = '') => {
     try {
       return t(key) || fallback;
@@ -37,32 +36,29 @@ const FAQPage = () => {
     }
   };
 
-  // FAQ completo com todas as categorias
   const faqItems = [
-    // GERAL
     {
       id: 'what-is-markomods',
-      title: getTranslation('contact.faq.whatIsEuMarkoMods.title', 'O que é o Eu, Marko! Mods?'),
-      content: getTranslation('contact.faq.whatIsEuMarkoMods.content', 'O Eu, Marko! Mods é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
+      title: getTranslation('contact.faq.whatIsEuMarkoMods.title', 'O que é o Eu, Marko!?'),
+      content: getTranslation('contact.faq.whatIsEuMarkoMods.content', 'O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
       category: 'geral',
       icon: HelpCircle
     },
     {
       id: 'how-to-start',
-      title: getTranslation('faq.howToStart.title', 'Como começar a usar o Eu, Marko! Mods?'),
+      title: getTranslation('faq.howToStart.title', 'Como começar a usar o Eu, Marko!?'),
       content: getTranslation('faq.howToStart.content', 'Para começar:\n\n1) Crie uma conta gratuita\n2) Explore nossa biblioteca de mods\n3) Baixe mods que te interessam\n4) Instale seguindo nossas instruções\n\nÉ simples e gratuito!'),
       category: 'geral',
       icon: Zap
     },
     {
       id: 'is-free',
-      title: getTranslation('faq.isFree.title', 'O Eu, Marko! Mods é gratuito?'),
-      content: getTranslation('faq.isFree.content', 'Sim! O Eu, Marko! Mods é completamente gratuito. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum.'),
+      title: getTranslation('faq.isFree.title', 'O Eu, Marko! é gratuito?'),
+      content: getTranslation('faq.isFree.content', 'Sim! O Eu, Marko! é completamente gratuito. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum.'),
       category: 'geral',
       icon: Shield
     },
 
-    // CONTA
     {
       id: 'how-to-register',
       title: getTranslation('faq.howToRegister.title', 'Como me registrar?'),
@@ -85,7 +81,6 @@ const FAQPage = () => {
       icon: User
     },
 
-    // MODS
     {
       id: 'how-to-download',
       title: getTranslation('faq.howToDownload.title', 'Como baixar mods?'),
@@ -115,7 +110,6 @@ const FAQPage = () => {
       icon: Search
     },
 
-    // TÉCNICO
     {
       id: 'mod-compatibility',
       title: getTranslation('faq.modCompatibility.title', 'Como verificar compatibilidade?'),
@@ -126,7 +120,7 @@ const FAQPage = () => {
     {
       id: 'system-requirements',
       title: getTranslation('faq.systemRequirements.title', 'Quais são os requisitos do sistema?'),
-      content: getTranslation('faq.systemRequirements.content', 'Para usar o Eu, Marko! Mods: Minecraft Java Edition, Java 8 ou superior, conexão com internet e navegador moderno. Para mods específicos, consulte os requisitos individuais.'),
+      content: getTranslation('faq.systemRequirements.content', 'Para usar o Eu, Marko!: Minecraft Java Edition, Java 8 ou superior, conexão com internet e navegador moderno. Para mods específicos, consulte os requisitos individuais.'),
       category: 'tecnico',
       icon: Settings
     },
@@ -145,7 +139,6 @@ const FAQPage = () => {
       icon: Package
     },
 
-    // COMUNIDADE
     {
       id: 'community-guidelines',
       title: getTranslation('faq.communityGuidelines.title', 'Quais são as diretrizes da comunidade?'),
@@ -189,7 +182,6 @@ const FAQPage = () => {
       className="min-h-screen"
     >
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* Cabeçalho */}
         <div className="text-center mb-8 sm:mb-12">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -203,11 +195,10 @@ const FAQPage = () => {
             {getTranslation('faq.title', 'Perguntas Frequentes')}
           </h1>
           <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
-            {getTranslation('faq.subtitle', 'Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko! Mods')}
+            {getTranslation('faq.subtitle', 'Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko!')}
           </p>
         </div>
 
-        {/* Barra de pesquisa */}
         <div className="max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
@@ -221,7 +212,6 @@ const FAQPage = () => {
           </div>
         </div>
 
-        {/* Filtros de categoria */}
         <div className="flex flex-wrap justify-center gap-2 mb-6 sm:mb-8 px-4">
           {categories.map((category) => (
             <Button
@@ -245,7 +235,6 @@ const FAQPage = () => {
           ))}
         </div>
 
-        {/* FAQ Items */}
         <div className="max-w-4xl mx-auto space-y-3 sm:space-y-4 px-4">
           {filteredFaqItems.map((item) => (
             <motion.div
@@ -303,14 +292,13 @@ const FAQPage = () => {
           ))}
         </div>
 
-        {/* Container de contato */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-12 sm:mt-16 w-full px-4"
+          className="mt-12 sm:mt-16 max-w-4xl mx-auto px-4"
         >
-          <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20 w-full">
+          <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
             <CardContent className="p-6 sm:p-8 text-center">
               <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">{getTranslation('faq.stillNeedHelp.title', 'Não encontrou sua resposta?')}</h3>
               <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 max-w-2xl mx-auto px-4">
@@ -320,7 +308,7 @@ const FAQPage = () => {
                 <Button 
                   size="lg" 
                   className="bg-primary hover:bg-primary/90 text-sm sm:text-base w-full sm:w-auto"
-                  onClick={() => window.open('mailto:contato@eumarko.com', '_blank')}
+                  onClick={() => window.open('mailto:mods@eumarko.com', '_blank')}
                 >
                   <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   {getTranslation('faq.stillNeedHelp.email', 'Enviar Email')}

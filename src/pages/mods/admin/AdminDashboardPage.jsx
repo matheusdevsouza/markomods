@@ -21,7 +21,6 @@ import {
   Zap,
   Info
 } from 'lucide-react';
-// Removido useMods - não é mais necessário
 import { useAuth } from '@/contexts/AuthContextMods';
 import { useNavigate } from 'react-router-dom';
 
@@ -75,7 +74,6 @@ const AdminDashboardPage = () => {
   const [recentActivity, setRecentActivity] = useState([]);
   const [loadingActivity, setLoadingActivity] = useState(true);
 
-  // Buscar contagem de mods para estatísticas administrativas
   useEffect(() => {
     const fetchModsCount = async () => {
       try {
@@ -83,7 +81,6 @@ const AdminDashboardPage = () => {
         
         console.log('🔍 AdminDashboard: Iniciando busca de contagem de mods...');
         
-        // Buscar apenas a contagem (rota pública)
         const response = await fetch('/api/mods/stats/count');
         
         console.log('🔍 AdminDashboard: Resposta da rota /stats/count:', response.status, response.statusText);
@@ -92,7 +89,6 @@ const AdminDashboardPage = () => {
           const data = await response.json();
           console.log('✅ AdminDashboard: Contagem carregada:', data.data);
           
-          // Criar um array com a contagem para manter compatibilidade
           const counts = data.data;
           setMods([{
             total: counts.total,
@@ -116,7 +112,6 @@ const AdminDashboardPage = () => {
     fetchModsCount();
   }, [currentUser]);
 
-  // Buscar atividade recente
   useEffect(() => {
     const fetchRecentActivity = async () => {
       try {
@@ -142,7 +137,6 @@ const AdminDashboardPage = () => {
     fetchRecentActivity();
   }, []);
 
-  // Verificar se o usuário está autenticado
   if (!currentUser) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -166,7 +160,6 @@ const AdminDashboardPage = () => {
     );
   }
 
-  // Calcular estatísticas usando os dados da contagem
   const counts = mods[0] || {};
   const totalMods = counts.total || 0;
   const publishedMods = counts.published || 0;
@@ -175,8 +168,7 @@ const AdminDashboardPage = () => {
   const archivedMods = counts.archived || 0;
   const pendingMods = draftMods;
   
-  // Para downloads, ainda precisamos buscar dos mods existentes ou criar uma nova API
-  const totalDownloads = 0; // TODO: Implementar API de downloads totais
+  const totalDownloads = 0;
   const avgDownloadsPerMod = totalMods > 0 ? (totalDownloads / totalMods).toFixed(1) : 0;
 
   console.log('🔍 AdminDashboard: Estatísticas calculadas:', {
@@ -191,7 +183,6 @@ const AdminDashboardPage = () => {
     counts
   });
 
-  // Funções para os botões funcionais
 
   const handleLogs = () => {
     navigate('/admin/logs');
@@ -238,7 +229,6 @@ const AdminDashboardPage = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6 sm:space-y-8 p-4 sm:p-6"
     >
-      {/* Header com informações do usuário */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap mb-2">
@@ -268,7 +258,6 @@ const AdminDashboardPage = () => {
         </div>
       </div>
       
-      {/* Cards de estatísticas principais */}
       <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard 
           title="Total de Mods" 
@@ -300,7 +289,6 @@ const AdminDashboardPage = () => {
         />
       </div>
 
-      {/* Ações rápidas */}
       <div>
         <h2 className="text-xl sm:text-2xl font-minecraft text-primary mb-4">Ações Rápidas</h2>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
@@ -321,7 +309,6 @@ const AdminDashboardPage = () => {
         </div>
       </div>
 
-      {/* Atividade Recente */}
       <div>
         <h2 className="text-xl sm:text-2xl font-minecraft text-primary mb-4">Atividade Recente</h2>
         <Card className="minecraft-card">

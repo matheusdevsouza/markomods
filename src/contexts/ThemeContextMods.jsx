@@ -12,11 +12,11 @@ export const useThemeMods = () => {
 };
 
 export const ThemeProviderMods = ({ children }) => {
-  // Função para obter o tema salvo ou usar dark como padrão
+  // função para obter o tema salvo ou usar dark como padrão
   const getInitialTheme = () => {
     try {
       const savedTheme = localStorage.getItem('eu_marko_mods_theme');
-      return savedTheme || 'dark'; // Dark como padrão se não houver tema salvo
+      return savedTheme || 'dark';
     } catch (error) {
       return 'dark';
     }
@@ -24,23 +24,22 @@ export const ThemeProviderMods = ({ children }) => {
 
   const [theme, setTheme] = useState(getInitialTheme);
 
-  // Função para salvar o tema no localStorage
+  // função para salvar o tema no localStorage
   const saveThemeToStorage = (newTheme) => {
     try {
       localStorage.setItem('eu_marko_mods_theme', newTheme);
     } catch (error) {
-      // Erro ao salvar tema
     }
   };
 
-  // Função para mudar o tema
+  // função para mudar o tema
   const changeTheme = (newTheme) => {
     setTheme(newTheme);
     
-    // Salvar no localStorage
+    // salvar no localStorage
     saveThemeToStorage(newTheme);
     
-    // Aplicar tema ao documento
+    // aplicar tema ao documento
     const root = document.documentElement;
     if (newTheme === 'dark') {
       root.classList.add('dark');
@@ -49,7 +48,7 @@ export const ThemeProviderMods = ({ children }) => {
     }
   };
 
-  // Aplicar tema quando o componente montar ou o tema mudar
+  // aplicar tema quando o componente montar ou o tema mudar
   useEffect(() => {
     const root = document.documentElement;
     

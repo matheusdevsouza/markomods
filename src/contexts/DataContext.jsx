@@ -15,7 +15,7 @@ const initialMediaKitStructure = {
     full_name: 'Eu, Marko!',
     bio: 'Criador de conteúdo, Mods de Minecraft, Shorts virais, etc.',
     avatar_url: '/src/assets/images/marko-avatar.png',
-    email: 'contato@eumarko.com',
+    email: 'contact@eumarko.com',
     role: 'admin',
     is_verified: true,
     comments_require_approval: true, 
@@ -90,7 +90,7 @@ const initialMediaKitStructure = {
     { id: 'vid2', title: 'Review de Hardware Monstruoso', video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', thumbnail_url: '/placeholder-images/tech-revolution-thumb.jpg', views_text: '800k views', publish_date_text: '1 mês atrás' },
   ],
   social_media_links: [
-    { id: 'sml1', platform_key: 'email', url: 'mailto:contato@eumarko.com', display_name: 'contato@eumarko.com' },
+    { id: 'sml1', platform_key: 'email', url: 'mailto:contact@eumarko.com', display_name: 'contact@eumarko.com' },
     { id: 'sml2', platform_key: 'youtube', url: 'https://youtube.com/eumarko', display_name: 'YouTube' },
     { id: 'sml3', platform_key: 'tiktok', url: 'https://tiktok.com/@eumarko', display_name: 'TikTok' },
     { id: 'sml4', platform_key: 'instagram', url: 'https://instagram.com/eumarko', display_name: 'Instagram' },

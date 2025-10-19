@@ -2,7 +2,8 @@ import { executeQuery } from '../config/database.js';
 import { logInfo, logError } from '../config/logger.js';
 
 export class LogService {
-  // Criar log de atividade
+
+  // criar a log de atividade
   static async createLog(logData) {
     try {
       const { 
@@ -48,7 +49,7 @@ export class LogService {
     }
   }
 
-  // Buscar logs com filtros avançados
+  // buscar logs   
   static async getLogs(filters = {}) {
     try {
       let sql = `
@@ -64,7 +65,7 @@ export class LogService {
       
       const params = [];
       
-      // Filtros
+      // filtros
       if (filters.category && filters.category !== 'all') {
         sql += ' AND al.category = ?';
         params.push(filters.category);
@@ -101,7 +102,7 @@ export class LogService {
         params.push(filters.dateTo);
       }
       
-      // Ordenação e limite
+      // ordenacao 
       sql += ' ORDER BY al.created_at DESC';
       
       if (filters.limit) {
@@ -117,7 +118,7 @@ export class LogService {
     }
   }
 
-  // Log de autenticação
+  // log de autenticacao
   static async logAuth(userId, action, details, ip, userAgent, level = 'info') {
     return this.createLog({
       userId,
@@ -130,7 +131,7 @@ export class LogService {
     });
   }
 
-  // Log de mods
+  // log de mods
   static async logMods(userId, action, details, ip, userAgent, resourceId = null, metadata = null) {
     return this.createLog({
       userId,
@@ -146,7 +147,7 @@ export class LogService {
     });
   }
 
-  // Log de usuários
+  // log de usuarios
   static async logUsers(userId, action, details, ip, userAgent, targetUserId = null, metadata = null) {
     return this.createLog({
       userId,
@@ -162,7 +163,7 @@ export class LogService {
     });
   }
 
-  // Log de comentários
+  // log de comentarios
   static async logComments(userId, action, details, ip, userAgent, commentId = null, modId = null, metadata = null) {
     return this.createLog({
       userId,
@@ -178,7 +179,7 @@ export class LogService {
     });
   }
 
-  // Log de favoritos
+  // log de favoritos
   static async logFavorites(userId, action, details, ip, userAgent, modId = null, metadata = null) {
     return this.createLog({
       userId,
@@ -194,7 +195,7 @@ export class LogService {
     });
   }
 
-  // Log de downloads
+  // log de downloads
   static async logDownloads(userId, action, details, ip, userAgent, modId = null, metadata = null) {
     return this.createLog({
       userId,
@@ -210,7 +211,7 @@ export class LogService {
     });
   }
 
-  // Log de ações administrativas
+  // logs  administrativas
   static async logAdmin(userId, action, details, ip, userAgent, targetId = null, targetType = null, metadata = null) {
     return this.createLog({
       userId,
@@ -226,7 +227,7 @@ export class LogService {
     });
   }
 
-  // Log de segurança
+  // log de seguranca
   static async logSecurity(userId, action, details, ip, userAgent, level = 'warning', metadata = null) {
     return this.createLog({
       userId,
@@ -240,10 +241,10 @@ export class LogService {
     });
   }
 
-  // Log de sistema
+  // log de sistema
   static async logSystem(action, details, level = 'info', metadata = null) {
     return this.createLog({
-      userId: null, // Sistema
+      userId: null,
       action,
       category: 'system',
       level,
@@ -254,7 +255,7 @@ export class LogService {
     });
   }
 
-  // Log de banimento de usuários
+  // log de banimento de usuarios
   static async logBan(userId, action, details, ip, userAgent, bannedUserId, reason, duration = null) {
     return this.createLog({
       userId,
@@ -270,7 +271,7 @@ export class LogService {
     });
   }
 
-  // Log de desbanimento de usuários
+  // log de desbanimento de usuarios
   static async logUnban(userId, action, details, ip, userAgent, unbannedUserId) {
     return this.createLog({
       userId,
@@ -286,7 +287,7 @@ export class LogService {
     });
   }
 
-  // Log de visualizações de mods
+  // log de visualizacoes de mods
   static async logModView(userId, action, details, ip, userAgent, modId, metadata = null) {
     return this.createLog({
       userId,
@@ -302,7 +303,7 @@ export class LogService {
     });
   }
 
-  // Log de avaliações
+  // log de avaliacoes
   static async logRating(userId, action, details, ip, userAgent, modId, rating, metadata = null) {
     return this.createLog({
       userId,
@@ -318,7 +319,7 @@ export class LogService {
     });
   }
 
-  // Log de compartilhamentos
+  // log de compartilhamentos
   static async logShare(userId, action, details, ip, userAgent, modId, platform, metadata = null) {
     return this.createLog({
       userId,
@@ -334,7 +335,7 @@ export class LogService {
     });
   }
 
-  // Log de uploads de arquivos
+  // log de uploads de arquivos
   static async logUpload(userId, action, details, ip, userAgent, fileType, fileSize, metadata = null) {
     return this.createLog({
       userId,
@@ -348,7 +349,7 @@ export class LogService {
     });
   }
 
-  // Log de exclusões
+  // log de exclusoes
   static async logDelete(userId, action, details, ip, userAgent, resourceId, resourceType, metadata = null) {
     return this.createLog({
       userId,
@@ -364,7 +365,7 @@ export class LogService {
     });
   }
 
-  // Log de modificações
+  // log de modificacoes
   static async logModify(userId, action, details, ip, userAgent, resourceId, resourceType, changes, metadata = null) {
     return this.createLog({
       userId,
@@ -380,7 +381,7 @@ export class LogService {
     });
   }
 
-  // Log de criação de recursos
+  // log de criacao de recursos
   static async logCreate(userId, action, details, ip, userAgent, resourceId, resourceType, metadata = null) {
     return this.createLog({
       userId,
@@ -396,7 +397,7 @@ export class LogService {
     });
   }
 
-  // Log de erros do sistema
+  // log de erros do sistema
   static async logSystemError(action, details, error, metadata = null) {
     return this.createLog({
       userId: null,
@@ -410,7 +411,7 @@ export class LogService {
     });
   }
 
-  // Log de tentativas de acesso não autorizado
+  // log de tentativas de acesso nao autorizado
   static async logUnauthorizedAccess(ip, userAgent, action, details, metadata = null) {
     return this.createLog({
       userId: null,
@@ -424,7 +425,7 @@ export class LogService {
     });
   }
 
-  // Log de tentativas de login falhadas
+    // log de tentativas de login falhadas
   static async logFailedLogin(ip, userAgent, username, reason, metadata = null) {
     return this.createLog({
       userId: null,
@@ -438,7 +439,7 @@ export class LogService {
     });
   }
 
-  // Log de alterações de perfil
+  // log de alteracoes de perfil
   static async logProfileChange(userId, action, details, ip, userAgent, changes, metadata = null) {
     return this.createLog({
       userId,
@@ -454,7 +455,7 @@ export class LogService {
     });
   }
 
-  // Log de alterações de senha
+  // log de alteracoes de senha
   static async logPasswordChange(userId, action, details, ip, userAgent, metadata = null) {
     return this.createLog({
       userId,
@@ -468,7 +469,7 @@ export class LogService {
     });
   }
 
-  // Log de redefinição de senha
+  // log de redefinicao de senha
   static async logPasswordReset(userId, action, details, ip, userAgent, metadata = null) {
     return this.createLog({
       userId,
@@ -482,7 +483,7 @@ export class LogService {
     });
   }
 
-  // Log de verificação de email
+  // log de verificacao de email
   static async logEmailVerification(userId, action, details, ip, userAgent, metadata = null) {
     return this.createLog({
       userId,
@@ -496,7 +497,7 @@ export class LogService {
     });
   }
 
-  // Log de sessões
+  // log de sessoes
   static async logSession(userId, action, details, ip, userAgent, metadata = null) {
     return this.createLog({
       userId,
@@ -510,7 +511,7 @@ export class LogService {
     });
   }
 
-  // Log de atividades de moderação
+  // log de atividades de moderação
   static async logModeration(userId, action, details, ip, userAgent, targetId, targetType, reason, metadata = null) {
     return this.createLog({
       userId,
@@ -526,7 +527,7 @@ export class LogService {
     });
   }
 
-  // Log de atividades de busca
+  // log de atividades de busca
   static async logSearch(userId, action, details, ip, userAgent, query, results, metadata = null) {
     return this.createLog({
       userId,
@@ -540,7 +541,7 @@ export class LogService {
     });
   }
 
-  // Log de atividades de API
+  // log de atividades de API
   static async logApi(userId, action, details, ip, userAgent, endpoint, method, statusCode, metadata = null) {
     return this.createLog({
       userId,

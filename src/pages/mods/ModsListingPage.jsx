@@ -713,7 +713,7 @@ const ModsListingPage = () => {
           {paginatedMods.length > 0 ? (
             <>
                <div className={viewMode === 'grid' 
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6 justify-items-center max-w-none" 
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 sm:gap-6 max-w-none" 
                  : "space-y-3 sm:space-y-4"
                }>
                 {paginatedMods.map((mod) => 
@@ -979,7 +979,6 @@ const ModsListingPage = () => {
                   )}
                 </div>
 
-                {/* Categoria */}
                 <div className="border border-border rounded-lg overflow-hidden">
                   <button
                     onClick={() => setExpandedFilters(prev => ({ ...prev, category: !prev.category }))}
@@ -1032,7 +1031,6 @@ const ModsListingPage = () => {
                   )}
                 </div>
 
-                {/* Botões de ação fixos */}
                 <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 space-y-3">
                   <Button 
                     onClick={() => setShowFilters(false)}

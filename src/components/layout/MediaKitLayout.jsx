@@ -20,7 +20,6 @@ const MediaKitLayout = () => {
         transition={{ delay: 0.5, duration: 0.5 }}
       >
         <p>&copy; {new Date().getFullYear()} Eu, Marko! Todos os direitos reservados.</p>
-        <p>Desenvolvido com ❤️ e muito café.</p>
       </motion.footer>
     </motion.div>
   );

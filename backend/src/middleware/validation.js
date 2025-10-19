@@ -1,7 +1,7 @@
 import { body, param, query, validationResult } from 'express-validator';
 import { logWarn } from '../config/logger.js';
 
-// Middleware para verificar erros de validação
+// middleware para verificar erros de validação
 export const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   
@@ -28,7 +28,7 @@ export const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-// Validações para autenticação
+// validações para autenticação
 export const validateRegister = [
   body('username')
     .trim()
@@ -91,7 +91,7 @@ export const validateResetPassword = [
   handleValidationErrors
 ];
 
-// Validações para usuários
+// validações para usuários
 export const validateUpdateProfile = [
   body('display_name')
     .optional()
@@ -114,7 +114,7 @@ export const validateChangePassword = [
   handleValidationErrors
 ];
 
-// Validações para mods
+// validações para mods
 export const validateCreateMod = [
   body('title')
     .trim()
@@ -198,7 +198,7 @@ export const validateUpdateMod = [
   handleValidationErrors
 ];
 
-// Validações para comentários
+// validações para comentários
 export const validateCreateComment = [
   body('content')
     .trim()
@@ -222,7 +222,7 @@ export const validateUpdateComment = [
   handleValidationErrors
 ];
 
-// Validações para busca
+// validações para busca
 export const validateSearch = [
   query('q')
     .optional()
@@ -269,7 +269,7 @@ export const validateSearch = [
   handleValidationErrors
 ];
 
-// Validações para parâmetros de rota
+// validações para rotas
 export const validateUUID = [
   param('id')
     .isUUID()
@@ -302,7 +302,7 @@ export const validateCommentId = [
   handleValidationErrors
 ];
 
-// Validações para admin
+// validações para admin
 export const validateUpdateUserRole = [
   body('role')
     .isIn(['member', 'moderator', 'admin', 'super_admin'])

@@ -12,10 +12,9 @@ import {
 
 const router = express.Router();
 
-// Todas as rotas requerem autenticação de admin
 router.use(authenticateToken, requireAdmin);
 
-// Relatório de segurança
+// relatorio de seguranã
 router.get('/report', (req, res) => {
   try {
     const securityReport = generateSecurityReport();
@@ -32,7 +31,7 @@ router.get('/report', (req, res) => {
   }
 });
 
-// Relatório de backup
+// relatorio de backup
 router.get('/backup-report', (req, res) => {
   try {
     const backupReport = getBackupReport();
@@ -49,7 +48,7 @@ router.get('/backup-report', (req, res) => {
   }
 });
 
-// Listar backups
+// listar backups
 router.get('/backups', (req, res) => {
   try {
     const backups = listBackups();
@@ -66,7 +65,7 @@ router.get('/backups', (req, res) => {
   }
 });
 
-// Criar backup manual
+// criar backup manual
 router.post('/backup', async (req, res) => {
   try {
     const result = await createFullBackup();
@@ -84,7 +83,7 @@ router.post('/backup', async (req, res) => {
   }
 });
 
-// Status de segurança
+// status de segurança
 router.get('/status', (req, res) => {
   try {
     const securityReport = generateSecurityReport();

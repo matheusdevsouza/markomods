@@ -10,7 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
   const [bannerUrl, setBannerUrl] = useState(currentBannerUrl || '');
   const [bannerFile, setBannerFile] = useState(null);
-  const [bannerMode, setBannerMode] = useState('url'); // 'url' ou 'upload'
+  const [bannerMode, setBannerMode] = useState('url');
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
@@ -19,7 +19,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Validar tipo de arquivo
     if (!file.type.startsWith('image/')) {
       toast({
         title: 'Erro',
@@ -29,7 +28,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
       return;
     }
 
-    // Validar tamanho (máximo 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: 'Erro',
@@ -66,7 +64,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
     try {
       let finalUrl = bannerUrl;
 
-      // Se for upload, fazer upload primeiro
       if (bannerMode === 'upload' && bannerFile) {
         setIsUploading(true);
         const formData = new FormData();
@@ -89,7 +86,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
         setIsUploading(false);
       }
 
-      // Salvar a URL final
       const response = await fetch('/api/admin/banner/update', {
         method: 'POST',
         headers: {
@@ -160,7 +156,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
               </CardHeader>
               
               <CardContent className="space-y-6">
-                {/* Preview do Banner */}
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Preview do Banner</Label>
                   <div className="relative w-full h-32 rounded-lg overflow-hidden border border-border">
@@ -183,7 +178,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
                   </div>
                 </div>
 
-                {/* Seletor de modo */}
                 <div className="flex space-x-2 mb-4">
                   <Button
                     type="button"
@@ -207,7 +201,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
                   </Button>
                 </div>
 
-                {/* Campo de URL */}
                 {bannerMode === 'url' && (
                   <div className="space-y-2">
                     <Label htmlFor="banner-url" className="text-sm font-medium">
@@ -227,10 +220,8 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
                   </div>
                 )}
 
-                {/* Campo de Upload */}
                 {bannerMode === 'upload' && (
                   <div className="space-y-3">
-                    {/* Área de Drag & Drop */}
                     <div className="relative">
                       <input
                         id="banner-upload"
@@ -248,10 +239,8 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
                         }
                       `}>
                         
-                        {/* Ícone e Texto */}
                         <div className="space-y-3">
                           {bannerFile ? (
-                            // Preview da imagem selecionada
                             <div className="space-y-3">
                               <div className="mx-auto w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center">
                                 <Image className="h-8 w-8 text-green-500" />
@@ -266,7 +255,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
                               </div>
                             </div>
                           ) : (
-                            // Estado inicial
                             <div className="space-y-3">
                               <div className="mx-auto w-16 h-16 bg-muted-foreground/20 rounded-full flex items-center justify-center">
                                 <Image className="h-8 w-8 text-muted-foreground" />
@@ -287,7 +275,6 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
                   </div>
                 )}
 
-                {/* Botões de Ação */}
                 <div className="flex space-x-3 pt-4">
                   <Button
                     variant="outline"

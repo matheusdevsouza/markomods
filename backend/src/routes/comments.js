@@ -18,30 +18,24 @@ import {
 
 const router = express.Router();
 
-// Público mas com autenticação opcional: listar comentários de um mod
+// público mas com autenticação opcional (listar comentários de um mod)
 router.get('/mod/:modId', commentsPublicOrAuthenticated, listCommentsByMod);
 
-// Autenticado: criar comentário
+// autenticado (criar comentário)
 router.post('/', authenticateToken, createComment);
 
-// Autenticado: deletar comentário (autor ou admin)
+// autenticado (deletar, comentar, votar, etc)
 router.delete('/:commentId', authenticateToken, deleteComment);
-
-// Autenticado: votar em comentário
 router.post('/:commentId/vote', authenticateToken, voteComment);
-
-// Autenticado: comentários do usuário
 router.get('/user/list', authenticateToken, getUserComments);
 router.get('/user/count', authenticateToken, getUserCommentsCount);
-
-// Admin: moderação de comentários
 router.get('/admin/pending', authenticateToken, requireAdmin, getPendingComments);
 router.get('/admin/rejected', authenticateToken, requireAdmin, getRejectedComments);
 router.get('/admin/recent', authenticateToken, requireAdmin, getRecentComments);
 router.post('/admin/:commentId/approve', authenticateToken, requireAdmin, approveComment);
 router.post('/admin/:commentId/reject', authenticateToken, requireAdmin, rejectComment);
 
-// Super Admin: sistema de respostas
+// admin (sistema de respostas e moderação)
 router.post('/reply', authenticateToken, requireSuperAdmin, createReply);
 router.get('/replies/:parentId', getReplies);
 

@@ -16,16 +16,17 @@ export const createComment = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Comentário vazio' });
     }
 
-    // Sanitizar e validar conteúdo
+    // sanitizar e validar o content
     const sanitizedContent = sanitizeText(content.trim());
     
     if (!sanitizedContent) {
       return res.status(400).json({ success: false, message: 'Comentário contém apenas caracteres inválidos' });
     }
 
-    // Verificar se contém conteúdo malicioso
+    // verificar se o content é malicioso
     if (isMalicious(content)) {
-      // Registrar tentativa maliciosa
+
+      // registrar (se for malicioso))
       recordRateLimitViolation(req.ip, 'malicious_comment', req.get('User-Agent'));
       
       await LogService.logSecurity(
@@ -42,7 +43,7 @@ export const createComment = async (req, res) => {
       });
     }
 
-    // Verificar se usuário está banido
+    // verificar se o usuario esta banido
     if (req.user && req.user.is_banned) {
       return res.status(403).json({ 
         success: false, 
@@ -51,7 +52,7 @@ export const createComment = async (req, res) => {
       });
     }
 
-    // Verificar se usuário está em timeout
+    // verificar se o usuario esta em timeout
     const timeout = await CommentsModel.isUserInTimeout(userId);
     if (timeout) {
       const remainingMinutes = Math.ceil(timeout.remaining_seconds / 60);
@@ -66,14 +67,14 @@ export const createComment = async (req, res) => {
       });
     }
 
-    // Anti-spam: limitar envios muito frequentes
+    // limitar envios muito frequentes (meio que um anti-spam)
     const recent = await CommentsModel.countRecentByUser(userId, 20);
     if (recent >= 3) {
       await LogService.logSecurity(userId, 'Spam de comentários bloqueado', 'Usuário enviou comentários em alta frequência');
       return res.status(429).json({ success: false, message: 'Você está comentando muito rápido. Tente novamente em instantes.' });
     }
 
-    // Verificar palavras proibidas no banco de dados
+    // verificar palavras proibidas no banco de dados
     const forbiddenWords = await CommentsModel.containsForbiddenWords(content);
     if (forbiddenWords && forbiddenWords.length > 0) {
       const highestSeverity = forbiddenWords.reduce((highest, current) => {
@@ -81,10 +82,10 @@ export const createComment = async (req, res) => {
         return severityOrder[current.severity] > severityOrder[highest.severity] ? current.severity : highest;
       }, 'low');
 
-      // Aplicar timeout baseado na severidade
-      let timeoutDuration = 30; // minutos padrão
-      if (highestSeverity === 'high') timeoutDuration = 120; // 2 horas
-      else if (highestSeverity === 'medium') timeoutDuration = 60; // 1 hora
+      // aplicar timeout baseado no nivel da palavra (palavras mais agressivas tem timeout maior)
+      let timeoutDuration = 30; 
+      if (highestSeverity === 'high') timeoutDuration = 120; 
+      else if (highestSeverity === 'medium') timeoutDuration = 60; 
 
       const reason = `Comentário bloqueado - Palavras proibidas: ${forbiddenWords.map(fw => fw.word).join(', ')}`;
       
@@ -114,11 +115,11 @@ export const createComment = async (req, res) => {
 
     await LogService.logComments(userId, 'Novo comentário', `Comentou no mod ${modId}`, req.ip, req.headers['user-agent'], id, modId);
 
-    // Buscar o comentário criado com dados do usuário
+    // buscar o comentario criado com os dados do usuario
     const createdComment = await CommentsModel.findById(id);
     
     
-    // Verificar se o comentário está pendente
+    // verificar se o comentario esta pendente
     if (!createdComment.is_approved) {
       return res.json({ 
         success: true, 
@@ -132,7 +133,7 @@ export const createComment = async (req, res) => {
   } catch (error) {
     console.error('Erro ao criar comentário', error);
     
-    // Verificar se é erro de cooldown
+    // verificar se é erro de cooldown
     if (error.message.includes('Aguarde') && error.message.includes('minuto(s)')) {
       return res.status(429).json({ 
         success: false, 
@@ -145,7 +146,7 @@ export const createComment = async (req, res) => {
   }
 };
 
-// Listar comentários por mod (incluindo pendentes do usuário logado)
+// listar comentarios por mod (incluindo pendentes do usuario logado)
 export const listCommentsByMod = async (req, res) => {
   try {
     const { modId } = req.params;
@@ -154,7 +155,8 @@ export const listCommentsByMod = async (req, res) => {
 
     let comments;
     if (includeReplies === 'true') {
-      // Buscar comentários principais e suas respostas
+
+      // buscar e carregar os comentarios e suas respostas
       comments = await CommentsModel.findByModIdWithReplies(modId, userId);
     } else {
       comments = await CommentsModel.findByModId(modId, userId, true);
@@ -171,12 +173,12 @@ export const listCommentsByMod = async (req, res) => {
   }
 };
 
-// Buscar comentários pendentes para moderação (admin apenas)
+// buscar comentarios pendentes (visivel no painel administrador)
 export const getPendingComments = async (req, res) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
     
-    // Verificar se é admin
+    // verificar se o usuario é admin
     if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
       return res.status(403).json({ success: false, message: 'Acesso negado' });
     }
@@ -194,12 +196,12 @@ export const getPendingComments = async (req, res) => {
   }
 };
 
-// Buscar comentários rejeitados (admin apenas)
+// buscar comentarios desaprovados (visivel no painel administrador)
 export const getRejectedComments = async (req, res) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
     
-    // Verificar se é admin
+    // verificar se o usuario é admin
     if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
       return res.status(403).json({ success: false, message: 'Acesso negado' });
     }
@@ -217,12 +219,12 @@ export const getRejectedComments = async (req, res) => {
   }
 };
 
-// Buscar comentários recentes aprovados (admin apenas)
+// buscar comentarios aprovados recentemente (visivel no painel administrador)
 export const getRecentComments = async (req, res) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
     
-    // Verificar se é admin
+    // verificar se o usuario é admin
     if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
       return res.status(403).json({ success: false, message: 'Acesso negado' });
     }
@@ -240,13 +242,13 @@ export const getRecentComments = async (req, res) => {
   }
 };
 
-// Aprovar comentário (admin apenas)
+// aprovar comentario (visivel no painel administrador)
 export const approveComment = async (req, res) => {
   try {
     const { commentId } = req.params;
     const moderatorId = req.user?.id;
     
-    // Verificar se é admin
+    // verificar se o usuario é admin
     if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
       return res.status(403).json({ success: false, message: 'Acesso negado' });
     }
@@ -273,7 +275,7 @@ export const approveComment = async (req, res) => {
   }
 };
 
-// Rejeitar comentário (admin apenas)
+// rejeitar comentario (visivel no painel administrador)
 export const rejectComment = async (req, res) => {
   try {
     const { commentId } = req.params;
@@ -284,7 +286,7 @@ export const rejectComment = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Motivo da rejeição é obrigatório' });
     }
     
-    // Verificar se é admin
+    // verificar se o usuario é admin
     if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
       return res.status(403).json({ success: false, message: 'Acesso negado' });
     }
@@ -312,7 +314,7 @@ export const rejectComment = async (req, res) => {
   }
 };
 
-// Deletar comentário (autor ou admin)
+// deletar um comentario (somente o autor ou o admin podem)
 export const deleteComment = async (req, res) => {
   try {
     const { commentId } = req.params;
@@ -348,7 +350,7 @@ export const deleteComment = async (req, res) => {
   }
 };
 
-// Criar resposta de comentário (apenas super admins)
+// responder um comentario ja existente (somente admins podem)
 export const createReply = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -361,7 +363,7 @@ export const createReply = async (req, res) => {
     }
     if (!modId) return res.status(400).json({ success: false, message: 'modId é obrigatório' });
 
-    // Buscar o comentário pai para obter o user_id
+    // buscar o comentario para obter o user_id
     const parentComment = await CommentsModel.findById(parentId);
     if (!parentComment) {
       return res.status(404).json({ success: false, message: 'Comentário não encontrado' });
@@ -377,7 +379,7 @@ export const createReply = async (req, res) => {
 
     const reply = await CommentsModel.createReply(replyData);
     
-    // Buscar dados completos da resposta
+    // buscar dados completos da resposta
     const fullReply = await CommentsModel.findById(reply.id);
     
     res.status(201).json({
@@ -391,7 +393,7 @@ export const createReply = async (req, res) => {
   }
 };
 
-// Buscar respostas de um comentário
+// buscar respostas de um comentario
 export const getReplies = async (req, res) => {
   try {
     const { parentId } = req.params;
@@ -412,7 +414,7 @@ export const getReplies = async (req, res) => {
   }
 };
 
-// Votar em comentário
+// votar em um comentario (upvote ou downvote)
 export const voteComment = async (req, res) => {
   try {
     const { commentId } = req.params;
@@ -445,7 +447,7 @@ export const voteComment = async (req, res) => {
   }
 };
 
-// Buscar comentários do usuário com paginação e filtros
+// buscar comentarios do usuario (sistema de paginaçao e filtros)
 export const getUserComments = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -457,7 +459,7 @@ export const getUserComments = async (req, res) => {
 
     const offset = (parseInt(page) - 1) * parseInt(limit);
     
-    // Construir filtros de data
+    // construir filtros de data
     let dateCondition = '';
     const now = new Date();
     
@@ -480,7 +482,7 @@ export const getUserComments = async (req, res) => {
         break;
     }
 
-    // Buscar comentários com informações do mod
+    // buscar comentarios com informações do mod
     const comments = await CommentsModel.getUserComments({
       userId,
       offset: parseInt(offset),
@@ -489,7 +491,7 @@ export const getUserComments = async (req, res) => {
       dateCondition
     });
 
-    // Buscar total de comentários para paginação
+    // buscar total de comentarios para o sistema de paginação
     const total = await CommentsModel.getUserCommentsCount({
       userId,
       search: search.trim(),
@@ -512,7 +514,7 @@ export const getUserComments = async (req, res) => {
   }
 };
 
-// Contar comentários do usuário
+// contar comentarios do usuario
 export const getUserCommentsCount = async (req, res) => {
   try {
     const userId = req.user?.id;

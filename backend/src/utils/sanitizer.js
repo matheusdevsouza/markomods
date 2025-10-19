@@ -1,14 +1,8 @@
 import DOMPurify from 'isomorphic-dompurify';
 
-/**
- * Utilitário de Sanitização de Dados
- * Remove ou neutraliza conteúdo malicioso
- */
-
 class Sanitizer {
-  /**
-   * Sanitiza HTML removendo scripts e conteúdo malicioso
-   */
+
+  // sanitizar HTML removendo scripts e conteúdo malicioso
   static sanitizeHTML(dirty) {
     if (!dirty || typeof dirty !== 'string') return '';
     
@@ -23,49 +17,42 @@ class Sanitizer {
     });
   }
 
-  /**
-   * Sanitiza texto removendo caracteres perigosos
-   */
+  // sanitizar texto removendo caracteres perigosos
   static sanitizeText(text) {
     if (!text || typeof text !== 'string') return '';
     
     return text
-      .replace(/[<>]/g, '') // Remove < e >
-      .replace(/javascript:/gi, '') // Remove javascript:
-      .replace(/on\w+\s*=/gi, '') // Remove event handlers
-      .replace(/script/gi, '') // Remove script
-      .replace(/iframe/gi, '') // Remove iframe
-      .replace(/object/gi, '') // Remove object
-      .replace(/embed/gi, '') // Remove embed
-      .replace(/link/gi, '') // Remove link
-      .replace(/meta/gi, '') // Remove meta
-      .replace(/style/gi, '') // Remove style
+      .replace(/[<>]/g, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+\s*=/gi, '')
+      .replace(/script/gi, '')
+      .replace(/iframe/gi, '')
+      .replace(/object/gi, '')
+      .replace(/embed/gi, '')
+      .replace(/link/gi, '')
+      .replace(/meta/gi, '')
+      .replace(/style/gi, '')
       .trim();
   }
 
-  /**
-   * Sanitiza nome de arquivo
-   */
+  // sanitizar nome de arquivo
   static sanitizeFilename(filename) {
     if (!filename || typeof filename !== 'string') return '';
     
     return filename
-      .replace(/[^a-zA-Z0-9._-]/g, '_') // Substitui caracteres inválidos
-      .replace(/\.{2,}/g, '.') // Remove múltiplos pontos
-      .replace(/^\.+|\.+$/g, '') // Remove pontos do início e fim
-      .substring(0, 255); // Limita tamanho
+      .replace(/[^a-zA-Z0-9._-]/g, '_')
+      .replace(/\.{2,}/g, '.')
+      .replace(/^\.+|\.+$/g, '')
+      .substring(0, 255);
   }
 
-  /**
-   * Sanitiza URL
-   */
+  // sanitizar URL
   static sanitizeURL(url) {
     if (!url || typeof url !== 'string') return '';
     
     try {
       const urlObj = new URL(url);
       
-      // Permitir apenas protocolos seguros
       if (!['http:', 'https:'].includes(urlObj.protocol)) {
         return '';
       }
@@ -76,9 +63,7 @@ class Sanitizer {
     }
   }
 
-  /**
-   * Sanitiza email
-   */
+  // sanitizar email
   static sanitizeEmail(email) {
     if (!email || typeof email !== 'string') return '';
     
@@ -89,9 +74,7 @@ class Sanitizer {
       .substring(0, 255);
   }
 
-  /**
-   * Sanitiza username
-   */
+  // sanitizar username
   static sanitizeUsername(username) {
     if (!username || typeof username !== 'string') return '';
     
@@ -101,9 +84,7 @@ class Sanitizer {
       .toLowerCase();
   }
 
-  /**
-   * Sanitiza JSON
-   */
+  // sanitizar JSON
   static sanitizeJSON(obj) {
     if (!obj || typeof obj !== 'object') return obj;
     
@@ -124,9 +105,7 @@ class Sanitizer {
     return sanitized;
   }
 
-  /**
-   * Remove SQL injection patterns
-   */
+  // remover padrões de SQL injection
   static removeSQLInjection(text) {
     if (!text || typeof text !== 'string') return '';
     
@@ -155,9 +134,7 @@ class Sanitizer {
     return sanitized.trim();
   }
 
-  /**
-   * Remove XSS patterns
-   */
+  // remover padrões de XSS
   static removeXSS(text) {
     if (!text || typeof text !== 'string') return '';
     
@@ -182,9 +159,7 @@ class Sanitizer {
     return sanitized.trim();
   }
 
-  /**
-   * Sanitiza dados de entrada completos
-   */
+  // sanitizar dados de entrada completos
   static sanitizeInput(data) {
     if (!data) return data;
     
@@ -205,9 +180,7 @@ class Sanitizer {
     return data;
   }
 
-  /**
-   * Valida se o texto contém conteúdo malicioso
-   */
+  // validar se o texto contém conteúdo malicioso
   static isMalicious(text) {
     if (!text || typeof text !== 'string') return false;
     
@@ -235,7 +208,7 @@ class Sanitizer {
 
 export default Sanitizer;
 
-// Funções de conveniência
+// funções de conveniência
 export const sanitizeHTML = (text) => Sanitizer.sanitizeHTML(text);
 export const sanitizeText = (text) => Sanitizer.sanitizeText(text);
 export const sanitizeFilename = (filename) => Sanitizer.sanitizeFilename(filename);
@@ -245,5 +218,3 @@ export const sanitizeUsername = (username) => Sanitizer.sanitizeUsername(usernam
 export const sanitizeJSON = (obj) => Sanitizer.sanitizeJSON(obj);
 export const sanitizeInput = (data) => Sanitizer.sanitizeInput(data);
 export const isMalicious = (text) => Sanitizer.isMalicious(text);
-
-

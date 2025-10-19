@@ -11,7 +11,6 @@ const LanguageSelector = () => {
   const [isAutoLanguage, setIsAutoLanguage] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState('right-0');
 
-  // Fechar dropdown quando clicar fora e ajustar posicionamento
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -25,7 +24,6 @@ const LanguageSelector = () => {
         const viewportWidth = window.innerWidth;
         const dropdownWidth = viewportWidth < 640 ? 280 : 320;
         
-        // Tanto mobile quanto desktop: sempre à esquerda
         setDropdownPosition('center');
       }
     };
@@ -62,7 +60,6 @@ const LanguageSelector = () => {
     setIsOpen(false);
   };
 
-  // Definir idiomas disponíveis
   const LANGUAGES = {
     'pt-BR': { name: 'Português (Brasil)', nativeName: 'Português (Brasil)', flag: '🇧🇷' },
     'pt-PT': { name: 'Português (Portugal)', nativeName: 'Português (Portugal)', flag: '🇵🇹' },
@@ -72,7 +69,6 @@ const LanguageSelector = () => {
     'zh-CN': { name: '中文 (简体)', nativeName: '中文 (简体)', flag: '🇨🇳' }
   };
 
-  // Agrupamento por região
   const LANGUAGE_GROUPS = {
     americas: { name: 'Américas', languages: ['pt-BR', 'en-US'] },
     europe: { name: 'Europa', languages: ['pt-PT', 'es-ES', 'fr-FR'] },
@@ -100,7 +96,8 @@ const LanguageSelector = () => {
             ? "right-0" 
             : dropdownPosition
         )}>
-          {/* Header */}
+
+          {/* header */}
           <div className="p-2 sm:p-4 border-b">
             <h3 className="text-xs sm:text-sm font-medium text-foreground">
               {t('language.title')}
@@ -110,7 +107,7 @@ const LanguageSelector = () => {
             </p>
           </div>
 
-          {/* Auto Language Option */}
+          {/* idioma automático */}
           <div className="p-1 sm:p-2">
             <button
               onClick={handleAutoLanguage}
@@ -131,7 +128,7 @@ const LanguageSelector = () => {
             </button>
           </div>
 
-          {/* Language Groups */}
+          {/* grupos de idiomas */}
           <div className="max-h-48 sm:max-h-96 overflow-y-auto overscroll-contain">
             {Object.entries(LANGUAGE_GROUPS).map(([regionKey, group]) => (
               <div key={regionKey} className="border-t">
@@ -175,7 +172,7 @@ const LanguageSelector = () => {
             ))}
           </div>
 
-          {/* Footer */}
+          {/* footer */}
           <div className="p-2 sm:p-3 border-t bg-muted/20">
             <div className="text-xs text-muted-foreground text-center">
               {isAutoLanguage 

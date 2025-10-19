@@ -32,7 +32,6 @@ const NotFoundPage = () => {
   const [gameTime, setGameTime] = useState(30);
   const [particles, setParticles] = useState([]);
 
-  // Rastrear posição do mouse para efeitos interativos
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -42,7 +41,6 @@ const NotFoundPage = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Criar elementos flutuantes animados
   useEffect(() => {
     const elements = [
       { id: 1, icon: Sparkles, delay: 0, x: 20, y: 20 },
@@ -58,7 +56,6 @@ const NotFoundPage = () => {
     setFloatingElements(elements);
   }, []);
 
-  // Lógica do mini-game
   useEffect(() => {
     if (!gameMode) return;
 
@@ -92,7 +89,6 @@ const NotFoundPage = () => {
     };
   }, [gameMode]);
 
-  // Limpar targets antigos
   useEffect(() => {
     const cleanup = setInterval(() => {
       setTargets(prev => prev.filter(target => Date.now() - target.id < 3000));
@@ -105,7 +101,6 @@ const NotFoundPage = () => {
     setScore(prev => prev + 10);
     setTargets(prev => prev.filter(t => t.id !== targetId));
     
-    // Criar efeito de partículas de teleporte
     const newParticle = {
       id: Date.now(),
       x: targetX,
@@ -116,7 +111,6 @@ const NotFoundPage = () => {
     
     setParticles(prev => [...prev, newParticle]);
     
-    // Remover partícula após a animação
     setTimeout(() => {
       setParticles(prev => prev.filter(p => p.id !== newParticle.id));
     }, 750);
@@ -129,13 +123,11 @@ const NotFoundPage = () => {
     setTargets([]);
   };
 
-  // Efeito de parallax para o fundo
   const parallaxX = (mousePosition.x - window.innerWidth / 2) * 0.01;
   const parallaxY = (mousePosition.y - window.innerHeight / 2) * 0.01;
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#1F1335] via-[#311C4A] to-[#000000] overflow-hidden">
-      {/* Elementos flutuantes de fundo */}
       <div className="absolute inset-0 pointer-events-none">
         {floatingElements.map((element) => {
           const IconComponent = element.icon;
@@ -167,7 +159,6 @@ const NotFoundPage = () => {
         })}
       </div>
 
-      {/* Gradiente interativo de fundo */}
       <div 
         className="absolute inset-0 opacity-30"
         style={{
@@ -175,7 +166,6 @@ const NotFoundPage = () => {
         }}
       />
 
-      {/* Mini-game endermans */}
       {gameMode && targets.map(target => (
         <motion.div
           key={target.id}
@@ -199,7 +189,6 @@ const NotFoundPage = () => {
         </motion.div>
       ))}
 
-      {/* Efeito de partículas de teleporte */}
       {particles.map(particle => (
         <motion.div
           key={particle.id}
@@ -234,10 +223,8 @@ const NotFoundPage = () => {
         </motion.div>
       ))}
 
-      {/* Conteúdo principal */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center p-4">
         
-        {/* Número 404 com efeitos especiais */}
         <motion.div
           className="relative mb-8"
           initial={{ opacity: 0, y: 50 }}
@@ -259,7 +246,6 @@ const NotFoundPage = () => {
           </motion.h1>
         </motion.div>
 
-        {/* Título e descrição */}
         <motion.div
           className="mb-12 max-w-2xl"
           initial={{ opacity: 0, y: 30 }}
@@ -277,7 +263,6 @@ const NotFoundPage = () => {
           </p>
         </motion.div>
 
-        {/* Botões de ação */}
         <motion.div
           className="flex flex-col sm:flex-row gap-4 mb-12"
           initial={{ opacity: 0, y: 30 }}
@@ -308,14 +293,12 @@ const NotFoundPage = () => {
           </Link>
         </motion.div>
 
-        {/* Botão Easter Egg no canto inferior direito */}
         <motion.div
           className="fixed bottom-6 right-6 z-30"
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          {/* Interface do Minigame */}
           {gameMode && (
             <motion.div
               className="absolute bottom-full right-0 mb-4 w-80 bg-black/80 backdrop-blur-md rounded-xl p-4 border border-purple-400/50 shadow-2xl"
@@ -325,14 +308,12 @@ const NotFoundPage = () => {
             >
               {gameTime > 0 ? (
                 <>
-                  {/* Instruções e Status do Jogo */}
                   <div className="text-center mb-4">
                     <h3 className="text-lg font-bold text-[#CCFCDE] mb-2">🎯 {t('notFound.game.active')}</h3>
                     <p className="text-sm text-gray-300 mb-3">
                       {t('notFound.game.instructions')}
                     </p>
                     
-                    {/* Pontuação e Tempo */}
                     <div className="flex justify-between items-center bg-[#1F1335]/40 rounded-lg p-3 mb-3">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-yellow-400">{score}</div>
@@ -347,7 +328,6 @@ const NotFoundPage = () => {
                 </>
               ) : (
                 <>
-                  {/* Resultado Final */}
                   <div className="text-center mb-4">
                     <h3 className="text-lg font-bold text-yellow-400 mb-2">🏆 {t('notFound.game.finished')}</h3>
                     <div className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
@@ -355,7 +335,6 @@ const NotFoundPage = () => {
                                               <div className="text-sm">{t('notFound.game.totalScore')}</div>
                     </div>
                     
-                    {/* Mensagem baseada na pontuação */}
                     <p className="text-sm text-gray-300 mt-2">
                       {score === 0 && t('notFound.game.messages.tryAgain')}
                       {score > 0 && score < 50 && t('notFound.game.messages.goodTry')}
@@ -366,7 +345,6 @@ const NotFoundPage = () => {
                 </>
               )}
               
-              {/* Botão para reiniciar ou fechar */}
               <div className="flex gap-2">
                 {gameTime === 0 ? (
                   <Button
@@ -407,7 +385,6 @@ const NotFoundPage = () => {
           </Button>
         </motion.div>
 
-        {/* Efeito de partículas flutuantes */}
         <div className="absolute inset-0 pointer-events-none">
           {[...Array(20)].map((_, i) => (
             <motion.div
@@ -433,7 +410,6 @@ const NotFoundPage = () => {
         </div>
       </div>
 
-      {/* Efeito de borda brilhante */}
       <div className="absolute inset-0 border border-[#9F6E9F]/20 rounded-none pointer-events-none" />
     </div>
   );

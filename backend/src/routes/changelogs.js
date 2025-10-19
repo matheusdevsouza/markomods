@@ -12,11 +12,11 @@ import {
 
 const router = express.Router();
 
-// Público
+// público
 router.get('/public', listPublicChangelogs);
 router.get('/public/:slug', optionalAuth, getChangelogBySlug);
 
-// Admin
+// admin
 router.get('/', adminSecurityMiddleware, listAllChangelogs);
 router.post('/', adminSecurityMiddleware, createChangelog);
 router.put('/:id', adminSecurityMiddleware, updateChangelog);

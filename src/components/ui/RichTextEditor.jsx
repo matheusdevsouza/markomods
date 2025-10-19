@@ -13,7 +13,6 @@ import { Resizable } from 're-resizable';
 import { Bold, Italic, Strikethrough, List, ListOrdered, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, Link as LinkIcon, Image as ImageIcon, Undo, Redo, AlignLeft, AlignCenter, AlignRight, AlignJustify, Underline as UnderlineIcon, Code, Quote, Type, X, CornerDownLeft, Palette, Check, Upload, Image as ImageIcon2 } from 'lucide-react';
 import './RichTextEditor.css';
 
-// Extensão personalizada para preservar parágrafos vazios
 const PreserveEmptyParagraphs = {
   name: 'preserveEmptyParagraphs',
   addGlobalAttributes() {
@@ -44,21 +43,17 @@ const PreserveEmptyParagraphs = {
   }
 };
 
-// Extensão para forçar preservação de quebras de linha
 const ForceLineBreaks = {
   name: 'forceLineBreaks',
   addKeyboardShortcuts() {
     return {
       'Enter': () => {
-        // Comportamento normal do Enter (criar novo parágrafo)
         return false;
       },
       'Shift-Enter': () => {
-        // Shift+Enter: inserir quebra de linha
         return this.editor.commands.insertContent('<br>');
       },
       'Ctrl-Enter': () => {
-        // Ctrl+Enter: inserir quebra de linha (atalho para o botão)
         return this.editor.commands.insertContent('<br>');
       }
     };
@@ -284,11 +279,9 @@ const ResizableImage = Image.extend({
             document.removeEventListener('mousemove', onMove);
             document.removeEventListener('mouseup', onUp);
             
-            // GARANTIR QUE O REDIMENSIONAMENTO SEJA SALVO
             const newWidth = img.style.width;
             updateAttrs(newWidth);
             
-            // Forçar atualização do editor para garantir que a mudança seja persistida
             setTimeout(() => {
               const html = editor.getHTML();
               if (onChange) {
@@ -300,7 +293,6 @@ const ResizableImage = Image.extend({
           document.addEventListener('mouseup', onUp);
         };
 
-        // GARANTIR QUE A IMAGEM TENHA O TAMANHO CORRETO
         img.style.width = typeof width === 'number' ? `${width}px` : width;
         img.style.maxWidth = '100%';
         img.style.height = 'auto';
@@ -311,7 +303,6 @@ const ResizableImage = Image.extend({
         wrapper.appendChild(deleteButton);
         resizable.appendChild(wrapper);
         
-        // FORÇAR ATUALIZAÇÃO VISUAL
         wrapper.style.transform = 'translateZ(0)';
       };
 
@@ -327,11 +318,8 @@ const ResizableImage = Image.extend({
             img.style.width = typeof width === 'number' ? `${width}px` : width;
           }
           
-          // GARANTIR QUE OS ELEMENTOS DE REDIMENSIONAMENTO ESTEJAM PRESENTES
-          // Verificar se já existem elementos de redimensionamento
           const existingHandle = resizable.querySelector('[style*="cursor: nwse-resize"]');
           if (!existingHandle) {
-            // Recriar elementos de redimensionamento se não existirem
             setTimeout(() => {
               mountResizable();
             }, 10);
@@ -344,7 +332,6 @@ const ResizableImage = Image.extend({
   }
 });
 
-// Componente de Seletor de Cores
 const ColorPicker = ({ onColorSelect, currentColor, onClose }) => {
   const [customColor, setCustomColor] = useState(currentColor || '#FFFFFF');
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -358,13 +345,11 @@ const ColorPicker = ({ onColorSelect, currentColor, onClose }) => {
 
   const handleColorSelect = (color) => {
     onColorSelect(color);
-    // Não fechar automaticamente, permitir múltiplas seleções
   };
 
   const handleCustomColorSubmit = () => {
     if (customColor) {
       onColorSelect(customColor);
-      // Não fechar automaticamente
     }
   };
 
@@ -380,7 +365,7 @@ const ColorPicker = ({ onColorSelect, currentColor, onClose }) => {
         </button>
       </div>
       
-      {/* Cores Predefinidas */}
+      {/* cores predefinidas */}
       <div className="mb-4">
         <p className="text-xs text-muted-foreground mb-2">Cores Predefinidas</p>
         <div className="grid grid-cols-6 gap-2">
@@ -402,7 +387,7 @@ const ColorPicker = ({ onColorSelect, currentColor, onClose }) => {
         </div>
       </div>
       
-      {/* Cor Personalizada */}
+      {/* cor personalizada */}
       <div className="border-t border-border pt-3">
         <div className="flex items-center gap-2">
           <input
@@ -427,11 +412,11 @@ const ColorPicker = ({ onColorSelect, currentColor, onClose }) => {
         </div>
       </div>
       
-      {/* Botão Limpar */}
+      {/* botão limpar */}
       <div className="border-t border-border pt-3 mt-3">
         <button
           onClick={() => {
-            onColorSelect('#FFFFFF'); // Aplicar cor padrão (branco)
+            onColorSelect('#FFFFFF');
             onClose();
           }}
           className="w-full px-3 py-2 text-xs bg-muted text-muted-foreground rounded hover:bg-muted/80"
@@ -471,11 +456,9 @@ export const RichTextEditor = ({ value, onChange }) => {
           HTMLAttributes: {
             class: 'paragraph'
           },
-          // PRESERVAR PARÁGRAFOS VAZIOS
           keepMarks: false,
           keepAttributes: false
         },
-        // DESABILITAR REMOÇÃO DE PARÁGRAFOS VAZIOS
         gapcursor: false,
         dropcursor: false
       }),
@@ -508,36 +491,26 @@ export const RichTextEditor = ({ value, onChange }) => {
     onUpdate: ({ editor }) => {
       let html = editor.getHTML();
       
-      // CONVERTER TODAS AS LINHAS VAZIAS EM <br>
       html = html
-        // Converter parágrafos vazios (com ou sem classes) em quebras de linha
         .replace(/<p[^>]*><\/p>/g, '<br>')
         .replace(/<p[^>]*>\s+<\/p>/g, '<br>')
         .replace(/<p[^>]*>\u00A0<\/p>/g, '<br>')
         .replace(/<p[^>]*>&nbsp;<\/p>/g, '<br>')
-        // Converter parágrafos com apenas espaços em branco
         .replace(/<p[^>]*>\s*<\/p>/g, '<br>')
-        // Converter quebras de linha em <br>
         .replace(/\n/g, '<br>')
-        // Adicionar quebras entre parágrafos para preservar espaçamento
         .replace(/<\/p><p>/g, '</p><br><p>')
-        // EVITAR MULTIPLICAÇÃO: remover <br> duplicados consecutivos
         .replace(/<br>\s*<br>\s*<br>/g, '<br><br>')
         .replace(/<br>\s*<br>/g, '<br>');
       
       onChange?.(html);
     },
     onCreate: ({ editor }) => {
-      // GARANTIR QUE IMAGENS EXISTENTES SEJAM REDIMENSIONÁVEIS
-      // Isso resolve o problema de mods já publicados
       setTimeout(() => {
-        // Forçar atualização de todas as imagens para garantir que tenham os elementos de redimensionamento
         const { state, view } = editor;
         const doc = state.doc;
         
         doc.descendants((node, nodePos) => {
           if (node.type.name === 'image') {
-            // Forçar re-render da imagem para garantir elementos de redimensionamento
             const tr = state.tr.setNodeMarkup(nodePos, null, {
               ...node.attrs
             });
@@ -548,23 +521,18 @@ export const RichTextEditor = ({ value, onChange }) => {
     }
   });
 
-  // Função para aplicar cor ao texto selecionado
   const applyTextColor = useCallback((color) => {
     if (editor) {
       editor.chain().focus().setColor(color).run();
-      // Não fechar automaticamente, deixar o usuário decidir
     }
   }, [editor]);
 
-  // Função para aplicar cor do menu flutuante
   const applyFloatingTextColor = useCallback((color) => {
     if (editor) {
       editor.chain().focus().setColor(color).run();
-      // Não fechar automaticamente, deixar o usuário decidir
     }
   }, [editor]);
 
-  // Função para obter a cor atual do texto selecionado
   const getCurrentTextColor = useCallback(() => {
     if (editor) {
       return editor.getAttributes('textStyle').color || '#FFFFFF';
@@ -572,7 +540,6 @@ export const RichTextEditor = ({ value, onChange }) => {
     return '#FFFFFF';
   }, [editor]);
 
-  // Função para remover cor do texto selecionado
   const removeTextColor = useCallback(() => {
     if (editor) {
       editor.chain().focus().unsetColor().run();
@@ -580,7 +547,6 @@ export const RichTextEditor = ({ value, onChange }) => {
     }
   }, [editor]);
 
-  // Função para abrir modal de link
   const openLinkModal = useCallback(() => {
     if (editor) {
       const { selection } = editor.state;
@@ -591,7 +557,6 @@ export const RichTextEditor = ({ value, onChange }) => {
     }
   }, [editor]);
 
-  // Função para aplicar link
   const applyLink = useCallback(() => {
     if (editor && linkUrl.trim()) {
       editor.chain().focus().setLink({ href: linkUrl }).run();
@@ -601,14 +566,12 @@ export const RichTextEditor = ({ value, onChange }) => {
     }
   }, [editor, linkUrl]);
 
-  // Função para remover link
   const removeLink = useCallback(() => {
     if (editor) {
       editor.chain().focus().unsetLink().run();
     }
   }, [editor]);
 
-  // Função para abrir modal de opções de imagem
   const openImageOptionsModal = useCallback((node, pos) => {
     setSelectedImageNode(node);
     setSelectedImagePos(pos);
@@ -618,7 +581,6 @@ export const RichTextEditor = ({ value, onChange }) => {
 
 
 
-  // Event listener para cliques em imagens
   React.useEffect(() => {
     const handleImageClick = (event) => {
       const { node, pos } = event.detail;
@@ -631,7 +593,6 @@ export const RichTextEditor = ({ value, onChange }) => {
     };
   }, [openImageOptionsModal]);
 
-  // Event listener para detectar seleção de texto com delay
   React.useEffect(() => {
     if (!editor) return;
 
@@ -639,18 +600,14 @@ export const RichTextEditor = ({ value, onChange }) => {
       const { selection } = editor.state;
       const hasSelection = !selection.empty;
       
-      // Limpar timeout anterior se existir
       if (selectionTimeoutRef.current) {
         clearTimeout(selectionTimeoutRef.current);
       }
       
       if (hasSelection) {
-        // Adicionar delay de 500ms antes de mostrar o menu
-        selectionTimeoutRef.current = setTimeout(() => {
-          // Verificar se ainda há seleção após o delay
+          selectionTimeoutRef.current = setTimeout(() => {
           const currentSelection = editor.state.selection;
           if (!currentSelection.empty) {
-            // Calcular posição do menu flutuante
             const { view } = editor;
             const { from, to } = currentSelection;
             const start = view.coordsAtPos(from);
@@ -673,21 +630,18 @@ export const RichTextEditor = ({ value, onChange }) => {
     
     return () => {
       editor.off('selectionUpdate', handleSelectionUpdate);
-      // Limpar timeout ao desmontar
       if (selectionTimeoutRef.current) {
         clearTimeout(selectionTimeoutRef.current);
       }
     };
   }, [editor]);
 
-  // Event listener para cliques fora do seletor de cores e menu flutuante
   React.useEffect(() => {
     const handleClickOutside = (event) => {
       const isColorPickerClick = colorPickerRef.current && colorPickerRef.current.contains(event.target);
       const isFloatingMenuClick = floatingMenuRef.current && floatingMenuRef.current.contains(event.target);
       
       if (!isColorPickerClick && !isFloatingMenuClick) {
-        // Adicionar um pequeno delay para evitar fechamento acidental
         setTimeout(() => {
           setShowColorPicker(false);
           setShowFloatingColorPicker(false);
@@ -704,19 +658,14 @@ export const RichTextEditor = ({ value, onChange }) => {
     };
   }, [showColorPicker, showFloatingColorPicker, showFloatingMenu]);
 
-  // GARANTIR REDIMENSIONAMENTO EM MODS EXISTENTES
-  // Quando o valor muda (edição de mod existente), reinicializar imagens
   React.useEffect(() => {
     if (editor && value) {
-      // Aguardar o editor processar o conteúdo
       setTimeout(() => {
-        // Forçar re-render de todas as imagens para garantir elementos de redimensionamento
         const { state, view } = editor;
         const doc = state.doc;
         
         doc.descendants((node, nodePos) => {
           if (node.type.name === 'image') {
-            // Forçar re-render da imagem para garantir elementos de redimensionamento
             const tr = state.tr.setNodeMarkup(nodePos, null, {
               ...node.attrs
             });
@@ -731,7 +680,6 @@ export const RichTextEditor = ({ value, onChange }) => {
     setShowImageModal(true);
     setSelectedFile(null);
     setSelectedAlignment('left');
-    // Não resetar imageLinkUrl aqui para manter o valor
     setIsDragOver(false);
   }, []);
 
@@ -780,7 +728,6 @@ export const RichTextEditor = ({ value, onChange }) => {
       const data = await resp.json();
       
       if (data?.url) {
-        // Inserir imagem normal
         editor?.chain().focus().setImage({ 
           src: data.url, 
           alt: selectedFile.name, 
@@ -788,7 +735,6 @@ export const RichTextEditor = ({ value, onChange }) => {
           align: selectedAlignment 
         }).run();
         
-        // Limpar estados
         setShowImageModal(false);
         setSelectedFile(null);
         setSelectedAlignment('left');
@@ -803,7 +749,6 @@ export const RichTextEditor = ({ value, onChange }) => {
     const { selection } = state;
     const { $from } = selection;
     
-    // Find the image node
     const imageNode = $from.node();
     if (imageNode && imageNode.type.name === 'image') {
       const tr = state.tr.setNodeMarkup($from.before(), null, {
@@ -812,7 +757,6 @@ export const RichTextEditor = ({ value, onChange }) => {
       });
       view.dispatch(tr);
     } else {
-      // If no image is selected, try to find the nearest image
       const pos = $from.pos;
       const doc = state.doc;
       
@@ -823,17 +767,15 @@ export const RichTextEditor = ({ value, onChange }) => {
             align: alignment
           });
           view.dispatch(tr);
-          return false; // Stop searching
+          return false;
         }
       });
     }
     
-    // Force immediate visual update
     setTimeout(() => {
       const editorElement = view.dom;
       const images = editorElement.querySelectorAll('img');
       images.forEach(img => {
-        // Apply alignment directly to the image
         img.style.display = 'block';
         img.style.maxWidth = '100%';
         img.style.height = 'auto';
@@ -846,7 +788,6 @@ export const RichTextEditor = ({ value, onChange }) => {
           img.style.margin = '0 auto 0 0';
         }
         
-        // Also apply to parent container
         const parent = img.parentElement;
         if (parent) {
           parent.style.textAlign = alignment;
@@ -856,12 +797,10 @@ export const RichTextEditor = ({ value, onChange }) => {
     }, 10);
   }, [editor]);
 
-  // Função para forçar alinhamento de todas as imagens
   const forceAlignAllImages = useCallback((alignment) => {
     const { state, view } = editor;
     const doc = state.doc;
     
-    // Find all image nodes and update them
     doc.descendants((node, nodePos) => {
       if (node.type.name === 'image') {
         const tr = state.tr.setNodeMarkup(nodePos, null, {
@@ -872,7 +811,6 @@ export const RichTextEditor = ({ value, onChange }) => {
       }
     });
     
-    // Force immediate visual update
     setTimeout(() => {
       const editorElement = view.dom;
       const images = editorElement.querySelectorAll('img');
@@ -898,7 +836,6 @@ export const RichTextEditor = ({ value, onChange }) => {
     }, 10);
   }, [editor]);
 
-  // Função para alinhar uma imagem específica
   const alignSpecificImage = useCallback((alignment) => {
     if (!selectedImageNode || selectedImagePos === null) return;
     
@@ -909,7 +846,6 @@ export const RichTextEditor = ({ value, onChange }) => {
     });
     view.dispatch(tr);
     
-    // Force immediate visual update
     setTimeout(() => {
       const editorElement = view.dom;
       const images = editorElement.querySelectorAll('img');
@@ -944,7 +880,8 @@ export const RichTextEditor = ({ value, onChange }) => {
   return (
     <div className="border border-border rounded-md bg-background">
       <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 p-2 border-b border-border bg-muted/50 backdrop-blur supports-[backdrop-filter]:bg-muted/30">
-        {/* Formatação de Texto */}
+        
+        {/* formatação de texto */}
         <MenuButton onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Negrito">
           <Bold size={16} />
         </MenuButton>
@@ -962,12 +899,12 @@ export const RichTextEditor = ({ value, onChange }) => {
         </MenuButton>
         <span className="mx-1 h-5 w-px bg-border" />
         
-        {/* Seletor de Cor */}
+        {/* seletor de cor */}
         <div className="relative" ref={colorPickerRef}>
           <MenuButton 
             onClick={() => {
               setShowColorPicker(!showColorPicker);
-              setShowFloatingColorPicker(false); // Fechar o do menu flutuante
+              setShowFloatingColorPicker(false);
             }} 
             active={editor.isActive('textStyle', { color: /^#/ })} 
             title="Cor do Texto"
@@ -984,7 +921,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         </div>
         <span className="mx-1 h-5 w-px bg-border" />
         
-        {/* Títulos */}
+        {/* títulos */}
         <MenuButton onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} active={editor.isActive('heading', { level: 1 })} title="Título 1">
           <Heading1 size={16} />
         </MenuButton>
@@ -1005,7 +942,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         </MenuButton>
         <span className="mx-1 h-5 w-px bg-border" />
         
-        {/* Alinhamento de Texto */}
+        {/* alinhamento de texto */}
         <MenuButton onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })} title="Alinhar à Esquerda">
           <AlignLeft size={16} />
         </MenuButton>
@@ -1020,7 +957,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         </MenuButton>
         <span className="mx-1 h-5 w-px bg-border" />
         
-        {/* Listas */}
+        {/* listas */}
         <MenuButton onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Lista com Marcadores">
           <List size={16} />
         </MenuButton>
@@ -1029,7 +966,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         </MenuButton>
         <span className="mx-1 h-5 w-px bg-border" />
         
-        {/* Elementos de Bloco */}
+        {/* elementos de bloco */}
         <MenuButton onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Citação">
           <Quote size={16} />
         </MenuButton>
@@ -1038,7 +975,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         </MenuButton>
         <span className="mx-1 h-5 w-px bg-border" />
         
-        {/* Links e Imagens */}
+        {/* links e imagens */}
         <MenuButton onClick={openLinkModal} active={editor.isActive('link')} title="Adicionar Link">
           <LinkIcon size={16} />
         </MenuButton>
@@ -1057,7 +994,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         </MenuButton>
         <span className="mx-1 h-5 w-px bg-border" />
         
-        {/* Botão de teste para centralizar todas as imagens */}
+        {/* botão de teste para centralizar todas as imagens */}
         <MenuButton onClick={() => {
           forceAlignAllImages('center');
           setTimeout(() => {
@@ -1067,7 +1004,7 @@ export const RichTextEditor = ({ value, onChange }) => {
           🎯
         </MenuButton>
         
-        {/* Controles de Edição */}
+        {/* controles de edição */}
         <div className="ml-auto flex gap-1">
           <MenuButton onClick={() => editor.chain().focus().undo().run()} title="Desfazer">
             <Undo size={16} />
@@ -1083,7 +1020,7 @@ export const RichTextEditor = ({ value, onChange }) => {
           className="rich-text-editor"
         />
         
-        {/* Menu Flutuante de Seleção de Texto */}
+        {/* menu flutuante de seleção de texto */}
         {showFloatingMenu && (
           <div 
             ref={floatingMenuRef}
@@ -1096,7 +1033,7 @@ export const RichTextEditor = ({ value, onChange }) => {
             <MenuButton 
               onClick={() => {
                 setShowFloatingColorPicker(!showFloatingColorPicker);
-                setShowColorPicker(false); // Fechar o da barra de ferramentas
+                setShowColorPicker(false);
               }} 
               active={editor.isActive('textStyle', { color: /^#/ })} 
               title="Cor do Texto"
@@ -1122,7 +1059,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         )}
       </div>
 
-      {/* Modal para inserir link */}
+        {/* modal para inserir link */}
       {showLinkModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-background border border-border rounded-lg p-6 w-full max-w-md mx-4">
@@ -1136,7 +1073,7 @@ export const RichTextEditor = ({ value, onChange }) => {
               </button>
             </div>
             
-            {/* Texto selecionado */}
+            {/* texto selecionado */}
             {selectedText && (
               <div className="mb-4">
                 <label className="block text-sm font-medium text-foreground mb-2">
@@ -1148,7 +1085,7 @@ export const RichTextEditor = ({ value, onChange }) => {
               </div>
             )}
             
-            {/* Campo de URL */}
+            {/* campo de url */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-foreground mb-2">
                 URL do link:
@@ -1170,7 +1107,7 @@ export const RichTextEditor = ({ value, onChange }) => {
               />
             </div>
             
-            {/* Botões */}
+            {/* botões */}
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowLinkModal(false)}
@@ -1190,7 +1127,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         </div>
       )}
 
-      {/* Modal para inserir imagem */}
+      {/* modal para inserir imagem */}
       {showImageModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-background border border-border rounded-lg p-6 w-full max-w-md mx-4">
@@ -1205,13 +1142,11 @@ export const RichTextEditor = ({ value, onChange }) => {
             </div>
 
             <div className="space-y-4">
-              {/* Upload de arquivo */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Selecionar Imagem
                 </label>
                 
-                {/* Área de Drop Zone Estilizada */}
                 <div
                   className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
                     isDragOver 
@@ -1272,7 +1207,7 @@ export const RichTextEditor = ({ value, onChange }) => {
                 </div>
               </div>
 
-              {/* Seleção de alinhamento */}
+              {/* seleção de alinhamento */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Alinhamento da Imagem
@@ -1315,7 +1250,7 @@ export const RichTextEditor = ({ value, onChange }) => {
               </div>
 
 
-              {/* Botões de ação */}
+              {/* botões de ação */}
               <div className="flex justify-end gap-2 pt-4">
                 <button
                   onClick={() => setShowImageModal(false)}
@@ -1336,7 +1271,7 @@ export const RichTextEditor = ({ value, onChange }) => {
         </div>
       )}
 
-      {/* Modal de opções de imagem */}
+      {/* modal de opções de imagem */}
       {showImageOptionsModal && selectedImageNode && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-background border border-border rounded-lg p-6 w-full max-w-md mx-4">
@@ -1351,7 +1286,6 @@ export const RichTextEditor = ({ value, onChange }) => {
             </div>
 
             <div className="space-y-4">
-              {/* Preview da imagem */}
               <div className="text-center">
                 <img 
                   src={selectedImageNode.attrs.src} 
@@ -1360,7 +1294,6 @@ export const RichTextEditor = ({ value, onChange }) => {
                 />
               </div>
 
-              {/* Opções de alinhamento */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Alinhamento da Imagem
@@ -1404,7 +1337,7 @@ export const RichTextEditor = ({ value, onChange }) => {
 
 
 
-              {/* Botões de ação */}
+              {/* botões de ação */}
               <div className="flex justify-end gap-2 pt-4">
                 <button
                   onClick={() => setShowImageOptionsModal(false)}

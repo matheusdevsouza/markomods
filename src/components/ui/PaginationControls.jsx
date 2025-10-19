@@ -8,7 +8,7 @@ const PaginationControls = ({
   onPageChange, 
   showPageNumbers = true,
   className = "",
-  theme = "default" // "default" ou "red"
+  theme = "default"
 }) => {
   if (totalPages <= 1) return null;
 
@@ -38,7 +38,6 @@ const PaginationControls = ({
     return rangeWithDots;
   };
 
-  // Classes baseadas no tema
   const getButtonClasses = (isActive = false) => {
     if (theme === "red") {
       return isActive 

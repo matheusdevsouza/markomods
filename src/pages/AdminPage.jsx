@@ -85,19 +85,13 @@ const AdminPage = ({ onAddMod, mods, onDeleteMod }) => {
     };
 
     if (editingModId) {
-      // This part would typically call an onEditMod prop if we were fully implementing edit.
-      // For now, we'll just simulate it by logging and resetting.
-      // In a real app, you'd update the mods array in App.jsx
       const updatedMod = { ...modData, id: editingModId, uploadDate: mods.find(m => m.id === editingModId)?.uploadDate || new Date().toISOString().split('T')[0], comments: mods.find(m => m.id === editingModId)?.comments || [] };
-      // onEditMod(updatedMod); // Assuming onEditMod exists and updates the state in App.jsx
       const currentMods = JSON.parse(localStorage.getItem("minecraftMods")) || [];
       const modIndex = currentMods.findIndex(mod => mod.id === editingModId);
       if (modIndex !== -1) {
         currentMods[modIndex] = updatedMod;
         localStorage.setItem("minecraftMods", JSON.stringify(currentMods));
          toast({ title: "Mod Atualizado!", description: `${updatedMod.name} foi atualizado com sucesso.` });
-         // You might need to pass a function from App.jsx to update the state there as well for immediate UI update.
-         // For now, a page refresh would show changes.
       } else {
         toast({ title: "Erro ao Atualizar", description: "Mod não encontrado para atualização.", variant: "destructive" });
       }

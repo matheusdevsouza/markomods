@@ -21,7 +21,6 @@ const FavoritesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Estados para paginação
   const [favoritesPage, setFavoritesPage] = useState(1);
   const [favoritesPerPage] = useState(12);
 
@@ -80,7 +79,6 @@ const FavoritesPage = () => {
       if (response.ok) {
         const data = await response.json();
         if (!data.data.isFavorite) {
-          // Mod foi removido dos favoritos
           setFavorites(prev => prev.filter(mod => mod.id !== modId));
           toast.success('Mod removido dos favoritos!');
         }
@@ -105,26 +103,22 @@ const FavoritesPage = () => {
     visible: { opacity: 1, y: 0 }
   };
 
-  // Filtros locais
   const [search, setSearch] = useState('');
   const [version, setVersion] = useState('all');
   const [order, setOrder] = useState('recent');
   const [contentType, setContentType] = useState('all');
 
-  // Versões disponíveis baseadas no tipo de conteúdo selecionado
   const availableVersions = useMemo(() => {
     if (loading) return ['all'];
     
     let filteredFavorites = favorites;
     
-    // Se um tipo de conteúdo específico foi selecionado, filtrar por ele
     if (contentType !== 'all') {
       filteredFavorites = favorites.filter(mod => 
         contentType === 'addons' ? mod.content_type_id === 2 : mod.content_type_id === 1
       );
     }
     
-    // Extrair versões únicas dos favoritos filtrados
     const versions = new Set(
       filteredFavorites
         .map(mod => mod.minecraft_version)
@@ -134,7 +128,6 @@ const FavoritesPage = () => {
     return ['all', ...Array.from(versions).sort().reverse()];
   }, [favorites, contentType, loading]);
 
-  // Resetar filtro de versão quando o tipo de conteúdo mudar
   useEffect(() => {
     setVersion('all');
   }, [contentType]);
@@ -158,14 +151,12 @@ const FavoritesPage = () => {
       return 0;
     });
 
-  // Lógica de paginação
   const totalFavoritesPages = Math.ceil(filteredFavorites.length / favoritesPerPage);
   const paginatedFavorites = filteredFavorites.slice(
     (favoritesPage - 1) * favoritesPerPage,
     favoritesPage * favoritesPerPage
   );
 
-  // Função para mudar de página
   const handleFavoritesPageChange = (page) => {
     setFavoritesPage(page);
   };
@@ -180,13 +171,11 @@ const FavoritesPage = () => {
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
             <div className="space-y-4 sm:space-y-6">
-              {/* Header skeleton */}
               <div className="space-y-3 sm:space-y-4">
                 <Skeleton className="h-6 w-40 sm:h-8 sm:w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
                 <Skeleton className="h-4 w-64 sm:h-6 sm:w-96 bg-gradient-to-r from-gray-700 to-gray-600" />
               </div>
               
-              {/* Grid skeleton */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                   <Skeleton key={i} className="h-64 sm:h-80 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
@@ -236,7 +225,6 @@ const FavoritesPage = () => {
             transition={{ duration: 0.5 }}
             className="space-y-6 sm:space-y-8"
           >
-            {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
               <div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-2">
@@ -258,10 +246,8 @@ const FavoritesPage = () => {
               </Button>
             </div>
 
-            {/* Filtros */}
             <div className="bg-card/40 border border-border/40 rounded-lg p-3 sm:p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                {/* Busca */}
                 <div className="sm:col-span-2 lg:col-span-1">
                   <input
                     value={search}
@@ -271,7 +257,6 @@ const FavoritesPage = () => {
                   />
                 </div>
 
-                {/* Tipo de conteúdo */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                   <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">Tipo:</span>
                   <div className="inline-flex rounded-md border border-border/40 overflow-hidden">
@@ -293,7 +278,6 @@ const FavoritesPage = () => {
                   </div>
                 </div>
 
-                {/* Versão */}
                 <div>
                   <Select value={version} onValueChange={setVersion}>
                     <SelectTrigger className="w-full bg-muted/30 border border-border/40 text-sm sm:text-base">
@@ -319,7 +303,6 @@ const FavoritesPage = () => {
                   </Select>
                 </div>
 
-                {/* Ordenação */}
                 <div>
                   <Select value={order} onValueChange={setOrder}>
                     <SelectTrigger className="w-full bg-muted/30 border border-border/40 text-sm sm:text-base">
@@ -338,9 +321,6 @@ const FavoritesPage = () => {
               </div>
             </div>
 
-            {/* Estatísticas removidas nesta página */}
-
-            {/* Lista de Favoritos */}
             {favorites.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -368,7 +348,7 @@ const FavoritesPage = () => {
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center"
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
                 >
                   {paginatedFavorites.map((mod) => (
                     <motion.div key={mod.id} variants={itemVariants}>
@@ -381,7 +361,6 @@ const FavoritesPage = () => {
                   ))}
                 </motion.div>
                 
-                {/* Controles de paginação */}
                 {filteredFavorites.length > favoritesPerPage && (
                   <div className="mt-6 sm:mt-8">
                     <PaginationControls

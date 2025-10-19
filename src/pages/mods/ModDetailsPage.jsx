@@ -32,7 +32,6 @@ const ModDetailsPage = () => {
   const fetchModDetails = async () => {
     setLoadingMods(true);
     try {
-      // Buscar dados reais do mod da API
       const response = await fetch(`/api/mods/mod/${modId}`);
       
       if (!response.ok) {
@@ -46,7 +45,6 @@ const ModDetailsPage = () => {
       const data = await response.json();
       setMod(data.data);
       
-      // Buscar comentários do mod
       await fetchModComments(modId);
       
     } catch (error) {
@@ -78,7 +76,6 @@ const ModDetailsPage = () => {
   const handleDownload = async () => {
     if (!mod) return;
     
-    // Simular download
     toast({ title: t('modDetail.downloadNow'), description: t('modDetail.downloadNotAvailable') });
     incrementModCounters(mod.id, 'download');
   };
@@ -108,7 +105,6 @@ const ModDetailsPage = () => {
       onLoad={handleView}
     >
       <div className="container mx-auto px-4 py-8">
-        {/* Botão Voltar */}
         <Button variant="ghost" asChild className="mb-6 minecraft-btn">
           <Link to={location.state?.from || '/search'}>
             <ArrowLeft size={20} className="mr-2" />
@@ -116,7 +112,6 @@ const ModDetailsPage = () => {
         </Link>
       </Button>
 
-        {/* Header do Mod */}
         <Card className="minecraft-card mb-8">
           <CardHeader className="pb-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -155,11 +150,8 @@ const ModDetailsPage = () => {
           </CardHeader>
         </Card>
 
-        {/* Informações Detalhadas */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Coluna Principal */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Descrição Longa */}
             <Card className="minecraft-card">
               <CardHeader>
                 <CardTitle className="text-xl font-minecraft text-primary">{t('modDetail.description')}</CardTitle>
@@ -192,7 +184,6 @@ const ModDetailsPage = () => {
             </Card>
 
 
-            {/* Galeria de Imagens */}
             {mod.gallery_urls && JSON.parse(mod.gallery_urls).length > 0 && (
               <Card className="minecraft-card">
                 <CardHeader>
@@ -214,7 +205,6 @@ const ModDetailsPage = () => {
               </Card>
             )}
 
-            {/* Vídeo do Mod (arquivo) */}
             {mod.video_url && (
               <Card className="minecraft-card">
                 <CardHeader>
@@ -235,9 +225,7 @@ const ModDetailsPage = () => {
             )}
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Informações do Mod */}
             <Card className="minecraft-card">
               <CardHeader>
                 <CardTitle className="text-lg font-minecraft text-primary">{t('modDetail.information')}</CardTitle>
@@ -275,7 +263,6 @@ const ModDetailsPage = () => {
               </CardContent>
             </Card>
 
-            {/* Estatísticas */}
             <Card className="minecraft-card">
               <CardHeader>
                 <CardTitle className="text-lg font-minecraft text-primary">Estatísticas</CardTitle>
@@ -300,14 +287,12 @@ const ModDetailsPage = () => {
           </div>
         </div>
 
-        {/* Botões de Compartilhamento */}
         <Card className="minecraft-card mb-8">
           <CardContent className="p-6">
             <ShareButtons modName={mod.name} modUrl={modUrl} />
           </CardContent>
         </Card>
 
-        {/* Seção de Comentários */}
         <Card className="minecraft-card">
           <CardContent className="p-6">
            <CommentSection modId={mod.id} initialComments={comments} onCommentPosted={() => fetchModComments(mod.id)} />

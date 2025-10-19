@@ -13,7 +13,7 @@ const TranslationDemo = () => {
     <div className="p-6 space-y-8">
       <h1 className="text-3xl font-bold text-center mb-8">Demonstração do Sistema de Tradução</h1>
       
-      {/* Seletor de Idioma */}
+      {/* seletor de idioma */}
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold border-b pb-2">🌍 Mudar Idioma</h2>
         
@@ -63,7 +63,7 @@ const TranslationDemo = () => {
         </div>
       </section>
       
-      {/* Seção Homepage */}
+      {/* seção homepage */}
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold border-b pb-2">🏠 Homepage</h2>
         
@@ -103,7 +103,7 @@ const TranslationDemo = () => {
         </div>
       </section>
 
-      {/* Seção Header */}
+      {/* seção header */}
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold border-b pb-2">👤 Header</h2>
         
@@ -126,7 +126,7 @@ const TranslationDemo = () => {
         </div>
       </section>
 
-      {/* Seção Footer */}
+      {/* seção footer */}
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold border-b pb-2">🦶 Footer</h2>
         
@@ -167,7 +167,7 @@ const TranslationDemo = () => {
         </div>
       </section>
 
-      {/* Seção de Navegação */}
+      {/* seção de navegação */}
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold border-b pb-2">🧭 Navegação</h2>
         
@@ -190,7 +190,7 @@ const TranslationDemo = () => {
         </div>
       </section>
 
-      {/* Instruções de Uso */}
+      {/* instruções de uso */}
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold border-b pb-2">📚 Como Usar</h2>
         

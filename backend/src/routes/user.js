@@ -5,15 +5,14 @@ import { uploadAvatar as uploadMiddleware } from '../middleware/upload.js';
 
 const router = express.Router();
 
-// Todas as rotas requerem autenticação
 router.use(authenticateToken);
 
-// Rotas para usuários autenticados
+// rotas para usuários autenticados
 router.post('/avatar', uploadMiddleware, uploadAvatar);
 router.put('/profile', updateProfile);
 router.put('/password', changePassword);
 
-// Rotas administrativas (requerem admin)
+// rotas administrativas
 router.get('/', requireAdmin, getAllUsers);
 router.patch('/:userId', requireAdmin, editUser);
 router.patch('/:userId/ban', requireAdmin, toggleUserBan);

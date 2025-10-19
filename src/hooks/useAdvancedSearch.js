@@ -10,7 +10,6 @@ export const useAdvancedSearch = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Estado dos filtros
   const [filters, setFilters] = useState({
     q: searchParams.get('q') || '',
     version: searchParams.get('version') || 'all',
@@ -21,7 +20,6 @@ export const useAdvancedSearch = () => {
     author: searchParams.get('author') || ''
   });
 
-  // Constantes para opções de filtro
   const sortOptions = [
     { value: 'relevance', label: 'Relevância' },
     { value: 'latest', label: 'Mais Recentes' },
@@ -38,13 +36,11 @@ export const useAdvancedSearch = () => {
     { value: 'false', label: 'Sem Destaque' }
   ];
 
-  // Função para executar a busca
   const executeSearch = useCallback(async (searchFilters = filters, page = 1) => {
     try {
       setLoading(true);
       setError(null);
 
-      // Construir query string
       const queryParams = new URLSearchParams();
       
       if (searchFilters.q) queryParams.set('q', searchFilters.q);
@@ -55,14 +51,13 @@ export const useAdvancedSearch = () => {
       if (searchFilters.featured && searchFilters.featured !== 'all') queryParams.set('featured', searchFilters.featured);
       if (searchFilters.author) queryParams.set('author', searchFilters.author);
       
-      // Paginação
-      const limit = 12; // 12 mods por página
+      const limit = 12;
       const offset = (page - 1) * limit;
       queryParams.set('limit', limit.toString());
       queryParams.set('offset', offset.toString());
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos de timeout
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
       
       const response = await fetch(`${API_BASE_URL}/mods/search?${queryParams.toString()}`, {
         signal: controller.signal
@@ -95,7 +90,6 @@ export const useAdvancedSearch = () => {
         setTotalResults(data.pagination?.total || 0);
         setCurrentPage(page);
         
-        // Atualizar URL com os filtros
         const newSearchParams = new URLSearchParams();
         Object.entries(searchFilters).forEach(([key, value]) => {
           if (value && value !== 'all') {
@@ -123,15 +117,13 @@ export const useAdvancedSearch = () => {
     }
   }, [filters, setSearchParams]);
 
-  // Função para atualizar filtros
   const updateFilters = useCallback((newFilters) => {
     const updatedFilters = { ...filters, ...newFilters };
     setFilters(updatedFilters);
-    setCurrentPage(1); // Reset para primeira página
+    setCurrentPage(1);
     executeSearch(updatedFilters, 1);
   }, [filters, executeSearch]);
 
-  // Função para limpar filtros
   const clearFilters = useCallback(() => {
     const defaultFilters = {
       q: '',
@@ -148,24 +140,20 @@ export const useAdvancedSearch = () => {
     executeSearch(defaultFilters, 1);
   }, [executeSearch, setSearchParams]);
 
-  // Função para mudar de página
   const changePage = useCallback((page) => {
     setCurrentPage(page);
     executeSearch(filters, page);
   }, [filters, executeSearch]);
 
-  // Executar busca inicial apenas se houver um termo de busca
   useEffect(() => {
     if (filters.q && filters.q.trim()) {
       executeSearch(filters, 1);
     }
-  }, []); // Executar apenas uma vez na montagem
+  }, []);
 
-  // Calcular total de páginas
   const totalPages = Math.ceil(totalResults / 12);
 
   return {
-    // Estado
     searchResults,
     loading,
     error,
@@ -173,12 +161,8 @@ export const useAdvancedSearch = () => {
     currentPage,
     totalPages,
     filters,
-    
-    // Constantes
     sortOptions,
     featuredOptions,
-    
-    // Funções
     executeSearch,
     updateFilters,
     clearFilters,

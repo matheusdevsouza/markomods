@@ -2,7 +2,7 @@ import { executeQuery } from '../config/database.js';
 import bcrypt from 'bcryptjs';
 import { logError } from '../config/logger.js';
 
-// Atualizar perfil do usuário
+// atualizar perfil do usuário
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -33,7 +33,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// Alterar senha do usuário
+// alterar senha do usuário
 export const changePassword = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -57,7 +57,7 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    // Buscar usuário e verificar senha atual
+    // buscar usuário e verificar senha atual
     const userQuery = 'SELECT password FROM users WHERE id = ?';
     const users = await executeQuery(userQuery, [userId]);
 
@@ -70,7 +70,7 @@ export const changePassword = async (req, res) => {
 
     const user = users[0];
 
-    // Verificar senha atual
+    // verificar senha atual
     const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
     if (!isCurrentPasswordValid) {
       return res.status(400).json({ 
@@ -79,11 +79,11 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    // Criptografar nova senha
+    // criptografar nova senha
     const saltRounds = 12;
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
 
-    // Atualizar senha no banco
+    // atualizar senha no banco
     const updateQuery = 'UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?';
     await executeQuery(updateQuery, [hashedNewPassword, userId]);
 
@@ -100,7 +100,7 @@ export const changePassword = async (req, res) => {
   }
 };
 
-// Atualizar configurações de privacidade
+// atualizar configurações de privacidade
 export const updatePrivacySettings = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -110,8 +110,6 @@ export const updatePrivacySettings = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Usuário não autenticado' });
     }
 
-    // Aqui você pode implementar a lógica para salvar as configurações de privacidade
-    // Por enquanto, apenas retorna sucesso
     res.json({ 
       success: true, 
       message: 'Configurações de privacidade atualizadas' 
@@ -125,7 +123,7 @@ export const updatePrivacySettings = async (req, res) => {
   }
 };
 
-// Atualizar configurações de notificações
+// atualizar configurações de notificações
 export const updateNotificationSettings = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -135,8 +133,6 @@ export const updateNotificationSettings = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Usuário não autenticado' });
     }
 
-    // Aqui você pode implementar a lógica para salvar as configurações de notificações
-    // Por enquanto, apenas retorna sucesso
     res.json({ 
       success: true, 
       message: 'Configurações de notificações atualizadas' 
@@ -150,7 +146,7 @@ export const updateNotificationSettings = async (req, res) => {
   }
 };
 
-// Atualizar configurações de tema
+// atualizar configurações de tema
 export const updateThemeSettings = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -160,8 +156,6 @@ export const updateThemeSettings = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Usuário não autenticado' });
     }
 
-    // Aqui você pode implementar a lógica para salvar as configurações de tema
-    // Por enquanto, apenas retorna sucesso
     res.json({ 
       success: true, 
       message: 'Configurações de tema atualizadas' 
@@ -175,7 +169,7 @@ export const updateThemeSettings = async (req, res) => {
   }
 };
 
-// Atualizar configurações de idioma
+// atualizar configurações de idioma
 export const updateLanguageSettings = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -185,8 +179,6 @@ export const updateLanguageSettings = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Usuário não autenticado' });
     }
 
-    // Aqui você pode implementar a lógica para salvar as configurações de idioma
-    // Por enquanto, apenas retorna sucesso
     res.json({ 
       success: true, 
       message: 'Configurações de idioma atualizadas' 
@@ -200,7 +192,7 @@ export const updateLanguageSettings = async (req, res) => {
   }
 };
 
-// Atualizar configurações da conta
+// atualizar configurações da conta
 export const updateAccountSettings = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -210,8 +202,6 @@ export const updateAccountSettings = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Usuário não autenticado' });
     }
 
-    // Aqui você pode implementar a lógica para salvar as configurações da conta
-    // Por enquanto, apenas retorna sucesso
     res.json({ 
       success: true, 
       message: 'Configurações da conta atualizadas' 
@@ -225,7 +215,7 @@ export const updateAccountSettings = async (req, res) => {
   }
 };
 
-// Excluir conta do usuário (sistema existente para admins)
+// excluir conta do usuário (admin)
 export const deleteAccount = async (req, res) => {
   try {
     const userId = req.user?.id;
@@ -242,7 +232,7 @@ export const deleteAccount = async (req, res) => {
       });
     }
 
-    // Verificar senha antes de excluir
+    // verificar senha antes de excluir
     const userQuery = 'SELECT password FROM users WHERE id = ?';
     const users = await executeQuery(userQuery, [userId]);
 
@@ -262,9 +252,7 @@ export const deleteAccount = async (req, res) => {
         message: 'Senha incorreta' 
       });
     }
-
-    // Aqui você pode implementar a lógica para excluir a conta
-    // Por enquanto, apenas retorna sucesso
+    
     res.json({ 
       success: true, 
       message: 'Conta excluída com sucesso' 

@@ -9,7 +9,6 @@ const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" })
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { currentUser } = useAuth();
 
-  // Verificar se o usuário é super_admin
   const isSuperAdmin = currentUser?.role === 'super_admin';
 
   const handleEditClick = (e) => {
@@ -36,7 +35,6 @@ const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" })
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
       >
-        {/* Overlay escuro no hover */}
         <motion.div
           className="absolute inset-0 bg-black/70 z-10 rounded-xl"
           initial={{ opacity: 0 }}
@@ -44,7 +42,6 @@ const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" })
           transition={{ duration: 0.2 }}
         />
 
-        {/* Ícone de edição centralizado */}
         <motion.div
           className="absolute inset-0 flex items-center justify-center z-20"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -64,13 +61,11 @@ const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" })
           </motion.button>
         </motion.div>
 
-        {/* Conteúdo do banner */}
         <div className="relative z-0">
           {children}
         </div>
       </motion.div>
 
-      {/* Modal de edição */}
       <BannerEditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}

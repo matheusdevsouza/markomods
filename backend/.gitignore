@@ -37,3 +37,6 @@ Thumbs.db
 dist/
 build/
 
+# Ignorar seeder local do banco
+database/seed.js
+

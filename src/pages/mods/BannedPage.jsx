@@ -20,19 +20,16 @@ const BannedPage = () => {
   const [banInfo, setBanInfo] = useState(null);
 
   useEffect(() => {
-    // Se não há usuário logado, redirecionar para login
     if (!currentUser) {
       navigate('/login');
       return;
     }
 
-    // Se usuário não está banido, redirecionar para home
     if (!currentUser.is_banned) {
       navigate('/');
       return;
     }
 
-    // Carregar informações do banimento
     setBanInfo({
       reason: currentUser.ban_reason || 'Banimento administrativo',
       bannedAt: currentUser.banned_at || new Date().toISOString(),
@@ -51,7 +48,7 @@ const BannedPage = () => {
   };
 
   const handleContactSupport = () => {
-    window.open('mailto:contato@eumarko.com?subject=Apelação de Banimento', '_blank');
+    window.open('mailto:mods@eumarko.com?subject=Apelação de Banimento', '_blank');
   };
 
   const formatDate = (dateString) => {
@@ -66,7 +63,7 @@ const BannedPage = () => {
   };
 
   if (!currentUser || !currentUser.is_banned) {
-    return null; // Será redirecionado
+    return null;
   }
 
   return (
@@ -93,12 +90,11 @@ const BannedPage = () => {
             </CardTitle>
             
             <p className="text-muted-foreground text-lg">
-              Sua conta foi permanentemente banida da plataforma Eu, Marko! Mods
+              Sua conta foi permanentemente banida da plataforma Eu, Marko!
             </p>
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Informações do usuário */}
             <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
               <h3 className="font-semibold text-foreground mb-2 flex items-center">
                 <AlertTriangle className="w-4 h-4 mr-2 text-yellow-400" />
@@ -111,7 +107,6 @@ const BannedPage = () => {
               </div>
             </div>
 
-            {/* Motivo do banimento */}
             <div className="bg-red-500/10 rounded-lg p-4 border border-red-500/20">
               <h3 className="font-semibold text-red-400 mb-2 flex items-center">
                 <ShieldX className="w-4 h-4 mr-2" />
@@ -122,7 +117,6 @@ const BannedPage = () => {
               </p>
             </div>
 
-            {/* Restrições */}
             <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
               <h3 className="font-semibold text-foreground mb-3 flex items-center">
                 <Clock className="w-4 h-4 mr-2 text-orange-400" />
@@ -152,7 +146,6 @@ const BannedPage = () => {
               </ul>
             </div>
 
-            {/* Processo de apelação */}
             <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/20">
               <h3 className="font-semibold text-blue-400 mb-2 flex items-center">
                 <MessageCircle className="w-4 h-4 mr-2" />
@@ -171,7 +164,6 @@ const BannedPage = () => {
               </Button>
             </div>
 
-            {/* Ações */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button
                 onClick={handleLogout}
@@ -194,15 +186,14 @@ const BannedPage = () => {
           </CardContent>
         </Card>
 
-        {/* Footer */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
           className="text-center mt-6 text-sm text-muted-foreground"
         >
-          <p>Eu, Marko! Mods - Plataforma de Mods para Minecraft</p>
-          <p className="mt-1">Para suporte, entre em contato: contato@eumarko.com</p>
+          <p>Eu, Marko! - Plataforma de Mods para Minecraft</p>
+          <p className="mt-1">Para suporte, entre em contato: mods@eumarko.com</p>
         </motion.div>
       </motion.div>
     </div>

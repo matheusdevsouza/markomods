@@ -11,17 +11,17 @@ export const usePlatform = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       const screenWidth = window.innerWidth;
       
-      // Detectar dispositivo móvel
+      // detectar dispositivo móvel
       const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
       const isMobileDevice = mobileRegex.test(userAgent);
       
-      // Detectar tablet baseado no tamanho da tela
+      // detectar tablet baseado no tamanho da tela
       const isTabletDevice = screenWidth >= 768 && screenWidth <= 1024 && isMobileDevice;
       
-      // Detectar mobile baseado no tamanho da tela
+      // detectar mobile baseado no tamanho da tela
       const isMobileScreen = screenWidth < 768 && isMobileDevice;
       
-      // Detectar desktop
+      // detectar desktop
       const isDesktopDevice = !isMobileDevice || (screenWidth > 1024);
       
       if (isMobileScreen) {
@@ -47,10 +47,10 @@ export const usePlatform = () => {
       }
     };
 
-    // Detectar na montagem
+    // detectar na montagem
     detectPlatform();
     
-    // Detectar em mudanças de tamanho de tela
+    // detectar em mudanças de tamanho de tela
     const handleResize = () => {
       detectPlatform();
     };
