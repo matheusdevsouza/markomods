@@ -71,7 +71,7 @@ router.get('/admin/stats', adminSecurityMiddleware, requireAdmin, getModStats);
 router.get('/admin/:id', adminSecurityMiddleware, requireAdmin, getModById);
 
 // rotas para usuários autenticados
-router.post('/:id/download', downloadMod);
+router.post('/:id/download', optionalAuth, downloadMod);
 router.get('/user/downloads/count', authenticateToken, getUserDownloadsCount);
 router.get('/user/downloads/history', authenticateToken, getUserDownloadHistory);
 

@@ -31,6 +31,7 @@ import {
   ExternalLink,
   X,
   Monitor,
+  
   Smartphone,
   Package
 } from 'lucide-react';
@@ -69,11 +70,14 @@ const AdminModsPage = () => {
     thumbnail_file: null,
     download_url_pc: '',
     download_url_mobile: '',
+    download_file_pc: null,
+    download_file_mobile: null,
     video_url: '',
     video_file: null
   });
 
   const [thumbnailMode, setThumbnailMode] = useState('url');
+  const [downloadMode, setDownloadMode] = useState('url');
 
   const generateSlug = (name) => {
     return name
@@ -177,10 +181,6 @@ const AdminModsPage = () => {
         setFeedback({ show: true, message: `Campos obrigatórios faltando: ${missingFields.join(', ')}`, type: 'error' });
         return;
       }
-      if (!formData.video_file) {
-        setFeedback({ show: true, message: 'Envie um arquivo de vídeo do mod (MP4/WEBM/OGG/MKV/MOV)', type: 'error' });
-        return;
-      }
       
       let requestBody;
       let headers = {
@@ -201,7 +201,15 @@ const AdminModsPage = () => {
         formDataToSend.append('thumbnail_file', formData.thumbnail_file);
         formDataToSend.append('download_url_pc', formData.download_url_pc);
         formDataToSend.append('download_url_mobile', formData.download_url_mobile);
-        formDataToSend.append('video_file', formData.video_file);
+        if (formData.download_file_pc) {
+          formDataToSend.append('download_file_pc', formData.download_file_pc);
+        }
+        if (formData.download_file_mobile) {
+          formDataToSend.append('download_file_mobile', formData.download_file_mobile);
+        }
+        if (formData.video_file) {
+          formDataToSend.append('video_file', formData.video_file);
+        }
         
         requestBody = formDataToSend;
       } else {
@@ -218,7 +226,15 @@ const AdminModsPage = () => {
         formDataToSend.append('thumbnail_url', formData.thumbnail_url);
         formDataToSend.append('download_url_pc', formData.download_url_pc);
         formDataToSend.append('download_url_mobile', formData.download_url_mobile);
-        formDataToSend.append('video_file', formData.video_file);
+        if (formData.download_file_pc) {
+          formDataToSend.append('download_file_pc', formData.download_file_pc);
+        }
+        if (formData.download_file_mobile) {
+          formDataToSend.append('download_file_mobile', formData.download_file_mobile);
+        }
+        if (formData.video_file) {
+          formDataToSend.append('video_file', formData.video_file);
+        }
         requestBody = formDataToSend;
       }
       
@@ -292,6 +308,12 @@ const AdminModsPage = () => {
         formDataToSend.append('thumbnail_file', formData.thumbnail_file);
         formDataToSend.append('download_url_pc', formData.download_url_pc);
         formDataToSend.append('download_url_mobile', formData.download_url_mobile);
+        if (formData.download_file_pc) {
+          formDataToSend.append('download_file_pc', formData.download_file_pc);
+        }
+        if (formData.download_file_mobile) {
+          formDataToSend.append('download_file_mobile', formData.download_file_mobile);
+        }
         if (formData.video_file) {
           formDataToSend.append('video_file', formData.video_file);
         }
@@ -312,6 +334,12 @@ const AdminModsPage = () => {
         formDataToSend.append('thumbnail_url', formData.thumbnail_url);
         formDataToSend.append('download_url_pc', formData.download_url_pc);
         formDataToSend.append('download_url_mobile', formData.download_url_mobile);
+        if (formData.download_file_pc) {
+          formDataToSend.append('download_file_pc', formData.download_file_pc);
+        }
+        if (formData.download_file_mobile) {
+          formDataToSend.append('download_file_mobile', formData.download_file_mobile);
+        }
         if (formData.video_file) {
           formDataToSend.append('video_file', formData.video_file);
         }
@@ -458,6 +486,8 @@ const AdminModsPage = () => {
       thumbnail_file: null,
       download_url_pc: getSafeValue(mod.download_url_pc || mod.download_url),
       download_url_mobile: getSafeValue(mod.download_url_mobile),
+      download_file_pc: null,
+      download_file_mobile: null,
       video_url: getSafeValue(mod.video_url),
       video_file: null
     };
@@ -488,10 +518,13 @@ const AdminModsPage = () => {
       thumbnail_file: null,
       download_url_pc: '',
       download_url_mobile: '',
+      download_file_pc: null,
+      download_file_mobile: null,
       video_url: '',
       video_file: null
     });
     setThumbnailMode('url');
+    setDownloadMode('url');
   };
 
   const getStatusBadge = (mod) => {
@@ -968,6 +1001,7 @@ const AdminModsPage = () => {
                         <option value="forge">Forge</option>
                         <option value="neoforge">Neoforge</option>
                         <option value="fabric">Fabric</option>
+                        <option value="padrão">Padrão</option>
                       </select>
                       <p className="text-xs text-muted-foreground mt-1">
                         Escolha o mod loader compatível com seu mod
@@ -1218,41 +1252,202 @@ const AdminModsPage = () => {
                     Arquivos de Download
                   </h4>
                   
+                  <div className="flex space-x-2 mb-4">
+                    <Button
+                      type="button"
+                      variant={downloadMode === 'url' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setDownloadMode('url')}
+                      className="text-xs"
+                    >
+                      <Link className="h-3 w-3 mr-1" />
+                      URL
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={downloadMode === 'upload' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setDownloadMode('upload')}
+                      className="text-xs"
+                    >
+                      <Upload className="h-3 w-3 mr-1" />
+                      Upload
+                    </Button>
+                  </div>
+                  
                   <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="download_url_pc" className="text-sm font-medium flex items-center">
-                        <Monitor className="h-4 w-4 mr-2 text-blue-500" />
-                        Download Principal *
-                      </Label>
-                <Input
-                        id="download_url_pc"
-                        value={formData.download_url_pc}
-                        onChange={(e) => setFormData({ ...formData, download_url_pc: e.target.value })}
-                        placeholder={formData.content_type_id === 1 ? "https://exemplo.com/download-pc.jar" : "https://exemplo.com/download-pc.mcpack"}
-                        className="mt-1"
-                        required
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {formData.content_type_id === 1 ? 'Arquivo .jar para Minecraft Java Edition' : 'Arquivo .mcpack para Minecraft Bedrock Edition'}
-                      </p>
-              </div>
-              
-              <div>
-                      <Label htmlFor="download_url_mobile" className="text-sm font-medium flex items-center">
-                        <Smartphone className="h-4 w-4 mr-2 text-green-500" />
-                        Download Alternativo
-                      </Label>
-                      <Input
-                        id="download_url_mobile"
-                        value={formData.download_url_mobile}
-                        onChange={(e) => setFormData({ ...formData, download_url_mobile: e.target.value })}
-                        placeholder={formData.content_type_id === 1 ? "https://exemplo.com/download-mobile.jar" : "https://exemplo.com/download-mobile.mcpack"}
-                        className="mt-1"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {formData.content_type_id === 1 ? 'Arquivo .jar para Minecraft Java Edition' : 'Arquivo .mcpack para Minecraft Bedrock Edition'}
-                      </p>
-                    </div>
+                    {downloadMode === 'url' ? (
+                      <>
+                        <div>
+                          <Label htmlFor="download_url_pc" className="text-sm font-medium flex items-center">
+                            <Monitor className="h-4 w-4 mr-2 text-blue-500" />
+                            Download Principal *
+                          </Label>
+                          <Input
+                            id="download_url_pc"
+                            value={formData.download_url_pc}
+                            onChange={(e) => setFormData({ ...formData, download_url_pc: e.target.value })}
+                            placeholder={formData.content_type_id === 1 ? "https://exemplo.com/download-pc.jar" : "https://exemplo.com/download-pc.mcpack"}
+                            className="mt-1"
+                            required
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {formData.content_type_id === 1 ? 'Arquivo .jar para Minecraft Java Edition' : 'Arquivo .mcpack para Minecraft Bedrock Edition'}
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="download_url_mobile" className="text-sm font-medium flex items-center">
+                            <Smartphone className="h-4 w-4 mr-2 text-green-500" />
+                            Download Alternativo
+                          </Label>
+                          <Input
+                            id="download_url_mobile"
+                            value={formData.download_url_mobile}
+                            onChange={(e) => setFormData({ ...formData, download_url_mobile: e.target.value })}
+                            placeholder={formData.content_type_id === 1 ? "https://exemplo.com/download-mobile.jar" : "https://exemplo.com/download-mobile.mcpack"}
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {formData.content_type_id === 1 ? 'Arquivo .jar para Minecraft Java Edition' : 'Arquivo .mcpack para Minecraft Bedrock Edition'}
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <Label className="text-sm font-medium flex items-center">
+                            <Monitor className="h-4 w-4 mr-2 text-blue-500" />
+                            Arquivo Principal *
+                          </Label>
+                          <div className="mt-1">
+                            <input
+                              id="download_file_pc"
+                              type="file"
+                              accept={formData.content_type_id === 1 ? ".jar,.zip" : ".mcpack,.mcaddon"}
+                              onChange={(e) => {
+                                const file = e.target.files && e.target.files[0];
+                                setFormData({ ...formData, download_file_pc: file });
+                              }}
+                              className="hidden"
+                            />
+                            <div
+                              className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                              onClick={() => document.getElementById('download_file_pc')?.click()}
+                            >
+                              <div className="space-y-3">
+                                <div className="mx-auto w-16 h-16 bg-muted-foreground/20 rounded-full flex items-center justify-center">
+                                  <Download className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-foreground">
+                                    Clique para selecionar arquivo principal
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {formData.content_type_id === 1 ? 'JAR, ZIP até 100MB' : 'MCPACK, MCADDON até 100MB'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="mt-2 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50"
+                                    onClick={() => document.getElementById('download_file_pc')?.click()}
+                                  >
+                                    Escolher Arquivo
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {formData.download_file_pc && (
+                          <div className="mt-4 p-4 bg-muted/20 rounded-lg border border-green-500/20">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-16 h-16 bg-blue-500/10 rounded-lg border-2 border-blue-500/30 flex items-center justify-center">
+                                <Download className="h-8 w-8 text-blue-500" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-foreground">
+                                  {formData.download_file_pc.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {(formData.download_file_pc.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div>
+                          <Label className="text-sm font-medium flex items-center">
+                            <Smartphone className="h-4 w-4 mr-2 text-green-500" />
+                            Arquivo Alternativo
+                          </Label>
+                          <div className="mt-1">
+                            <input
+                              id="download_file_mobile"
+                              type="file"
+                              accept={formData.content_type_id === 1 ? ".jar,.zip" : ".mcpack,.mcaddon"}
+                              onChange={(e) => {
+                                const file = e.target.files && e.target.files[0];
+                                setFormData({ ...formData, download_file_mobile: file });
+                              }}
+                              className="hidden"
+                            />
+                            <div
+                              className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                              onClick={() => document.getElementById('download_file_mobile')?.click()}
+                            >
+                              <div className="space-y-3">
+                                <div className="mx-auto w-16 h-16 bg-muted-foreground/20 rounded-full flex items-center justify-center">
+                                  <Download className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-foreground">
+                                    Clique para selecionar arquivo alternativo
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {formData.content_type_id === 1 ? 'JAR, ZIP até 100MB' : 'MCPACK, MCADDON até 100MB'}
+                                  </p>
+                                </div>
+                                <div>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="mt-2 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50"
+                                    onClick={() => document.getElementById('download_file_mobile')?.click()}
+                                  >
+                                    Escolher Arquivo
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {formData.download_file_mobile && (
+                          <div className="mt-4 p-4 bg-muted/20 rounded-lg border border-green-500/20">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-16 h-16 bg-green-500/10 rounded-lg border-2 border-green-500/30 flex items-center justify-center">
+                                <Download className="h-8 w-8 text-green-500" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-foreground">
+                                  {formData.download_file_mobile.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {(formData.download_file_mobile.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
                 
@@ -1339,7 +1534,7 @@ const AdminModsPage = () => {
                               </div>
                               <div>
                                 <p className="text-sm font-medium text-foreground">
-                                  Clique para selecionar ou arraste um vídeo {editingMod ? '' : '*'}
+                                  Clique para selecionar ou arraste um vídeo
                                 </p>
                                 <p className="text-xs text-muted-foreground">MP4, WEBM, OGG, MKV ou MOV até 200MB</p>
                     </div>

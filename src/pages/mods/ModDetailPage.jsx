@@ -169,7 +169,64 @@ const ModDetailPage = () => {
       toast.error(`${t('modDetail.downloadNotAvailable')} ${platform === 'pc' ? 'PC' : 'Mobile'}`);
       return;
     }
-    navigate(`/mods/${mod.slug}/download`);
+    
+    try {
+      const token = localStorage.getItem('authToken');
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`/api/mods/${mod.id}/download`, {
+        method: 'POST',
+        headers
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Se for um arquivo local, fazer download direto
+        if (data.data.download_url.startsWith('/download/')) {
+          const downloadUrl = `${window.location.origin}${data.data.download_url}`;
+          
+          // Criar link temporário para download direto
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = `${data.data.mod_name || mod.title}.${url.split('.').pop()}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          toast.success(t('modDetail.downloadStarted'));
+        } else {
+          // Para URLs externas, abrir em nova aba
+          window.open(data.data.download_url, '_blank');
+          toast.success(t('modDetail.downloadStarted'));
+        }
+      } else {
+        toast.error(t('modDetail.downloadError'));
+      }
+    } catch (error) {
+      console.error('Erro no download:', error);
+      toast.error(t('modDetail.downloadError'));
+    }
+  };
+
+  const scrollToDownloadSection = () => {
+    const downloadSection = document.getElementById('download-section');
+    if (downloadSection) {
+      const offset = 80; // Offset para não ficar colado no topo
+      const elementPosition = downloadSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   };
   const registerView = async (modId) => {
     try {
@@ -681,7 +738,7 @@ const ModDetailPage = () => {
             {recommendedDownload && (
               <div className="pt-2">
                 <Button
-                  onClick={() => handleDownload(recommendedDownload, 'desktop')}
+                  onClick={scrollToDownloadSection}
                   className="bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white px-8 py-4 text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 rounded-xl font-semibold"
                 >
                   <Download className="h-6 w-6 mr-3" />
@@ -729,7 +786,7 @@ const ModDetailPage = () => {
               </button>
               {recommendedDownload && (
                 <Button
-                  onClick={() => handleDownload(recommendedDownload, 'desktop')}
+                  onClick={scrollToDownloadSection}
                   className="bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white px-4 md:px-6 py-2 md:py-3 text-sm md:text-base h-auto transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 rounded-lg font-semibold"
                 >
                   <Download className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2" />
@@ -913,7 +970,7 @@ const ModDetailPage = () => {
             </div>
           </div>
         </div>
-        <div className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
+        <div id="download-section" className={`rounded-xl p-4 sm:p-6 transition-all duration-1000 ease-out delay-400 ${getCardClasses()} ${
           pageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <div className="space-y-4 sm:space-y-6">
@@ -936,7 +993,7 @@ const ModDetailPage = () => {
               </p>
               {recommendedDownload ? (
                 <Button
-                  onClick={() => handleDownload(recommendedDownload, 'desktop')}
+                  onClick={() => navigate(`/mods/${mod.slug}/download`)}
                   className="bg-primary hover:bg-primary/90 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg h-auto transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 w-full sm:w-auto max-w-xs sm:max-w-none"
                 >
                   <Download className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />

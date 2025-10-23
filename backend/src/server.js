@@ -188,16 +188,7 @@ const publicModsLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    return req.method === 'GET' && (
-      req.path === '/public' ||
-      req.path.startsWith('/public/') ||
-      req.path.startsWith('/mod/') ||
-      req.path === '/search' ||
-      req.path === '/content-types' ||
-      req.path === '/stats/count' ||
-      req.path === '/test' ||
-      req.path.startsWith('/test-')
-    );
+    return req.method === 'GET' || req.path.includes('/download');
   }
 });
 const commentLimiter = rateLimit({
@@ -288,6 +279,32 @@ app.get('/uploads/avatars/:filename', (req, res) => {
   });
   res.sendFile(filePath);
 });
+// Rota específica para downloads diretos com nome personalizado
+app.get('/download/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(uploadsPath, 'downloads', filename);
+  
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'Arquivo não encontrado' });
+  }
+  
+  // Extrair informações do nome do arquivo para determinar o nome de download
+  const modName = req.query.modName || 'mod';
+  const fileExtension = path.extname(filename);
+  const downloadFilename = `${modName}${fileExtension}`;
+  
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Cross-Origin-Resource-Policy': 'cross-origin',
+    'Content-Disposition': `attachment; filename="${downloadFilename}"`,
+    'Content-Type': 'application/octet-stream'
+  });
+  
+  res.sendFile(filePath);
+});
+
 app.use('/uploads', express.static(uploadsPath, {
   setHeaders: (res, path) => {
     res.set('Access-Control-Allow-Origin', '*');

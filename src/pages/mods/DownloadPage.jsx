@@ -81,6 +81,7 @@ const DownloadPage = () => {
       return () => clearTimeout(timer);
     } else if (countdown === 0 && !downloadStarted) {
       setDownloadStarted(true);
+      // Não iniciar download automaticamente - aguardar clique do usuário
     }
   }, [countdown, downloadStarted]);
 
@@ -119,10 +120,12 @@ const DownloadPage = () => {
   const handleDownload = async () => {
     if (!mod) return;
 
+    console.log('Iniciando download para mod:', mod);
     setIsDownloading(true);
 
     try {
       const downloadUrl = mod.download_url_pc || mod.download_url_mobile;
+      console.log('URL de download:', downloadUrl);
       
       if (downloadUrl) {
 
@@ -135,14 +138,19 @@ const DownloadPage = () => {
           headers['Authorization'] = `Bearer ${token}`;
         }
 
+        console.log('Fazendo requisição para:', `/api/mods/${mod.id}/download`);
         try {
           const response = await fetch(`/api/mods/${mod.id}/download`, {
             method: 'POST',
             headers
           });
 
-          if (response.ok) {
+          console.log('Resposta da API:', response.status, response.ok);
 
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Dados recebidos:', data);
+            
             setMod(prev => ({
               ...prev,
               download_count: (prev.download_count || 0) + 1
@@ -172,19 +180,44 @@ const DownloadPage = () => {
               localStorage.setItem(totalKey, String(prev + 1));
             } catch {}
 
-            toast.success('Download registrado com sucesso!');
+            // Se for um arquivo local, fazer download direto
+            if (data.data.download_url.startsWith('/download/')) {
+              console.log('Arquivo local detectado, iniciando download direto');
+              const directDownloadUrl = `${window.location.origin}${data.data.download_url}`;
+              console.log('URL de download direto:', directDownloadUrl);
+              
+              // Criar link temporário para download direto
+              const link = document.createElement('a');
+              link.href = directDownloadUrl;
+              link.download = `${data.data.mod_name || mod.title}.${downloadUrl.split('.').pop()}`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              
+              toast.success('Download iniciado!');
+            } else {
+              console.log('URL externa detectada, abrindo em nova aba');
+              // Para URLs externas, abrir em nova aba
+              window.open(data.data.download_url, '_blank', 'noopener,noreferrer');
+              toast.success(t('downloadPage.linkOpened'));
+            }
+          } else {
+            console.error('Erro na resposta da API:', response.status);
+            const errorData = await response.json();
+            console.error('Dados do erro:', errorData);
+            toast.error('Erro ao processar download');
           }
         } catch (error) {
+          console.error('Erro na requisição:', error);
+          toast.error('Erro de conexão');
         }
-
-        window.open(downloadUrl, '_blank', 'noopener,noreferrer');
-        
-        toast.success(t('downloadPage.toast.linkOpened'));
       } else {
+        console.log('Nenhuma URL de download disponível');
         toast.error(t('downloadPage.error.downloadNotAvailable'));
       }
     } catch (error) {
-              toast.error(t('downloadPage.toast.downloadError'));
+      console.error('Erro geral:', error);
+      toast.error(t('downloadPage.toast.downloadError'));
     } finally {
       setIsDownloading(false);
     }
@@ -192,6 +225,8 @@ const DownloadPage = () => {
 
   const handleSkipCountdown = () => {
     setCountdown(0);
+    setDownloadStarted(true);
+    // Não iniciar download automaticamente - aguardar clique do usuário
   };
 
   if (loading) {
@@ -304,48 +339,64 @@ const DownloadPage = () => {
                   </div>
                 </div>
                 
-                                 <div className="space-y-4">
-                   <h2 className={`text-2xl font-bold ${getTextClasses()}`}>
-                     {isDownloading ? t('downloadPage.preparingDownload') : t('downloadPage.downloadAvailable')}
-                   </h2>
-                   <p className={`text-lg ${getSubtextClasses()}`}>
-                     {isDownloading 
-                       ? t('downloadPage.preparingDownload') 
-                       : t('downloadPage.clickToDownload')
-                     }
-                   </p>
+                <div className="space-y-4">
+                  <h2 className={`text-2xl font-bold ${getTextClasses()}`}>
+                    {countdown > 0 
+                      ? t('downloadPage.preparingDownload') 
+                      : isDownloading 
+                        ? t('downloadPage.preparingDownload')
+                        : t('downloadPage.downloadReady')
+                    }
+                  </h2>
+                  <p className={`text-lg ${getSubtextClasses()}`}>
+                    {countdown > 0
+                      ? `${t('downloadPage.downloadWillStart')} ${countdown} ${countdown === 1 ? 'segundo' : 'segundos'}...`
+                      : isDownloading 
+                        ? t('downloadPage.preparingDownload')
+                        : t('downloadPage.clickToDownload')
+                    }
+                  </p>
                    
-                   {!isDownloading && (
-                     <>
-                       <div className="bg-primary/10 border border-primary/30 rounded-lg p-4">
-                         <p className="text-primary font-medium mb-2">
-                           {t('downloadPage.downloadLink')}:
-                         </p>
-                         <button
+                   {!isDownloading && countdown === 0 && (
+                     <div className="space-y-6">
+                       <div className="flex justify-center">
+                         <Button 
                            onClick={handleDownload}
-                           className="text-sm text-primary hover:text-primary/80 break-all text-center w-full transition-colors duration-200 hover:underline"
+                           className="bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white px-12 py-5 text-xl h-auto transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 rounded-2xl font-bold"
                          >
-                           {mod.download_url_pc || mod.download_url_mobile}
-                         </button>
+                           <Download className="h-6 w-6 mr-3" />
+                           {t('downloadPage.downloadNow')}
+                         </Button>
                        </div>
-                       <p className={`text-sm mb-4 ${getSubtextClasses()}`}>
-                         {t('downloadPage.clickLinkAbove')}
-                       </p>
                        
-                       <div className="flex justify-center gap-4">
+                       <div className="flex justify-center">
+                         <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                           <span>ou</span>
+                         </div>
+                       </div>
+                       
+                       <div className="flex justify-center gap-3">
                          <Link to={`/mods/${mod.slug}`}>
-                           <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/10 hover:border-primary/70 hover:text-primary">
+                           <Button 
+                             variant="outline" 
+                             size="sm"
+                             className="border-primary/30 text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
+                           >
                              <ArrowLeft className="h-4 w-4 mr-2" />
                              {t('downloadPage.backToMod')}
                            </Button>
                          </Link>
                          <Link to="/mods">
-                           <Button variant="ghost" className={`${getSubtextClasses()} hover:${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                           <Button 
+                             variant="ghost" 
+                             size="sm"
+                             className="text-primary hover:bg-primary hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
+                           >
                              {t('downloadPage.exploreOtherMods')}
                            </Button>
                          </Link>
                        </div>
-                     </>
+                     </div>
                    )}
                  </div>
               </>

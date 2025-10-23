@@ -34,6 +34,16 @@ export const createMod = async (req, res) => {
       finalVideoUrl = `/uploads/videos/${req.videoInfo.filename}`;
     }
 
+    let finalDownloadUrlPc = download_url_pc || null;
+    if (req.downloadPcInfo) {
+      finalDownloadUrlPc = `/uploads/downloads/${req.downloadPcInfo.filename}`;
+    }
+
+    let finalDownloadUrlMobile = download_url_mobile || null;
+    if (req.downloadMobileInfo) {
+      finalDownloadUrlMobile = `/uploads/downloads/${req.downloadMobileInfo.filename}`;
+    }
+
     let finalTags = tags || [];
     if (Array.isArray(tags)) {
       finalTags = tags;
@@ -55,8 +65,8 @@ export const createMod = async (req, res) => {
       full_description,
       tags: finalTags,
       thumbnail_url: finalThumbnailUrl,
-      download_url_pc: download_url_pc || null,
-      download_url_mobile: download_url_mobile || null,
+      download_url_pc: finalDownloadUrlPc,
+      download_url_mobile: finalDownloadUrlMobile,
       video_url: finalVideoUrl,
       author_id: req.user.id,
       content_type_id
@@ -260,6 +270,14 @@ export const updateMod = async (req, res) => {
 
     if (req.videoInfo) {
       updateData.video_url = `/uploads/videos/${req.videoInfo.filename}`;
+    }
+
+    if (req.downloadPcInfo) {
+      updateData.download_url_pc = `/uploads/downloads/${req.downloadPcInfo.filename}`;
+    }
+
+    if (req.downloadMobileInfo) {
+      updateData.download_url_mobile = `/uploads/downloads/${req.downloadMobileInfo.filename}`;
     }
 
     const removeFlag = updateData.video_remove === true || updateData.video_remove === 'true' || updateData.video_remove === '1';
@@ -473,11 +491,31 @@ export const downloadMod = async (req, res) => {
 
     await ModsModel.registerDownload(id, req.user?.id);
 
+    // Determinar qual arquivo usar (PC ou Mobile)
+    const downloadUrl = mod.download_url_pc || mod.download_url_mobile || mod.download_url;
+    
+    if (!downloadUrl) {
+      return res.status(404).json({
+        success: false,
+        message: 'Arquivo de download não disponível'
+      });
+    }
+
+    // Se for um arquivo local (upload), criar URL de download direto
+    let directDownloadUrl = downloadUrl;
+    if (downloadUrl.startsWith('/uploads/downloads/')) {
+      const filename = downloadUrl.split('/').pop();
+      const modName = encodeURIComponent(mod.name || mod.title || 'mod');
+      directDownloadUrl = `/download/${filename}?modName=${modName}`;
+    }
+
     res.json({
       success: true,
       message: 'Download registrado com sucesso',
       data: {
-        download_url: mod.download_url
+        download_url: directDownloadUrl,
+        original_url: downloadUrl,
+        mod_name: mod.name || mod.title
       }
     });
   } catch (error) {

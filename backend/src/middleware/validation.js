@@ -138,8 +138,8 @@ export const validateCreateMod = [
     .withMessage('Versão do Minecraft é obrigatória'),
   
   body('mod_loader')
-    .isIn(['forge', 'fabric', 'quilt', 'other'])
-    .withMessage('Mod loader deve ser forge, fabric, quilt ou other'),
+    .isIn(['padrão', 'forge', 'fabric', 'quilt', 'other'])
+    .withMessage('Mod loader deve ser padrão, forge, fabric, quilt ou other'),
   
   body('category_id')
     .optional()
@@ -187,8 +187,8 @@ export const validateUpdateMod = [
   
   body('mod_loader')
     .optional()
-    .isIn(['forge', 'fabric', 'quilt', 'other'])
-    .withMessage('Mod loader deve ser forge, fabric, quilt ou other'),
+    .isIn(['padrão', 'forge', 'fabric', 'quilt', 'other'])
+    .withMessage('Mod loader deve ser padrão, forge, fabric, quilt ou other'),
   
   body('category_id')
     .optional()
@@ -243,8 +243,8 @@ export const validateSearch = [
   
   query('mod_loader')
     .optional()
-    .isIn(['forge', 'fabric', 'quilt', 'other'])
-    .withMessage('Mod loader deve ser forge, fabric, quilt ou other'),
+    .isIn(['padrão', 'forge', 'fabric', 'quilt', 'other'])
+    .withMessage('Mod loader deve ser padrão, forge, fabric, quilt ou other'),
   
   query('sort')
     .optional()
