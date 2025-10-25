@@ -491,7 +491,6 @@ export const downloadMod = async (req, res) => {
 
     await ModsModel.registerDownload(id, req.user?.id);
 
-    // Determinar qual arquivo usar (PC ou Mobile)
     const downloadUrl = mod.download_url_pc || mod.download_url_mobile || mod.download_url;
     
     if (!downloadUrl) {
@@ -501,11 +500,12 @@ export const downloadMod = async (req, res) => {
       });
     }
 
-    // Se for um arquivo local (upload), criar URL de download direto
     let directDownloadUrl = downloadUrl;
     if (downloadUrl.startsWith('/uploads/downloads/')) {
       const filename = downloadUrl.split('/').pop();
-      const modName = encodeURIComponent(mod.name || mod.title || 'mod');
+      const rawModName = mod.name || mod.title || 'mod';
+      const sanitizedName = rawModName.replace(/[^a-zA-Z0-9\-_\s]/g, '').replace(/\s+/g, '-').toLowerCase();
+      const modName = encodeURIComponent(sanitizedName);
       directDownloadUrl = `/download/${filename}?modName=${modName}`;
     }
 

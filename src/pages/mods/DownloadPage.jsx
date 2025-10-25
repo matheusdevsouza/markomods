@@ -189,7 +189,7 @@ const DownloadPage = () => {
               // Criar link temporário para download direto
               const link = document.createElement('a');
               link.href = directDownloadUrl;
-              link.download = `${data.data.mod_name || mod.title}.${downloadUrl.split('.').pop()}`;
+              link.download = `${data.data.mod_name || mod.title}`;
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);

@@ -195,7 +195,7 @@ const ModDetailPage = () => {
           // Criar link temporário para download direto
           const link = document.createElement('a');
           link.href = downloadUrl;
-          link.download = `${data.data.mod_name || mod.title}.${url.split('.').pop()}`;
+          link.download = `${data.data.mod_name || mod.title}`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);

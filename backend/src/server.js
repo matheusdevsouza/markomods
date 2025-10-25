@@ -279,7 +279,7 @@ app.get('/uploads/avatars/:filename', (req, res) => {
   });
   res.sendFile(filePath);
 });
-// Rota específica para downloads diretos com nome personalizado
+
 app.get('/download/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(uploadsPath, 'downloads', filename);
@@ -288,10 +288,10 @@ app.get('/download/:filename', (req, res) => {
     return res.status(404).json({ error: 'Arquivo não encontrado' });
   }
   
-  // Extrair informações do nome do arquivo para determinar o nome de download
-  const modName = req.query.modName || 'mod';
+  const modName = decodeURIComponent(req.query.modName || 'mod');
   const fileExtension = path.extname(filename);
-  const downloadFilename = `${modName}${fileExtension}`;
+  const sanitizedName = modName.replace(/[^a-zA-Z0-9\-_]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  const downloadFilename = `${sanitizedName}${fileExtension}`;
   
   res.set({
     'Access-Control-Allow-Origin': '*',
