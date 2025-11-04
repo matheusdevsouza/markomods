@@ -81,8 +81,7 @@ const DonatePage = () => {
   };
 
   const livepixUrl = 'https://livepix.gg/eumarko';
-  const qrPrimary = '/assets/images/qr-marko.jpg';
-  const qrFallback = '/qr%20marko.jpg';
+  const qrCodeUrl = '/qr-marko.jpg';
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(livepixUrl);
@@ -193,10 +192,9 @@ const DonatePage = () => {
                   <div className="flex flex-col items-center space-y-6">
                     <div className="relative p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border-2 border-primary/30">
                       <img
-                        src={qrPrimary}
+                        src={qrCodeUrl}
                         alt="QR Code LivePix"
                         className="w-64 h-64"
-                        onError={(e) => { e.currentTarget.src = qrFallback; }}
                       />
                     </div>
                     
