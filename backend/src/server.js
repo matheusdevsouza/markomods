@@ -364,21 +364,6 @@ app.use('/uploads', express.static(uploadsPath, {
     }
   }
 }));
-
-const distPath = path.join(__dirname, '../../dist');
-if (fs.existsSync(distPath)) {
-  app.use('/assets', express.static(path.join(distPath, 'assets'), {
-    setHeaders: (res, filePath) => {
-      res.set('Access-Control-Allow-Origin', '*');
-      res.set('Access-Control-Allow-Methods', 'GET');
-      res.set('Cross-Origin-Resource-Policy', 'cross-origin');
-      if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.png') || filePath.endsWith('.gif') || filePath.endsWith('.webp')) {
-        res.set('Cache-Control', 'public, max-age=31536000');
-      }
-    }
-  }));
-}
-
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
