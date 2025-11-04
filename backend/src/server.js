@@ -280,6 +280,25 @@ app.get('/uploads/avatars/:filename', (req, res) => {
   res.sendFile(filePath);
 });
 
+const normalizeText = (text) => {
+  const map = {
+    'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
+    'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+    'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+    'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
+    'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+    'ç': 'c', 'ñ': 'n',
+    'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A',
+    'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+    'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+    'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O',
+    'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+    'Ç': 'C', 'Ñ': 'N'
+  };
+  
+  return text.replace(/[àáâãäåèéêëìíîïòóôõöùúûüçñÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÇÑ]/g, (char) => map[char] || char);
+};
+
 app.get('/download/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(uploadsPath, 'downloads', filename);
@@ -289,9 +308,35 @@ app.get('/download/:filename', (req, res) => {
   }
   
   const modName = decodeURIComponent(req.query.modName || 'mod');
+  const modLoader = decodeURIComponent(req.query.modLoader || '');
+  const minecraftVersion = decodeURIComponent(req.query.minecraftVersion || '');
+  const modVersion = decodeURIComponent(req.query.modVersion || '');
   const fileExtension = path.extname(filename);
-  const sanitizedName = modName.replace(/[^a-zA-Z0-9\-_]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-  const downloadFilename = `${sanitizedName}${fileExtension}`;
+  
+  const sanitizedName = normalizeText(modName).replace(/[^a-zA-Z0-9\-_]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  const sanitizedLoader = normalizeText(modLoader).replace(/[^a-zA-Z0-9\-_]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  const sanitizedMinecraftVersion = normalizeText(minecraftVersion).replace(/[^a-zA-Z0-9.-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  const sanitizedModVersion = normalizeText(modVersion).replace(/[^a-zA-Z0-9.-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  
+  let downloadFilename;
+  if (sanitizedLoader && sanitizedMinecraftVersion && sanitizedModVersion) {
+    downloadFilename = `${sanitizedName}-${sanitizedLoader}-${sanitizedMinecraftVersion}-${sanitizedModVersion}${fileExtension}`;
+  } else if (sanitizedMinecraftVersion && sanitizedModVersion) {
+    downloadFilename = `${sanitizedName}-${sanitizedMinecraftVersion}-${sanitizedModVersion}${fileExtension}`;
+  } else {
+    downloadFilename = `${sanitizedName}${fileExtension}`;
+  }
+  
+  let contentType = 'application/octet-stream';
+  if (fileExtension === '.jar') {
+    contentType = 'application/java-archive';
+  } else if (fileExtension === '.zip') {
+    contentType = 'application/zip';
+  } else if (fileExtension === '.mcpack') {
+    contentType = 'application/x-mcpack';
+  } else if (fileExtension === '.mcaddon') {
+    contentType = 'application/x-mcaddon';
+  }
   
   res.set({
     'Access-Control-Allow-Origin': '*',
@@ -299,7 +344,7 @@ app.get('/download/:filename', (req, res) => {
     'Access-Control-Allow-Headers': 'Content-Type',
     'Cross-Origin-Resource-Policy': 'cross-origin',
     'Content-Disposition': `attachment; filename="${downloadFilename}"`,
-    'Content-Type': 'application/octet-stream'
+    'Content-Type': contentType
   });
   
   res.sendFile(filePath);

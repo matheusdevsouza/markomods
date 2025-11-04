@@ -90,7 +90,7 @@ router.post('/banner/upload', authenticateToken, requireRole(['super_admin']), a
 // atualizar URL do banner
 router.post('/banner/update', authenticateToken, requireRole(['super_admin']), async (req, res) => {
   try {
-    const { banner_url } = req.body;
+    const { banner_url, banner_link } = req.body;
 
     if (!banner_url) {
       return res.status(400).json({
@@ -103,6 +103,7 @@ router.post('/banner/update', authenticateToken, requireRole(['super_admin']), a
     const configPath = path.join(__dirname, '../../config/banner.json');
     const bannerConfig = {
       banner_url: banner_url,
+      banner_link: banner_link || null,
       updated_at: new Date().toISOString()
     };
 
@@ -111,7 +112,8 @@ router.post('/banner/update', authenticateToken, requireRole(['super_admin']), a
     res.json({
       success: true,
       message: 'Banner atualizado com sucesso',
-      banner_url: banner_url
+      banner_url: banner_url,
+      banner_link: banner_link || null
     });
   } catch (error) {
     console.error('Erro ao atualizar banner:', error);
@@ -132,13 +134,14 @@ router.get('/banner/config', authenticateToken, requireRole(['super_admin']), as
       const config = JSON.parse(configData);
       res.json({
         success: true,
-        ...config
+        banner_url: config.banner_url || '/src/assets/images/markomods-banner.png',
+        banner_link: config.banner_link || null
       });
     } catch (fileError) {
-      // se o arquivo não existir, retornar configuração padrão
       res.json({
         success: true,
-        banner_url: '/src/assets/images/markomods-banner.png'
+        banner_url: '/src/assets/images/markomods-banner.png',
+        banner_link: null
       });
     }
   } catch (error) {
@@ -160,12 +163,14 @@ router.get('/banner/public-config', async (req, res) => {
       const config = JSON.parse(configData);
       res.json({
         success: true,
-        ...config
+        banner_url: config.banner_url || '/src/assets/images/markomods-banner.png',
+        banner_link: config.banner_link || null
       });
     } catch (fileError) {
       res.json({
         success: true,
-        banner_url: '/src/assets/images/markomods-banner.png'
+        banner_url: '/src/assets/images/markomods-banner.png',
+        banner_link: null
       });
     }
   } catch (error) {

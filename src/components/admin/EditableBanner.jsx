@@ -4,7 +4,7 @@ import { Edit3 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContextMods';
 import BannerEditModal from './BannerEditModal';
 
-const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" }) => {
+const EditableBanner = ({ bannerUrl, bannerLink, onBannerUpdate, children, className = "" }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { currentUser } = useAuth();
@@ -17,8 +17,8 @@ const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" })
     setIsEditModalOpen(true);
   };
 
-  const handleBannerSave = (newBannerUrl) => {
-    onBannerUpdate(newBannerUrl);
+  const handleBannerSave = (newBannerUrl, newBannerLink) => {
+    onBannerUpdate(newBannerUrl, newBannerLink);
     setIsEditModalOpen(false);
   };
 
@@ -36,14 +36,14 @@ const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" })
         transition={{ duration: 0.2 }}
       >
         <motion.div
-          className="absolute inset-0 bg-black/70 z-10 rounded-xl"
+          className="absolute inset-0 bg-black/70 z-10 rounded-xl pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: isHovered ? 1 : 0 }}
           transition={{ duration: 0.2 }}
         />
 
         <motion.div
-          className="absolute inset-0 flex items-center justify-center z-20"
+          className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ 
             opacity: isHovered ? 1 : 0,
@@ -53,7 +53,7 @@ const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" })
         >
           <motion.button
             onClick={handleEditClick}
-            className="p-4 bg-white/20 hover:bg-white/30 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+            className="p-4 bg-white/20 hover:bg-white/30 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 pointer-events-auto"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -70,6 +70,7 @@ const EditableBanner = ({ bannerUrl, onBannerUpdate, children, className = "" })
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         currentBannerUrl={bannerUrl}
+        currentBannerLink={bannerLink}
         onSave={handleBannerSave}
       />
     </>

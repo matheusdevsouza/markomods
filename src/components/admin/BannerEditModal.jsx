@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,13 +7,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { X, Upload, Link as LinkIcon, Save, Loader2, Image } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
-const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
+const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, currentBannerLink, onSave }) => {
   const [bannerUrl, setBannerUrl] = useState(currentBannerUrl || '');
+  const [bannerLink, setBannerLink] = useState(currentBannerLink || '');
   const [bannerFile, setBannerFile] = useState(null);
   const [bannerMode, setBannerMode] = useState('url');
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (isOpen) {
+      setBannerUrl(currentBannerUrl || '');
+      setBannerLink(currentBannerLink ? String(currentBannerLink) : '');
+      setBannerFile(null);
+      setBannerMode('url');
+    }
+  }, [isOpen, currentBannerUrl, currentBannerLink]);
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -92,11 +102,14 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         },
-        body: JSON.stringify({ banner_url: finalUrl })
+        body: JSON.stringify({ 
+          banner_url: finalUrl,
+          banner_link: bannerLink.trim() || null
+        })
       });
 
       if (response.ok) {
-        onSave(finalUrl);
+        onSave(finalUrl, bannerLink.trim() || null);
         toast({
           title: 'Sucesso',
           description: 'Banner atualizado com sucesso!'
@@ -119,6 +132,7 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
 
   const handleClose = () => {
     setBannerUrl(currentBannerUrl || '');
+    setBannerLink(currentBannerLink ? String(currentBannerLink) : '');
     setBannerFile(null);
     setBannerMode('url');
     onClose();
@@ -211,7 +225,7 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
                       <Input
                         id="banner-url"
                         type="url"
-                        placeholder="https://exemplo.com/banner.jpg"
+                        placeholder="https://exemplo.com.br/banner.jpg"
                         value={bannerUrl}
                         onChange={(e) => setBannerUrl(e.target.value)}
                         disabled={isSaving}
@@ -274,6 +288,26 @@ const BannerEditModal = ({ isOpen, onClose, currentBannerUrl, onSave }) => {
                     </div>
                   </div>
                 )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="banner-link" className="text-sm font-medium">
+                    Link do Banner (opcional)
+                  </Label>
+                  <div className="flex items-center space-x-2">
+                    <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="banner-link"
+                      type="url"
+                      placeholder="https://exemplo.com.br ou deixe vazio"
+                      value={bannerLink}
+                      onChange={(e) => setBannerLink(e.target.value)}
+                      disabled={isSaving}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Quando preenchido, o banner será clicável e redirecionará para este link
+                  </p>
+                </div>
 
                 <div className="flex space-x-3 pt-4">
                   <Button

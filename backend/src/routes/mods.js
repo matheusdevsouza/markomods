@@ -62,6 +62,9 @@ router.post('/:id/view', registerView);
 // servir arquivos de thumbnail
 router.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
+// rotas para downloads (públicas - antes do middleware publicOrAuthenticated)
+router.post('/:id/download', optionalAuth, downloadMod);
+
 // middleware para permitir acesso público para GET /id
 router.use(publicOrAuthenticated);
 
@@ -69,9 +72,6 @@ router.use(publicOrAuthenticated);
 router.get('/admin', adminSecurityMiddleware, requireAdmin, getAllMods);
 router.get('/admin/stats', adminSecurityMiddleware, requireAdmin, getModStats);
 router.get('/admin/:id', adminSecurityMiddleware, requireAdmin, getModById);
-
-// rotas para usuários autenticados
-router.post('/:id/download', optionalAuth, downloadMod);
 router.get('/user/downloads/count', authenticateToken, getUserDownloadsCount);
 router.get('/user/downloads/history', authenticateToken, getUserDownloadHistory);
 

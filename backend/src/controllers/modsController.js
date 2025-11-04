@@ -468,6 +468,25 @@ export const getModStats = async (req, res) => {
   }
 };
 
+const normalizeText = (text) => {
+  const map = {
+    'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
+    'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+    'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+    'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
+    'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+    'ç': 'c', 'ñ': 'n',
+    'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A',
+    'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+    'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+    'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O',
+    'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+    'Ç': 'C', 'Ñ': 'N'
+  };
+  
+  return text.replace(/[àáâãäåèéêëìíîïòóôõöùúûüçñÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÇÑ]/g, (char) => map[char] || char);
+};
+
 // registrar download do mod
 export const downloadMod = async (req, res) => {
   try {
@@ -504,9 +523,13 @@ export const downloadMod = async (req, res) => {
     if (downloadUrl.startsWith('/uploads/downloads/')) {
       const filename = downloadUrl.split('/').pop();
       const rawModName = mod.name || mod.title || 'mod';
-      const sanitizedName = rawModName.replace(/[^a-zA-Z0-9\-_\s]/g, '').replace(/\s+/g, '-').toLowerCase();
+      const normalizedName = normalizeText(rawModName);
+      const sanitizedName = normalizedName.replace(/[^a-zA-Z0-9\-_\s]/g, '').replace(/\s+/g, '-').toLowerCase();
       const modName = encodeURIComponent(sanitizedName);
-      directDownloadUrl = `/download/${filename}?modName=${modName}`;
+      const modLoader = encodeURIComponent(mod.mod_loader || '');
+      const minecraftVersion = encodeURIComponent(mod.minecraft_version || '');
+      const modVersion = encodeURIComponent(mod.version || '');
+      directDownloadUrl = `/download/${filename}?modName=${modName}&modLoader=${modLoader}&minecraftVersion=${minecraftVersion}&modVersion=${modVersion}`;
     }
 
     res.json({

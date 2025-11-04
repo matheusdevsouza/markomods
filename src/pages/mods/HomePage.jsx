@@ -94,6 +94,7 @@ const HomePage = () => {
   const [latestModsPage, setLatestModsPage] = useState(1);
   const [popularModsPage, setPopularModsPage] = useState(1);
   const [bannerUrl, setBannerUrl] = useState('/src/assets/images/markomods-banner.png');
+  const [bannerLink, setBannerLink] = useState(null);
   const { t } = useTranslation();
   const { currentUser } = useAuth();
   
@@ -128,8 +129,11 @@ const HomePage = () => {
         const response = await fetch('/api/admin/banner/public-config');
         if (response.ok) {
           const data = await response.json();
-          if (data.success && data.banner_url) {
-            setBannerUrl(data.banner_url);
+          if (data.success) {
+            if (data.banner_url) {
+              setBannerUrl(data.banner_url);
+            }
+            setBannerLink(data.banner_link || null);
           }
         }
       } catch (error) {
@@ -168,8 +172,9 @@ const HomePage = () => {
     setPopularModsPage(newPage);
   };
 
-  const handleBannerUpdate = (newBannerUrl) => {
+  const handleBannerUpdate = (newBannerUrl, newBannerLink) => {
     setBannerUrl(newBannerUrl);
+    setBannerLink(newBannerLink);
   };
 
   return (
@@ -181,26 +186,54 @@ const HomePage = () => {
     >
       <EditableBanner
         bannerUrl={bannerUrl}
+        bannerLink={bannerLink}
         onBannerUpdate={handleBannerUpdate}
         className="relative rounded-xl overflow-hidden shadow-2xl border-2 border-primary/30 group bg-gradient-to-r from-primary/5 to-purple-600/5"
       >
-        <motion.div variants={itemVariants}>
-          <img 
-            src={bannerUrl} 
-            alt="Banner da Plataforma Eu Marko Mods"
-            className="w-full h-32 md:h-48 lg:h-56 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-purple-600/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-          <div className="absolute top-4 right-4">
-            <div className="bg-primary/20 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/30">
-              <span className="text-xs font-semibold text-white flex items-center gap-1">
-                <Package size={12} />
-                MODS
-              </span>
+        {bannerLink ? (
+          <a 
+            href={bannerLink} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <motion.div variants={itemVariants} className="cursor-pointer">
+              <img 
+                src={bannerUrl} 
+                alt="Banner da Plataforma Eu Marko Mods"
+                className="w-full h-32 md:h-48 lg:h-56 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-purple-600/30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="absolute top-4 right-4">
+                <div className="bg-primary/20 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/30">
+                  <span className="text-xs font-semibold text-white flex items-center gap-1">
+                    <Package size={12} />
+                    MODS
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          </a>
+        ) : (
+          <motion.div variants={itemVariants}>
+            <img 
+              src={bannerUrl} 
+              alt="Banner da Plataforma Eu Marko Mods"
+              className="w-full h-32 md:h-48 lg:h-56 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-purple-600/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+            <div className="absolute top-4 right-4">
+              <div className="bg-primary/20 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/30">
+                <span className="text-xs font-semibold text-white flex items-center gap-1">
+                  <Package size={12} />
+                  MODS
+                </span>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
       </EditableBanner>
 
       <motion.div variants={itemVariants} className="text-center p-6 bg-card/70 rounded-lg shadow-md border border-border">

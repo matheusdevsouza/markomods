@@ -55,7 +55,7 @@ const Header = React.memo(() => {
           <Link to="/" className="flex items-center flex-shrink-0">
             <img 
               src="/markomods-logo2.png" 
-              alt="Eu, Marko! Logo" 
+              alt="MarkoMods Logo" 
               className={`h-8 sm:h-9 md:h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer ${
                 theme === 'dark' 
                   ? 'brightness-75 contrast-125' 
@@ -253,6 +253,16 @@ const Header = React.memo(() => {
                         </div>
                       </Link>
                     </DropdownMenuItem>
+                    
+                    <DropdownMenuItem asChild>
+                      <Link to="/donate" className="cursor-pointer hover:text-white focus:text-white">
+                        <Heart className="mr-3 h-4 w-4" />
+                        <div className="flex-1">
+                          <span className="hover:text-white">Doar</span>
+                          <p className="text-xs text-muted-foreground hover:text-muted-foreground">Apoie o MarkoMods</p>
+                        </div>
+                      </Link>
+                    </DropdownMenuItem>
                   </DropdownMenuGroup>
                   
                   <DropdownMenuSeparator />
@@ -269,6 +279,7 @@ const Header = React.memo(() => {
               </DropdownMenu>
             </>
           ) : (
+            
             /* botões de login/registro para usuários não logados */
             <>
               <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg h-10 sm:h-auto" title="Login">

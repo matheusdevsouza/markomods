@@ -188,11 +188,9 @@ const ModDetailPage = () => {
       if (response.ok) {
         const data = await response.json();
         
-        // Se for um arquivo local, fazer download direto
         if (data.data.download_url.startsWith('/download/')) {
           const downloadUrl = `${window.location.origin}${data.data.download_url}`;
           
-          // Criar link temporário para download direto
           const link = document.createElement('a');
           link.href = downloadUrl;
           link.download = `${data.data.mod_name || mod.title}`;
@@ -202,7 +200,6 @@ const ModDetailPage = () => {
           
           toast.success(t('modDetail.downloadStarted'));
         } else {
-          // Para URLs externas, abrir em nova aba
           window.open(data.data.download_url, '_blank');
           toast.success(t('modDetail.downloadStarted'));
         }
@@ -218,7 +215,7 @@ const ModDetailPage = () => {
   const scrollToDownloadSection = () => {
     const downloadSection = document.getElementById('download-section');
     if (downloadSection) {
-      const offset = 80; // Offset para não ficar colado no topo
+      const offset = 80;
       const elementPosition = downloadSection.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -300,9 +297,9 @@ const ModDetailPage = () => {
     switch (loader?.toLowerCase()) {
       case 'forge':
         return <Package className="h-4 w-4 text-primary" />;
-      case 'neoforge':
-        return <Package className="h-4 w-4 text-primary" />;
       case 'fabric':
+        return <Package className="h-4 w-4 text-primary" />;
+      case 'bedrock':
         return <Package className="h-4 w-4 text-primary" />;
       default:
         return <Package className="h-4 w-4 text-primary" />;
@@ -312,9 +309,9 @@ const ModDetailPage = () => {
     switch (loader?.toLowerCase()) {
       case 'forge':
         return 'bg-primary/20 text-primary border-primary/30';
-      case 'neoforge':
-        return 'bg-primary/20 text-primary border-primary/30';
       case 'fabric':
+        return 'bg-primary/20 text-primary border-primary/30';
+      case 'bedrock':
         return 'bg-primary/20 text-primary border-primary/30';
       default:
         return 'bg-primary/20 text-primary border-primary/30';

@@ -81,7 +81,6 @@ const DownloadPage = () => {
       return () => clearTimeout(timer);
     } else if (countdown === 0 && !downloadStarted) {
       setDownloadStarted(true);
-      // Não iniciar download automaticamente - aguardar clique do usuário
     }
   }, [countdown, downloadStarted]);
 
@@ -180,16 +179,32 @@ const DownloadPage = () => {
               localStorage.setItem(totalKey, String(prev + 1));
             } catch {}
 
-            // Se for um arquivo local, fazer download direto
             if (data.data.download_url.startsWith('/download/')) {
               console.log('Arquivo local detectado, iniciando download direto');
-              const directDownloadUrl = `${window.location.origin}${data.data.download_url}`;
+              const directDownloadUrl = `http://localhost:3001${data.data.download_url}`;
               console.log('URL de download direto:', directDownloadUrl);
               
-              // Criar link temporário para download direto
               const link = document.createElement('a');
               link.href = directDownloadUrl;
-              link.download = `${data.data.mod_name || mod.title}`;
+              const urlParams = new URLSearchParams(data.data.download_url.split('?')[1]);
+              const modName = urlParams.get('modName') || data.data.mod_name || mod.title;
+              const modLoader = urlParams.get('modLoader') || '';
+              const minecraftVersion = urlParams.get('minecraftVersion') || '';
+              const modVersion = urlParams.get('modVersion') || '';
+              const fileExtension = data.data.download_url.includes('.mcpack') ? '.mcpack' : 
+                                   data.data.download_url.includes('.mcaddon') ? '.mcaddon' :
+                                   data.data.download_url.includes('.jar') ? '.jar' : '.zip';
+              
+              let downloadFilename;
+              if (modLoader && minecraftVersion && modVersion) {
+                downloadFilename = `${modName}-${modLoader}-${minecraftVersion}-${modVersion}${fileExtension}`;
+              } else if (minecraftVersion && modVersion) {
+                downloadFilename = `${modName}-${minecraftVersion}-${modVersion}${fileExtension}`;
+              } else {
+                downloadFilename = `${modName}${fileExtension}`;
+              }
+              
+              link.download = downloadFilename;
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);
@@ -197,7 +212,6 @@ const DownloadPage = () => {
               toast.success('Download iniciado!');
             } else {
               console.log('URL externa detectada, abrindo em nova aba');
-              // Para URLs externas, abrir em nova aba
               window.open(data.data.download_url, '_blank', 'noopener,noreferrer');
               toast.success(t('downloadPage.linkOpened'));
             }
@@ -226,7 +240,6 @@ const DownloadPage = () => {
   const handleSkipCountdown = () => {
     setCountdown(0);
     setDownloadStarted(true);
-    // Não iniciar download automaticamente - aguardar clique do usuário
   };
 
   if (loading) {

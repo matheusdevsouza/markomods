@@ -276,6 +276,10 @@ export const publicOrAuthenticated = async (req, res, next) => {
       return next();
     }
     
+    if (req.method === 'POST' && req.params.id && req.path.endsWith('/download')) {
+      return next();
+    }
+    
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
     

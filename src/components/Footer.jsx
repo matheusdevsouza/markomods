@@ -33,12 +33,18 @@ const Footer = React.memo(() => {
       {/* conteúdo principal */}
       <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-8 md:py-12">
 
-        {/* layout mobile*/}
+        {/* mobile*/}
         <div className="md:hidden">
           <div className="flex justify-center mb-6">
             <div className="space-y-3 max-w-xs text-center">
               <div className="flex items-center justify-center space-x-2">
-                <h3 className="text-base font-minecraft text-primary">{t('footer.brandName')}</h3>
+                <Link to="/">
+                  <img 
+                    src="/markomods-logo2.png" 
+                    alt="MarkoMods Logo" 
+                    className="h-8 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer"
+                  />
+                </Link>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 {t('footer.brandDescription')}
@@ -168,11 +174,17 @@ const Footer = React.memo(() => {
           </div>
         </div>
 
-        {/* layout desktop */}
+        {/* desktop */}
         <div className="hidden md:grid grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-5 gap-8 lg:gap-12 xl:gap-16 2xl:gap-20 pb-12">
           <div className="space-y-4 max-w-xs text-left">
             <div className="flex items-center space-x-2">
-              <h3 className="text-lg font-minecraft text-primary">{t('footer.brandName')}</h3>
+              <Link to="/">
+                <img 
+                  src="/markomods-logo2.png" 
+                  alt="MarkoMods Logo" 
+                  className="h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer"
+                />
+              </Link>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {t('footer.brandDescription')}

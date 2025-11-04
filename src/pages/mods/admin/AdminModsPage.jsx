@@ -999,9 +999,8 @@ const AdminModsPage = () => {
                       >
                         <option value="">Selecione o loader...</option>
                         <option value="forge">Forge</option>
-                        <option value="neoforge">Neoforge</option>
                         <option value="fabric">Fabric</option>
-                        <option value="padrão">Padrão</option>
+                        <option value="bedrock">Bedrock</option>
                       </select>
                       <p className="text-xs text-muted-foreground mt-1">
                         Escolha o mod loader compatível com seu mod

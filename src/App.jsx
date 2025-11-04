@@ -47,6 +47,7 @@ const AdminChangelogsPage = React.lazy(() => import('@/pages/mods/admin/AdminCha
 const MediaKitPage = React.lazy(() => import('@/pages/MediaKitPage'));
 const ChangelogPage = React.lazy(() => import('@/pages/ChangelogPage'));
 const ChangelogDetailPage = React.lazy(() => import('@/pages/ChangelogDetailPage'));
+const DonatePage = React.lazy(() => import('@/pages/mods/DonatePage'));
 const LoadingSpinner = () => {
   const { t } = useTranslation();
   return (
@@ -86,6 +87,7 @@ function App() {
                   <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
                   <Route path="about" element={<AboutPage />} />
                   <Route path="contact" element={<ContactPage />} />
+                  <Route path="donate" element={<DonatePage />} />
                   <Route path="faq" element={<FAQPage />} />
                   <Route path="changelog" element={<ChangelogPage />} />
                   <Route path="changelog/:slug" element={<ChangelogDetailPage />} />

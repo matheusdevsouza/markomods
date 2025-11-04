@@ -72,7 +72,6 @@ const storage = multer.diskStorage({
       prefix = 'file';
     }
     
-    // Para arquivos de download, tentar usar o nome do mod se disponível
     if ((file.fieldname === 'download_file_pc' || file.fieldname === 'download_file_mobile') && req.body.name) {
       const modName = req.body.name
         .toLowerCase()
@@ -124,24 +123,23 @@ const fileFilter = (req, file, cb) => {
     }
   } else if (isDownloadPc || isDownloadMobile) {
     const allowedMimeTypes = [
-      'application/java-archive', // .jar
-      'application/zip', // .zip
-      'application/x-zip-compressed', // .zip alternativo
-      'application/octet-stream', // .mcpack, .mcaddon
-      'application/x-java-archive', // .jar alternativo
-      'application/x-zip', // .zip alternativo
-      'application/zip-compressed', // .zip alternativo
-      'application/x-jar', // .jar alternativo
-      'application/x-mcpack', // .mcpack alternativo
-      'application/x-mcaddon', // .mcaddon alternativo
-      'application/vnd.java.archive', // .jar alternativo
-      'application/vnd.zip', // .zip alternativo
-      'application/force-download', // fallback
-      'application/download' // fallback
+      'application/java-archive',
+      'application/zip',
+      'application/x-zip-compressed',
+      'application/octet-stream',
+      'application/x-java-archive',
+      'application/x-zip',
+      'application/zip-compressed',
+      'application/x-jar',
+      'application/x-mcpack',
+      'application/x-mcaddon',
+      'application/vnd.java.archive',
+      'application/vnd.zip',
+      'application/force-download',
+      'application/download' 
     ];
     const allowedExtensions = ['.jar', '.zip', '.mcpack', '.mcaddon'];
     
-    // Log para debug
     console.log(`Upload de arquivo de download: ${file.originalname}, MIME: ${mime}, Extensão: ${ext}`);
     
     if (!allowedExtensions.includes(ext)) {
@@ -149,10 +147,8 @@ const fileFilter = (req, file, cb) => {
       return cb(new Error(`Extensão de arquivo não suportada: ${ext}. Permitidas: ${allowedExtensions.join(', ')}`), false);
     }
     
-    // Ser mais permissivo com MIME types para arquivos de download
     if (!allowedMimeTypes.includes(mime)) {
       console.log(`MIME type não reconhecido: ${mime}, mas permitindo por extensão`);
-      // Não rejeitar por MIME type se a extensão for válida
     }
   }
 
@@ -210,8 +206,6 @@ export const validateModMedia = (req, res, next) => {
 
   const downloadFilePc = files.download_file_pc?.[0];
   if (downloadFilePc) {
-    // Não aplicar validação de magic numbers para arquivos de download
-    // pois JAR, ZIP, MCPACK, MCADDON podem ter assinaturas variadas
     req.downloadPcInfo = {
       filename: downloadFilePc.filename,
       path: downloadFilePc.path,
@@ -223,8 +217,6 @@ export const validateModMedia = (req, res, next) => {
 
   const downloadFileMobile = files.download_file_mobile?.[0];
   if (downloadFileMobile) {
-    // Não aplicar validação de magic numbers para arquivos de download
-    // pois JAR, ZIP, MCPACK, MCADDON podem ter assinaturas variadas
     req.downloadMobileInfo = {
       filename: downloadFileMobile.filename,
       path: downloadFileMobile.path,
@@ -265,10 +257,38 @@ const avatarUpload = multer({
 // middleware para upload de avatar
 export const uploadAvatar = avatarUpload.single('avatar');
 
+// filtro de arquivos para imagens do editor
+const editorFileFilter = (req, file, cb) => {
+  const isEditorImage = file.fieldname === 'image';
+
+  if (!isEditorImage) {
+    return cb(new Error('Campo de upload não suportado'), false);
+  }
+
+  const suspiciousChars = /[<>:"/\\|?*\x00-\x1f]/;
+  if (suspiciousChars.test(file.originalname)) {
+    return cb(new Error('Nome de arquivo contém caracteres inválidos'), false);
+  }
+
+  const ext = path.extname(file.originalname).toLowerCase();
+  const mime = file.mimetype;
+
+  const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  
+  if (!allowedMimeTypes.includes(mime) || !allowedExtensions.includes(ext)) {
+    return cb(new Error('Tipo de imagem não suportado'), false);
+  }
+
+  cb(null, true);
+};
+
 // configuração para upload de imagens do editor
 const editorStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads/editor-images'));
+    const dir = path.join(__dirname, '../../uploads/editor-images');
+    ensureDir(dir);
+    cb(null, dir);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -279,7 +299,7 @@ const editorStorage = multer.diskStorage({
 
 const editorUpload = multer({
   storage: editorStorage,
-  fileFilter: fileFilter,
+  fileFilter: editorFileFilter,
   limits: {
     fileSize: 10 * 1024 * 1024, 
     files: 1
