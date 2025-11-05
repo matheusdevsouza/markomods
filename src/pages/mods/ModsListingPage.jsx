@@ -970,7 +970,10 @@ const ModsListingPage = () => {
                               </div>
                             </div>
                             <span className="text-sm group-hover:text-primary transition-colors">
-                              {loader === 'all' ? t('modsListing.filters.loader.allLoaders') : loader}
+                              {loader === 'all' ? t('modsListing.filters.loader.allLoaders') : 
+                               loader === 'padrao' || loader === 'padrão' ? 'Padrão' :
+                               loader === 'forge' ? 'Forge' :
+                               loader === 'fabric' ? 'Fabric' : loader}
                             </span>
                           </label>
                         ))}

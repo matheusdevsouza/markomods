@@ -446,7 +446,12 @@ const DownloadPage = () => {
                  </div>
                  <div className="flex justify-between">
                    <span className={getSubtextClasses()}>{t('downloadPage.loader')}</span>
-                   <span className={`font-medium ${getTextClasses()}`}>{mod.mod_loader || t('downloadPage.notAvailable')}</span>
+                   <span className={`font-medium ${getTextClasses()}`}>
+                     {mod.mod_loader === 'padrao' || mod.mod_loader === 'padrão' ? 'Padrão' : 
+                      mod.mod_loader === 'forge' ? 'Forge' : 
+                      mod.mod_loader === 'fabric' ? 'Fabric' : 
+                      mod.mod_loader || t('downloadPage.notAvailable')}
+                   </span>
                  </div>
                </div>
                

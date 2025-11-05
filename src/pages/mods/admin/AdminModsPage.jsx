@@ -457,6 +457,20 @@ const AdminModsPage = () => {
     }
   };
 
+  const normalizeModLoader = (loader) => {
+    if (!loader) return '';
+    if (loader === 'padrao' || loader === 'padrão') return 'padrão';
+    return loader;
+  };
+
+  const formatModLoaderDisplay = (loader) => {
+    if (!loader) return '';
+    if (loader === 'padrao' || loader === 'padrão') return 'Padrão';
+    if (loader === 'forge') return 'Forge';
+    if (loader === 'fabric') return 'Fabric';
+    return loader;
+  };
+
   const openEditModal = (mod) => {
     console.log('🔓 Abrindo modal de edição para mod:', mod);
     console.log('📝 Dados do mod:', {
@@ -477,7 +491,7 @@ const AdminModsPage = () => {
       slug: getSafeValue(mod.slug),
       version: getSafeValue(mod.version),
       minecraft_version: getSafeValue(mod.minecraft_version),
-      mod_loader: getSafeValue(mod.mod_loader),
+      mod_loader: normalizeModLoader(getSafeValue(mod.mod_loader)),
       content_type_id: mod.content_type_id || 1,
       short_description: getSafeValue(mod.short_description),
       full_description: getSafeValue(mod.full_description || mod.description),

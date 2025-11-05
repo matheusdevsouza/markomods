@@ -10,11 +10,9 @@ import {
   Copy,
   Check,
   Globe,
-  Shield,
   Gift,
   Coins,
   Sparkles,
-  Users,
   Coffee,
   MessageSquare,
   ChevronRight,
@@ -107,11 +105,6 @@ const DonatePage = () => {
       icon: Sparkles,
       title: t('donate.benefits.4.title'),
       description: t('donate.benefits.4.desc')
-    },
-    {
-      icon: Users,
-      title: t('donate.benefits.5.title'),
-      description: t('donate.benefits.5.desc')
     }
   ];
 
@@ -146,15 +139,6 @@ const DonatePage = () => {
           initial="hidden"
           animate="visible"
         >
-          <motion.div variants={itemVariants} className="mb-8">
-            <Link to="/">
-              <Button variant="ghost" className="mb-6">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                {t('common.back')}
-              </Button>
-            </Link>
-          </motion.div>
-
           <motion.div variants={itemVariants} className="text-center mb-12">
             <motion.div
               initial={{ scale: 0 }}
@@ -174,10 +158,16 @@ const DonatePage = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <motion.div variants={itemVariants}>
-              <Card className="border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 h-full">
-                <CardHeader>
+          <div className="grid md:grid-cols-2 gap-8 mb-20 md:items-stretch">
+            <motion.div variants={itemVariants} className="flex flex-col">
+              <motion.div variants={itemVariants} className="mb-6">
+                <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  {t('common.back')}
+                </Link>
+              </motion.div>
+              <Card className="border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 flex flex-col flex-1">
+                <CardHeader className="flex-shrink-0">
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-2xl mb-2 flex items-center gap-2">
@@ -190,8 +180,8 @@ const DonatePage = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="flex flex-col items-center space-y-6">
+                <CardContent className="space-y-6 flex-1 flex flex-col">
+                  <div className="flex flex-col items-center space-y-6 flex-1">
                     <div className="relative p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border-2 border-primary/30">
                       <img
                         src={qrCodeUrl}
@@ -234,9 +224,9 @@ const DonatePage = () => {
               </Card>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <Card className="border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 h-full">
-                <CardHeader>
+            <motion.div variants={itemVariants} className="flex flex-col md:mt-[52px]">
+              <Card className="border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 flex flex-col flex-1">
+                <CardHeader className="flex-shrink-0">
                   <CardTitle className="text-2xl mb-2 flex items-center gap-2">
                     <Gift className="h-6 w-6 text-primary" />
                     {t('donate.whyDonate.title')}
@@ -245,26 +235,28 @@ const DonatePage = () => {
                     {t('donate.whyDonate.desc')}
                   </CardDescription>
                 </CardHeader>
-                 <CardContent className="space-y-4">
-                   {benefits.map((benefit, index) => (
-                     <motion.div
-                       key={index}
-                       initial={{ opacity: 0, x: -20 }}
-                       animate={{ opacity: 1, x: 0 }}
-                       transition={{ delay: 0.3 + index * 0.1 }}
-                       className="flex gap-4 p-4 rounded-lg hover:bg-muted/50 transition-colors"
-                     >
-                       <div className="flex-shrink-0 flex items-start pt-0.5">
-                         <div className="p-2 rounded-lg bg-primary/10">
-                           <benefit.icon className="h-5 w-5 text-primary" />
+                 <CardContent className="space-y-4 flex-1 flex flex-col">
+                   <div className="flex-1 flex flex-col justify-start">
+                     {benefits.map((benefit, index) => (
+                       <motion.div
+                         key={index}
+                         initial={{ opacity: 0, x: -20 }}
+                         animate={{ opacity: 1, x: 0 }}
+                         transition={{ delay: 0.3 + index * 0.1 }}
+                         className="flex gap-4 p-4 rounded-lg hover:bg-muted/50 transition-colors"
+                       >
+                         <div className="flex-shrink-0 flex items-start pt-0.5">
+                           <div className="p-2 rounded-lg bg-primary/10">
+                             <benefit.icon className="h-5 w-5 text-primary" />
+                           </div>
                          </div>
-                       </div>
-                       <div>
-                         <h3 className="font-semibold mb-1">{benefit.title}</h3>
-                         <p className="text-sm text-muted-foreground">{benefit.description}</p>
-                       </div>
-                     </motion.div>
-                   ))}
+                         <div>
+                           <h3 className="font-semibold mb-1">{benefit.title}</h3>
+                           <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                         </div>
+                       </motion.div>
+                     ))}
+                   </div>
                  </CardContent>
               </Card>
             </motion.div>

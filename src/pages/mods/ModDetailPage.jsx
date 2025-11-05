@@ -885,7 +885,12 @@ const ModDetailPage = () => {
                 </div>
                 <div className={`flex flex-col sm:flex-row sm:justify-between p-3 sm:p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] ${getInfoCardClasses()}`}>
                   <span className={`text-sm sm:text-base ${getSubtextClasses()} mb-1 sm:mb-0`}>{t('modDetail.modLoader')}</span>
-                  <span className={`font-semibold text-sm sm:text-base ${getTextClasses()}`}>{mod.mod_loader}</span>
+                  <span className={`font-semibold text-sm sm:text-base ${getTextClasses()}`}>
+                    {mod.mod_loader === 'padrao' || mod.mod_loader === 'padrão' ? 'Padrão' : 
+                     mod.mod_loader === 'forge' ? 'Forge' : 
+                     mod.mod_loader === 'fabric' ? 'Fabric' : 
+                     mod.mod_loader}
+                  </span>
                 </div>
                 <div className={`flex flex-col sm:flex-row sm:justify-between p-3 sm:p-4 rounded-lg transition-all duration-300 hover:scale-[1.02] ${getInfoCardClasses()}`}>
                   <span className={`text-sm sm:text-base ${getSubtextClasses()} mb-1 sm:mb-0`}>{t('modDetail.fileSize')}</span>
