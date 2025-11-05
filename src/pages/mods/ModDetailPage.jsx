@@ -4,6 +4,8 @@ import { useAuth } from '../../contexts/AuthContextMods';
 import { useThemeMods } from '../../contexts/ThemeContextMods';
 import { useTranslation } from '../../hooks/useTranslation';
 import { buildThumbnailUrl, buildAvatarUrl } from '../../utils/urls';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { getAvatarUrl as getAvatarUrlUtil } from '@/utils/avatarUtils';
 import { buildVideoUrl } from '../../utils/urls';
 import VideoPlayer from '../../components/VideoPlayer';
 import { processHtmlComplete } from '../../utils/htmlProcessor';
@@ -585,12 +587,18 @@ const ModDetailPage = () => {
     }
   };
   const getAvatarUrl = (avatarUrl) => {
-    if (!avatarUrl) return null;
-    if (avatarUrl.startsWith('http')) return avatarUrl;
-    if (window.location.origin.includes('localhost:5173')) {
-      return `${import.meta.env.VITE_API_URL?.replace('localhost:3001', 'localhost:5173') || 'http://localhost:3001'}${avatarUrl}`;
-    }
-    return `${window.location.origin}${avatarUrl}`;
+    if (!avatarUrl) return undefined;
+    return getAvatarUrlUtil(avatarUrl);
+  };
+
+  const getInitials = (username) => {
+    if (!username) return 'U';
+    return username
+      .split(' ')
+      .map(name => name.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   };
   if (loading) {
     return (
@@ -1151,35 +1159,14 @@ const ModDetailPage = () => {
                       )}
                     </div>
                     <div className="flex items-start space-x-2 sm:space-x-3">
-                      <div className="flex-shrink-0 relative">
-                        {comment.avatar_url ? (
-                          <img
-                            src={getAvatarUrl(comment.avatar_url)}
-                            alt={`Avatar de ${comment.display_name || comment.username}`}
-                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-gray-700/50 shadow-lg select-none pointer-events-none"
-                            draggable="false"
-                            onContextMenu={(e) => e.preventDefault()}
-                            onDragStart={(e) => e.preventDefault()}
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                              const fallback = e.target.nextElementSibling;
-                              if (fallback) {
-                                fallback.classList.remove('hidden');
-                                fallback.style.display = 'flex';
-                              }
-                            }}
-                          />
-                        ) : null}
-                        <div
-                          className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-lg ${
-                            comment.avatar_url ? 'hidden' : 'bg-gray-500/20'
-                          }`}
-                        >
-                          <span className={`font-semibold text-xs sm:text-sm ${getTextClasses()}`}>
-                            {(comment.display_name || comment.username)?.charAt(0).toUpperCase() || 'U'}
+                      <Avatar className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0 border-2 border-gray-700/50 shadow-lg">
+                        <AvatarImage src={getAvatarUrl(comment.avatar_url)} />
+                        <AvatarFallback className={`bg-gradient-to-br from-primary to-primary/70 ${getTextClasses()}`}>
+                          <span className="font-semibold text-xs sm:text-sm">
+                            {getInitials(comment.display_name || comment.username)}
                           </span>
-                        </div>
-                      </div>
+                        </AvatarFallback>
+                      </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
                           <span className={`text-xs sm:text-sm font-semibold ${getTextClasses()}`}>
@@ -1302,35 +1289,14 @@ const ModDetailPage = () => {
                           <div key={reply.id} className="ml-4 sm:ml-6 md:ml-8 p-2 sm:p-3 bg-gradient-to-r from-primary/10 to-primary/5 border-l-4 border-primary rounded-r-lg">
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center space-x-2 min-w-0 flex-1">
-                                <div className="flex-shrink-0 relative">
-                                  {reply.avatar_url ? (
-                                    <img
-                                      src={getAvatarUrl(reply.avatar_url)}
-                                      alt={`Avatar de ${reply.display_name || reply.username}`}
-                                      className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-primary/30 shadow-sm select-none pointer-events-none"
-                                      draggable="false"
-                                      onContextMenu={(e) => e.preventDefault()}
-                                      onDragStart={(e) => e.preventDefault()}
-                                      onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        const fallback = e.target.nextElementSibling;
-                                        if (fallback) {
-                                          fallback.classList.remove('hidden');
-                                          fallback.style.display = 'flex';
-                                        }
-                                      }}
-                                    />
-                                  ) : null}
-                                  <div
-                                    className={`w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-sm ${
-                                      reply.avatar_url ? 'hidden' : 'bg-gray-500/20'
-                                    }`}
-                                  >
-                                    <span className={`font-semibold text-xs ${getTextClasses()}`}>
-                                      {(reply.display_name || reply.username)?.charAt(0).toUpperCase() || 'A'}
+                                <Avatar className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 border border-primary/30 shadow-sm">
+                                  <AvatarImage src={getAvatarUrl(reply.avatar_url)} />
+                                  <AvatarFallback className={`bg-gradient-to-br from-primary to-primary/70 ${getTextClasses()}`}>
+                                    <span className="font-semibold text-xs">
+                                      {getInitials(reply.display_name || reply.username)}
                                     </span>
-                                  </div>
-                                </div>
+                                  </AvatarFallback>
+                                </Avatar>
                                 <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
                                   <span className="text-xs sm:text-sm font-medium text-primary truncate">
                                     {reply.display_name || reply.username}
@@ -1418,21 +1384,14 @@ const ModDetailPage = () => {
                   : 'text-gray-400 hover:text-gray-200'
               }`}>
                 <div className="flex items-center space-x-4 mb-4">
-                  <div className="flex-shrink-0 relative">
-                    {commentToDelete.avatar_url ? (
-                      <img
-                        src={getAvatarUrl(commentToDelete.avatar_url)}
-                        alt={`Avatar de ${commentToDelete.display_name || commentToDelete.username}`}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-500"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">
-                          {(commentToDelete.display_name || commentToDelete.username)?.charAt(0).toUpperCase() || 'U'}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  <Avatar className="w-12 h-12 flex-shrink-0 border-2 border-gray-500">
+                    <AvatarImage src={getAvatarUrl(commentToDelete.avatar_url)} />
+                    <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white">
+                      <span className="font-bold text-lg">
+                        {getInitials(commentToDelete.display_name || commentToDelete.username)}
+                      </span>
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="flex-1">
                     <p className={`font-bold text-lg ${getTextClasses()}`}>
                       {commentToDelete.display_name || commentToDelete.username || 'Usuário'}

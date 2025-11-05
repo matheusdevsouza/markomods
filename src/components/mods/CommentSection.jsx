@@ -605,7 +605,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
                     <Avatar className="w-12 h-12 flex-shrink-0">
-                      <AvatarImage src={comment.avatar_url || "/default-avatar.png"} />
+                      <AvatarImage src={getCommentAvatarUrl(comment.avatar_url)} />
                       <AvatarFallback className="bg-primary/10 text-primary text-base font-medium">
                         {getInitials(comment.display_name || comment.username)}
                       </AvatarFallback>
