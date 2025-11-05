@@ -229,23 +229,55 @@ export const validateModMedia = (req, res, next) => {
   next();
 };
 
+// filtro de arquivos para avatares
+const avatarFileFilter = (req, file, cb) => {
+  const isAvatar = file.fieldname === 'avatar';
+
+  if (!isAvatar) {
+    return cb(new Error('Campo de upload não suportado'), false);
+  }
+
+  const suspiciousChars = /[<>:"/\\|?*\x00-\x1f]/;
+  if (suspiciousChars.test(file.originalname)) {
+    return cb(new Error('Nome de arquivo contém caracteres inválidos'), false);
+  }
+
+  const ext = path.extname(file.originalname).toLowerCase();
+  const mime = file.mimetype;
+
+  const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  
+  if (!allowedMimeTypes.includes(mime) || !allowedExtensions.includes(ext)) {
+    return cb(new Error('Tipo de imagem não suportado'), false);
+  }
+
+  cb(null, true);
+};
+
+// garantir diretório de avatares
+const ensureAvatarDir = () => {
+  const dir = path.join(__dirname, '../../uploads/avatars');
+  ensureDir(dir);
+  return dir;
+};
+
 // configuração para upload de avatares
 const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads/avatars'));
+    cb(null, ensureAvatarDir());
   },
   filename: (req, file, cb) => {
-
     // gerar um nome único para o arquivo (padronizar e evitar uma possivel duplicaçao)
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
+    const ext = path.extname(file.originalname).toLowerCase();
     cb(null, `avatar-${uniqueSuffix}${ext}`);
   }
 });
 
 const avatarUpload = multer({
   storage: avatarStorage,
-  fileFilter: fileFilter,
+  fileFilter: avatarFileFilter,
   limits: {
     fileSize: 2 * 1024 * 1024, 
     files: 1

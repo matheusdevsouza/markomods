@@ -1152,7 +1152,7 @@ const ModDetailPage = () => {
                     </div>
                     <div className="flex items-start space-x-2 sm:space-x-3">
                       <div className="flex-shrink-0 relative">
-                        {comment.avatar_url && (
+                        {comment.avatar_url ? (
                           <img
                             src={getAvatarUrl(comment.avatar_url)}
                             alt={`Avatar de ${comment.display_name || comment.username}`}
@@ -1163,13 +1163,16 @@ const ModDetailPage = () => {
                             onError={(e) => {
                               e.target.style.display = 'none';
                               const fallback = e.target.nextElementSibling;
-                              if (fallback) fallback.style.display = 'flex';
+                              if (fallback) {
+                                fallback.classList.remove('hidden');
+                                fallback.style.display = 'flex';
+                              }
                             }}
                           />
-                        )}
+                        ) : null}
                         <div
                           className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-lg ${
-                            comment.avatar_url ? 'bg-primary/20' : 'bg-gray-500/20'
+                            comment.avatar_url ? 'hidden' : 'bg-gray-500/20'
                           }`}
                         >
                           <span className={`font-semibold text-xs sm:text-sm ${getTextClasses()}`}>
@@ -1300,7 +1303,7 @@ const ModDetailPage = () => {
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center space-x-2 min-w-0 flex-1">
                                 <div className="flex-shrink-0 relative">
-                                  {reply.avatar_url && (
+                                  {reply.avatar_url ? (
                                     <img
                                       src={getAvatarUrl(reply.avatar_url)}
                                       alt={`Avatar de ${reply.display_name || reply.username}`}
@@ -1311,13 +1314,16 @@ const ModDetailPage = () => {
                                       onError={(e) => {
                                         e.target.style.display = 'none';
                                         const fallback = e.target.nextElementSibling;
-                                        if (fallback) fallback.style.display = 'flex';
+                                        if (fallback) {
+                                          fallback.classList.remove('hidden');
+                                          fallback.style.display = 'flex';
+                                        }
                                       }}
                                     />
-                                  )}
+                                  ) : null}
                                   <div
                                     className={`w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center shadow-sm ${
-                                      reply.avatar_url ? 'bg-primary/20' : 'bg-gray-500/20'
+                                      reply.avatar_url ? 'hidden' : 'bg-gray-500/20'
                                     }`}
                                   >
                                     <span className={`font-semibold text-xs ${getTextClasses()}`}>

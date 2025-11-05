@@ -1,7 +1,8 @@
 import React from 'react';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Clock, MessageSquare, Shield } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
+import { getAvatarUrl } from '@/utils/avatarUtils';
 
 const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
   const { t } = useTranslation();
@@ -21,6 +22,16 @@ const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
     ['admin', 'super_admin'].includes(currentUser.role)
   );
 
+  const getInitials = (username) => {
+    if (!username) return 'U';
+    return username
+      .split(' ')
+      .map(name => name.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <div className="ml-8 mt-3 p-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-l-4 border-blue-500 rounded-r-lg relative">
 
@@ -33,11 +44,10 @@ const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-3">
           <Avatar className="w-8 h-8">
-            <img 
-              src={reply.avatar_url || '/default-avatar.png'} 
-              alt={reply.display_name || reply.username}
-              className="w-full h-full object-cover"
-            />
+            <AvatarImage src={getAvatarUrl(reply.avatar_url)} />
+            <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+              {getInitials(reply.display_name || reply.username)}
+            </AvatarFallback>
           </Avatar>
           <div>
             <div className="flex items-center space-x-2">

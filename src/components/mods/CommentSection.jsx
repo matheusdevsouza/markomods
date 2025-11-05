@@ -10,6 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContextMods';
 import CommentReply from './CommentReply';
 import ReplyModal from './ReplyModal';
+import { getAvatarUrl } from '@/utils/avatarUtils';
 
 const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
   const [newComment, setNewComment] = useState('');
@@ -272,6 +273,11 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
       .slice(0, 2);
   };
 
+  const getCommentAvatarUrl = (avatarUrl) => {
+    if (!avatarUrl) return undefined;
+    return getAvatarUrl(avatarUrl);
+  };
+
   if (userTimeout) {
     return (
       <div className="space-y-6">
@@ -328,7 +334,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <Avatar className="w-12 h-12 flex-shrink-0">
-                        <AvatarImage src={comment.avatar_url || "/default-avatar.png"} />
+                        <AvatarImage src={getCommentAvatarUrl(comment.avatar_url)} />
                         <AvatarFallback className="bg-primary/10 text-primary text-base font-medium">
                           {getInitials(comment.display_name || comment.username)}
                         </AvatarFallback>
@@ -744,9 +750,9 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
               <div className="bg-gray-800/50 rounded-lg p-5 border border-gray-600/50">
                 <div className="flex items-center space-x-4 mb-4">
                   <Avatar className="w-12 h-12">
-                    <AvatarImage src={commentToDelete.avatar_url} />
+                    <AvatarImage src={getCommentAvatarUrl(commentToDelete.avatar_url)} />
                     <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white font-bold text-lg">
-                      {commentToDelete.username?.charAt(0).toUpperCase() || 'U'}
+                      {getInitials(commentToDelete.display_name || commentToDelete.username)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
