@@ -139,11 +139,10 @@ const DownloadsPage = () => {
       className="space-y-6 sm:space-y-8 px-4 sm:px-6"
     >
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-3 sm:mb-4">
-          <Download className="inline-block mr-2 sm:mr-3 text-blue-500 h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8" />
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
           {t('downloads.title')}
         </h1>
-        <p className="text-sm sm:text-base lg:text-lg text-muted-foreground px-4">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
           {t('downloads.subtitle')}
         </p>
       </div>
@@ -152,7 +151,7 @@ const DownloadsPage = () => {
         <CardContent className="p-4 sm:p-6 text-center">
           <Download className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 mx-auto mb-2" />
           <div className="text-2xl sm:text-3xl font-bold text-foreground">{getTotalDownloads()}</div>
-          <p className="text-xs sm:text-sm text-muted-foreground">Total de Downloads</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">{t('downloads.totalDownloads')}</p>
         </CardContent>
       </Card>
 
@@ -163,7 +162,7 @@ const DownloadsPage = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Buscar nos seus downloads..."
+                placeholder={t('downloads.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 text-sm sm:text-base"
@@ -180,7 +179,7 @@ const DownloadsPage = () => {
                 <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                   <SelectTrigger className="text-sm sm:text-base">
                     <Calendar className="h-4 w-4 mr-2" />
-                    <SelectValue placeholder="Filtrar por período" />
+                    <SelectValue placeholder={t('downloads.filters.periodPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {periods.map(period => (
@@ -196,7 +195,7 @@ const DownloadsPage = () => {
                 <Select value={selectedType} onValueChange={setSelectedType}>
                   <SelectTrigger className="text-sm sm:text-base">
                     <Filter className="h-4 w-4 mr-2" />
-                    <SelectValue placeholder="Filtrar por tipo" />
+                    <SelectValue placeholder={t('downloads.filters.typePlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {types.map(type => (
@@ -214,7 +213,7 @@ const DownloadsPage = () => {
                 onClick={resetFilters}
                 className="hover:bg-blue-500/10 hover:border-blue-500/50 hover:text-blue-500 group text-sm sm:text-base w-full sm:w-auto"
               >
-                Limpar
+                {t('downloads.clearFilters')}
               </Button>
             </div>
           </div>
@@ -224,7 +223,7 @@ const DownloadsPage = () => {
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
           <h2 className="text-xl sm:text-2xl font-minecraft text-primary">
-            Seus Downloads ({totalDownloads})
+            {t('downloads.yourDownloads', { count: totalDownloads })}
           </h2>
           
           <div className="flex items-center gap-2">
@@ -241,7 +240,7 @@ const DownloadsPage = () => {
               className="hover:bg-blue-500/10 hover:border-blue-500/50 hover:text-blue-500 group text-sm sm:text-base w-full sm:w-auto"
             >
               <RefreshCw size={16} className="mr-2 group-hover:text-blue-500" />
-              Atualizar
+              {t('downloads.update')}
             </Button>
           </div>
         </div>
@@ -266,11 +265,11 @@ const DownloadsPage = () => {
               ) : (
                 <>
                   <Search size={40} className="mx-auto mb-3 sm:mb-4 text-muted-foreground/50 sm:h-12 sm:w-12" />
-                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">Nenhum resultado encontrado</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">{t('downloads.noResults.title')}</h3>
                   <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 px-4">
                     {isFiltered 
-                      ? 'Tente ajustar os filtros para encontrar seus downloads'
-                      : 'Não há downloads para exibir no momento'
+                      ? t('downloads.noResults.filteredDescription')
+                      : t('downloads.noResults.noDownloadsDescription')
                     }
                   </p>
                   {isFiltered && (
@@ -279,7 +278,7 @@ const DownloadsPage = () => {
                       className="minecraft-btn bg-blue-500 hover:bg-blue-600 text-white text-sm sm:text-base w-full sm:w-auto"
                     >
                       <Filter size={16} className="mr-2" />
-                      Limpar Filtros
+                      {t('downloads.clearFilters')}
                     </Button>
                   )}
                 </>
@@ -321,11 +320,11 @@ const DownloadsPage = () => {
                                   {download.name}
                                 </h3>
                                 <Badge variant="outline" className="text-xs bg-blue-500/10 text-blue-600 border-blue-500/30 w-fit">
-                                  {download.minecraft_version || 'N/A'}
+                                  {download.minecraft_version || t('downloads.notAvailable')}
                                 </Badge>
                               </div>
                               <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
-                                {download.short_description || 'Sem descrição disponível'}
+                                {download.short_description || t('downloads.noDescription')}
                               </p>
                             </div>
                           </div>
@@ -333,15 +332,15 @@ const DownloadsPage = () => {
                           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground">
                             <div className="flex items-center">
                               <Calendar size={12} className="mr-2 sm:h-3.5 sm:w-3.5" />
-                              <span>{download.downloaded_at ? new Date(download.downloaded_at).toLocaleDateString('pt-BR') : 'Data não disponível'}</span>
+                              <span>{download.downloaded_at ? new Date(download.downloaded_at).toLocaleDateString('pt-BR') : t('downloads.dateNotAvailable')}</span>
                             </div>
                             <div className="flex items-center">
                               <Clock size={12} className="mr-2 sm:h-3.5 sm:w-3.5" />
-                              <span>{download.downloaded_at ? new Date(download.downloaded_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Hora não disponível'}</span>
+                              <span>{download.downloaded_at ? new Date(download.downloaded_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : t('downloads.timeNotAvailable')}</span>
                             </div>
                             <div className="flex items-center">
                               <Download size={12} className="mr-2 sm:h-3.5 sm:w-3.5" />
-                              <span>Download concluído</span>
+                              <span>{t('downloads.downloadCompleted')}</span>
                             </div>
                           </div>
                         </div>
@@ -350,13 +349,13 @@ const DownloadsPage = () => {
                           <Button asChild className="minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm w-full">
                             <Link to={`/mods/${download.modId}`}>
                               <ExternalLink size={14} className="mr-2 sm:h-4 sm:w-4" />
-                              Ver Mod
+                              {t('downloads.viewMod')}
                             </Link>
                           </Button>
                           <Button asChild variant="outline" className="minecraft-btn text-xs sm:text-sm w-full">
                             <Link to={`/mods/${download.modId}`}>
                               <Download size={14} className="mr-2 sm:h-4 sm:w-4" />
-                              Baixar Novamente
+                              {t('downloads.downloadAgain')}
                             </Link>
                           </Button>
                         </div>

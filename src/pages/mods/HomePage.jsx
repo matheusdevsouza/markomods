@@ -131,7 +131,7 @@ const HomePage = () => {
           const data = await response.json();
           if (data.success) {
             if (data.banner_url) {
-              setBannerUrl(data.banner_url);
+            setBannerUrl(data.banner_url);
             }
             setBannerLink(data.banner_link || null);
           }
@@ -216,23 +216,23 @@ const HomePage = () => {
             </motion.div>
           </a>
         ) : (
-          <motion.div variants={itemVariants}>
-            <img 
-              src={bannerUrl} 
-              alt="Banner da Plataforma Eu Marko Mods"
-              className="w-full h-32 md:h-48 lg:h-56 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-purple-600/30" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-            <div className="absolute top-4 right-4">
-              <div className="bg-primary/20 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/30">
-                <span className="text-xs font-semibold text-white flex items-center gap-1">
-                  <Package size={12} />
-                  MODS
-                </span>
-              </div>
+        <motion.div variants={itemVariants}>
+          <img 
+            src={bannerUrl} 
+            alt="Banner da Plataforma Eu Marko Mods"
+            className="w-full h-32 md:h-48 lg:h-56 object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-transparent to-purple-600/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute top-4 right-4">
+            <div className="bg-primary/20 backdrop-blur-sm rounded-full px-3 py-1 border border-primary/30">
+              <span className="text-xs font-semibold text-white flex items-center gap-1">
+                <Package size={12} />
+                MODS
+              </span>
             </div>
-          </motion.div>
+          </div>
+        </motion.div>
         )}
       </EditableBanner>
 

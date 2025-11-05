@@ -23,8 +23,12 @@
     "settingsDesc": "编辑您的个人资料",
     "helpDesc": "支持和教程",
     "changelogDesc": "平台上有什么变化",
+    "contactDesc": "联系我们",
+    "faqDesc": "常见问题",
     "logoutDesc": "结束会话",
-    "config": "设置"
+    "config": "设置",
+    "donate": "捐赠",
+    "donateDesc": "通过捐赠支持平台"
   },
   "home": {
     "hero": {
@@ -89,9 +93,15 @@
     "guidelines": "指导原则",
     "partners": "合作伙伴",
     "support": "支持",
+    "social": "社交网络",
+    "legal": "法律声明",
     "helpCenter": "帮助中心",
     "contact": "联系",
     "faq": "常见问题",
+    "aboutUs": "关于我们",
+    "officialSite": "官方网站",
+    "termsOfUse": "使用条款",
+    "privacyPolicy": "隐私政策",
     "backToTop": "返回顶部",
     "allRightsReserved": "版权所有"
   },
@@ -296,14 +306,77 @@
     "title": "联系我们",
     "subtitle": "有疑问或建议？请联系我们！",
     "form": {
+      "title": "发送消息",
+      "description": "填写下面的表单，我们会尽快回复您",
       "name": "姓名",
+      "namePlaceholder": "您的全名",
       "email": "电子邮件",
+      "emailPlaceholder": "your@email.com",
       "subject": "主题",
+      "subjectPlaceholder": "您消息的主题是什么？",
       "message": "消息",
+      "messagePlaceholder": "描述您的问题或建议...",
       "submit": "发送消息",
       "sending": "发送中...",
       "success": "消息发送成功！",
       "error": "发送消息时出错。请重试。"
+    },
+    "methods": {
+      "email": {
+        "title": "支持邮箱",
+        "description": "发送邮件给我们以获取技术支持"
+      },
+      "discord": {
+        "title": "Discord",
+        "description": "加入我们的 Discord 社区",
+        "server": "Discord 服务器"
+      }
+    },
+    "info": {
+      "title": "其他联系方式",
+      "description": "选择最方便的方式"
+    },
+    "additional": {
+      "title": "重要信息",
+      "responseTime": "我们会在24小时内回复",
+      "support": "免费技术支持",
+      "community": "Discord 上的活跃社区"
+    },
+    "faq": {
+      "title": "常见问题",
+      "subtitle": "查找最常见问题的答案",
+      "categories": {
+        "general": "一般",
+        "mods": "模组",
+        "account": "账户",
+        "technical": "技术"
+      },
+      "whatIsEuMarkoMods": {
+        "title": "什么是 Eu, Marko!?",
+        "content": "Eu, Marko! 是我们专用于 Minecraft 模组的平台，您可以在这里发现、下载和分享我们所有已制作的模组。我们的使命是方便您访问我们的模组，并创建一个充满活力的玩家社区。"
+      },
+      "howToRegister": {
+        "title": "如何注册？",
+        "content": "要注册，请点击页面右上角的\"注册\"按钮。填写您的用户名、电子邮件和密码。确认您的电子邮件后，您将拥有平台的完全访问权限。"
+      },
+      "howToDownload": {
+        "title": "如何下载模组？",
+        "content": "浏览我们的模组库，找到您喜欢的模组，然后点击\"下载\"按钮。您需要登录才能下载模组。下载后，请遵循每个模组的具体安装说明。"
+      },
+      "howToInstall": {
+        "title": "如何安装模组？",
+        "content": "安装取决于模组和模组加载器（Forge、Fabric等）。通常，您需要：1) 安装适当的模组加载器，2) 下载模组，3) 将 .jar 文件放入您的 Minecraft \"mods\" 文件夹。"
+      },
+      "modIssues": {
+        "title": "如果模组不工作怎么办？",
+        "content": "首先，检查您是否有正确的模组加载器和 Minecraft 版本。确认所有依赖项都已安装。如果问题仍然存在，请查看模组的评论部分或联系我们。"
+      }
+    },
+    "stillNeedHelp": {
+      "title": "还有疑问？",
+      "description": "我们的支持团队随时为您提供帮助。通过上述渠道联系我们，或查看我们的完整文档。",
+      "contactSupport": "联系支持",
+      "viewDocumentation": "查看文档"
     }
   },
   "achievements": {
@@ -496,17 +569,41 @@
     }
   },
   "favorites": {
-    "title": "我的收藏模组",
-    "subtitle": "您保存和下载最多的模组都在这里",
+    "title": "我的收藏",
+    "subtitle": {
+      "empty": "您还没有收藏任何模组",
+      "count": "您有 {{count}} 个收藏的模组",
+      "count_plural": "您有 {{count}} 个收藏的模组"
+    },
     "loading": "正在加载您的收藏...",
     "restrictedAccess": "访问受限",
     "loginRequired": "登录以查看您的收藏模组",
     "login": "登录",
-    "search": {
-      "placeholder": "在收藏中搜索..."
-    },
+    "backToMods": "返回模组",
+    "tryAgain": "重试",
+    "removed": "模组已从收藏中移除！",
+    "searchPlaceholder": "按名称或描述搜索",
     "filters": {
+      "type": "类型",
+      "all": "全部",
+      "mods": "模组",
+      "addons": "附加组件",
+      "allVersions": "所有版本",
+      "minecraftVersion": "Minecraft 版本",
+      "addonVersions": "附加组件版本",
+      "modVersions": "模组版本",
+      "sortBy": "排序方式",
+      "sorting": "排序",
+      "mostRecent": "最新",
+      "mostViewed": "最多查看",
+      "mostDownloaded": "最多下载",
       "allCategories": "所有分类"
+    },
+    "errors": {
+      "authTokenNotFound": "未找到身份验证令牌",
+      "loadError": "加载收藏时出错",
+      "loadErrorTitle": "加载收藏时出错",
+      "removeError": "移除收藏时出错"
     },
     "stats": {
       "totalFavorites": "收藏总数",
@@ -523,8 +620,8 @@
       "viewDetails": "查看详情"
     },
     "empty": {
-      "title": "还没有收藏的模组",
-      "description": "浏览我们的模组库，收藏您喜欢的模组以便在这里轻松找到",
+      "title": "还没有收藏",
+      "description": "您还没有收藏任何模组。浏览我们的收藏集合并添加您喜欢的模组！",
       "exploreMods": "浏览模组"
     },
     "toast": {
@@ -541,10 +638,11 @@
     "restrictedAccess": "访问受限",
     "loginRequired": "登录以查看您的下载历史记录",
     "login": "登录",
-    "search": {
-      "placeholder": "在下载中搜索..."
-    },
+    "totalDownloads": "总下载量",
+    "searchPlaceholder": "在您的下载中搜索...",
     "filters": {
+      "periodPlaceholder": "按时期筛选",
+      "typePlaceholder": "按类型筛选",
       "periods": {
         "all": "所有时期",
         "today": "今天",
@@ -556,6 +654,21 @@
         "public": "公开",
         "premium": "高级"
       }
+    },
+    "clearFilters": "清除",
+    "yourDownloads": "您的下载 ({{count}})",
+    "update": "更新",
+    "notAvailable": "不可用",
+    "noDescription": "无可用描述",
+    "dateNotAvailable": "日期不可用",
+    "timeNotAvailable": "时间不可用",
+    "downloadCompleted": "下载完成",
+    "viewMod": "查看模组",
+    "downloadAgain": "重新下载",
+    "noResults": {
+      "title": "未找到结果",
+      "filteredDescription": "尝试调整筛选条件以找到您的下载",
+      "noDownloadsDescription": "目前没有可显示的下载"
     },
     "stats": {
       "totalDownloads": "总下载量",
@@ -764,5 +877,375 @@
       "title": "未找到模组",
       "description": "尝试调整筛选条件或使用不同的搜索词。"
     }
+  },
+  "faq": {
+    "title": "常见问题",
+    "subtitle": "查找关于 Eu, Marko! 最常见问题的答案",
+    "searchPlaceholder": "搜索常见问题...",
+    "categories": {
+      "all": "全部",
+      "general": "一般",
+      "account": "账户",
+      "mods": "模组",
+      "technical": "技术",
+      "community": "社区",
+      "short": {
+        "all": "全部",
+        "general": "一般",
+        "account": "账户",
+        "mods": "模组",
+        "technical": "技术",
+        "community": "社区"
+      }
+    },
+    "whatIsMarkoMods": {
+      "title": "什么是 Eu, Marko!?",
+      "content": "Eu, Marko! 是我们专用于 Minecraft 模组的平台，您可以在这里发现、下载和分享我们所有已制作的模组。我们的使命是方便您访问我们的模组，并创建一个充满活力的玩家社区。"
+    },
+    "howToStart": {
+      "title": "如何开始使用 Eu, Marko!?",
+      "content": "开始使用：\n\n1) 创建免费账户\n2) 探索我们的模组库\n3) 下载您感兴趣的模组\n4) 按照我们的说明安装\n\n简单且免费！"
+    },
+    "isFree": {
+      "title": "Eu, Marko! 是免费的吗？",
+      "content": "是的！Eu, Marko! 完全免费。您可以创建账户、下载模组、收藏和使用所有功能，无需任何费用。"
+    },
+    "howToRegister": {
+      "title": "如何注册？",
+      "content": "点击右上角的\"注册\"，填写您的姓名、电子邮件和密码。确认您的电子邮件后，您将拥有平台的完全访问权限。"
+    },
+    "resetPassword": {
+      "title": "如何重置我的密码？",
+      "content": "在登录页面，点击\"忘记密码\"。输入您的电子邮件，您将收到一个重置密码的链接。按照电子邮件中的说明操作。"
+    },
+    "updateProfile": {
+      "title": "如何更新我的个人资料？",
+      "content": "点击您的头像访问您的仪表板。在\"个人资料\"部分，您可以更新您的个人信息、照片和偏好设置。"
+    },
+    "howToDownload": {
+      "title": "如何下载模组？",
+      "content": "浏览库，找到您感兴趣的模组，然后点击\"下载\"。您需要登录。下载后，请遵循安装说明。"
+    },
+    "howToInstall": {
+      "title": "如何安装模组？",
+      "content": "安装取决于模组和模组加载器（Forge、Fabric等）。\n\n通常：\n\n1) 安装适当的模组加载器\n2) 下载模组\n3) 将 .jar 文件放入 Minecraft 的 \"mods\" 文件夹"
+    },
+    "favoriteMods": {
+      "title": "如何收藏模组？",
+      "content": "点击模组卡片或详情页上的心形图标。收藏的模组会出现在仪表板的\"收藏\"部分。"
+    },
+    "findMods": {
+      "title": "如何找到特定模组？",
+      "content": "使用我们的搜索栏按名称、类别或关键词搜索。您还可以按 Minecraft 版本、模组加载器或受欢迎程度进行筛选。"
+    },
+    "modCompatibility": {
+      "title": "如何检查兼容性？",
+      "content": "每个模组都有详细的兼容性信息，包括 Minecraft 版本、所需的模组加载器和依赖项。安装前请务必检查。"
+    },
+    "systemRequirements": {
+      "title": "系统要求是什么？",
+      "content": "要使用 Eu, Marko!：Minecraft Java Edition、Java 8 或更高版本、互联网连接和现代浏览器。对于特定模组，请查看个别要求。"
+    },
+    "modIssues": {
+      "title": "如果模组不工作怎么办？",
+      "content": "首先，检查您是否有正确的模组加载器和 Minecraft 版本。确认所有依赖项都已安装。如果问题仍然存在，请查看模组的评论部分或联系我们。"
+    },
+    "modLoader": {
+      "title": "应该使用哪个模组加载器？",
+      "content": "选择取决于模组。Forge 是最受欢迎的，与大多数模组兼容。Fabric 更现代且性能更好。Quilt 是 Fabric 的替代品。请查看您想要的模组推荐哪个。"
+    },
+    "communityGuidelines": {
+      "title": "社区准则是什么？",
+      "content": "我们的社区重视尊重、协作和创造力。尊重其他用户，分享适当的内容，为创作者提供荣誉，并帮助其他成员。"
+    },
+    "reportMod": {
+      "title": "如何举报有问题的模组？",
+      "content": "使用模组页面上的\"举报\"按钮。我们的审核团队将审查此案并采取适当措施。"
+    },
+    "stillNeedHelp": {
+      "title": "还没找到答案？",
+      "description": "我们的支持团队随时为您提供帮助。通过以下渠道联系我们。",
+      "email": "发送邮件",
+      "discord": "Discord"
+    }
+  },
+  "changelog": {
+    "title": "更新日志",
+    "subtitle": "网站和模组更改的技术记录。"
+  },
+  "donate": {
+    "title": "支持模组平台！",
+    "subtitle": "您的捐赠有助于维护网站、创建新模组并持续为您创新！",
+    "card": {
+      "title": "通过 LivePix 捐赠",
+      "desc": "打开链接或扫描二维码",
+      "open": "打开 LivePix"
+    },
+    "copySuccess": "LivePix 链接已复制！",
+    "qrHint": "使用您的银行应用扫描或点击下面的链接",
+    "whyDonate": {
+      "title": "为什么捐赠？",
+      "desc": "了解您的贡献如何产生影响"
+    },
+    "benefits": {
+      "1": { "title": "帮助维护网站", "desc": "您的捐赠有助于维护网站并持续创建出色的模组！" },
+      "2": { "title": "支持开发", "desc": "支持新模组的开发。" },
+      "3": { "title": "免费模组", "desc": "我的所有模组都是免费的。如果您愿意帮助维持这一切，任何捐赠都至关重要。❤️" },
+      "4": { "title": "未来模组预览", "desc": "接收开发中模组的剧透，并参与投票决定下一个模组！" },
+      "5": { "title": "社区", "desc": "在我们的 Discord 上获得捐赠者专属频道访问权限。" }
+    },
+    "faq": {
+      "title": "常见问题",
+      "q1": "捐赠如何运作？",
+      "a1": "您可以通过 LivePix 捐赠任意金额。只需访问 https://livepix.gg/eumarko 或扫描页面上的二维码。",
+      "q2": "捐赠是否安全？",
+      "a2": "是的！LivePix 是一个安全可靠的平台。所有交易都会得到安全保护。",
+      "q3": "我可以捐赠任意金额吗？",
+      "a3": "可以！没有最低或最高限制。任何捐赠都非常受欢迎并心存感激！",
+      "q4": "我会收到回报吗？",
+      "a4": "每位捐赠者都会得到我们永恒的感谢！很快，新的系统将带来特殊功能和福利。💜"
+    },
+    "thankYou": {
+      "title": "非常感谢！",
+      "desc": "每笔捐赠，无论金额多少，都帮助我们继续为您创建精彩内容。您的捐赠至关重要！❤️"
+    },
+    "footer": "您的捐赠有助于保持网站 100% 免费供所有人使用"
+  },
+  "terms": {
+    "title": "使用条款",
+    "subtitle": "使用我们 Marko 模组平台的规则",
+    "introduction": {
+      "title": "介绍",
+      "subtitle": "您好！这些条款解释了如何使用我们的模组平台。",
+      "content": "这些条款解释了如何使用 \"我，Marko！\" 平台下载和使用我们的精彩模组。使用我们的网站，即表示您同意遵守这些规则。如果您不同意某些内容，请不要使用该网站。"
+    },
+    "section1": {
+      "title": "接受条款",
+      "content": "访问和使用 \"我，Marko！\" 平台，即表示您同意遵守这些使用条款。如果您不同意这些条款，请不要使用该网站。",
+      "details": [
+        "使用网站意味着您自动接受条款",
+        "这些条款适用于所有用户",
+        "您必须接受才能使用平台"
+      ]
+    },
+    "section2": {
+      "title": "网站使用",
+      "content": "您同意仅将网站用于合法目的，并遵守这些条款。您不得以可能损害或破坏其运行的方式使用网站。",
+      "details": [
+        "仅用于合法目的",
+        "不能损坏或过载系统",
+        "尊重平台的其他用户",
+        "不要干扰网站的运行"
+      ]
+    },
+    "section3": {
+      "title": "用户内容",
+      "content": "如果您提交评论或其他内容，您授予我们使用、复制和分发该内容的权限。",
+      "details": [
+        "全球非独家许可",
+        "我们可以修改和调整内容",
+        "您仍然是您内容的所有者",
+        "内容不得侵犯他人的权利"
+      ]
+    },
+    "section4": {
+      "title": "知识产权",
+      "content": "本网站和此处提供的所有模组都属于 Marko！它们是精心制作的原创作品。",
+      "details": [
+        "网站属于我，Marko！",
+        "所有模组都是 Marko 的原创作品",
+        "每个模组都是为了玩家的乐趣而制作的",
+        "我们尊重 Minecraft 和 Mojang 的权利"
+      ]
+    },
+    "section5": {
+      "title": "免责声明",
+      "content": "我们的模组制作精良，但我们不能保证它们在所有情况下都能完美运行。",
+      "details": [
+        "我们在发布前测试所有模组",
+        "但每台计算机都不同",
+        "您使用模组需自担风险",
+        "如果出现问题，请告诉我们，我们会尽力帮助！"
+      ]
+    },
+    "section6": {
+      "title": "责任限制",
+      "content": "如果您的模组或计算机出现问题，我们不能对造成的损害负责。",
+      "details": [
+        "我们不对您计算机的损坏负责",
+        "我们不对数据丢失负责",
+        "我们不对其他模组的问题负责",
+        "使用我们的模组时，您需承担所有风险"
+      ]
+    },
+    "section7": {
+      "title": "条款变更",
+      "content": "我们可以在必要时更改这些条款。如果您继续使用网站，即表示您接受这些更改。",
+      "details": [
+        "我们可以在需要时更新条款",
+        "我们将通知重要更改",
+        "继续使用 = 接受更改",
+        "更改可能随时发生"
+      ]
+    },
+    "contact": {
+      "title": "联系方式",
+      "subtitle": "对这些条款有任何疑问？请联系我们！",
+      "email": "电子邮件",
+      "website": "网站",
+      "responsible": "负责人",
+      "responsibleName": "我，Marko！"
+    },
+    "lastUpdate": "最后更新"
+  },
+  "privacy": {
+    "title": "隐私政策",
+    "subtitle": "了解我们如何收集、使用和保护您的个人信息",
+    "section1": {
+      "title": "我们收集的信息",
+      "subtitle": "我们收集您直接提供的信息以及您使用我们服务时我们自动收集的信息。",
+      "subsection1": {
+        "title": "您提供给我们的信息：",
+        "items": [
+          {
+            "label": "账户数据",
+            "description": "用户名、电子邮件地址、密码和个人资料信息"
+          },
+          {
+            "label": "评论",
+            "description": "您在模组上留下的评论和评分"
+          },
+          {
+            "label": "通信",
+            "description": "您发送给我们的联系电子邮件"
+          }
+        ]
+      },
+      "subsection2": {
+        "title": "自动收集的信息：",
+        "items": [
+          {
+            "label": "使用数据",
+            "description": "已进行的下载和收藏的模组"
+          },
+          {
+            "label": "技术信息",
+            "description": "IP地址、浏览器类型、操作系统"
+          },
+          {
+            "label": "Cookie",
+            "description": "我们使用Cookie来改善您的体验并分析网站使用情况"
+          }
+        ]
+      }
+    },
+    "section2": {
+      "title": "我们如何使用您的信息",
+      "subtitle": "我们使用您的信息来提供和改进我们的服务",
+      "items": [
+        "提供对模组和网站功能的访问",
+        "处理下载并管理您的用户账户",
+        "允许在模组上进行评论和评分",
+        "维护下载和收藏历史",
+        "确保平台安全",
+        "回复联系电子邮件"
+      ]
+    },
+    "section3": {
+      "title": "信息共享",
+      "subtitle": "我们不出售您的个人信息。我们仅在以下描述的情况下共享。",
+      "items": [
+        {
+          "title": "公开评论",
+          "description": "您在模组上的评论对其他用户可见"
+        },
+        {
+          "title": "法律义务",
+          "description": "法律要求或保护权利时"
+        },
+        {
+          "title": "同意",
+          "description": "当您明确许可时"
+        }
+      ]
+    },
+    "section4": {
+      "title": "数据安全",
+      "subtitle": "我们实施技术和组织安全措施来保护您的信息",
+      "items": [
+        "SSL/TLS加密用于数据传输",
+        "使用安全哈希加密密码",
+        "限制对个人数据的访问",
+        "定期安全监控",
+        "安全数据备份",
+        "定期安全审计"
+      ]
+    },
+    "section5": {
+      "title": "Cookie和类似技术",
+      "subtitle": "我们使用Cookie来改善您的体验并分析网站使用情况",
+      "items": [
+        {
+          "type": "基本Cookie",
+          "desc": "网站基本功能所必需",
+          "color": "bg-red-500"
+        },
+        {
+          "type": "功能Cookie",
+          "desc": "用于记住您的偏好",
+          "color": "bg-blue-500"
+        },
+        {
+          "type": "分析Cookie",
+          "desc": "用于了解您如何使用我们的网站",
+          "color": "bg-green-500"
+        },
+        {
+          "type": "营销Cookie",
+          "desc": "用于个性化广告（如适用）",
+          "color": "bg-purple-500"
+        }
+      ],
+      "manageCookies": "您可以通过浏览器设置管理Cookie偏好。"
+    },
+    "section6": {
+      "title": "您的权利",
+      "subtitle": "根据GDPR/LGPD，您对个人信息享有权利",
+      "items": [
+        {
+          "right": "访问",
+          "desc": "查看我们拥有的关于您的数据"
+        },
+        {
+          "right": "更正",
+          "desc": "更正您个人资料中的错误信息"
+        },
+        {
+          "right": "删除",
+          "desc": "请求删除您的账户和数据"
+        },
+        {
+          "right": "下载",
+          "desc": "以可读格式下载您的数据"
+        },
+        {
+          "right": "反对",
+          "desc": "反对使用您的数据"
+        },
+        {
+          "right": "联系",
+          "desc": "联系我们以行使您的权利"
+        }
+      ]
+    },
+    "section7": {
+      "title": "联系方式",
+      "subtitle": "如果您对此隐私政策有疑问，请联系我们",
+      "email": "电子邮件",
+      "website": "网站",
+      "responsible": "负责人",
+      "responsibleName": "我，Marko！"
+    },
+    "lastUpdate": "最后更新"
   }
 }

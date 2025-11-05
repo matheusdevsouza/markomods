@@ -281,11 +281,10 @@ const AdminLogsPage = () => {
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap mb-2">
-            <Activity className="h-6 w-6 sm:h-8 sm:w-8" />
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             Logs do Sistema
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
+          <p className="text-lg md:text-xl text-muted-foreground">
             Monitore todas as atividades e eventos da plataforma Eu, Marko!
           </p>
         </div>

@@ -21,6 +21,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -46,6 +47,7 @@ const itemVariants = {
 };
 
 const DonatePage = () => {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [pageLoaded, setPageLoaded] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(null);
@@ -86,53 +88,53 @@ const DonatePage = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(livepixUrl);
     setCopied(true);
-    toast.success('Link do LivePix copiado!');
+    toast.success(t('donate.copySuccess'));
     setTimeout(() => setCopied(false), 2000);
   };
 
   const benefits = [
     {
       icon: Heart,
-      title: 'Ajude a Manter o Site',
-      description: 'Suas doações ajudam a manter o site e a continuar criando mods incríveis!'
+      title: t('donate.benefits.1.title'),
+      description: t('donate.benefits.1.desc')
     },
     {
       icon: Gift,
-      title: 'Suporte ao Desenvolvimento',
-      description: 'Apoie o desenvolvimento de novos mods.'
+      title: t('donate.benefits.2.title'),
+      description: t('donate.benefits.2.desc')
     },
     {
       icon: Sparkles,
-      title: 'Espia de Futuros Mods',
-      description: 'Receba spoilers de mods em desenvolvimento e participe de enquetes para decidir o próximo mod!'
+      title: t('donate.benefits.4.title'),
+      description: t('donate.benefits.4.desc')
     },
     {
       icon: Users,
-      title: 'Comunidade',
-      description: 'Tenha acesso a um canal exclusivo para doadores em nosso Discord.'
+      title: t('donate.benefits.5.title'),
+      description: t('donate.benefits.5.desc')
     }
   ];
 
   const faqs = [
     {
       id: 1,
-      question: 'Como funciona a doação?',
-      answer: 'Você pode doar qualquer valor através do LivePix. Basta acessar o link https://livepix.gg/eumarko ou escanear o QR Code disponível na página.'
+      question: t('donate.faq.q1'),
+      answer: t('donate.faq.a1')
     },
     {
       id: 2,
-      question: 'É seguro doar?',
-      answer: 'Sim! O LivePix é uma plataforma segura e confiável. Todas as transações são processadas de forma segura e protegida.'
+      question: t('donate.faq.q2'),
+      answer: t('donate.faq.a2')
     },
     {
       id: 3,
-      question: 'Posso doar qualquer valor?',
-      answer: 'Sim! Não há valor mínimo ou máximo. Qualquer contribuição é muito bem-vinda e apreciada!'
+      question: t('donate.faq.q3'),
+      answer: t('donate.faq.a3')
     },
     {
       id: 4,
-      question: 'Vou receber algo em troca?',
-      answer: 'Cada doador recebe nossa gratidão eterna! Também pode ter acesso a funcionalidades especiais.'
+      question: t('donate.faq.q4'),
+      answer: t('donate.faq.a4')
     }
   ];
 
@@ -148,7 +150,7 @@ const DonatePage = () => {
             <Link to="/">
               <Button variant="ghost" className="mb-6">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar
+                {t('common.back')}
               </Button>
             </Link>
           </motion.div>
@@ -165,10 +167,10 @@ const DonatePage = () => {
               </div>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
-              Apoie a plataforma de mods!
+              {t('donate.title')}
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Sua contribuição ajuda a manter o site, criar novos mods e continuar inovando para você!
+              {t('donate.subtitle')}
             </p>
           </motion.div>
 
@@ -180,10 +182,10 @@ const DonatePage = () => {
                     <div>
                       <CardTitle className="text-2xl mb-2 flex items-center gap-2">
                         <Coins className="h-6 w-6 text-primary" />
-                        Doar pelo LivePix
+                        {t('donate.card.title')}
                       </CardTitle>
                       <CardDescription>
-                        Abra o link ou escaneie o QR Code
+                        {t('donate.card.desc')}
                       </CardDescription>
                     </div>
                   </div>
@@ -200,7 +202,7 @@ const DonatePage = () => {
                     
                     <div className="w-full">
                       <p className="text-sm text-muted-foreground text-center mb-3">
-                        Escaneie com o app do seu banco ou clique no link abaixo
+                        {t('donate.qrHint')}
                       </p>
                       <div className="relative">
                         <a 
@@ -213,19 +215,19 @@ const DonatePage = () => {
                             {livepixUrl}
                           </div>
                         </a>
-                        <Button
-                          onClick={copyToClipboard}
-                          className="absolute top-2 right-2"
-                          size="sm"
-                          variant="outline"
-                        >
-                          {copied ? (
-                            <Check className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <Copy className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
+                    <Button
+                      onClick={copyToClipboard}
+                      className="absolute top-2 right-2"
+                      size="sm"
+                      variant="outline"
+                    >
+                      {copied ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                     </div>
                   </div>
                 </CardContent>
@@ -237,10 +239,10 @@ const DonatePage = () => {
                 <CardHeader>
                   <CardTitle className="text-2xl mb-2 flex items-center gap-2">
                     <Gift className="h-6 w-6 text-primary" />
-                    Por que doar?
+                    {t('donate.whyDonate.title')}
                   </CardTitle>
                   <CardDescription>
-                    Veja como sua contribuição faz diferença
+                    {t('donate.whyDonate.desc')}
                   </CardDescription>
                 </CardHeader>
                  <CardContent className="space-y-4">
@@ -273,7 +275,7 @@ const DonatePage = () => {
               <CardHeader>
                 <CardTitle className="text-2xl mb-4 flex items-center gap-2">
                   <MessageSquare className="h-6 w-6 text-primary" />
-                  Perguntas Frequentes
+                  {t('donate.faq.title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -330,10 +332,9 @@ const DonatePage = () => {
           <motion.div variants={itemVariants} className="text-center">
             <div className="p-8 rounded-xl bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 border border-primary/20">
               <Coffee className="h-12 w-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-2xl font-bold mb-2">Muito Obrigado!</h3>
+              <h3 className="text-2xl font-bold mb-2">{t('donate.thankYou.title')}</h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Cada contribuição, não importa o valor, nos ajuda a continuar criando conteúdos incríveis para vocês. 
-                Sua doação faz toda a diferença! ❤️
+                {t('donate.thankYou.desc')}
               </p>
             </div>
           </motion.div>
@@ -341,7 +342,7 @@ const DonatePage = () => {
           <motion.div variants={itemVariants} className="mt-8 text-center">
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <Globe className="h-4 w-4" />
-              <span>Suas doações ajudam a manter o site 100% gratuito para todos</span>
+              <span>{t('donate.footer')}</span>
             </div>
           </motion.div>
         </motion.div>

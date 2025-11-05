@@ -8,7 +8,8 @@ import {
   Shield, 
   Mail, 
   ArrowUp,
-  ExternalLink
+  ExternalLink,
+  Globe
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -67,7 +68,7 @@ const Footer = React.memo(() => {
           <div className="bg-muted/30 rounded-lg p-4">
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-3">
-                <h3 className="text-base font-semibold text-foreground">{t('footer.quickLinks')}</h3>
+                <h3 className="text-base font-semibold text-foreground flex items-center"><ExternalLink className="h-4 w-4 mr-2 text-primary" />{t('footer.quickLinks')}</h3>
                 <ul className="space-y-1.5">
                   <li>
                     <Link to="/" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
@@ -98,7 +99,7 @@ const Footer = React.memo(() => {
 
               {/* redes sociais */}
               <div className="space-y-3">
-                <h3 className="text-base font-semibold text-foreground">Redes Sociais</h3>
+                <h3 className="text-base font-semibold text-foreground flex items-center"><Globe className="h-4 w-4 mr-2 text-primary" />{t('footer.social')}</h3>
                 <ul className="space-y-1.5">
                   <li>
                     <a href="https://www.youtube.com/@eumarko" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-red-500 transition-colors duration-200 flex items-center touch-manipulation py-1">
@@ -121,7 +122,7 @@ const Footer = React.memo(() => {
                   <li>
                     <a href="https://eumarko.com/" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
                       <i className="fas fa-globe h-3 w-3 mr-2 flex-shrink-0"></i>
-                      Site Oficial
+                      {t('footer.officialSite')}
                     </a>
                   </li>
                 </ul>
@@ -129,7 +130,7 @@ const Footer = React.memo(() => {
 
               {/* suporte */}
               <div className="space-y-3">
-                <h3 className="text-base font-semibold text-foreground">{t('footer.support')}</h3>
+                <h3 className="text-base font-semibold text-foreground flex items-center"><Mail className="h-4 w-4 mr-2 text-primary" />{t('footer.support')}</h3>
                 <ul className="space-y-1.5">
                   <li>
                     <Link to="/contact" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
@@ -140,7 +141,7 @@ const Footer = React.memo(() => {
                   <li>
                     <Link to="/about" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
                       <Shield className="h-3 w-3 mr-2 flex-shrink-0" />
-                      Sobre Nós
+                      {t('footer.aboutUs')}
                     </Link>
                   </li>
                   <li>
@@ -154,18 +155,18 @@ const Footer = React.memo(() => {
 
               {/* legal */}
               <div className="space-y-3">
-                <h3 className="text-base font-semibold text-foreground">Legal</h3>
+                <h3 className="text-base font-semibold text-foreground flex items-center"><Shield className="h-4 w-4 mr-2 text-primary" />{t('footer.legal')}</h3>
                 <ul className="space-y-1.5">
                   <li>
                     <Link to="/terms" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
                       <Shield className="h-3 w-3 mr-2 flex-shrink-0" />
-                      Termos de Uso
+                      {t('footer.termsOfUse')}
                     </Link>
                   </li>
                   <li>
                     <Link to="/privacy-policy" className="text-xs text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center touch-manipulation py-1">
                       <Shield className="h-3 w-3 mr-2 flex-shrink-0" />
-                      Política de Privacidade
+                      {t('footer.privacyPolicy')}
                     </Link>
                   </li>
                 </ul>
@@ -203,7 +204,7 @@ const Footer = React.memo(() => {
           </div>
 
           <div className="space-y-4 max-w-xs">
-            <h3 className="text-lg font-semibold text-foreground">{t('footer.quickLinks')}</h3>
+            <h3 className="text-lg font-semibold text-foreground flex items-center"><ExternalLink className="h-4 w-4 mr-2 text-primary" />{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
@@ -233,7 +234,7 @@ const Footer = React.memo(() => {
           </div>
 
           <div className="space-y-4 max-w-xs">
-            <h3 className="text-lg font-semibold text-foreground">Redes Sociais</h3>
+            <h3 className="text-lg font-semibold text-foreground flex items-center"><Globe className="h-4 w-4 mr-2 text-primary" />{t('footer.social')}</h3>
             <ul className="space-y-2">
               <li>
                 <a href="https://www.youtube.com/@eumarko" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-red-500 transition-colors duration-200 flex items-center">
@@ -256,14 +257,14 @@ const Footer = React.memo(() => {
               <li>
                 <a href="https://eumarko.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
                   <i className="fas fa-globe h-3 w-3 mr-2"></i>
-                  Site Oficial
+                  {t('footer.officialSite')}
                 </a>
               </li>
             </ul>
           </div>
 
           <div className="space-y-4 max-w-xs">
-            <h3 className="text-lg font-semibold text-foreground">{t('footer.support')}</h3>
+            <h3 className="text-lg font-semibold text-foreground flex items-center"><Mail className="h-4 w-4 mr-2 text-primary" />{t('footer.support')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
@@ -274,7 +275,7 @@ const Footer = React.memo(() => {
               <li>
                 <Link to="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
                   <Shield className="h-3 w-3 mr-2" />
-                  Sobre Nós
+                  {t('footer.aboutUs')}
                 </Link>
               </li>
               <li>
@@ -287,18 +288,18 @@ const Footer = React.memo(() => {
           </div>
 
           <div className="space-y-4 max-w-xs">
-            <h3 className="text-lg font-semibold text-foreground">Legal</h3>
+            <h3 className="text-lg font-semibold text-foreground flex items-center"><Shield className="h-4 w-4 mr-2 text-primary" />{t('footer.legal')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
                   <Shield className="h-3 w-3 mr-2" />
-                  Termos de Uso
+                  {t('footer.termsOfUse')}
                 </Link>
               </li>
               <li>
                 <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200 flex items-center">
                   <Shield className="h-3 w-3 mr-2" />
-                  Política de Privacidade
+                  {t('footer.privacyPolicy')}
                 </Link>
               </li>
             </ul>

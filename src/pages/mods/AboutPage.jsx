@@ -173,14 +173,21 @@ const AboutPage = () => {
       className="min-h-screen py-6 sm:py-8"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <motion.div variants={itemVariants} className="text-center mb-8 sm:mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-full mb-4 sm:mb-6">
-            <Users className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-3 sm:mb-4">
+        <motion.div variants={itemVariants} className="text-center mb-12">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+            className="inline-block mb-4"
+          >
+            <div className="w-20 h-20 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center">
+              <Users className="h-10 w-10 text-white" />
+            </div>
+          </motion.div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             Sobre Nós
           </h1>
-          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             A plataforma oficial de mods criados pelo Marko!
           </p>
         </motion.div>

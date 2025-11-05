@@ -105,8 +105,8 @@ const ChangelogPage = () => {
             <History className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Changelog</h1>
-            <p className="text-muted-foreground">Registro técnico das mudanças no site e nos mods.</p>
+            <h1 className="text-3xl font-bold text-foreground">{t('changelog.title', 'Changelog')}</h1>
+            <p className="text-muted-foreground">{t('changelog.subtitle', 'Registro técnico das mudanças no site e nos mods.')}</p>
           </div>
         </div>
 

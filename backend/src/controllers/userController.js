@@ -17,7 +17,6 @@ export const getUserProfile = async (req, res) => {
       });
     }
 
-    // Remover informações sensíveis
     const { password_hash, ...userProfile } = user;
     
     res.json({

@@ -83,10 +83,10 @@ const LanguageSelector = () => {
         variant="ghost"
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
+        className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 lg:h-10 lg:w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
         title={t('language.title')}
       >
-        <Globe className="h-5 w-5" />
+        <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 lg:h-5 lg:w-5" />
       </Button>
 
       {isOpen && (

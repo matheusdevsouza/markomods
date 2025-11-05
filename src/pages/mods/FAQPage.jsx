@@ -39,8 +39,8 @@ const FAQPage = () => {
   const faqItems = [
     {
       id: 'what-is-markomods',
-      title: getTranslation('contact.faq.whatIsEuMarkoMods.title', 'O que é o Eu, Marko!?'),
-      content: getTranslation('contact.faq.whatIsEuMarkoMods.content', 'O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
+      title: getTranslation('faq.whatIsMarkoMods.title', 'O que é o Eu, Marko!?'),
+      content: getTranslation('faq.whatIsMarkoMods.content', 'O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
       category: 'geral',
       icon: HelpCircle
     },
@@ -164,6 +164,23 @@ const FAQPage = () => {
     { id: 'comunidade', name: getTranslation('faq.categories.community', 'Comunidade'), icon: Shield }
   ];
 
+  const categoryShortNames = {
+    'all': getTranslation('faq.categories.short.all', 'Todas'),
+    'geral': getTranslation('faq.categories.short.general', 'Geral'),
+    'conta': getTranslation('faq.categories.short.account', 'Conta'),
+    'mods': getTranslation('faq.categories.short.mods', 'Mods'),
+    'tecnico': getTranslation('faq.categories.short.technical', 'Téc.'),
+    'comunidade': getTranslation('faq.categories.short.community', 'Com.')
+  };
+
+  const categoryMap = {
+    'geral': 'general',
+    'conta': 'account',
+    'mods': 'mods',
+    'tecnico': 'technical',
+    'comunidade': 'community'
+  };
+
   const handleFaqToggle = (faqId) => {
     setExpandedFaq(expandedFaq === faqId ? null : faqId);
   };
@@ -182,19 +199,21 @@ const FAQPage = () => {
       className="min-h-screen"
     >
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="text-center mb-8 sm:mb-12">
+        <div className="text-center mb-12">
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-full mb-4 sm:mb-6"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+            className="inline-block mb-4"
           >
-            <HelpCircle className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+            <div className="w-20 h-20 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center">
+              <HelpCircle className="h-10 w-10 text-white" />
+            </div>
           </motion.div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-3 sm:mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             {getTranslation('faq.title', 'Perguntas Frequentes')}
           </h1>
-          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             {getTranslation('faq.subtitle', 'Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko!')}
           </p>
         </div>
@@ -224,12 +243,7 @@ const FAQPage = () => {
               <category.icon className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">{category.name}</span>
               <span className="sm:hidden">
-                {category.name === 'Todas' ? 'Todas' :
-                 category.name === 'Geral' ? 'Geral' :
-                 category.name === 'Conta' ? 'Conta' :
-                 category.name === 'Mods' ? 'Mods' :
-                 category.name === 'Técnico' ? 'Téc.' :
-                 category.name === 'Comunidade' ? 'Com.' : category.name}
+                {categoryShortNames[category.id] || category.name}
               </span>
             </Button>
           ))}
@@ -256,7 +270,7 @@ const FAQPage = () => {
                           <h3 className="text-sm sm:text-base lg:text-lg font-semibold leading-tight">{item.title}</h3>
                         </div>
                         <span className="px-2 py-1 text-xs bg-primary/10 text-primary rounded-full w-fit">
-                          {categories.find(cat => cat.id === item.category)?.name}
+                          {getTranslation(`faq.categories.${categoryMap[item.category] || item.category}`, categories.find(cat => cat.id === item.category)?.name)}
                         </span>
                       </div>
                     </div>

@@ -231,12 +231,11 @@ const AdminDashboardPage = () => {
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap mb-2">
-            <BarChart3 className="h-6 w-6 sm:h-8 sm:w-8" />
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             Dashboard Administrativo
           </h1>
           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
-            <p className="text-sm sm:text-base text-muted-foreground">
+            <p className="text-lg md:text-xl text-muted-foreground">
               Bem-vindo, {currentUser?.display_name || currentUser?.username}!
             </p>
             <Badge variant="outline" className="w-fit sm:ml-2">

@@ -184,11 +184,10 @@ const AdminChangelogsPage = () => {
         className="flex items-center justify-between mb-6"
       >
         <div>
-          <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap">
-            <Clock className="h-6 w-6 sm:h-8 sm:w-8" />
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             Changelogs
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
+          <p className="text-lg md:text-xl text-muted-foreground">
             Gerencie os registros de mudanças do site e mods
           </p>
         </div>

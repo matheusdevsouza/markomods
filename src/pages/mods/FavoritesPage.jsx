@@ -39,7 +39,7 @@ const FavoritesPage = () => {
       const token = localStorage.getItem('authToken');
       
       if (!token) {
-        setError('Token de autenticação não encontrado');
+        setError(t('favorites.errors.authTokenNotFound'));
         setLoading(false);
         return;
       }
@@ -56,10 +56,10 @@ const FavoritesPage = () => {
         setFavorites(data.data || []);
       } else {
         const errorData = await response.json();
-        setError(errorData.message || 'Erro ao carregar favoritos');
+        setError(errorData.message || t('favorites.errors.loadError'));
       }
     } catch (error) {
-      setError('Erro ao carregar favoritos');
+      setError(t('favorites.errors.loadError'));
     } finally {
       setLoading(false);
     }
@@ -80,11 +80,11 @@ const FavoritesPage = () => {
         const data = await response.json();
         if (!data.data.isFavorite) {
           setFavorites(prev => prev.filter(mod => mod.id !== modId));
-          toast.success('Mod removido dos favoritos!');
+          toast.success(t('favorites.removed'));
         }
       }
     } catch (error) {
-      toast.error('Erro ao remover favorito');
+      toast.error(t('favorites.errors.removeError'));
     }
   };
 
@@ -195,16 +195,16 @@ const FavoritesPage = () => {
           <div className="max-w-6xl mx-auto">
             <Card className="bg-card/50 backdrop-blur-sm border-border/50">
               <CardHeader className="p-4 sm:p-6">
-                <CardTitle className="text-xl sm:text-2xl font-minecraft text-primary">Erro ao Carregar Favoritos</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-minecraft text-primary">{t('favorites.errors.loadErrorTitle')}</CardTitle>
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
                 <p className="text-sm sm:text-base text-muted-foreground mb-4">{error}</p>
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                   <Button onClick={fetchFavorites} variant="outline" className="text-sm sm:text-base w-full sm:w-auto">
-                    Tentar Novamente
+                    {t('favorites.tryAgain')}
                   </Button>
                   <Button asChild className="text-sm sm:text-base w-full sm:w-auto">
-                    <Link to="/mods">Voltar para Mods</Link>
+                    <Link to="/mods">{t('favorites.backToMods')}</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -227,21 +227,22 @@ const FavoritesPage = () => {
           >
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
               <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-2">
-                  <Heart className="inline-block h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7 text-red-500 mr-2 align-[-2px]" />
-                  Meus Favoritos
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+                  {t('favorites.title')}
                 </h1>
-                <p className="text-sm sm:text-base text-muted-foreground">
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
                   {favorites.length === 0 
-                    ? 'Você ainda não tem mods favoritados'
-                    : `Você tem ${favorites.length} mod${favorites.length === 1 ? '' : 's'} favoritado${favorites.length === 1 ? '' : 's'}`
+                    ? t('favorites.subtitle.empty')
+                    : favorites.length === 1
+                      ? t('favorites.subtitle.count', { count: favorites.length })
+                      : t('favorites.subtitle.count_plural', { count: favorites.length })
                   }
                 </p>
               </div>
               <Button asChild variant="outline" className="text-primary hover:!text-primary hover:bg-primary/10 hover:border-primary/50 text-sm sm:text-base w-full sm:w-auto">
                 <Link to="/mods">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Voltar para Mods
+                  {t('favorites.backToMods')}
                 </Link>
               </Button>
             </div>
@@ -252,50 +253,50 @@ const FavoritesPage = () => {
                   <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Buscar por nome ou descrição"
+                    placeholder={t('favorites.searchPlaceholder')}
                     className="w-full rounded-md bg-muted/30 border border-border/40 px-3 py-2 text-sm sm:text-base outline-none focus:ring-2 focus:ring-primary/40"
                   />
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                  <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">Tipo:</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">{t('favorites.filters.type')}:</span>
                   <div className="inline-flex rounded-md border border-border/40 overflow-hidden">
                     <button
                       type="button"
                       onClick={() => setContentType('all')}
                       className={`px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm transition-colors ${'all'===contentType ? 'bg-primary text-primary-foreground' : 'bg-muted/20 text-foreground hover:bg-muted/30'}`}
-                    >Todos</button>
+                    >{t('favorites.filters.all')}</button>
                     <button
                       type="button"
                       onClick={() => setContentType('mods')}
                       className={`px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm transition-colors ${'mods'===contentType ? 'bg-primary text-primary-foreground' : 'bg-muted/20 text-foreground hover:bg-muted/30'}`}
-                    >Mods</button>
+                    >{t('favorites.filters.mods')}</button>
                     <button
                       type="button"
                       onClick={() => setContentType('addons')}
                       className={`px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm transition-colors ${'addons'===contentType ? 'bg-primary text-primary-foreground' : 'bg-muted/20 text-foreground hover:bg-muted/30'}`}
-                    >Addons</button>
+                    >{t('favorites.filters.addons')}</button>
                   </div>
                 </div>
 
                 <div>
                   <Select value={version} onValueChange={setVersion}>
                     <SelectTrigger className="w-full bg-muted/30 border border-border/40 text-sm sm:text-base">
-                      <SelectValue placeholder="Todas as versões" />
+                      <SelectValue placeholder={t('favorites.filters.allVersions')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>
                           {contentType === 'all' 
-                            ? 'Versão do Minecraft' 
+                            ? t('favorites.filters.minecraftVersion') 
                             : contentType === 'addons' 
-                              ? 'Versões de Addons' 
-                              : 'Versões de Mods'
+                              ? t('favorites.filters.addonVersions') 
+                              : t('favorites.filters.modVersions')
                           }
                         </SelectLabel>
                         {availableVersions.map(versionOption => (
                           <SelectItem key={versionOption} value={versionOption}>
-                            {versionOption === 'all' ? 'Todas as versões' : versionOption}
+                            {versionOption === 'all' ? t('favorites.filters.allVersions') : versionOption}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -306,14 +307,14 @@ const FavoritesPage = () => {
                 <div>
                   <Select value={order} onValueChange={setOrder}>
                     <SelectTrigger className="w-full bg-muted/30 border border-border/40 text-sm sm:text-base">
-                      <SelectValue placeholder="Ordenar por" />
+                      <SelectValue placeholder={t('favorites.filters.sortBy')} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Ordenação</SelectLabel>
-                        <SelectItem value="recent">Mais recentes</SelectItem>
-                        <SelectItem value="popular">Mais vistos</SelectItem>
-                        <SelectItem value="downloads">Mais baixados</SelectItem>
+                        <SelectLabel>{t('favorites.filters.sorting')}</SelectLabel>
+                        <SelectItem value="recent">{t('favorites.filters.mostRecent')}</SelectItem>
+                        <SelectItem value="popular">{t('favorites.filters.mostViewed')}</SelectItem>
+                        <SelectItem value="downloads">{t('favorites.filters.mostDownloaded')}</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -330,15 +331,15 @@ const FavoritesPage = () => {
               >
                 <Heart className="h-16 w-16 sm:h-24 sm:w-24 text-muted-foreground/30 mx-auto mb-4 sm:mb-6" />
                 <h3 className="text-xl sm:text-2xl font-semibold text-white mb-3 sm:mb-4">
-                  Nenhum Favorito Ainda
+                  {t('favorites.empty.title')}
                 </h3>
                 <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 max-w-md mx-auto px-4">
-                  Você ainda não favoritou nenhum mod. Explore nossa coleção e adicione seus mods favoritos!
+                  {t('favorites.empty.description')}
                 </p>
                 <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-sm sm:text-base w-full sm:w-auto">
                   <Link to="/mods">
                     <Package className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    Explorar Mods
+                    {t('favorites.empty.exploreMods')}
                   </Link>
                 </Button>
               </motion.div>

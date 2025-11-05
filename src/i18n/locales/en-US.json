@@ -23,8 +23,12 @@
     "settingsDesc": "Edit your profile",
     "helpDesc": "Support and tutorials",
     "changelogDesc": "What changed on the platform",
+    "contactDesc": "Get in touch with us",
+    "faqDesc": "Frequently asked questions",
     "logoutDesc": "End session",
-    "config": "Settings"
+    "config": "Settings",
+    "donate": "Donate",
+    "donateDesc": "Support the platform with a donation"
   },
   "home": {
     "hero": {
@@ -89,9 +93,15 @@
     "guidelines": "Guidelines",
     "partners": "Partners",
     "support": "Support",
+    "social": "Social Networks",
+    "legal": "Legal",
     "helpCenter": "Help Center",
     "contact": "Contact",
     "faq": "FAQ",
+    "aboutUs": "About Us",
+    "officialSite": "Official Site",
+    "termsOfUse": "Terms of Use",
+    "privacyPolicy": "Privacy Policy",
     "backToTop": "Back to Top",
     "allRightsReserved": "All rights reserved"
   },
@@ -296,14 +306,77 @@
     "title": "Get in Touch",
     "subtitle": "Have a question or suggestion? Contact us!",
     "form": {
+      "title": "Send a Message",
+      "description": "Fill out the form below and we'll get back to you soon",
       "name": "Name",
+      "namePlaceholder": "Your full name",
       "email": "Email",
+      "emailPlaceholder": "your@email.com",
       "subject": "Subject",
+      "subjectPlaceholder": "What is the subject of your message?",
       "message": "Message",
+      "messagePlaceholder": "Describe your question or suggestion...",
       "submit": "Send Message",
       "sending": "Sending...",
       "success": "Message sent successfully!",
       "error": "Error sending message. Please try again."
+    },
+    "methods": {
+      "email": {
+        "title": "Support Email",
+        "description": "Send us an email for technical support"
+      },
+      "discord": {
+        "title": "Discord",
+        "description": "Join our community on Discord",
+        "server": "Discord Server"
+      }
+    },
+    "info": {
+      "title": "Other Contact Methods",
+      "description": "Choose the most convenient method for you"
+    },
+    "additional": {
+      "title": "Important Information",
+      "responseTime": "We respond within 24 hours",
+      "support": "Free technical support",
+      "community": "Active community on Discord"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to the most common questions",
+      "categories": {
+        "general": "General",
+        "mods": "Mods",
+        "account": "Account",
+        "technical": "Technical"
+      },
+      "whatIsEuMarkoMods": {
+        "title": "What is Eu, Marko!?",
+        "content": "Eu, Marko! is our platform dedicated to our Minecraft mods, where you can discover, download and share all our mods already made. Our mission is to facilitate your access to our mods and create a vibrant community of players."
+      },
+      "howToRegister": {
+        "title": "How do I register?",
+        "content": "To register, click the \"Register\" button in the top right corner of the page. Fill out the form with your username, email and password. After confirming your email, you will have full access to the platform."
+      },
+      "howToDownload": {
+        "title": "How to download mods?",
+        "content": "Browse our mod library, find what you like and click the \"Download\" button. You need to be logged in to download mods. After downloading, follow the specific installation instructions for each mod."
+      },
+      "howToInstall": {
+        "title": "How to install mods?",
+        "content": "Installation varies depending on the mod and mod loader (Forge, Fabric, etc.). Generally, you need to: 1) Install the appropriate mod loader, 2) Download the mod, 3) Place the .jar file in your Minecraft \"mods\" folder."
+      },
+      "modIssues": {
+        "title": "What to do if a mod doesn't work?",
+        "content": "First, check if you have the correct version of the mod loader and Minecraft. Confirm that all dependencies are installed. If the problem persists, check the mod's comments section or contact us."
+      }
+    },
+    "stillNeedHelp": {
+      "title": "Still have questions?",
+      "description": "Our support team is here to help. Contact us through the channels above or check out our complete documentation.",
+      "contactSupport": "Contact Support",
+      "viewDocumentation": "View Documentation"
     }
   },
   "achievements": {
@@ -496,17 +569,41 @@
     }
   },
   "favorites": {
-    "title": "My Favorite Mods",
-    "subtitle": "Your saved and most downloaded mods in one place",
+    "title": "My Favorites",
+    "subtitle": {
+      "empty": "You don't have any favorited mods yet",
+      "count": "You have {{count}} favorited mod",
+      "count_plural": "You have {{count}} favorited mods"
+    },
     "loading": "Loading your favorites...",
     "restrictedAccess": "Restricted Access",
     "loginRequired": "Log in to see your favorite mods",
     "login": "Log In",
-    "search": {
-      "placeholder": "Search in favorites..."
-    },
+    "backToMods": "Back to Mods",
+    "tryAgain": "Try Again",
+    "removed": "Mod removed from favorites!",
+    "searchPlaceholder": "Search by name or description",
     "filters": {
+      "type": "Type",
+      "all": "All",
+      "mods": "Mods",
+      "addons": "Addons",
+      "allVersions": "All versions",
+      "minecraftVersion": "Minecraft Version",
+      "addonVersions": "Addon Versions",
+      "modVersions": "Mod Versions",
+      "sortBy": "Sort by",
+      "sorting": "Sorting",
+      "mostRecent": "Most recent",
+      "mostViewed": "Most viewed",
+      "mostDownloaded": "Most downloaded",
       "allCategories": "All Categories"
+    },
+    "errors": {
+      "authTokenNotFound": "Authentication token not found",
+      "loadError": "Error loading favorites",
+      "loadErrorTitle": "Error Loading Favorites",
+      "removeError": "Error removing favorite"
     },
     "stats": {
       "totalFavorites": "Total Favorites",
@@ -523,8 +620,8 @@
       "viewDetails": "View Details"
     },
     "empty": {
-      "title": "No favorite mods yet",
-      "description": "Explore our mod library and mark your favorites to find them easily here",
+      "title": "No Favorites Yet",
+      "description": "You haven't favorited any mods yet. Explore our collection and add your favorite mods!",
       "exploreMods": "Explore Mods"
     },
     "toast": {
@@ -541,10 +638,11 @@
     "restrictedAccess": "Restricted Access",
     "loginRequired": "Log in to see your download history",
     "login": "Log In",
-    "search": {
-      "placeholder": "Search in downloads..."
-    },
+    "totalDownloads": "Total Downloads",
+    "searchPlaceholder": "Search in your downloads...",
     "filters": {
+      "periodPlaceholder": "Filter by period",
+      "typePlaceholder": "Filter by type",
       "periods": {
         "all": "All Period",
         "today": "Today",
@@ -556,6 +654,21 @@
         "public": "Public",
         "premium": "Premium"
       }
+    },
+    "clearFilters": "Clear",
+    "yourDownloads": "Your Downloads ({{count}})",
+    "update": "Update",
+    "notAvailable": "N/A",
+    "noDescription": "No description available",
+    "dateNotAvailable": "Date not available",
+    "timeNotAvailable": "Time not available",
+    "downloadCompleted": "Download completed",
+    "viewMod": "View Mod",
+    "downloadAgain": "Download Again",
+    "noResults": {
+      "title": "No results found",
+      "filteredDescription": "Try adjusting the filters to find your downloads",
+      "noDownloadsDescription": "There are no downloads to display at the moment"
     },
     "stats": {
       "totalDownloads": "Total Downloads",
@@ -764,5 +877,375 @@
       "title": "No mods found",
       "description": "Try adjusting the filters or using different search terms."
     }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to the most common questions about Eu, Marko!",
+    "searchPlaceholder": "Search frequently asked questions...",
+    "categories": {
+      "all": "All",
+      "general": "General",
+      "account": "Account",
+      "mods": "Mods",
+      "technical": "Technical",
+      "community": "Community",
+      "short": {
+        "all": "All",
+        "general": "General",
+        "account": "Account",
+        "mods": "Mods",
+        "technical": "Tech.",
+        "community": "Comm."
+      }
+    },
+    "whatIsMarkoMods": {
+      "title": "What is Eu, Marko!?",
+      "content": "Eu, Marko! is our platform dedicated to our Minecraft mods, where you can discover, download and share all our mods already made. Our mission is to facilitate your access to our mods and create a vibrant community of players."
+    },
+    "howToStart": {
+      "title": "How to start using Eu, Marko!?",
+      "content": "To get started:\n\n1) Create a free account\n2) Explore our mod library\n3) Download mods that interest you\n4) Install following our instructions\n\nIt's simple and free!"
+    },
+    "isFree": {
+      "title": "Is Eu, Marko! free?",
+      "content": "Yes! Eu, Marko! is completely free. You can create an account, download mods, favorite and use all features at no cost."
+    },
+    "howToRegister": {
+      "title": "How do I register?",
+      "content": "Click \"Register\" in the top right corner, fill out the form with your name, email and password. After confirming your email, you will have full access to the platform."
+    },
+    "resetPassword": {
+      "title": "How to reset my password?",
+      "content": "On the login page, click \"Forgot my password\". Enter your email and you will receive a link to reset your password. Follow the instructions in the email."
+    },
+    "updateProfile": {
+      "title": "How to update my profile?",
+      "content": "Access your dashboard by clicking on your avatar. In the \"Profile\" section, you can update your personal information, photo and preferences."
+    },
+    "howToDownload": {
+      "title": "How to download mods?",
+      "content": "Browse the library, find mods that interest you and click \"Download\". You need to be logged in. After downloading, follow the installation instructions."
+    },
+    "howToInstall": {
+      "title": "How to install mods?",
+      "content": "Installation varies by mod and mod loader (Forge, Fabric, etc.).\n\nGenerally:\n\n1) Install the appropriate mod loader\n2) Download the mod\n3) Place the .jar file in the Minecraft \"mods\" folder"
+    },
+    "favoriteMods": {
+      "title": "How to favorite mods?",
+      "content": "Click the heart icon on the mod card or on the details page. Favorite mods appear in your \"Favorites\" section on the dashboard."
+    },
+    "findMods": {
+      "title": "How to find specific mods?",
+      "content": "Use our search bar to search by name, category or keywords. You can also filter by Minecraft version, mod loader or popularity."
+    },
+    "modCompatibility": {
+      "title": "How to check compatibility?",
+      "content": "Each mod has detailed compatibility information, including Minecraft version, required mod loader and dependencies. Always check before installing."
+    },
+    "systemRequirements": {
+      "title": "What are the system requirements?",
+      "content": "To use Eu, Marko!: Minecraft Java Edition, Java 8 or higher, internet connection and modern browser. For specific mods, check individual requirements."
+    },
+    "modIssues": {
+      "title": "What to do if a mod doesn't work?",
+      "content": "First, check if you have the correct version of the mod loader and Minecraft. Confirm that all dependencies are installed. If the problem persists, check the mod's comments section or contact us."
+    },
+    "modLoader": {
+      "title": "Which mod loader to use?",
+      "content": "The choice depends on the mod. Forge is the most popular and compatible with most mods. Fabric is more modern and performant. Quilt is an alternative to Fabric. Check which one is recommended for the desired mod."
+    },
+    "communityGuidelines": {
+      "title": "What are the community guidelines?",
+      "content": "Our community values respect, collaboration and creativity. Be respectful to other users, share appropriate content, give credit to creators and help other members."
+    },
+    "reportMod": {
+      "title": "How to report a problematic mod?",
+      "content": "Use the \"Report\" button on the mod page. Our moderation team will review the case and take appropriate action."
+    },
+    "stillNeedHelp": {
+      "title": "Didn't find your answer?",
+      "description": "Our support team is here to help. Contact us through the channels below.",
+      "email": "Send Email",
+      "discord": "Discord"
+    }
+  },
+  "changelog": {
+    "title": "Changelog",
+    "subtitle": "Technical record of changes on the site and in the mods."
+  },
+  "donate": {
+    "title": "Support the mods platform!",
+    "subtitle": "Your contribution helps keep the site running, create new mods, and keep innovating for you!",
+    "card": {
+      "title": "Donate via LivePix",
+      "desc": "Open the link or scan the QR Code",
+      "open": "Open LivePix"
+    },
+    "copySuccess": "LivePix link copied!",
+    "qrHint": "Scan with your bank app or click the link below",
+    "whyDonate": {
+      "title": "Why donate?",
+      "desc": "See how your contribution makes a difference"
+    },
+    "benefits": {
+      "1": { "title": "Help Keep the Site Running", "desc": "Your donations help keep the site and continue creating awesome mods!" },
+      "2": { "title": "Support Development", "desc": "Support the development of new mods." },
+      "3": { "title": "Free Mods", "desc": "All my mods are free. If you want to help keep this alive, any donation makes a difference. ❤️" },
+      "4": { "title": "Sneak Peek of Future Mods", "desc": "Receive spoilers of mods in development and participate in polls to decide the next mod!" },
+      "5": { "title": "Community", "desc": "Get access to an exclusive channel for donors on our Discord." }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": "How does the donation work?",
+      "a1": "You can donate any amount through LivePix. Just access https://livepix.gg/eumarko or scan the QR Code on the page.",
+      "q2": "Is it safe to donate?",
+      "a2": "Yes! LivePix is a secure and reliable platform. All transactions are processed safely and securely.",
+      "q3": "Can I donate any amount?",
+      "a3": "Yes! There is no minimum or maximum. Any contribution is very welcome and appreciated!",
+      "q4": "Will I receive something in return?",
+      "a4": "Each donor receives our eternal gratitude! Soon, new systems will bring features and special benefits. 💜"
+    },
+    "thankYou": {
+      "title": "Thank You Very Much!",
+      "desc": "Every contribution, no matter the amount, helps us continue creating incredible content for you. Your donation makes all the difference! ❤️"
+    },
+    "footer": "Your donations help keep the site 100% free for everyone"
+  },
+  "terms": {
+    "title": "Terms of Use",
+    "subtitle": "The rules for using our Marko mods platform",
+    "introduction": {
+      "title": "Introduction",
+      "subtitle": "Hello! These terms explain how you can use our mods platform.",
+      "content": "These terms explain how you can use the \"Me, Marko!\" platform to download and use our amazing mods. By using our site, you agree to follow these rules. If you don't agree with something, just don't use the site."
+    },
+    "section1": {
+      "title": "Acceptance of Terms",
+      "content": "By accessing and using the \"Me, Marko!\" platform, you agree to follow these Terms of Use. If you don't agree with these terms, don't use the site.",
+      "details": [
+        "Using the site means you automatically accept the terms",
+        "These terms apply to all users",
+        "You must accept to use the platform"
+      ]
+    },
+    "section2": {
+      "title": "Use of the Site",
+      "content": "You agree to use the site only for legal purposes and in accordance with these terms. You must not use the site in a way that could harm or damage its operation.",
+      "details": [
+        "Use only for legal purposes",
+        "Cannot damage or overload the system",
+        "Respect other users of the platform",
+        "Do not interfere with the site's operation"
+      ]
+    },
+    "section3": {
+      "title": "User Content",
+      "content": "If you submit comments or other content, you give us permission to use, reproduce and distribute that content.",
+      "details": [
+        "Worldwide and non-exclusive permission",
+        "We may modify and adapt the content",
+        "You remain the owner of your content",
+        "Content cannot violate other people's rights"
+      ]
+    },
+    "section4": {
+      "title": "Intellectual Property",
+      "content": "The site and all mods available here belong to Marko! They are original creations made with great care.",
+      "details": [
+        "The site belongs to Me, Marko!",
+        "All mods are original creations by Marko",
+        "Each mod is made thinking about players' fun",
+        "We respect Minecraft and Mojang's rights"
+      ]
+    },
+    "section5": {
+      "title": "Disclaimer of Warranties",
+      "content": "Our mods are made with great care, but we cannot guarantee they will work perfectly in all cases.",
+      "details": [
+        "We test all mods before making them available",
+        "But each computer is different",
+        "You use the mods at your own risk",
+        "If there's a problem, let us know and we'll try to help!"
+      ]
+    },
+    "section6": {
+      "title": "Limitation of Liability",
+      "content": "If something goes wrong with your mods or computer, we cannot be responsible for the damages.",
+      "details": [
+        "We are not responsible for damage to your computer",
+        "We are not responsible for data loss",
+        "We are not responsible for problems with other mods",
+        "You assume all risks when using our mods"
+      ]
+    },
+    "section7": {
+      "title": "Changes to Terms",
+      "content": "We may change these terms when necessary. If you continue using the site, it means you accept the changes.",
+      "details": [
+        "We may update the terms when needed",
+        "We will notify about important changes",
+        "Continuing to use = accepting the changes",
+        "Changes can happen at any time"
+      ]
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "Have any questions about these terms? Contact us!",
+      "email": "Email",
+      "website": "Website",
+      "responsible": "Responsible",
+      "responsibleName": "Me, Marko!"
+    },
+    "lastUpdate": "Last update"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "subtitle": "Understand how we collect, use, and protect your personal information",
+    "section1": {
+      "title": "Information We Collect",
+      "subtitle": "We collect information you provide directly and information we collect automatically when you use our services.",
+      "subsection1": {
+        "title": "Information you provide us:",
+        "items": [
+          {
+            "label": "Account data",
+            "description": "Username, email address, password, and profile information"
+          },
+          {
+            "label": "Comments",
+            "description": "Comments and ratings you leave on mods"
+          },
+          {
+            "label": "Communications",
+            "description": "Emails you send us for contact"
+          }
+        ]
+      },
+      "subsection2": {
+        "title": "Automatically collected information:",
+        "items": [
+          {
+            "label": "Usage data",
+            "description": "Downloads made and favorited mods"
+          },
+          {
+            "label": "Technical information",
+            "description": "IP address, browser type, operating system"
+          },
+          {
+            "label": "Cookies",
+            "description": "We use cookies to improve your experience and analyze site usage"
+          }
+        ]
+      }
+    },
+    "section2": {
+      "title": "How We Use Your Information",
+      "subtitle": "We use your information to provide and improve our services",
+      "items": [
+        "Provide access to mods and site functionalities",
+        "Process downloads and manage your user account",
+        "Allow comments and ratings on mods",
+        "Maintain download and favorites history",
+        "Ensure platform security",
+        "Respond to contact emails"
+      ]
+    },
+    "section3": {
+      "title": "Information Sharing",
+      "subtitle": "We do not sell your personal information. We only share it in the situations described below.",
+      "items": [
+        {
+          "title": "Public comments",
+          "description": "Your comments on mods are visible to other users"
+        },
+        {
+          "title": "Legal obligations",
+          "description": "When required by law or to protect rights"
+        },
+        {
+          "title": "Consent",
+          "description": "When you give us explicit permission"
+        }
+      ]
+    },
+    "section4": {
+      "title": "Data Security",
+      "subtitle": "We implement technical and organizational security measures to protect your information",
+      "items": [
+        "SSL/TLS encryption for data transmission",
+        "Passwords encrypted with secure hash",
+        "Restricted access to personal data",
+        "Regular security monitoring",
+        "Secure data backups",
+        "Periodic security audits"
+      ]
+    },
+    "section5": {
+      "title": "Cookies and Similar Technologies",
+      "subtitle": "We use cookies to improve your experience and analyze site usage",
+      "items": [
+        {
+          "type": "Essential cookies",
+          "desc": "Necessary for basic site functionality",
+          "color": "bg-red-500"
+        },
+        {
+          "type": "Functionality cookies",
+          "desc": "To remember your preferences",
+          "color": "bg-blue-500"
+        },
+        {
+          "type": "Analytical cookies",
+          "desc": "To understand how you use our site",
+          "color": "bg-green-500"
+        },
+        {
+          "type": "Marketing cookies",
+          "desc": "To personalize ads (when applicable)",
+          "color": "bg-purple-500"
+        }
+      ],
+      "manageCookies": "You can manage your cookie preferences through your browser settings."
+    },
+    "section6": {
+      "title": "Your Rights",
+      "subtitle": "You have rights over your personal information according to GDPR/LGPD",
+      "items": [
+        {
+          "right": "Access",
+          "desc": "See what data we have about you"
+        },
+        {
+          "right": "Correction",
+          "desc": "Correct incorrect information in your profile"
+        },
+        {
+          "right": "Deletion",
+          "desc": "Request removal of your account and data"
+        },
+        {
+          "right": "Download",
+          "desc": "Download your data in a readable format"
+        },
+        {
+          "right": "Opposition",
+          "desc": "Object to the use of your data"
+        },
+        {
+          "right": "Contact",
+          "desc": "Contact us to exercise your rights"
+        }
+      ]
+    },
+    "section7": {
+      "title": "Contact",
+      "subtitle": "If you have questions about this Privacy Policy, please contact us",
+      "email": "Email",
+      "website": "Website",
+      "responsible": "Responsible",
+      "responsibleName": "Me, Marko!"
+    },
+    "lastUpdate": "Last update"
   }
 }

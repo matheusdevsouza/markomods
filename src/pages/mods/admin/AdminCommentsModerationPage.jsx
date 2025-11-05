@@ -265,11 +265,10 @@ const AdminCommentsModerationPage = () => {
         transition={{ duration: 0.5 }}
       >
         <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap">
-            <Shield className="h-6 w-6 sm:h-8 sm:w-8" />
+          <CardTitle className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             {t('modDetail.comments')}
           </CardTitle>
-          <p className="text-sm sm:text-base text-muted-foreground">
+          <p className="text-lg md:text-xl text-muted-foreground">
             Gerencie comentários pendentes, aprovados e rejeitados. Mantenha a qualidade da comunidade.
           </p>
         </CardHeader>

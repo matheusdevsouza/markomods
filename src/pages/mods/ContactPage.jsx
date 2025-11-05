@@ -32,31 +32,31 @@ const ContactPage = () => {
       id: 'what-is-markomods',
       title: getTranslation('contact.faq.whatIsEuMarkoMods.title', 'O que é o Eu, Marko!?'),
       content: getTranslation('contact.faq.whatIsEuMarkoMods.content', 'O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
-      category: 'Geral'
+      category: getTranslation('contact.faq.categories.general', 'Geral')
     },
     {
       id: 'how-to-download',
       title: getTranslation('contact.faq.howToDownload.title', 'Como baixar mods?'),
       content: getTranslation('contact.faq.howToDownload.content', 'Navegue pela nossa biblioteca de mods, encontre o que você gosta e clique no botão "Baixar". Você precisa estar logado para baixar mods. Após o download, siga as instruções de instalação específicas de cada mod.'),
-      category: 'Mods'
+      category: getTranslation('contact.faq.categories.mods', 'Mods')
     },
     {
       id: 'how-to-install',
       title: getTranslation('contact.faq.howToInstall.title', 'Como instalar mods?'),
       content: getTranslation('contact.faq.howToInstall.content', 'A instalação varia dependendo do mod e do mod loader (Forge, Fabric, etc.). Geralmente, você precisa: 1) Instalar o mod loader apropriado, 2) Baixar o mod, 3) Colocar o arquivo .jar na pasta "mods" do seu Minecraft.'),
-      category: 'Mods'
+      category: getTranslation('contact.faq.categories.mods', 'Mods')
     },
     {
       id: 'how-to-register',
       title: getTranslation('contact.faq.howToRegister.title', 'Como me registrar?'),
       content: getTranslation('contact.faq.howToRegister.content', 'Para se registrar, clique no botão "Registrar" no canto superior direito da página. Preencha o formulário com seu nome de usuário, email e senha. Após confirmar seu email, você terá acesso completo à plataforma.'),
-      category: 'Conta'
+      category: getTranslation('contact.faq.categories.account', 'Conta')
     },
     {
       id: 'mod-issues',
       title: getTranslation('contact.faq.modIssues.title', 'O que fazer se um mod não funcionar?'),
       content: getTranslation('contact.faq.modIssues.content', 'Primeiro, verifique se você tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte a seção de comentários do mod ou entre em contato conosco.'),
-      category: 'Técnico'
+      category: getTranslation('contact.faq.categories.technical', 'Técnico')
     }
   ];
 
@@ -96,19 +96,21 @@ const ContactPage = () => {
       className="min-h-screen"
     >
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="text-center mb-8 sm:mb-12">
+        <div className="text-center mb-12">
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-full mb-4 sm:mb-6"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+            className="inline-block mb-4"
           >
-            <MessageSquare className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+            <div className="w-20 h-20 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center">
+              <MessageSquare className="h-10 w-10 text-white" />
+            </div>
           </motion.div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-3 sm:mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             {getTranslation('contact.title', 'Entre em Contato')}
           </h1>
-          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             {getTranslation('contact.subtitle', 'Tem alguma dúvida ou sugestão? Entre em contato conosco!')}
           </p>
         </div>

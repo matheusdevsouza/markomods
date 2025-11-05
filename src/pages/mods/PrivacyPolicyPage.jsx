@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from '@/hooks/useTranslation';
 import { 
   Shield, 
   ArrowLeft, 
@@ -44,6 +45,8 @@ const itemVariants = {
 };
 
 const PrivacyPolicyPage = () => {
+  const { t } = useTranslation();
+  
   return (
     <motion.div
       initial="hidden"
@@ -52,22 +55,29 @@ const PrivacyPolicyPage = () => {
       className="min-h-screen"
     >
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <motion.div variants={itemVariants} className="text-center mb-8 sm:mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-full mb-4 sm:mb-6">
-            <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-3 sm:mb-4">
-            Política de Privacidade
+        <motion.div variants={itemVariants} className="text-center mb-12">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 10 }}
+            className="inline-block mb-4"
+          >
+            <div className="w-20 h-20 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center">
+              <Shield className="h-10 w-10 text-white" />
+            </div>
+          </motion.div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+            {t('privacy.title')}
           </h1>
-          <p className="text-sm sm:text-base lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
-            Entenda como coletamos, usamos e protegemos suas informações pessoais
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+            {t('privacy.subtitle')}
           </p>
         </motion.div>
 
         <motion.div variants={itemVariants} className="mb-6 max-w-4xl mx-auto">
           <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar
+            {t('common.back')}
           </Link>
         </motion.div>
 
@@ -78,64 +88,44 @@ const PrivacyPolicyPage = () => {
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
                   <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                  1. Informações que Coletamos
+                  1. {t('privacy.section1.title')}
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Coletamos informações que você nos dá diretamente e informações que coletamos automaticamente quando você usa nossos serviços.
+                  {t('privacy.section1.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
                 <div>
                   <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
                     <FileText className="w-4 h-4 text-accent" />
-                    1.1 Informações que você nos fornece:
+                    1.1 {t('privacy.section1.subsection1.title')}
                   </h3>
                   <div className="space-y-2">
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="font-medium">Dados de conta:</span> Nome de usuário, endereço de e-mail, senha e informações de perfil
+                    {(t('privacy.section1.subsection1.items', { returnObjects: true }) || []).map((item, index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="font-medium">{item.label}:</span> {item.description}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="font-medium">Comentários:</span> Comentários e avaliações que você deixa nos mods
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="font-medium">Comunicações:</span> Emails que você nos envia para contato
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
 
                 <div>
                   <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
                     <Database className="w-4 h-4 text-accent" />
-                    1.2 Informações coletadas automaticamente:
+                    1.2 {t('privacy.section1.subsection2.title')}
                   </h3>
                   <div className="space-y-2">
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="font-medium">Dados de uso:</span> Downloads realizados e mods favoritados
+                    {(t('privacy.section1.subsection2.items', { returnObjects: true }) || []).map((item, index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="font-medium">{item.label}:</span> {item.description}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="font-medium">Informações técnicas:</span> Endereço IP, tipo de navegador, sistema operacional
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <span className="font-medium">Cookies:</span> Utilizamos cookies para melhorar sua experiência e analisar o uso do site
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
@@ -147,22 +137,15 @@ const PrivacyPolicyPage = () => {
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
                   <Database className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                  2. Como Utilizamos suas Informações
+                  2. {t('privacy.section2.title')}
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Utilizamos suas informações para fornecer e melhorar nossos serviços
+                  {t('privacy.section2.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    'Fornecer acesso aos mods e funcionalidades do site',
-                    'Processar downloads e gerenciar sua conta de usuário',
-                    'Permitir comentários e avaliações nos mods',
-                    'Manter histórico de downloads e favoritos',
-                    'Garantir a segurança da plataforma',
-                    'Responder a emails de contato'
-                  ].map((item, index) => (
+                  {(t('privacy.section2.items', { returnObjects: true }) || []).map((item, index) => (
                     <div key={index} className="flex items-start gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                       <span className="text-sm sm:text-base">{item}</span>
@@ -178,29 +161,25 @@ const PrivacyPolicyPage = () => {
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
                   <Users className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                  3. Compartilhamento de Informações
+                  3. {t('privacy.section3.title')}
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Não vendemos suas informações pessoais. Compartilhamos apenas nas situações descritas abaixo.
+                  {t('privacy.section3.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-transparent rounded-lg border border-border/30">
-                    <Users className="w-8 h-8 text-primary mx-auto mb-2" />
-                    <h3 className="font-semibold mb-1">Comentários públicos</h3>
-                    <p className="text-xs text-muted-foreground">Seus comentários nos mods são visíveis para outros usuários</p>
-                  </div>
-                  <div className="text-center p-4 bg-transparent rounded-lg border border-border/30">
-                    <Shield className="w-8 h-8 text-primary mx-auto mb-2" />
-                    <h3 className="font-semibold mb-1">Obrigações legais</h3>
-                    <p className="text-xs text-muted-foreground">Quando exigido por lei ou para proteger direitos</p>
-                  </div>
-                  <div className="text-center p-4 bg-transparent rounded-lg border border-border/30">
-                    <CheckCircle className="w-8 h-8 text-primary mx-auto mb-2" />
-                    <h3 className="font-semibold mb-1">Consentimento</h3>
-                    <p className="text-xs text-muted-foreground">Quando você nos dá permissão explícita</p>
-                  </div>
+                  {(t('privacy.section3.items', { returnObjects: true }) || []).map((item, index) => {
+                    const icons = [Users, Shield, CheckCircle];
+                    const Icon = icons[index];
+                    return (
+                      <div key={index} className="text-center p-4 bg-transparent rounded-lg border border-border/30">
+                        <Icon className="w-8 h-8 text-primary mx-auto mb-2" />
+                        <h3 className="font-semibold mb-1">{item.title}</h3>
+                        <p className="text-xs text-muted-foreground">{item.description}</p>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -211,22 +190,15 @@ const PrivacyPolicyPage = () => {
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
                   <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                  4. Segurança dos Dados
+                  4. {t('privacy.section4.title')}
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Implementamos medidas de segurança técnicas e organizacionais para proteger suas informações
+                  {t('privacy.section4.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[
-                    'Criptografia SSL/TLS para transmissão de dados',
-                    'Senhas criptografadas com hash seguro',
-                    'Acesso restrito aos dados pessoais',
-                    'Monitoramento regular de segurança',
-                    'Backups seguros dos dados',
-                    'Auditorias de segurança periódicas'
-                  ].map((item, index) => (
+                  {(t('privacy.section4.items', { returnObjects: true }) || []).map((item, index) => (
                     <div key={index} className="flex items-start gap-2 p-3 bg-transparent rounded-lg border border-border/30">
                       <Shield className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                       <span className="text-sm">{item}</span>
@@ -242,20 +214,15 @@ const PrivacyPolicyPage = () => {
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
                   <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                  5. Cookies e Tecnologias Similares
+                  5. {t('privacy.section5.title')}
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Utilizamos cookies para melhorar sua experiência e analisar o uso do site
+                  {t('privacy.section5.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0">
                 <div className="space-y-4">
-                  {[
-                    { type: 'Cookies essenciais', desc: 'Necessários para o funcionamento básico do site', color: 'bg-red-500' },
-                    { type: 'Cookies de funcionalidade', desc: 'Para lembrar suas preferências', color: 'bg-blue-500' },
-                    { type: 'Cookies analíticos', desc: 'Para entender como você usa nosso site', color: 'bg-green-500' },
-                    { type: 'Cookies de marketing', desc: 'Para personalizar anúncios (quando aplicável)', color: 'bg-purple-500' }
-                  ].map((cookie, index) => (
+                  {(t('privacy.section5.items', { returnObjects: true }) || []).map((cookie, index) => (
                     <div key={index} className="flex items-start gap-3 p-3 bg-transparent rounded-lg border border-border/30">
                       <div className={`w-3 h-3 rounded-full ${cookie.color} mt-1.5 flex-shrink-0`}></div>
                       <div>
@@ -268,7 +235,7 @@ const PrivacyPolicyPage = () => {
                 <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
                   <p className="text-sm text-muted-foreground">
                     <Info className="w-4 h-4 inline mr-1" />
-                    Você pode gerenciar suas preferências de cookies através das configurações do seu navegador.
+                    {t('privacy.section5.manageCookies')}
                   </p>
                 </div>
               </CardContent>
@@ -280,22 +247,15 @@ const PrivacyPolicyPage = () => {
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
                   <Users className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                  6. Seus Direitos
+                  6. {t('privacy.section6.title')}
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Você tem direitos sobre suas informações pessoais conforme a LGPD
+                  {t('privacy.section6.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    { right: 'Acesso', desc: 'Ver quais dados temos sobre você' },
-                    { right: 'Correção', desc: 'Corrigir informações incorretas no seu perfil' },
-                    { right: 'Exclusão', desc: 'Solicitar a remoção de sua conta e dados' },
-                    { right: 'Download', desc: 'Baixar seus dados em formato legível' },
-                    { right: 'Oposição', desc: 'Se opor ao uso de seus dados' },
-                    { right: 'Contato', desc: 'Entrar em contato para exercer seus direitos' }
-                  ].map((item, index) => (
+                  {(t('privacy.section6.items', { returnObjects: true }) || []).map((item, index) => (
                     <div key={index} className="p-3 bg-transparent rounded-lg border border-border/30">
                       <h3 className="font-semibold text-sm text-primary mb-1">{item.right}</h3>
                       <p className="text-xs text-muted-foreground">{item.desc}</p>
@@ -311,17 +271,17 @@ const PrivacyPolicyPage = () => {
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
                   <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                  7. Contato
+                  7. {t('privacy.section7.title')}
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco
+                  {t('privacy.section7.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-4 sm:p-6 pt-0">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-transparent rounded-lg border border-border/30 hover:bg-primary/10 hover:border-primary/30 hover:scale-[1.02] transition-all duration-300 group">
                     <Mail className="w-8 h-8 text-primary mx-auto mb-2 group-hover:scale-110 transition-transform duration-300" />
-                    <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors duration-300">Email</h3>
+                    <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors duration-300">{t('privacy.section7.email')}</h3>
                     <p className="text-sm text-muted-foreground">
                       <a href="mailto:contact@eumarko.com" className="text-primary hover:text-primary/80">
                         contact@eumarko.com
@@ -330,7 +290,7 @@ const PrivacyPolicyPage = () => {
                   </div>
                   <div className="text-center p-4 bg-transparent rounded-lg border border-border/30 hover:bg-primary/10 hover:border-primary/30 hover:scale-[1.02] transition-all duration-300 group">
                     <Globe className="w-8 h-8 text-primary mx-auto mb-2 group-hover:scale-110 transition-transform duration-300" />
-                    <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors duration-300">Site</h3>
+                    <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors duration-300">{t('privacy.section7.website')}</h3>
                     <p className="text-sm text-muted-foreground">
                       <a href="https://eumarko.com" className="text-primary hover:text-primary/80">
                         eumarko.com
@@ -340,7 +300,7 @@ const PrivacyPolicyPage = () => {
                 </div>
                 <div className="mt-4 text-center">
                   <p className="text-sm text-muted-foreground">
-                    <strong>Responsável:</strong> Eu, Marko! 
+                    <strong>{t('privacy.section7.responsible')}:</strong> {t('privacy.section7.responsibleName')}
                   </p>
                 </div>
               </CardContent>
@@ -351,7 +311,7 @@ const PrivacyPolicyPage = () => {
             <div className="text-center p-4 bg-card/50 rounded-lg border border-border/30">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Calendar className="w-5 h-5 text-primary" />
-                <span className="font-semibold text-primary">Última atualização:</span>
+                <span className="font-semibold text-primary">{t('privacy.lastUpdate')}:</span>
               </div>
               <p className="text-muted-foreground">{new Date().toLocaleDateString('pt-BR')}</p>
             </div>

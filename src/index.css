@@ -219,7 +219,7 @@
 }
 
 .minecraft-input {
-  @apply bg-input border-2 border-border focus:border-primary focus:ring-primary rounded-none shadow-inner;
+  @apply bg-input border-2 border-border focus:border-primary focus:ring-primary shadow-inner;
   font-family: var(--font-body);
 }
 

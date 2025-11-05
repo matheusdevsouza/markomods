@@ -23,8 +23,12 @@
     "settingsDesc": "Editar o seu perfil",
     "helpDesc": "Suporte e tutoriais",
     "changelogDesc": "O que mudou na plataforma",
+    "contactDesc": "Entre em contacto connosco",
+    "faqDesc": "Perguntas frequentes",
     "logoutDesc": "Terminar sessão",
-    "config": "Configurações"
+    "config": "Configurações",
+    "donate": "Doar",
+    "donateDesc": "Apoie a plataforma com uma doação"
   },
   "home": {
     "hero": {
@@ -89,9 +93,15 @@
     "guidelines": "Diretrizes",
     "partners": "Parceiros",
     "support": "Suporte",
+    "social": "Redes Sociais",
+    "legal": "Legal",
     "helpCenter": "Centro de Ajuda",
     "contact": "Contacto",
     "faq": "FAQ",
+    "aboutUs": "Sobre Nós",
+    "officialSite": "Site Oficial",
+    "termsOfUse": "Termos de Uso",
+    "privacyPolicy": "Política de Privacidade",
     "backToTop": "Voltar ao Topo",
     "allRightsReserved": "Todos os direitos reservados"
   },
@@ -296,14 +306,77 @@
     "title": "Entre em Contacto",
     "subtitle": "Tem alguma dúvida ou sugestão? Entre em contacto connosco!",
     "form": {
+      "title": "Envie uma Mensagem",
+      "description": "Preencha o formulário abaixo e entraremos em contacto em breve",
       "name": "Nome",
+      "namePlaceholder": "O seu nome completo",
       "email": "E-mail",
+      "emailPlaceholder": "seu@email.com",
       "subject": "Assunto",
+      "subjectPlaceholder": "Qual é o assunto da sua mensagem?",
       "message": "Mensagem",
+      "messagePlaceholder": "Descreva a sua dúvida ou sugestão...",
       "submit": "Enviar Mensagem",
       "sending": "A enviar...",
       "success": "Mensagem enviada com sucesso!",
       "error": "Erro ao enviar mensagem. Tente novamente."
+    },
+    "methods": {
+      "email": {
+        "title": "Email de Suporte",
+        "description": "Envie-nos um email para suporte técnico"
+      },
+      "discord": {
+        "title": "Discord",
+        "description": "Junte-se à nossa comunidade no Discord",
+        "server": "Servidor Discord"
+      }
+    },
+    "info": {
+      "title": "Outras Formas de Contacto",
+      "description": "Escolha a forma mais conveniente para si"
+    },
+    "additional": {
+      "title": "Informações Importantes",
+      "responseTime": "Respondemos em até 24 horas",
+      "support": "Suporte técnico gratuito",
+      "community": "Comunidade ativa no Discord"
+    },
+    "faq": {
+      "title": "Perguntas Frequentes",
+      "subtitle": "Encontre respostas para as dúvidas mais comuns",
+      "categories": {
+        "general": "Geral",
+        "mods": "Mods",
+        "account": "Conta",
+        "technical": "Técnico"
+      },
+      "whatIsEuMarkoMods": {
+        "title": "O que é o Eu, Marko!?",
+        "content": "O Eu, Marko! é a nossa plataforma dedicada aos nossos mods para Minecraft, onde pode descobrir, transferir e partilhar todos os nossos mods já feitos. A nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores."
+      },
+      "howToRegister": {
+        "title": "Como me registar?",
+        "content": "Para se registar, clique no botão \"Registar\" no canto superior direito da página. Preencha o formulário com o seu nome de utilizador, email e palavra-passe. Após confirmar o seu email, terá acesso completo à plataforma."
+      },
+      "howToDownload": {
+        "title": "Como transferir mods?",
+        "content": "Navegue pela nossa biblioteca de mods, encontre o que gosta e clique no botão \"Transferir\". Precisa de estar com sessão iniciada para transferir mods. Após a transferência, siga as instruções de instalação específicas de cada mod."
+      },
+      "howToInstall": {
+        "title": "Como instalar mods?",
+        "content": "A instalação varia consoante o mod e o mod loader (Forge, Fabric, etc.). Geralmente, precisa de: 1) Instalar o mod loader apropriado, 2) Transferir o mod, 3) Colocar o ficheiro .jar na pasta \"mods\" do seu Minecraft."
+      },
+      "modIssues": {
+        "title": "O que fazer se um mod não funcionar?",
+        "content": "Primeiro, verifique se tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte a secção de comentários do mod ou contacte-nos."
+      }
+    },
+    "stillNeedHelp": {
+      "title": "Ainda tem dúvidas?",
+      "description": "A nossa equipa de suporte está aqui para ajudar. Entre em contacto connosco através dos canais acima ou consulte a nossa documentação completa.",
+      "contactSupport": "Contactar Suporte",
+      "viewDocumentation": "Ver Documentação"
     }
   },
   "achievements": {
@@ -496,17 +569,41 @@
     }
   },
   "favorites": {
-    "title": "Os Meus Mods Favoritos",
-    "subtitle": "Os vossos mods guardados e mais descarregados num só local",
+    "title": "Os Meus Favoritos",
+    "subtitle": {
+      "empty": "Ainda não tem mods favoritos",
+      "count": "Tem {{count}} mod favorito",
+      "count_plural": "Tem {{count}} mods favoritos"
+    },
     "loading": "A carregar os vossos favoritos...",
     "restrictedAccess": "Acesso Restrito",
     "loginRequired": "Faça login para ver os vossos mods favoritos",
     "login": "Fazer Login",
-    "search": {
-      "placeholder": "Pesquisar nos favoritos..."
-    },
+    "backToMods": "Voltar para Mods",
+    "tryAgain": "Tentar Novamente",
+    "removed": "Mod removido dos favoritos!",
+    "searchPlaceholder": "Pesquisar por nome ou descrição",
     "filters": {
+      "type": "Tipo",
+      "all": "Todos",
+      "mods": "Mods",
+      "addons": "Addons",
+      "allVersions": "Todas as versões",
+      "minecraftVersion": "Versão do Minecraft",
+      "addonVersions": "Versões de Addons",
+      "modVersions": "Versões de Mods",
+      "sortBy": "Ordenar por",
+      "sorting": "Ordenação",
+      "mostRecent": "Mais recentes",
+      "mostViewed": "Mais vistos",
+      "mostDownloaded": "Mais descarregados",
       "allCategories": "Todas as Categorias"
+    },
+    "errors": {
+      "authTokenNotFound": "Token de autenticação não encontrado",
+      "loadError": "Erro ao carregar favoritos",
+      "loadErrorTitle": "Erro ao Carregar Favoritos",
+      "removeError": "Erro ao remover favorito"
     },
     "stats": {
       "totalFavorites": "Total de Favoritos",
@@ -523,8 +620,8 @@
       "viewDetails": "Ver Detalhes"
     },
     "empty": {
-      "title": "Ainda não tem mods favoritos",
-      "description": "Explore a nossa biblioteca de mods e marque os vossos favoritos para os encontrar facilmente aqui",
+      "title": "Nenhum Favorito Ainda",
+      "description": "Ainda não marcou nenhum mod como favorito. Explore a nossa coleção e adicione os vossos mods favoritos!",
       "exploreMods": "Explorar Mods"
     },
     "toast": {
@@ -541,10 +638,11 @@
     "restrictedAccess": "Acesso Restrito",
     "loginRequired": "Faça login para ver o seu histórico de descarregamentos",
     "login": "Fazer Login",
-    "search": {
-      "placeholder": "Pesquisar nos descarregamentos..."
-    },
+    "totalDownloads": "Total de Descarregamentos",
+    "searchPlaceholder": "Pesquisar nos seus descarregamentos...",
     "filters": {
+      "periodPlaceholder": "Filtrar por período",
+      "typePlaceholder": "Filtrar por tipo",
       "periods": {
         "all": "Todo o Período",
         "today": "Hoje",
@@ -556,6 +654,21 @@
         "public": "Públicos",
         "premium": "Premium"
       }
+    },
+    "clearFilters": "Limpar",
+    "yourDownloads": "Os Seus Descarregamentos ({{count}})",
+    "update": "Atualizar",
+    "notAvailable": "N/A",
+    "noDescription": "Sem descrição disponível",
+    "dateNotAvailable": "Data não disponível",
+    "timeNotAvailable": "Hora não disponível",
+    "downloadCompleted": "Descarregamento concluído",
+    "viewMod": "Ver Mod",
+    "downloadAgain": "Descarregar Novamente",
+    "noResults": {
+      "title": "Nenhum resultado encontrado",
+      "filteredDescription": "Tente ajustar os filtros para encontrar os seus descarregamentos",
+      "noDownloadsDescription": "Não há descarregamentos para exibir no momento"
     },
     "stats": {
       "totalDownloads": "Total de Descarregamentos",
@@ -764,5 +877,375 @@
       "title": "Nenhum mod encontrado",
       "description": "Tente ajustar os filtros ou usar termos de pesquisa diferentes."
     }
+  },
+  "faq": {
+    "title": "Perguntas Frequentes",
+    "subtitle": "Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko!",
+    "searchPlaceholder": "Pesquisar nas perguntas frequentes...",
+    "categories": {
+      "all": "Todas",
+      "general": "Geral",
+      "account": "Conta",
+      "mods": "Mods",
+      "technical": "Técnico",
+      "community": "Comunidade",
+      "short": {
+        "all": "Todas",
+        "general": "Geral",
+        "account": "Conta",
+        "mods": "Mods",
+        "technical": "Téc.",
+        "community": "Com."
+      }
+    },
+    "whatIsMarkoMods": {
+      "title": "O que é o Eu, Marko!?",
+      "content": "O Eu, Marko! é a nossa plataforma dedicada aos nossos mods para Minecraft, onde pode descobrir, transferir e partilhar todos os nossos mods já feitos. A nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores."
+    },
+    "howToStart": {
+      "title": "Como começar a usar o Eu, Marko!?",
+      "content": "Para começar:\n\n1) Crie uma conta gratuita\n2) Explore a nossa biblioteca de mods\n3) Transfira mods que o interessem\n4) Instale seguindo as nossas instruções\n\nÉ simples e gratuito!"
+    },
+    "isFree": {
+      "title": "O Eu, Marko! é gratuito?",
+      "content": "Sim! O Eu, Marko! é completamente gratuito. Pode criar uma conta, transferir mods, favoritear e usar todas as funcionalidades sem custo algum."
+    },
+    "howToRegister": {
+      "title": "Como me registar?",
+      "content": "Clique em \"Registar\" no canto superior direito, preencha o formulário com o seu nome, email e palavra-passe. Após confirmar o seu email, terá acesso completo à plataforma."
+    },
+    "resetPassword": {
+      "title": "Como redefinir a minha palavra-passe?",
+      "content": "Na página de início de sessão, clique em \"Esqueci a minha palavra-passe\". Digite o seu email e receberá um link para redefinir a sua palavra-passe. Siga as instruções no email."
+    },
+    "updateProfile": {
+      "title": "Como atualizar o meu perfil?",
+      "content": "Aceda ao seu painel clicando no seu avatar. Na secção \"Perfil\", pode atualizar as suas informações pessoais, foto e preferências."
+    },
+    "howToDownload": {
+      "title": "Como transferir mods?",
+      "content": "Navegue pela biblioteca, encontre mods que o interessem e clique em \"Transferir\". Precisa de estar com sessão iniciada. Após a transferência, siga as instruções de instalação."
+    },
+    "howToInstall": {
+      "title": "Como instalar mods?",
+      "content": "A instalação varia consoante o mod e o mod loader (Forge, Fabric, etc.).\n\nGeralmente:\n\n1) Instale o mod loader apropriado\n2) Transfira o mod\n3) Coloque o ficheiro .jar na pasta \"mods\" do Minecraft"
+    },
+    "favoriteMods": {
+      "title": "Como favoritear mods?",
+      "content": "Clique no ícone de coração no cartão do mod ou na página de detalhes. Os mods favoritos aparecem na sua secção \"Favoritos\" no painel."
+    },
+    "findMods": {
+      "title": "Como encontrar mods específicos?",
+      "content": "Use a nossa barra de pesquisa para procurar por nome, categoria ou palavras-chave. Também pode filtrar por versão do Minecraft, mod loader ou popularidade."
+    },
+    "modCompatibility": {
+      "title": "Como verificar compatibilidade?",
+      "content": "Cada mod tem informações detalhadas sobre compatibilidade, incluindo versão do Minecraft, mod loader necessário e dependências. Sempre verifique antes de instalar."
+    },
+    "systemRequirements": {
+      "title": "Quais são os requisitos do sistema?",
+      "content": "Para usar o Eu, Marko!: Minecraft Java Edition, Java 8 ou superior, ligação à internet e navegador moderno. Para mods específicos, consulte os requisitos individuais."
+    },
+    "modIssues": {
+      "title": "O que fazer se um mod não funcionar?",
+      "content": "Primeiro, verifique se tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte a secção de comentários do mod ou contacte-nos."
+    },
+    "modLoader": {
+      "title": "Qual mod loader usar?",
+      "content": "A escolha depende do mod. O Forge é o mais popular e compatível com a maioria dos mods. O Fabric é mais moderno e performático. O Quilt é uma alternativa ao Fabric. Verifique qual é o recomendado para o mod desejado."
+    },
+    "communityGuidelines": {
+      "title": "Quais são as diretrizes da comunidade?",
+      "content": "A nossa comunidade valoriza respeito, colaboração e criatividade. Seja respeitoso com outros utilizadores, partilhe conteúdo apropriado, dê crédito aos criadores e ajude outros membros."
+    },
+    "reportMod": {
+      "title": "Como reportar um mod problemático?",
+      "content": "Use o botão \"Reportar\" na página do mod. A nossa equipa de moderação analisará o caso e tomará as medidas apropriadas."
+    },
+    "stillNeedHelp": {
+      "title": "Não encontrou a sua resposta?",
+      "description": "A nossa equipa de suporte está aqui para ajudar. Entre em contacto connosco através dos canais abaixo.",
+      "email": "Enviar Email",
+      "discord": "Discord"
+    }
+  },
+  "changelog": {
+    "title": "Changelog",
+    "subtitle": "Registo técnico das alterações no site e nos mods."
+  },
+  "donate": {
+    "title": "Apoie a plataforma de mods!",
+    "subtitle": "A sua contribuição ajuda a manter o site, criar novos mods e continuar a inovar para si!",
+    "card": {
+      "title": "Doar pelo LivePix",
+      "desc": "Abra o link ou leia o QR Code",
+      "open": "Abrir LivePix"
+    },
+    "copySuccess": "Link do LivePix copiado!",
+    "qrHint": "Leia com a app do seu banco ou clique no link abaixo",
+    "whyDonate": {
+      "title": "Por que doar?",
+      "desc": "Veja como a sua contribuição faz a diferença"
+    },
+    "benefits": {
+      "1": { "title": "Ajude a Manter o Site", "desc": "As suas doações ajudam a manter o site e a continuar a criar mods incríveis!" },
+      "2": { "title": "Suporte ao Desenvolvimento", "desc": "Apoie o desenvolvimento de novos mods." },
+      "3": { "title": "Mods Gratuitos", "desc": "Todos os meus mods são gratuitos. Se quiser ajudar a manter isto vivo, qualquer doação faz a diferença. ❤️" },
+      "4": { "title": "Espia de Futuros Mods", "desc": "Receba spoilers de mods em desenvolvimento e participe em inquéritos para decidir o próximo mod!" },
+      "5": { "title": "Comunidade", "desc": "Tenha acesso a um canal exclusivo para doadores no nosso Discord." }
+    },
+    "faq": {
+      "title": "Perguntas Frequentes",
+      "q1": "Como funciona a doação?",
+      "a1": "Pode doar qualquer valor através do LivePix. Basta aceder a https://livepix.gg/eumarko ou ler o QR Code disponível na página.",
+      "q2": "É seguro doar?",
+      "a2": "Sim! O LivePix é uma plataforma segura e fiável. Todas as transações são processadas de forma segura e protegida.",
+      "q3": "Posso doar qualquer valor?",
+      "a3": "Sim! Não há valor mínimo ou máximo. Qualquer contribuição é muito bem-vinda e apreciada!",
+      "q4": "Vou receber algo em troca?",
+      "a4": "Cada doador recebe a nossa gratidão eterna! Em breve, novos sistemas vão trazer funcionalidades e benefícios especiais. 💜"
+    },
+    "thankYou": {
+      "title": "Muito Obrigado!",
+      "desc": "Cada contribuição, não importa o valor, ajuda-nos a continuar a criar conteúdos incríveis para vocês. A sua doação faz toda a diferença! ❤️"
+    },
+    "footer": "As suas doações ajudam a manter o site 100% gratuito para todos"
+  },
+  "terms": {
+    "title": "Termos de Uso",
+    "subtitle": "As regras para usar a nossa plataforma de mods do Marko",
+    "introduction": {
+      "title": "Introdução",
+      "subtitle": "Olá! Estes termos explicam como pode usar a nossa plataforma de mods.",
+      "content": "Estes termos explicam como pode usar a plataforma \"Eu, Marko!\" para descarregar e usar os nossos mods incríveis. Ao usar o nosso site, concorda em seguir estas regras. Se não concordar com algo, basta não usar o site."
+    },
+    "section1": {
+      "title": "Aceitação dos Termos",
+      "content": "Ao aceder e usar a plataforma \"Eu, Marko!\", concorda em seguir estes Termos de Uso. Se não concordar com estes termos, não use o site.",
+      "details": [
+        "Usar o site significa que aceita os termos automaticamente",
+        "Estes termos aplicam-se a todos os utilizadores",
+        "Precisa aceitar para usar a plataforma"
+      ]
+    },
+    "section2": {
+      "title": "Uso do Site",
+      "content": "Concorda em usar o site apenas para fins legais e de acordo com estes termos. Não deve usar o site de forma que possa prejudicar ou danificar o funcionamento.",
+      "details": [
+        "Use apenas para fins legais",
+        "Não pode danificar ou sobrecarregar o sistema",
+        "Respeite outros utilizadores da plataforma",
+        "Não interfira no funcionamento do site"
+      ]
+    },
+    "section3": {
+      "title": "Conteúdo do Utilizador",
+      "content": "Se enviar comentários ou outro conteúdo, dá-nos permissão para usar, reproduzir e distribuir esse conteúdo.",
+      "details": [
+        "Permissão mundial e não exclusiva",
+        "Podemos modificar e adaptar o conteúdo",
+        "Continua a ser dono do seu conteúdo",
+        "O conteúdo não pode violar direitos de outras pessoas"
+      ]
+    },
+    "section4": {
+      "title": "Propriedade Intelectual",
+      "content": "O site e todos os mods disponíveis aqui pertencem ao Marko! São criações originais feitas com muito carinho.",
+      "details": [
+        "O site pertence ao Eu, Marko!",
+        "Todos os mods são criações originais do Marko",
+        "Cada mod é feito pensando na diversão dos jogadores",
+        "Respeitamos os direitos do Minecraft e Mojang"
+      ]
+    },
+    "section5": {
+      "title": "Isenção de Garantias",
+      "content": "Os nossos mods são feitos com muito carinho, mas não podemos garantir que funcionarão perfeitamente em todos os casos.",
+      "details": [
+        "Testamos todos os mods antes de disponibilizar",
+        "Mas cada computador é diferente",
+        "Usa os mods por sua conta e risco",
+        "Se houver problema, avise-nos que tentamos ajudar!"
+      ]
+    },
+    "section6": {
+      "title": "Limitação de Responsabilidade",
+      "content": "Se algo correr mal com os seus mods ou computador, não podemos ser responsáveis pelos danos.",
+      "details": [
+        "Não somos responsáveis por danos no seu computador",
+        "Não somos responsáveis por perda de dados",
+        "Não somos responsáveis por problemas com outros mods",
+        "Assume todos os riscos ao usar os nossos mods"
+      ]
+    },
+    "section7": {
+      "title": "Alterações nos Termos",
+      "content": "Podemos mudar estes termos quando necessário. Se continuar a usar o site, significa que aceita as mudanças.",
+      "details": [
+        "Podemos atualizar os termos quando precisar",
+        "Avisaremos sobre mudanças importantes",
+        "Continuar a usar = aceitar as mudanças",
+        "Mudanças podem acontecer a qualquer momento"
+      ]
+    },
+    "contact": {
+      "title": "Contacto",
+      "subtitle": "Tem alguma dúvida sobre estes termos? Entre em contacto connosco!",
+      "email": "Email",
+      "website": "Sítio Web",
+      "responsible": "Responsável",
+      "responsibleName": "Eu, Marko!"
+    },
+    "lastUpdate": "Última atualização"
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "subtitle": "Entenda como recolhemos, usamos e protegemos as suas informações pessoais",
+    "section1": {
+      "title": "Informações que Recolhemos",
+      "subtitle": "Recolhemos informações que nos fornece diretamente e informações que recolhemos automaticamente quando utiliza os nossos serviços.",
+      "subsection1": {
+        "title": "Informações que nos fornece:",
+        "items": [
+          {
+            "label": "Dados de conta",
+            "description": "Nome de utilizador, endereço de e-mail, palavra-passe e informações de perfil"
+          },
+          {
+            "label": "Comentários",
+            "description": "Comentários e avaliações que deixa nos mods"
+          },
+          {
+            "label": "Comunicações",
+            "description": "E-mails que nos envia para contacto"
+          }
+        ]
+      },
+      "subsection2": {
+        "title": "Informações recolhidas automaticamente:",
+        "items": [
+          {
+            "label": "Dados de uso",
+            "description": "Descarregamentos realizados e mods favoritos"
+          },
+          {
+            "label": "Informações técnicas",
+            "description": "Endereço IP, tipo de navegador, sistema operativo"
+          },
+          {
+            "label": "Cookies",
+            "description": "Utilizamos cookies para melhorar a sua experiência e analisar o uso do sítio"
+          }
+        ]
+      }
+    },
+    "section2": {
+      "title": "Como Utilizamos as suas Informações",
+      "subtitle": "Utilizamos as suas informações para fornecer e melhorar os nossos serviços",
+      "items": [
+        "Fornecer acesso aos mods e funcionalidades do sítio",
+        "Processar descarregamentos e gerir a sua conta de utilizador",
+        "Permitir comentários e avaliações nos mods",
+        "Manter histórico de descarregamentos e favoritos",
+        "Garantir a segurança da plataforma",
+        "Responder a e-mails de contacto"
+      ]
+    },
+    "section3": {
+      "title": "Partilha de Informações",
+      "subtitle": "Não vendemos as suas informações pessoais. Apenas as partilhamos nas situações descritas abaixo.",
+      "items": [
+        {
+          "title": "Comentários públicos",
+          "description": "Os seus comentários nos mods são visíveis para outros utilizadores"
+        },
+        {
+          "title": "Obrigações legais",
+          "description": "Quando exigido por lei ou para proteger direitos"
+        },
+        {
+          "title": "Consentimento",
+          "description": "Quando nos dá permissão explícita"
+        }
+      ]
+    },
+    "section4": {
+      "title": "Segurança dos Dados",
+      "subtitle": "Implementamos medidas de segurança técnicas e organizacionais para proteger as suas informações",
+      "items": [
+        "Criptografia SSL/TLS para transmissão de dados",
+        "Palavras-passe criptografadas com hash seguro",
+        "Acesso restrito aos dados pessoais",
+        "Monitorização regular de segurança",
+        "Cópias de segurança seguras dos dados",
+        "Auditorias de segurança periódicas"
+      ]
+    },
+    "section5": {
+      "title": "Cookies e Tecnologias Similares",
+      "subtitle": "Utilizamos cookies para melhorar a sua experiência e analisar o uso do sítio",
+      "items": [
+        {
+          "type": "Cookies essenciais",
+          "desc": "Necessários para o funcionamento básico do sítio",
+          "color": "bg-red-500"
+        },
+        {
+          "type": "Cookies de funcionalidade",
+          "desc": "Para lembrar as suas preferências",
+          "color": "bg-blue-500"
+        },
+        {
+          "type": "Cookies analíticos",
+          "desc": "Para entender como utiliza o nosso sítio",
+          "color": "bg-green-500"
+        },
+        {
+          "type": "Cookies de marketing",
+          "desc": "Para personalizar anúncios (quando aplicável)",
+          "color": "bg-purple-500"
+        }
+      ],
+      "manageCookies": "Pode gerir as suas preferências de cookies através das configurações do seu navegador."
+    },
+    "section6": {
+      "title": "Os seus Direitos",
+      "subtitle": "Tem direitos sobre as suas informações pessoais conforme o RGPD/LGPD",
+      "items": [
+        {
+          "right": "Acesso",
+          "desc": "Ver quais dados temos sobre si"
+        },
+        {
+          "right": "Correção",
+          "desc": "Corrigir informações incorretas no seu perfil"
+        },
+        {
+          "right": "Eliminação",
+          "desc": "Solicitar a remoção da sua conta e dados"
+        },
+        {
+          "right": "Descarregamento",
+          "desc": "Descarregar os seus dados em formato legível"
+        },
+        {
+          "right": "Oposição",
+          "desc": "Opor-se ao uso dos seus dados"
+        },
+        {
+          "right": "Contacto",
+          "desc": "Contactar-nos para exercer os seus direitos"
+        }
+      ]
+    },
+    "section7": {
+      "title": "Contacto",
+      "subtitle": "Se tiver dúvidas sobre esta Política de Privacidade, contacte-nos",
+      "email": "Email",
+      "website": "Sítio Web",
+      "responsible": "Responsável",
+      "responsibleName": "Eu, Marko!"
+    },
+    "lastUpdate": "Última atualização"
   }
 }

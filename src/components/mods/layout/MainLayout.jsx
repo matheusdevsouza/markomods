@@ -1,6 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useThemeMods } from '@/contexts/ThemeContextMods';
 import { useAuth } from '@/contexts/AuthContextMods';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -43,95 +44,244 @@ const Header = React.memo(() => {
   const { currentUser, logout, isAuthenticated } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const { scrollY } = useScroll();
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY || window.pageYOffset;
+      setIsScrolled(scrollPosition > 50);
+    };
+    
+    const unsubscribe = scrollY.on('change', (latest) => {
+      setIsScrolled(latest > 50);
+    });
+    
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    
+    return () => {
+      unsubscribe();
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrollY]);
+  
+  const headerOpacity = useTransform(scrollY, [0, 100], [0.95, 0.98]);
+  const headerBlurValue = useTransform(scrollY, [0, 100], [8, 12]);
+  
   const handleLogout = async () => {
     await logout();
     navigate('/');
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-16">
-        <div className="max-w-none flex h-16 sm:h-18 md:h-20 items-center justify-between">
-          <Link to="/" className="flex items-center flex-shrink-0">
-            <img 
-              src="/markomods-logo2.png" 
-              alt="MarkoMods Logo" 
-              className={`h-8 sm:h-9 md:h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer ${
-                theme === 'dark' 
-                  ? 'brightness-75 contrast-125' 
-                  : 'brightness-100 contrast-100'
-              }`} 
-            />
-          </Link>
-          
-          {/* barra de busca */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
-            <div className="w-full">
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                const searchTerm = e.target.search.value.trim();
-                if (searchTerm) {
-                  navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
-                }
-              }} className="relative flex items-center">
-                <Search className="absolute left-3 text-muted-foreground h-4 w-4 pointer-events-none" />
-                <Input
-                  name="search"
-                  type="text"
-                  placeholder={t('mods.search.placeholder')}
-                  className="pl-10 pr-12 w-full minecraft-input bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground/70"
+      <motion.header
+        className={`fixed top-0 left-0 right-0 z-50 w-full bg-background/95 supports-[backdrop-filter]:bg-background/60 transition-colors duration-300 ${
+          isMobile 
+            ? (isScrolled ? 'border-primary/30' : 'border-border/40')
+            : (isScrolled ? 'border-b border-primary/30' : '')
+        }`}
+        style={{
+          opacity: headerOpacity,
+          backdropFilter: useTransform(headerBlurValue, (val) => `blur(${val}px)`),
+          WebkitBackdropFilter: useTransform(headerBlurValue, (val) => `blur(${val}px)`),
+        }}
+        animate={{
+          boxShadow: isScrolled
+            ? '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 30px rgba(106, 80, 190, 0.25), 0 0 60px rgba(106, 80, 190, 0.15)'
+            : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 30,
+          mass: 0.8
+        }}
+      >
+      {/* divisor superior do header - apenas mobile */}
+      <motion.div 
+        className={`w-full border-b border-border/40 ${isMobile ? '' : 'hidden'}`}
+        animate={{
+          opacity: isScrolled ? 0.95 : 1,
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 30,
+        }}
+      />
+      <motion.div 
+        className="w-full"
+        animate={{
+          paddingTop: isMobile && !isScrolled ? '0.75rem' : isMobile ? '0.5rem' : '0',
+          paddingLeft: isScrolled 
+            ? '0.5rem'
+            : isMobile ? '0.75rem' : 'clamp(0.75rem, 1vw + 0.5rem, 4rem)',
+          paddingRight: isScrolled 
+            ? '0.5rem'
+            : isMobile ? '0.75rem' : 'clamp(0.75rem, 1vw + 0.5rem, 4rem)',
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 30,
+          mass: 0.8
+        }}
+      >
+        <motion.div 
+          className="w-full flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2"
+          animate={{
+            minHeight: isScrolled 
+              ? isMobile ? '2.75rem' : '3.5rem'
+              : isMobile ? '3rem' : '4rem',
+          }}
+          transition={{
+            type: 'spring',
+            stiffness: 300,
+            damping: 30,
+            mass: 0.8
+          }}
+        >
+          {/* Primeira linha: Logo e botões (mobile) / Logo, Searchbar centralizado e botões (desktop) */}
+          <div className="flex items-center justify-between w-full md:flex-1 gap-2">
+            <motion.div
+              animate={{
+                scale: isScrolled 
+                  ? isMobile ? 0.92 : 0.95
+                  : 1,
+                opacity: isScrolled ? 0.9 : 1,
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 300,
+                damping: 30,
+              }}
+              className="flex-shrink-0"
+            >
+              <Link to="/" className="flex items-center flex-shrink-0">
+                <motion.img 
+                  src="/markomods-logo2.png" 
+                  alt="MarkoMods Logo" 
+                  className={`h-7 sm:h-8 md:h-9 lg:h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer ${
+                    theme === 'dark' 
+                      ? 'brightness-75 contrast-125' 
+                      : 'brightness-100 contrast-100'
+                  }`}
+                  animate={{
+                    filter: isScrolled ? 'brightness(0.9)' : 'brightness(1)',
+                  }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 30,
+                  }}
                 />
-                <Button 
-                  type="submit"
-                  className="absolute right-0 h-full px-3 bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-l border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm rounded-l-none"
-                  size="sm"
-                >
-                  <Search className="h-4 w-4" />
-                </Button>
-              </form>
-            </div>
-          </div>
-
-          {/* botões da direita */}
-          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
+              </Link>
+            </motion.div>
+            
+            {/* barra de busca - visível apenas em desktop, centralizada */}
+            <motion.div 
+              className="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8"
+              animate={{
+                opacity: isScrolled ? 0.9 : 1,
+                scale: isScrolled ? 0.98 : 1,
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 300,
+                damping: 30,
+              }}
+            >
+              <div className="w-full">
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const searchTerm = e.target.search.value.trim();
+                  if (searchTerm) {
+                    navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+                  }
+                }} className="relative flex items-center">
+                  <Search className="absolute left-3 text-muted-foreground h-4 w-4 pointer-events-none z-10" />
+                  <Input
+                    name="search"
+                    type="text"
+                    placeholder={t('mods.search.placeholder')}
+                    className="pl-10 pr-12 w-full minecraft-input bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground/70 !rounded-lg text-sm md:text-base h-9 md:h-10"
+                  />
+                  <Button 
+                    type="submit"
+                    className="absolute right-0 h-full px-3 bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-l border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm rounded-r-lg"
+                    size="sm"
+                  >
+                    <Search className="h-4 w-4" />
+                  </Button>
+                </form>
+              </div>
+            </motion.div>
+            
+            {/* botões da direita - sempre visíveis */}
+            <motion.div 
+              className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 lg:space-x-3 flex-shrink-0"
+              animate={{
+                scale: isScrolled 
+                  ? isMobile ? 0.92 : 0.95
+                  : 1,
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 300,
+                damping: 30,
+              }}
+            >
           {/* usuário logado */}
           {currentUser && isAuthenticated ? (
             <>
+              {/* seletor de idioma - apenas desktop */}
+              <div className="hidden md:block">
+                <LanguageSelector />
+              </div>
+              
               {/* botão de tema */}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => changeTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
+                className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 lg:h-10 lg:w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
               >
                 {theme === 'dark' ? (
-                  <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <Sun className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 lg:h-5 lg:w-5" />
                 ) : (
-                  <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 lg:h-5 lg:w-5" />
                 )}
               </Button>
-              
-              {/* seletor de idioma */}
-              <div className="hidden sm:block">
-                <LanguageSelector />
-              </div>
               
               {/* menu do usuário */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 px-2 sm:h-9 sm:px-3 md:h-10 hover:bg-primary/10 transition-all duration-300 group">
-                    <div className="flex items-center space-x-1 sm:space-x-2">
-                      <Avatar className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 border-2 border-primary/20">
+                  <Button variant="ghost" className="h-7 px-1.5 sm:h-8 sm:px-2 md:h-9 md:px-2.5 lg:h-10 lg:px-3 hover:bg-primary/10 transition-all duration-300 group">
+                    <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2">
+                      <Avatar className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 border-2 border-primary/20">
                         <AvatarImage 
                           src={currentUser.avatar_url ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001'}${currentUser.avatar_url}` : undefined} 
                           alt={currentUser.display_name || currentUser.username} 
                         />
-                        <AvatarFallback className="text-xs sm:text-sm bg-primary/10 text-primary font-medium">
+                        <AvatarFallback className="text-[10px] sm:text-xs md:text-sm bg-primary/10 text-primary font-medium">
                           {currentUser.display_name?.substring(0, 2).toUpperCase() || currentUser.username?.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="hidden md:block text-sm font-medium group-hover:text-white transition-colors duration-200">{currentUser.display_name || currentUser.username}</span>
-                      {currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />}
+                      <span className="hidden lg:block text-xs md:text-sm font-medium group-hover:text-white transition-colors duration-200">{currentUser.display_name || currentUser.username}</span>
+                      {currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && <Shield className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 lg:h-4 lg:w-4 text-primary" />}
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
@@ -258,8 +408,8 @@ const Header = React.memo(() => {
                       <Link to="/donate" className="cursor-pointer hover:text-white focus:text-white">
                         <Heart className="mr-3 h-4 w-4" />
                         <div className="flex-1">
-                          <span className="hover:text-white">Doar</span>
-                          <p className="text-xs text-muted-foreground hover:text-muted-foreground">Apoie o MarkoMods</p>
+                          <span className="hover:text-white">{t('nav.donate')}</span>
+                          <p className="text-xs text-muted-foreground hover:text-muted-foreground">{t('nav.donateDesc')}</p>
                         </div>
                       </Link>
                     </DropdownMenuItem>
@@ -282,52 +432,77 @@ const Header = React.memo(() => {
             
             /* botões de login/registro para usuários não logados */
             <>
-              <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg h-10 sm:h-auto" title="Login">
-                <Link to="/login" className="flex items-center justify-center">
-                  <div className="relative">
-                    <LogIn size={16} className="sm:mr-2 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
-                    <div className="absolute inset-0 bg-white/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                  <span className="font-bold text-sm sm:text-base tracking-wide hidden sm:inline">Login</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                </Link>
-              </Button>
+              {/* botões à esquerda: tema e idioma */}
+              <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2">
+                {/* botão de tema */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => changeTheme(theme === 'dark' ? 'light' : 'dark')}
+                  className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 lg:h-10 lg:w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
+                >
+                  {theme === 'dark' ? (
+                    <Sun className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 lg:h-5 lg:w-5" />
+                  ) : (
+                    <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 lg:h-5 lg:w-5" />
+                  )}
+                </Button>
+                
+                {/* seletor de idioma - visível em todas as telas */}
+                <LanguageSelector />
+              </div>
               
-              <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-3 sm:px-4 py-2 rounded-lg h-10 sm:h-auto" title="Registro">
-                <Link to="/register" className="flex items-center justify-center">
-                  <div className="relative">
-                    <User size={16} className="sm:mr-2 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
-                    <div className="absolute inset-0 bg-white/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                  <span className="font-bold text-sm sm:text-base tracking-wide hidden sm:inline">Registro</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                </Link>
-              </Button>
-
-              {/* botão de tema movido para a direita dos botões de autenticação */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => changeTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="h-9 w-9 sm:h-10 sm:w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
-              >
-                {theme === 'dark' ? (
-                  <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
-                ) : (
-                  <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
-                )}
-              </Button>
-              
-              {/* seletor de idioma */}
-              <LanguageSelector />
+              {/* botões à direita: login e registro */}
+              <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2">
+                {/* botão de login */}
+                <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg h-8 sm:h-9 md:h-10" title="Login">
+                  <Link to="/login" className="flex items-center justify-center">
+                    <LogIn size={14} className="sm:size-4 md:size-5 mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
+                    <span className="font-bold text-xs sm:text-sm md:text-base tracking-wide">Login</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  </Link>
+                </Button>
+                
+                {/* botão de registro - apenas desktop */}
+                <Button asChild className="hidden md:flex group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg h-8 sm:h-9 md:h-10" title="Registro">
+                  <Link to="/register" className="flex items-center justify-center">
+                    <User size={14} className="sm:size-4 md:size-5 mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
+                    <span className="font-bold text-xs sm:text-sm md:text-base tracking-wide">Registro</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  </Link>
+                </Button>
+              </div>
             </>
           )}
+            </motion.div>
           </div>
-        </div>
-      </div>
-
-      {/* barra de busca mobile */}
-      <div className="md:hidden border-t border-border/40 px-3 sm:px-4 py-2 sm:py-3">
+        </motion.div>
+      </motion.div>
+      
+      {/* barra de busca mobile - linha separada abaixo do header, entre os divisores */}
+      <motion.div 
+        className="md:hidden border-t border-border/40"
+        style={{
+          backdropFilter: useTransform(headerBlurValue, (val) => `blur(${val}px)`),
+          WebkitBackdropFilter: useTransform(headerBlurValue, (val) => `blur(${val}px)`),
+        }}
+        animate={{
+          opacity: isScrolled ? 0.95 : 1,
+          paddingLeft: isScrolled 
+            ? '0.5rem'
+            : isMobile ? '0.75rem' : 'clamp(0.75rem, 1vw + 0.5rem, 4rem)',
+          paddingRight: isScrolled 
+            ? '0.5rem'
+            : isMobile ? '0.75rem' : 'clamp(0.75rem, 1vw + 0.5rem, 4rem)',
+          paddingTop: isScrolled ? '0.5rem' : '0.625rem',
+          paddingBottom: isScrolled ? '0.5rem' : '0.625rem',
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 30,
+        }}
+      >
         <form onSubmit={(e) => {
           e.preventDefault();
           const searchTerm = e.target.searchMobile.value.trim();
@@ -335,23 +510,37 @@ const Header = React.memo(() => {
             navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
           }
         }} className="relative flex items-center">
-          <Search className="absolute left-3 text-muted-foreground h-4 w-4 pointer-events-none" />
+          <Search className="absolute left-3 text-muted-foreground h-4 w-4 pointer-events-none z-10" />
           <Input
             name="searchMobile"
             type="text"
             placeholder={t('mods.search.placeholder')}
-            className="pl-10 pr-16 sm:pr-20 w-full minecraft-input bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground/70 text-sm sm:text-base"
+            className="pl-10 pr-12 w-full minecraft-input bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground/70 !rounded-lg text-sm sm:text-base h-9 sm:h-10"
           />
           <Button 
             type="submit"
-            className="absolute right-0 h-full px-2 sm:px-3 bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-l border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm rounded-l-none"
+            className="absolute right-0 h-full px-2 sm:px-3 bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-l border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm rounded-r-lg"
             size="sm"
           >
-            <Search className="h-4 w-4" />
+            <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </Button>
         </form>
-      </div>
-    </header>
+      </motion.div>
+      
+      {/* divisor inferior do header */}
+      <motion.div 
+        className="w-full border-b border-border/40"
+        animate={{
+          opacity: isScrolled ? 0.95 : 1,
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 30,
+        }}
+      />
+
+    </motion.header>
   );
 });
 
@@ -432,7 +621,7 @@ const MainLayout = () => {
       </div>
       
       <Header />
-      <main className="flex-1 max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 w-full relative z-10">
+      <main className="flex-1 max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 w-full relative z-10 pt-20 sm:pt-24 md:pt-28 lg:pt-32">
         <Outlet />
       </main>
       {shouldShowFooter && <Footer />}

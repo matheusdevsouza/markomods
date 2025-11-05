@@ -96,6 +96,9 @@ class RateLimiter {
       const windowMs = 15 * 60 * 1000; 
       const maxRequests = 10;
 
+      const key = `verify-token:${ip}`;
+      const requestData = this.requests.get(key);
+
       if (!requestData || now > requestData.resetTime) {
         this.requests.set(key, {
           count: 1,

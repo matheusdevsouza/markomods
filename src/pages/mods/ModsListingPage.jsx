@@ -633,14 +633,14 @@ const ModsListingPage = () => {
          <motion.div variants={itemVariants} className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8">
            <div className="mb-8">
              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
-               <div>
-                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-2">
-                   {t('modsListing.title.mods')}
-                 </h1>
-                 <p className="text-sm sm:text-base text-muted-foreground">
-                   {t('modsListing.results.count', { count: filteredAndSortedMods.length })}
-                 </p>
-               </div>
+              <div>
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+                  {t('modsListing.title.mods')}
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
+                  {t('modsListing.results.count', { count: filteredAndSortedMods.length })}
+                </p>
+              </div>
                
                <div className="flex items-center space-x-2">
                  <Button

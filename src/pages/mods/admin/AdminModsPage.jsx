@@ -581,11 +581,10 @@ const AdminModsPage = () => {
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-minecraft text-primary flex items-center gap-2 sm:gap-3 flex-wrap">
-            <Package className="h-6 w-6 sm:h-8 sm:w-8" />
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             Gerenciar Conteúdo
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Gerencie mods para Java e addons para Bedrock</p>
+          <p className="text-lg md:text-xl text-muted-foreground">Gerencie mods para Java e addons para Bedrock</p>
         </div>
         <Button onClick={() => setShowCreateModal(true)} className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
@@ -998,9 +997,9 @@ const AdminModsPage = () => {
                         className="mt-1 w-full px-3 py-2 bg-background border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                       >
                         <option value="">Selecione o loader...</option>
+                        <option value="padrão">Padrão</option>
                         <option value="forge">Forge</option>
                         <option value="fabric">Fabric</option>
-                        <option value="bedrock">Bedrock</option>
                       </select>
                       <p className="text-xs text-muted-foreground mt-1">
                         Escolha o mod loader compatível com seu mod

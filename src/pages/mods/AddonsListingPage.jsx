@@ -631,10 +631,10 @@ const AddonsListingPage = () => {
             <div className="mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 space-y-4 sm:space-y-0">
                 <div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-minecraft text-primary mb-2">
+                  <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
                     {t('addonsListing.title.addons')}
                   </h1>
-                  <p className="text-sm sm:text-base text-muted-foreground">
+                  <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
                     {t('addonsListing.results.count', { count: filteredAndSortedAddons.length })}
                   </p>
                 </div>
