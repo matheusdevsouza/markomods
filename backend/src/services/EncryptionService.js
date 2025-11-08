@@ -1,10 +1,22 @@
 import crypto from 'crypto';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const envPath = path.resolve(__dirname, '../../.env');
+const configEnvPath = path.resolve(__dirname, '../../config.env');
 
 try {
-  dotenv.config({ path: './.env' });
+  dotenv.config({ path: envPath });
 } catch (error) {
-  dotenv.config({ path: './config.env' });
+  try {
+    dotenv.config({ path: configEnvPath });
+  } catch (err) {
+    console.error('Erro ao carregar arquivo .env:', err);
+  }
 }
 
 const ALGORITHM = 'aes-256-gcm';
