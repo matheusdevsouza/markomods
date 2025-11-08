@@ -1,4 +1,11 @@
 import crypto from 'crypto';
+import dotenv from 'dotenv';
+
+try {
+  dotenv.config({ path: './.env' });
+} catch (error) {
+  dotenv.config({ path: './config.env' });
+}
 
 const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16;
