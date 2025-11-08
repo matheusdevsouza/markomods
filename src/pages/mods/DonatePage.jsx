@@ -237,25 +237,25 @@ const DonatePage = () => {
                 </CardHeader>
                  <CardContent className="space-y-4 flex-1 flex flex-col">
                    <div className="flex-1 flex flex-col justify-start">
-                     {benefits.map((benefit, index) => (
-                       <motion.div
-                         key={index}
-                         initial={{ opacity: 0, x: -20 }}
-                         animate={{ opacity: 1, x: 0 }}
-                         transition={{ delay: 0.3 + index * 0.1 }}
-                         className="flex gap-4 p-4 rounded-lg hover:bg-muted/50 transition-colors"
-                       >
-                         <div className="flex-shrink-0 flex items-start pt-0.5">
-                           <div className="p-2 rounded-lg bg-primary/10">
-                             <benefit.icon className="h-5 w-5 text-primary" />
-                           </div>
+                   {benefits.map((benefit, index) => (
+                     <motion.div
+                       key={index}
+                       initial={{ opacity: 0, x: -20 }}
+                       animate={{ opacity: 1, x: 0 }}
+                       transition={{ delay: 0.3 + index * 0.1 }}
+                       className="flex gap-4 p-4 rounded-lg hover:bg-muted/50 transition-colors"
+                     >
+                       <div className="flex-shrink-0 flex items-start pt-0.5">
+                         <div className="p-2 rounded-lg bg-primary/10">
+                           <benefit.icon className="h-5 w-5 text-primary" />
                          </div>
-                         <div>
-                           <h3 className="font-semibold mb-1">{benefit.title}</h3>
-                           <p className="text-sm text-muted-foreground">{benefit.description}</p>
-                         </div>
-                       </motion.div>
-                     ))}
+                       </div>
+                       <div>
+                         <h3 className="font-semibold mb-1">{benefit.title}</h3>
+                         <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                       </div>
+                     </motion.div>
+                   ))}
                    </div>
                  </CardContent>
               </Card>

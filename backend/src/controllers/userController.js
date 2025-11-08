@@ -3,6 +3,11 @@ import { logError, logInfo } from '../config/logger.js';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import { LogService } from '../services/LogService.js';
+import { AccountDeletionTokenModel } from '../models/AccountDeletionTokenModel.js';
+import { EmailService } from '../services/EmailService.js';
+import { renderEmailTemplate } from '../services/EmailTemplate.js';
+import { v4 as uuidv4 } from 'uuid';
+import encryptionService from '../services/EncryptionService.js';
 
 // buscar perfil do usuário
 export const getUserProfile = async (req, res) => {
@@ -17,7 +22,8 @@ export const getUserProfile = async (req, res) => {
       });
     }
 
-    const { password_hash, ...userProfile } = user;
+    const decryptedUser = encryptionService.decryptUserData(user, true);
+    const { password_hash, ...userProfile } = decryptedUser;
     
     res.json({
       success: true,
@@ -77,13 +83,76 @@ export const updateUserProfile = async (req, res) => {
     if (email) updateData.email = email;
     if (display_name !== undefined) updateData.display_name = display_name;
 
-    // atualizar usuário
-    const updatedUser = await UserModel.update(userId, updateData);
+    const userBeforeUpdate = await UserModel.findById(userId);
+    const decryptedBeforeUpdate = encryptionService.decryptUserData(userBeforeUpdate, true);
     
-    // remover informações sensíveis
-    const { password_hash, ...userProfile } = updatedUser;
+    const updatedUser = await UserModel.update(userId, updateData);
+    const decryptedUpdatedUser = encryptionService.decryptUserData(updatedUser, true);
+    
+    const { password_hash, ...userProfile } = decryptedUpdatedUser;
 
     logInfo('Perfil do usuário atualizado', { userId, updates: Object.keys(updateData) });
+    
+    const changes = [];
+    if (username && username !== decryptedBeforeUpdate?.username) {
+      changes.push(`username: ${decryptedBeforeUpdate?.username || 'N/A'} → ${username}`);
+      try {
+        console.log('📝 Criando log de alteração de username...');
+        await LogService.logProfileChange(
+          userId,
+          'Nome de usuário alterado',
+          `Usuário alterou nome de usuário de "${decryptedBeforeUpdate?.username || 'N/A'}" para "${username}"`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          { field: 'username', old: decryptedBeforeUpdate?.username, new: username },
+          { action: 'username_change' }
+        );
+        console.log('✅ Log de alteração de username criado');
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de alteração de username:', logErr);
+        logError('Erro ao criar log de alteração de username', logErr, { userId });
+      }
+    }
+    
+    if (display_name !== undefined && display_name !== decryptedBeforeUpdate?.display_name) {
+      changes.push(`display_name: ${decryptedBeforeUpdate?.display_name || 'N/A'} → ${display_name || 'N/A'}`);
+      try {
+        console.log('📝 Criando log de alteração de display_name...');
+        await LogService.logProfileChange(
+          userId,
+          'Nome de exibição alterado',
+          `Usuário alterou nome de exibição de "${decryptedBeforeUpdate?.display_name || 'N/A'}" para "${display_name || 'N/A'}"`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          { field: 'display_name', old: decryptedBeforeUpdate?.display_name, new: display_name },
+          { action: 'display_name_change' }
+        );
+        console.log('✅ Log de alteração de display_name criado');
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de alteração de display_name:', logErr);
+        logError('Erro ao criar log de alteração de display_name', logErr, { userId });
+      }
+    }
+    
+    if (email && email !== decryptedBeforeUpdate?.email) {
+      changes.push(`email: ${decryptedBeforeUpdate?.email || 'N/A'} → ${email}`);
+      try {
+        console.log('📝 Criando log de alteração de email...');
+        await LogService.logProfileChange(
+          userId,
+          'Email alterado',
+          `Usuário alterou email de "${decryptedBeforeUpdate?.email || 'N/A'}" para "${email}"`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          { field: 'email', old: decryptedBeforeUpdate?.email, new: email },
+          { action: 'email_change' }
+        );
+        console.log('✅ Log de alteração de email criado');
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de alteração de email:', logErr);
+        logError('Erro ao criar log de alteração de email', logErr, { userId });
+      }
+    }
 
     res.json({
       success: true,
@@ -113,13 +182,12 @@ export const uploadAvatar = async (req, res) => {
 
     const userId = req.user.id;
     
-    // construir URL para o avatar
+    const userBeforeUpdate = await UserModel.findById(userId);
+    
     const avatarUrl = `/uploads/avatars/${req.file.filename}`;
 
-    // atualizar usuário com nova URL do avatar
     const updateResult = await UserModel.update(userId, { avatar_url: avatarUrl });
     
-    // buscar usuário atualizado
     const updatedUser = await UserModel.findById(userId);
     if (!updatedUser) {
       throw new Error('Usuário não encontrado após atualização');
@@ -127,14 +195,27 @@ export const uploadAvatar = async (req, res) => {
     
     const { password_hash, ...userProfile } = updatedUser;
 
-    // log da atividade
-    await LogService.logUsers(
+    try {
+      console.log('📝 Criando log de alteração de avatar...');
+      await LogService.logProfileChange(
       userId,
       'Avatar atualizado',
-      `Avatar do usuário ${updatedUser.username} foi atualizado`,
-      req.ip,
-      req.get('User-Agent')
-    );
+        `Usuário alterou sua foto de perfil`,
+        req.ip || 'N/A',
+        req.get('User-Agent') || 'N/A',
+        { field: 'avatar_url', old: userBeforeUpdate?.avatar_url, new: avatarUrl },
+        { 
+          action: 'avatar_change',
+          avatar_url: avatarUrl,
+          filename: req.file?.filename,
+          file_size: req.file?.size
+        }
+      );
+      console.log('✅ Log de alteração de avatar criado');
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de alteração de avatar:', logErr);
+      logError('Erro ao criar log de alteração de avatar', logErr, { userId });
+    }
 
     logInfo('Avatar do usuário atualizado', { userId, avatarUrl });
 
@@ -226,13 +307,18 @@ export const changePassword = async (req, res) => {
     await UserModel.updatePassword(userId, newPassword);
 
     // log da atividade
-    await LogService.logUsers(
+    try {
+      await LogService.logPasswordChange(
       userId,
       'Senha alterada',
       `Senha do usuário ${user.username} foi alterada`,
-      req.ip,
-      req.get('User-Agent')
+        req.ip || 'N/A',
+        req.get('User-Agent') || 'N/A',
+        { action: 'password_change' }
     );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de alteração de senha:', logErr);
+    }
 
     res.json({
       success: true,
@@ -247,7 +333,218 @@ export const changePassword = async (req, res) => {
   }
 };
 
-// deletar conta
+// solicitar exclusão de conta (enviar email de confirmação)
+export const requestAccountDeletion = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { password, confirmPassword } = req.body;
+
+    // validar senha
+    if (!password || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Por favor, digite sua senha duas vezes para confirmar'
+      });
+    }
+
+    // verificar se as senhas sao iguais
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'As senhas não coincidem'
+      });
+    }
+
+    // buscar user
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    // verificar senha
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: 'Senha incorreta'
+      });
+    }
+
+    const decryptedUser = encryptionService.decryptUserData(user, true);
+    await AccountDeletionTokenModel.invalidateUserTokens(userId);
+    const tokenId = uuidv4();
+    const token = uuidv4();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); 
+
+    await AccountDeletionTokenModel.create({
+      id: tokenId,
+      userId: user.id,
+      token: token,
+      expiresAt: expiresAt
+    });
+
+    const baseUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:5173';
+    const deleteUrl = `${baseUrl}/confirm-account-deletion?token=${encodeURIComponent(token)}`;
+
+    await EmailService.sendMail({
+      to: decryptedUser.email,
+      subject: 'Confirmar Exclusão de Conta - Eu, Marko!',
+      html: renderEmailTemplate({
+        preheader: 'Confirme a exclusão permanente da sua conta',
+        title: 'Confirmar Exclusão de Conta',
+        intro: `
+          <p style="margin: 0 0 16px 0;">Olá <strong>${decryptedUser.display_name || decryptedUser.username}</strong>,</p>
+          <p style="margin: 0 0 16px 0;">Recebemos uma solicitação para excluir permanentemente sua conta no <strong>Eu, Marko!</strong></p>
+          <div style="background-color: #FEF2F2; border-left: 4px solid #DC2626; padding: 12px 16px; margin: 20px 0; border-radius: 4px;">
+            <p style="color: #DC2626; font-weight: 600; margin: 0; font-size: 15px;">
+              ⚠️ ATENÇÃO: Esta ação é IRREVERSÍVEL
+            </p>
+          </div>
+          <p style="margin: 0 0 12px 0;">Todos os dados relacionados à sua conta serão <strong>permanentemente excluídos</strong>, incluindo:</p>
+          <ul style="text-align: left; margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+            <li>Seu perfil e informações pessoais</li>
+            <li>Seus mods e conteúdo criado</li>
+            <li>Seus comentários e interações</li>
+            <li>Seus favoritos e downloads</li>
+            <li>Todo o histórico de atividades</li>
+          </ul>
+          <p style="margin: 16px 0 0 0;">Se você realmente deseja excluir sua conta, clique no botão abaixo. Caso contrário, ignore este e-mail.</p>
+        `,
+        buttonText: 'Confirmar Exclusão de Conta',
+        buttonUrl: deleteUrl,
+        buttonColor: '#DC2626', 
+        secondary: `Se o botão não funcionar, copie e cole este link no navegador:<br/><a href="${deleteUrl}" style="word-break: break-all;">${deleteUrl}</a>`,
+        timingNote: 'Este link expira em 24 horas. Se você não solicitou a exclusão, ignore este e-mail.',
+        footerNote: 'Este é um e-mail automático. Não responda.'
+      })
+    });
+
+    try {
+      await LogService.logSecurity(
+        userId,
+        'Solicitação de exclusão de conta',
+        `Usuário ${user.username} solicitou exclusão de conta`,
+        req.ip || 'N/A',
+        req.get('User-Agent') || 'N/A',
+        'warning',
+        { action: 'account_deletion_requested' }
+      );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de solicitação de exclusão:', logErr);
+    }
+
+    logInfo('Solicitação de exclusão de conta enviada', { userId, email: user.email });
+
+    res.json({
+      success: true,
+      message: 'E-mail de confirmação de exclusão enviado. Verifique sua caixa de entrada.'
+    });
+  } catch (error) {
+    logError('Erro ao solicitar exclusão de conta', error, { userId: req.user?.id });
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+};
+
+export const verifyDeletionToken = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token não fornecido'
+      });
+    }
+
+    const tokenRecord = await AccountDeletionTokenModel.findByToken(token);
+    if (!tokenRecord) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token inválido ou expirado'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Token válido'
+    });
+  } catch (error) {
+    logError('Erro ao verificar token de exclusão', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+};
+
+export const confirmAccountDeletion = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token de confirmação não fornecido'
+      });
+    }
+
+    const tokenRecord = await AccountDeletionTokenModel.findByToken(token);
+    if (!tokenRecord) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token inválido ou expirado'
+      });
+    }
+
+    const user = await UserModel.findById(tokenRecord.user_id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    const decryptedUser = encryptionService.decryptUserData(user, true);
+
+    await AccountDeletionTokenModel.markUsed(tokenRecord.id);
+
+      try {
+        await LogService.logSecurity(
+          tokenRecord.user_id,
+          'Conta excluída permanentemente',
+          `Conta do usuário ${decryptedUser.username} foi excluída permanentemente via confirmação de email`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          'error',
+          { action: 'account_deleted_permanently', email: decryptedUser.email }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de exclusão de conta:', logErr);
+      }
+
+    await UserModel.deleteAccountCompletely(tokenRecord.user_id);
+
+    logInfo('Conta do usuário deletada permanentemente', { userId: tokenRecord.user_id, email: decryptedUser.email });
+
+    res.json({
+      success: true,
+      message: 'Conta excluída permanentemente com sucesso'
+    });
+  } catch (error) {
+    logError('Erro ao confirmar exclusão de conta', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+};
+
 export const deleteAccount = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -271,7 +568,7 @@ export const deleteAccount = async (req, res) => {
       });
     }
 
-    const isPasswordValid = await UserModel.verifyPassword(password, user.password_hash);
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
       return res.status(400).json({
         success: false,
@@ -300,13 +597,13 @@ export const deleteAccount = async (req, res) => {
 // buscar todos os usuários (admin)
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await UserModel.findAll();
+    const users = await UserModel.findAll({}, true);
     
     // log da atividade
     await LogService.logUsers(
       req.user.id,
-      'Lista de usuários consultada',
-      'Administrador consultou lista completa de usuários',
+      'Lista de usuários visualizada',
+      'Administrador visualizou lista completa de usuários',
       req.ip,
       req.get('User-Agent')
     );
@@ -348,7 +645,7 @@ export const toggleUserBan = async (req, res) => {
     }
 
     // verificar se não está tentando banir um administrador
-    if (is_banned && ['admin', 'super_admin'].includes(targetUser.role)) {
+    if (is_banned && ['supervisor', 'admin'].includes(targetUser.role)) {
       return res.status(400).json({
         success: false,
         message: 'Não é possível banir administradores'
@@ -386,12 +683,15 @@ export const toggleUserBan = async (req, res) => {
       });
     }
 
+    const decryptedUpdatedUser = encryptionService.decryptUserData(updatedUser, true);
+    const adminUser = await UserModel.findById(req.user.id, true);
+    const decryptedAdminUser = encryptionService.decryptUserData(adminUser, true);
 
     // log da atividade
     await LogService.logUsers(
       req.user.id,
       is_banned ? 'Usuário banido' : 'Usuário desbanido',
-      `Usuário ${updatedUser.username} foi ${is_banned ? 'banido' : 'desbanido'} por ${req.user.username}. ${is_banned ? `Motivo: ${ban_reason}` : ''}`,
+      `Usuário ${decryptedUpdatedUser.username} foi ${is_banned ? 'banido' : 'desbanido'} por ${decryptedAdminUser.username}. ${is_banned ? `Motivo: ${ban_reason}` : ''}`,
       req.ip,
       req.get('User-Agent')
     );
@@ -420,7 +720,7 @@ export const editUser = async (req, res) => {
 
 
     // verificar se o usuário existe
-    const userToEdit = await UserModel.findById(userId);
+    const userToEdit = await UserModel.findById(userId, true);
     if (!userToEdit) {
       return res.status(404).json({
         success: false,
@@ -430,21 +730,20 @@ export const editUser = async (req, res) => {
 
 
     // verificar se não está tentando editar outro admin
-    if ((userToEdit.role === 'admin' || userToEdit.role === 'super_admin') && req.user.role !== 'super_admin') {
+    if ((userToEdit.role === 'supervisor' || userToEdit.role === 'admin') && req.user.role !== 'admin') {
       return res.status(400).json({
         success: false,
-        message: 'Apenas super administradores podem editar outros administradores'
+        message: 'Apenas administradores podem editar outros administradores'
       });
     }
 
 
-    // atualizar usuário
     const updatedUser = await UserModel.updateUser(userId, {
       username,
       display_name,
       email,
       role,
-      is_verified: is_verified === true || is_verified === 'true'
+      is_verified: is_verified !== undefined ? is_verified : undefined
     });
 
 
@@ -487,7 +786,7 @@ export const deleteUser = async (req, res) => {
     }
 
     // verificar se não está tentando deletar outro admin
-    if (userToDelete.role === 'admin' || userToDelete.role === 'super_admin') {
+    if (userToDelete.role === 'supervisor' || userToDelete.role === 'admin') {
       return res.status(400).json({
         success: false,
         message: 'Não é possível deletar contas de administradores'

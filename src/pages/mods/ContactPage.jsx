@@ -30,32 +30,32 @@ const ContactPage = () => {
   const faqItems = [
     {
       id: 'what-is-markomods',
-      title: getTranslation('contact.faq.whatIsEuMarkoMods.title', 'O que é o Eu, Marko!?'),
-      content: getTranslation('contact.faq.whatIsEuMarkoMods.content', 'O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
+      title: getTranslation('contact.faq.whatIsEuMarkoMods.title', 'O que é esta plataforma?'),
+      content: getTranslation('contact.faq.whatIsEuMarkoMods.content', 'Esta é uma plataforma dedicada a mods para Minecraft, onde você pode descobrir, baixar e compartilhar mods incríveis. Nossa missão é facilitar o acesso a mods de qualidade e criar uma comunidade vibrante de jogadores e desenvolvedores.'),
       category: getTranslation('contact.faq.categories.general', 'Geral')
     },
     {
       id: 'how-to-download',
       title: getTranslation('contact.faq.howToDownload.title', 'Como baixar mods?'),
-      content: getTranslation('contact.faq.howToDownload.content', 'Navegue pela nossa biblioteca de mods, encontre o que você gosta e clique no botão "Baixar". Você precisa estar logado para baixar mods. Após o download, siga as instruções de instalação específicas de cada mod.'),
+      content: getTranslation('contact.faq.howToDownload.content', 'Navegue pela nossa biblioteca de mods, encontre os que te interessam e clique no botão "Baixar". É necessário estar logado para realizar downloads. Após o download, siga as instruções de instalação específicas de cada mod.'),
       category: getTranslation('contact.faq.categories.mods', 'Mods')
     },
     {
       id: 'how-to-install',
       title: getTranslation('contact.faq.howToInstall.title', 'Como instalar mods?'),
-      content: getTranslation('contact.faq.howToInstall.content', 'A instalação varia dependendo do mod e do mod loader (Forge, Fabric, etc.). Geralmente, você precisa: 1) Instalar o mod loader apropriado, 2) Baixar o mod, 3) Colocar o arquivo .jar na pasta "mods" do seu Minecraft.'),
+      content: getTranslation('contact.faq.howToInstall.content', 'A instalação varia dependendo do mod e do mod loader utilizado (Forge, Fabric, etc.).\n\nPassos gerais:\n\n1) Instale o mod loader apropriado\n2) Baixe o mod desejado\n3) Coloque o arquivo .jar na pasta "mods" do seu Minecraft\n\nCada mod pode ter instruções específicas na sua página de detalhes.'),
       category: getTranslation('contact.faq.categories.mods', 'Mods')
     },
     {
       id: 'how-to-register',
       title: getTranslation('contact.faq.howToRegister.title', 'Como me registrar?'),
-      content: getTranslation('contact.faq.howToRegister.content', 'Para se registrar, clique no botão "Registrar" no canto superior direito da página. Preencha o formulário com seu nome de usuário, email e senha. Após confirmar seu email, você terá acesso completo à plataforma.'),
+      content: getTranslation('contact.faq.howToRegister.content', 'Clique no botão "Registrar" localizado no canto superior direito da página. Preencha o formulário com seu nome de usuário, email e senha. Após confirmar seu email através do link enviado, você terá acesso completo a todas as funcionalidades da plataforma.'),
       category: getTranslation('contact.faq.categories.account', 'Conta')
     },
     {
       id: 'mod-issues',
       title: getTranslation('contact.faq.modIssues.title', 'O que fazer se um mod não funcionar?'),
-      content: getTranslation('contact.faq.modIssues.content', 'Primeiro, verifique se você tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte a seção de comentários do mod ou entre em contato conosco.'),
+      content: getTranslation('contact.faq.modIssues.content', 'Primeiro, verifique se você possui a versão correta do mod loader e do Minecraft. Confirme se todas as dependências necessárias estão instaladas. Se o problema persistir, consulte a seção de comentários do mod onde outros usuários podem ter encontrado soluções, ou entre em contato conosco para obter suporte.'),
       category: getTranslation('contact.faq.categories.technical', 'Técnico')
     }
   ];

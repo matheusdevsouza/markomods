@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { ArrowLeft, User, Mail, Lock, Eye, EyeOff, UserPlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContextMods';
 
 
@@ -107,21 +109,33 @@ const RegisterPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative">
       <div className="w-full max-w-md relative">
-        <div className="absolute -top-12 left-0 z-10">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="absolute -top-12 left-0 z-10"
+        >
           <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar
           </Link>
-        </div>
+        </motion.div>
 
-        <Card className="minecraft-card">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="!bg-transparent bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 border border-primary/20 shadow-xl rounded-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-minecraft text-primary">
+            <CardTitle className="text-2xl font-minecraft text-primary flex items-center justify-center gap-3">
+              <UserPlus className="h-5 w-5 text-primary" />
               Criar Conta
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="mb-16">
               Junte-se à comunidade de mods do Minecraft
             </CardDescription>
+            <Separator className="bg-border/30" />
           </CardHeader>
           
           <CardContent>
@@ -264,15 +278,16 @@ const RegisterPage = () => {
 
               <Button
                 type="submit"
-                className="w-full minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/95 hover:to-purple-500/95 text-white transition-all duration-200 hover:shadow-md hover:shadow-primary/20"
                 disabled={loading}
               >
                 {loading ? 'Criando conta...' : 'Criar Conta'}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-muted-foreground">
+            <div className="mt-6">
+              <Separator className="mb-6 bg-border/30" />
+              <p className="text-sm text-muted-foreground text-center">
                 Já tem uma conta?{' '}
                 <Link
                   to="/login"
@@ -284,6 +299,7 @@ const RegisterPage = () => {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
       </div>
     </div>
   );

@@ -1,7 +1,47 @@
 import { executeQuery } from '../config/database.js';
 import { logInfo, logError } from '../config/logger.js';
 import { v4 as uuidv4 } from 'uuid';
+import encryptionService from '../services/EncryptionService.js';
+
 export default class ModsModel {
+  
+  static decryptModAuthorData(mod) {
+    if (!mod) return mod;
+    
+    const decryptedMod = { ...mod };
+    
+    if (mod.author_name) {
+      try {
+        decryptedMod.author_name = encryptionService.isEncrypted(mod.author_name) 
+          ? encryptionService.decrypt(mod.author_name) 
+          : mod.author_name;
+      } catch (error) {
+        console.error('❌ Erro ao descriptografar author_name:', error);
+        decryptedMod.author_name = mod.author_name;
+      }
+    }
+    
+    if (mod.author_display_name) {
+      try {
+        decryptedMod.author_display_name = encryptionService.isEncrypted(mod.author_display_name) 
+          ? encryptionService.decrypt(mod.author_display_name) 
+          : mod.author_display_name;
+      } catch (error) {
+        console.error('❌ Erro ao descriptografar author_display_name:', error);
+        decryptedMod.author_display_name = mod.author_display_name;
+      }
+    }
+    
+    return decryptedMod;
+  }
+  
+  static decryptModsAuthorData(mods) {
+    if (!Array.isArray(mods)) {
+      return mods;
+    }
+    
+    return mods.map(mod => this.decryptModAuthorData(mod));
+  }
   static async create(modData) {
     try {
       const id = uuidv4();
@@ -42,7 +82,7 @@ export default class ModsModel {
       if (result.length === 0) return null;
       const mod = result[0];
       mod.tags = mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [];
-      return mod;
+      return this.decryptModAuthorData(mod);
     } catch (error) {
       logError('Erro ao buscar mod por ID', error, { modId: id });
       throw error;
@@ -62,7 +102,7 @@ export default class ModsModel {
       if (result.length === 0) return null;
       const mod = result[0];
       mod.tags = mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [];
-      return mod;
+      return this.decryptModAuthorData(mod);
     } catch (error) {
       logError('Erro ao buscar mod por ID (admin)', error, { modId: id });
       throw error;
@@ -82,7 +122,7 @@ export default class ModsModel {
       if (result.length === 0) return null;
       const mod = result[0];
       mod.tags = mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [];
-      return mod;
+      return this.decryptModAuthorData(mod);
     } catch (error) {
       logError('Erro ao buscar mod por slug', error, { slug });
       throw error;
@@ -102,7 +142,7 @@ export default class ModsModel {
       if (result.length === 0) return null;
       const mod = result[0];
       mod.tags = mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : [];
-      return mod;
+      return this.decryptModAuthorData(mod);
     } catch (error) {
       logError('Erro ao buscar mod por slug (admin)', error, { slug });
       throw error;
@@ -145,8 +185,9 @@ export default class ModsModel {
         ...mod,
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : []
       }));
-      logInfo('Mods buscados com sucesso', { count: mods.length, filters });
-      return mods;
+      const decryptedMods = this.decryptModsAuthorData(mods);
+      logInfo('Mods buscados com sucesso', { count: decryptedMods.length, filters });
+      return decryptedMods;
     } catch (error) {
       logError('Erro ao buscar mods', error, { filters });
       throw error;
@@ -191,7 +232,7 @@ export default class ModsModel {
         ...mod,
         tags: mod.tags && mod.tags !== 'null' ? JSON.parse(mod.tags) : []
       }));
-      return mods;
+      return this.decryptModsAuthorData(mods);
     } catch (error) {
       logError('Erro ao buscar mods públicos', error, { filters });
       throw error;
@@ -355,9 +396,11 @@ export default class ModsModel {
         params.push(String(parseInt(filters.featured) ? 1 : 0));
       }
       if (filters.author) {
-        sql += ' AND (u.username LIKE ? OR u.display_name LIKE ?)';
-        const authorTerm = `%${filters.author}%`;
-        params.push(authorTerm, authorTerm);
+        const authorHash = encryptionService.hashForSearch(filters.author);
+        if (authorHash) {
+          sql += ' AND (u.username_hash = ? OR u.email_hash = ?)';
+          params.push(authorHash, authorHash);
+        }
       }
       switch (sort) {
         case 'relevance':
@@ -427,9 +470,11 @@ export default class ModsModel {
         countParams.push(parseInt(filters.featured) ? 1 : 0);
       }
       if (filters.author) {
-        countSql += ' AND (u.username LIKE ? OR u.display_name LIKE ?)';
-        const authorTerm = `%${filters.author}%`;
-        countParams.push(authorTerm, authorTerm);
+        const authorHash = encryptionService.hashForSearch(filters.author);
+        if (authorHash) {
+          countSql += ' AND (u.username_hash = ? OR u.email_hash = ?)';
+          countParams.push(authorHash, authorHash);
+        }
       }
       const countResult = await executeQuery(countSql, countParams);
       const total = countResult[0]?.total || 0;
@@ -439,8 +484,9 @@ export default class ModsModel {
         download_count: parseInt(mod.download_count) || 0,
         view_count: parseInt(mod.view_count) || 0
       }));
+      const decryptedMods = this.decryptModsAuthorData(mods);
       return {
-        mods,
+        mods: decryptedMods,
         total
       };
     } catch (error) {
@@ -654,7 +700,7 @@ export default class ModsModel {
         like_count: parseInt(mod.like_count) || 0,
         favorited_at: mod.favorited_at
       }));
-      return favorites;
+      return this.decryptModsAuthorData(favorites);
     } catch (error) {
       logError('Erro ao buscar favoritos do usuário', error, { userId });
       throw error;

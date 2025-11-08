@@ -9,6 +9,7 @@ import { EmailVerificationTokenModel } from '../models/EmailVerificationTokenMod
 import { renderEmailTemplate } from '../services/EmailTemplate.js';
 import { recordFailedLogin, recordSuccessfulLogin } from '../services/SecurityService.js';
 import { sanitizeEmail, sanitizeUsername, sanitizeText } from '../utils/sanitizer.js';
+import encryptionService from '../services/EncryptionService.js';
 
 export class AuthController {
 
@@ -51,11 +52,11 @@ export class AuthController {
       
       const user = await UserModel.create(userData);
       
-      // gerar tokens (usuario registrado)
+      const decryptedUser = encryptionService.decryptUserData(user, true);
+      
+      // gerar tokens (usuario registrado) - JWT não deve conter dados descriptografados
       const tokenPayload = {
         id: user.id,
-        username: user.username,
-        email: user.email,
         role: user.role
       };
       
@@ -71,14 +72,14 @@ export class AuthController {
       const baseUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:5173';
       const verifyUrl = `${baseUrl}/verify-email?token=${encodeURIComponent(verificationToken)}`;
 
-      // enviar email de verificacao
+      // enviar email de verificacao (usar email descriptografado)
       await EmailService.sendMail({
-        to: user.email,
+        to: decryptedUser.email,
         subject: 'Verifique seu e-mail - Eu, Marko!',
         html: renderEmailTemplate({
           preheader: 'Confirme seu e-mail para ativar sua conta',
           title: 'Confirme seu e-mail',
-          intro: `Olá <strong>${user.display_name || user.username}</strong>, para ativar sua conta clique no botão abaixo.`,
+          intro: `Olá <strong>${decryptedUser.display_name || decryptedUser.username}</strong>, para ativar sua conta clique no botão abaixo.`,
           buttonText: 'Confirmar e-mail',
           buttonUrl: verifyUrl,
           secondary: `Se o botão não funcionar, copie e cole este link no navegador:<br/><a href="${verifyUrl}">${verifyUrl}</a>`,
@@ -87,20 +88,41 @@ export class AuthController {
         })
       });
       
-      logInfo('Usuário registrado com sucesso', { userId: user.id, username, email });
+      logInfo('Usuário registrado com sucesso', { userId: user.id, username: sanitizedUsername, email: sanitizedEmail });
+      
+      try {
+        console.log('📝 Criando log de registro...');
+        await LogService.logUsers(
+          user.id,
+          'Conta criada',
+          `Novo usuário registrado: ${decryptedUser.username} (${decryptedUser.display_name || decryptedUser.username})`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          user.id,
+          {
+            email: decryptedUser.email,
+            username: decryptedUser.username,
+            display_name: decryptedUser.display_name
+          }
+        );
+        console.log('✅ Log de registro criado com sucesso');
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de registro:', logErr);
+        logError('Erro ao criar log de registro', logErr, { userId: user.id });
+      }
       
       res.status(201).json({
         success: true,
         message: 'Usuário registrado com sucesso. Verifique seu e-mail para ativar a conta.',
         data: {
           user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            display_name: user.display_name,
-            role: user.role,
-            is_verified: user.is_verified,
-            created_at: user.created_at
+            id: decryptedUser.id,
+            username: decryptedUser.username,
+            email: decryptedUser.email,
+            display_name: decryptedUser.display_name,
+            role: decryptedUser.role,
+            is_verified: decryptedUser.is_verified,
+            created_at: decryptedUser.created_at
           },
           tokens
         }
@@ -119,8 +141,7 @@ export class AuthController {
   static async login(req, res) {
     try {
       const { email, password } = req.body;
-      
-      // sanitizar o email
+    
       const sanitizedEmail = sanitizeEmail(email);
       
       // buscar o usuario pelo email
@@ -144,6 +165,18 @@ export class AuthController {
         // registrar a tentativa de login falhada (senha incorreta)
         recordFailedLogin(req.ip, sanitizedEmail, req.get('User-Agent'));
         
+        try {
+          await LogService.logFailedLogin(
+            req.ip || 'N/A',
+            req.get('User-Agent') || 'N/A',
+            sanitizedEmail,
+            'Senha incorreta',
+            { userId: user.id }
+          );
+        } catch (logErr) {
+          console.error('❌ Erro ao criar log de login falhado:', logErr);
+        }
+        
         logWarn('Tentativa de login com senha incorreta', { email: sanitizedEmail, userId: user.id, ip: req.ip });
         return res.status(401).json({
           success: false,
@@ -153,6 +186,18 @@ export class AuthController {
       
       // bloquear o login se o usuario nao estiver verificado
       if (!user.is_verified) {
+        try {
+          await LogService.logFailedLogin(
+            req.ip || 'N/A',
+            req.get('User-Agent') || 'N/A',
+            sanitizedEmail,
+            'Conta não verificada',
+            { userId: user.id }
+          );
+        } catch (logErr) {
+          console.error('❌ Erro ao criar log de login não verificado:', logErr);
+        }
+        
         logWarn('Tentativa de login de usuário não verificado', { userId: user.id, email: sanitizedEmail, ip: req.ip });
         return res.status(403).json({
           success: false,
@@ -165,6 +210,18 @@ export class AuthController {
       
       // verificar se a conta esta banida
       if (user.is_banned) {
+        try {
+          await LogService.logFailedLogin(
+            req.ip || 'N/A',
+            req.get('User-Agent') || 'N/A',
+            sanitizedEmail,
+            'Conta banida',
+            { userId: user.id }
+          );
+        } catch (logErr) {
+          console.error('❌ Erro ao criar log de login banido:', logErr);
+        }
+        
         logWarn('Tentativa de login em conta banida', { email, userId: user.id });
         return res.status(403).json({
           success: false,
@@ -175,32 +232,46 @@ export class AuthController {
       // atualizar o ultimo login do usuario
       await UserModel.updateLastLogin(user.id);
       
-      // gerar tokens (usuario logado)
+      // descriptografar dados do próprio usuário para exibição
+      const decryptedUser = encryptionService.decryptUserData(user, true);
+      
+      // gerar tokens (usuario logado) - JWT não deve conter dados descriptografados
       const tokenPayload = {
         id: user.id,
-        username: user.username,
-        email: user.email,
         role: user.role
       };
       
       const tokens = JWTService.generateTokenPair(tokenPayload);
       
-      logInfo('Usuário logado com sucesso', { userId: user.id, username: user.username });
+      logInfo('Usuário logado com sucesso', { userId: user.id });
+      
+      try {
+        await LogService.logAuth(
+          user.id,
+          'Login realizado',
+          `Usuário ${decryptedUser.username} (${decryptedUser.display_name || decryptedUser.username}) fez login com sucesso`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          'info'
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de login:', logErr);
+      }
       
       res.json({
         success: true,
         message: 'Login realizado com sucesso',
         data: {
           user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            display_name: user.display_name,
-            avatar_url: user.avatar_url,
-            role: user.role,
-            is_verified: user.is_verified,
-            created_at: user.created_at,
-            last_login: user.last_login
+            id: decryptedUser.id,
+            username: decryptedUser.username,
+            email: decryptedUser.email,
+            display_name: decryptedUser.display_name,
+            avatar_url: decryptedUser.avatar_url,
+            role: decryptedUser.role,
+            is_verified: decryptedUser.is_verified,
+            created_at: decryptedUser.created_at,
+            last_login: decryptedUser.last_login
           },
           tokens
         }
@@ -218,9 +289,25 @@ export class AuthController {
   // logout dos usuarios
   static async logout(req, res) {
     try {
+      // buscar dados do usuário para logs (descriptografar se necessário)
+      const userForLog = await UserModel.findById(req.user.id);
+      const decryptedUserForLog = userForLog ? encryptionService.decryptUserData(userForLog, true) : null;
+      
+      try {
+        await LogService.logAuth(
+          req.user.id,
+          'Logout realizado',
+          `Usuário ${decryptedUserForLog?.username || req.user.id} fez logout`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          'info'
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de logout:', logErr);
+      }
       
       // invalidar o token
-      logInfo('Usuário fez logout', { userId: req.user.id, username: req.user.username });
+      logInfo('Usuário fez logout', { userId: req.user.id, username: decryptedUserForLog?.username || 'N/A' });
       
       res.json({
         success: true,
@@ -239,22 +326,33 @@ export class AuthController {
   // verificar token
   static async verifyToken(req, res) {
     try {
-      const user = req.user;
+      const userId = req.user.id;
+      const userFromDb = await UserModel.findById(userId);
+      
+      if (!userFromDb) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
+      
+      // descriptografar dados do próprio usuário para exibição
+      const decryptedUser = encryptionService.decryptUserData(userFromDb, true);
       
       res.json({
         success: true,
         message: 'Token válido',
         data: {
           user: {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            display_name: user.display_name,
-            avatar_url: user.avatar_url,
-            role: user.role,
-            is_verified: user.is_verified,
-            created_at: user.created_at,
-            last_login: user.last_login
+            id: decryptedUser.id,
+            username: decryptedUser.username,
+            email: decryptedUser.email,
+            display_name: decryptedUser.display_name,
+            avatar_url: decryptedUser.avatar_url,
+            role: decryptedUser.role,
+            is_verified: decryptedUser.is_verified,
+            created_at: decryptedUser.created_at,
+            last_login: decryptedUser.last_login
           }
         }
       });
@@ -294,9 +392,23 @@ export class AuthController {
         return res.status(400).json({ success: false, message: 'Token expirado' });
       }
 
-      // marcar o usuario como verificado
+      const user = await UserModel.findById(record.user_id);
+      const decryptedUser = user ? encryptionService.decryptUserData(user, true) : null;
       await UserModel.updateUser(record.user_id, { is_verified: 1 });
       await EmailVerificationTokenModel.markUsed(record.id);
+
+      try {
+        await LogService.logEmailVerification(
+          record.user_id,
+          'Email verificado',
+          `Email do usuário ${decryptedUser?.username || record.user_id} foi verificado com sucesso`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          { email: decryptedUser?.email }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de verificação de email:', logErr);
+      }
 
       logInfo('E-mail verificado com sucesso', { userId: record.user_id });
       return res.json({ success: true, message: 'E-mail verificado com sucesso' });
@@ -316,21 +428,35 @@ export class AuthController {
       const user = await UserModel.findById(userId);
       if (!user) return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
       if (user.is_verified) return res.status(400).json({ success: false, message: 'E-mail já verificado' });
+      const decryptedUser = encryptionService.decryptUserData(user, true);
 
       await EmailVerificationTokenModel.invalidateUserTokens(userId);
       const token = uuidv4() + ':' + uuidv4();
       const expiresAt = new Date(Date.now() + (parseInt(process.env.EMAIL_VERIFICATION_EXPIRES_HOURS || '24') * 60 * 60 * 1000));
       await EmailVerificationTokenModel.create({ id: uuidv4(), userId, token, expiresAt });
 
+      try {
+        await LogService.logEmailVerification(
+          userId,
+          'Email de verificação reenviado',
+          `Email de verificação reenviado para usuário ${decryptedUser.username || userId}`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          { email: decryptedUser.email }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de reenvio de email:', logErr);
+      }
+
       const baseUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:5173';
       const verifyUrl = `${baseUrl}/verify-email?token=${encodeURIComponent(token)}`;
       await EmailService.sendMail({
-        to: user.email,
+        to: decryptedUser.email,
         subject: 'Confirme seu e-mail - Eu, Marko!',
         html: renderEmailTemplate({
           preheader: 'Reenviamos seu link de verificação',
           title: 'Verificação de e-mail',
-          intro: `Olá <strong>${user.display_name || user.username}</strong>, segue novamente seu link de verificação.`,
+          intro: `Olá <strong>${decryptedUser.display_name || decryptedUser.username}</strong>, segue novamente seu link de verificação.`,
           buttonText: 'Confirmar e-mail',
           buttonUrl: verifyUrl,
           timingNote: 'Link válido por 24 horas.',
@@ -390,7 +516,7 @@ export class AuthController {
       // sanitizar o email
       const sanitizedEmail = sanitizeEmail(email);
       
-      // verificar rate limiting por IP
+      // verificar rate limiting IP
       const isRateLimited = !(await PasswordResetTokenModel.checkRateLimit(ipAddress, 3, 15));
       if (isRateLimited) {
         logWarn('Rate limit excedido para recuperação de senha', { ipAddress, email: sanitizedEmail });
@@ -417,6 +543,22 @@ export class AuthController {
         return neutral();
       }
       
+      // descriptografar dados 
+      const decryptedUser = encryptionService.decryptUserData(user, true);
+
+      try {
+        await LogService.logPasswordReset(
+          user.id,
+          'Solicitação de recuperação de senha',
+          `Usuário ${decryptedUser.username} solicitou recuperação de senha`,
+          ipAddress || 'N/A',
+          userAgent || 'N/A',
+          { email: sanitizedEmail }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de recuperação de senha:', logErr);
+      }
+      
       // verificar se o usuario esta verificado
       if (!user.is_verified) {
         logWarn('Tentativa de recuperação de senha em conta não verificada', { 
@@ -436,16 +578,37 @@ export class AuthController {
       
       // enviar email de recuperação de senha
       await EmailService.sendMail({
-        to: user.email,
-        subject: 'Redefinir senha - Eu, Marko!',
+        to: decryptedUser.email,
+        subject: 'Redefinir Senha - Eu, Marko!',
         html: renderEmailTemplate({
-          preheader: 'Crie uma nova senha com segurança',
-          title: 'Redefinir senha',
-          intro: `Olá <strong>${user.display_name || user.username}</strong>, clique no botão abaixo para criar uma nova senha.`,
-          buttonText: 'Redefinir senha',
+          preheader: 'Crie uma nova senha segura para sua conta',
+          title: 'Redefinir Senha',
+          intro: `
+            <p style="margin: 0 0 16px 0;">Olá <strong>${decryptedUser.display_name || decryptedUser.username}</strong>,</p>
+            <p style="margin: 0 0 16px 0;">Recebemos uma solicitação para redefinir a senha da sua conta no <strong>Eu, Marko!</strong></p>
+            <div style="background-color: #EFF6FF; border-left: 4px solid #3B82F6; padding: 12px 16px; margin: 20px 0; border-radius: 4px;">
+              <p style="color: #1E40AF; font-weight: 600; margin: 0; font-size: 15px;">
+                🔐 Redefina sua senha com segurança
+              </p>
+            </div>
+            <p style="margin: 0 0 12px 0;">Para criar uma nova senha, siga os passos abaixo:</p>
+            <ol style="text-align: left; margin: 12px 0; padding-left: 24px; line-height: 1.8;">
+              <li>Clique no botão <strong>"Redefinir Senha"</strong> abaixo</li>
+              <li>Digite sua nova senha (mínimo de 8 caracteres)</li>
+              <li>Confirme sua nova senha</li>
+              <li>Clique em <strong>"Alterar Senha"</strong></li>
+            </ol>
+            <div style="background-color: #FEF3C7; border-left: 4px solid #F59E0B; padding: 12px 16px; margin: 16px 0; border-radius: 4px;">
+              <p style="color: #92400E; margin: 0; font-size: 13px; line-height: 1.6;">
+                <strong>💡 Dica de segurança:</strong> Use uma senha forte com letras maiúsculas, minúsculas, números e caracteres especiais. Não compartilhe sua senha com ninguém.
+              </p>
+            </div>
+            <p style="margin: 16px 0 0 0;">Se você não solicitou a redefinição de senha, pode ignorar este e-mail com segurança. Sua senha atual permanecerá inalterada.</p>
+          `,
+          buttonText: 'Redefinir Senha',
           buttonUrl: resetUrl,
-          timingNote: 'Link válido por 24 horas.',
-          secondary: `Se você não solicitou, ignore este e-mail. Caso o botão não funcione, copie e cole este link no navegador:<br/><a href="${resetUrl}">${resetUrl}</a>`,
+          timingNote: 'Este link expira em 24 horas por questões de segurança.',
+          secondary: `Se o botão não funcionar, copie e cole este link no navegador:<br/><a href="${resetUrl}" style="word-break: break-all; color: #6D28D9;">${resetUrl}</a><br/><br/>Se você não solicitou esta alteração, ignore este e-mail.`,
           footerNote: 'Este é um e-mail automático. Não responda.'
         })
       });
@@ -604,15 +767,24 @@ export class AuthController {
       
       // incrementar as tentativas
       await PasswordResetTokenModel.incrementAttempts(tokenData.id);
-      
-      // atualizar a senha
+      const user = await UserModel.findById(tokenData.user_id);
+      const decryptedUser = user ? encryptionService.decryptUserData(user, true) : null;
       await UserModel.updatePassword(tokenData.user_id, password);
-      
-      // marcar o token como usado
       await PasswordResetTokenModel.markAsUsed(tokenData.id);
-      
-      // invalidar todos os outros tokens do usuario
       await PasswordResetTokenModel.removeUserTokens(tokenData.user_id);
+
+      try {
+        await LogService.logPasswordReset(
+          tokenData.user_id,
+          'Senha redefinida com sucesso',
+          `Usuário ${decryptedUser?.username || tokenData.user_id} redefiniu a senha com sucesso via token`,
+          ipAddress || 'N/A',
+          userAgent || 'N/A',
+          { tokenId: tokenData.id }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de redefinição de senha:', logErr);
+      }
       
       logInfo('Senha resetada com sucesso', { 
         userId: tokenData.user_id,
@@ -643,8 +815,14 @@ export class AuthController {
       const { currentPassword, newPassword } = req.body;
       const userId = req.user.id;
       
-      // buscar o usuario com a senha
-      const user = await UserModel.findByEmail(req.user.email);
+      const user = await UserModel.findById(userId);
+      
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Usuário não encontrado'
+        });
+      }
       
       // verificar a senha atual
       const isValidPassword = await UserModel.verifyPassword(currentPassword, user.password_hash);

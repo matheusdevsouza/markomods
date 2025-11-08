@@ -305,8 +305,8 @@ export const validateCommentId = [
 // validações para admin
 export const validateUpdateUserRole = [
   body('role')
-    .isIn(['member', 'moderator', 'admin', 'super_admin'])
-    .withMessage('Role deve ser member, moderator, admin ou super_admin'),
+    .isIn(['member', 'moderator', 'supervisor', 'admin'])
+    .withMessage('Role deve ser member, moderator, supervisor ou admin'),
   
   handleValidationErrors
 ];

@@ -51,7 +51,13 @@ const AdminChangelogsPage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/api/changelogs');
+        const token = localStorage.getItem('authToken');
+        const res = await fetch('/api/changelogs', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
         const data = await res.json();
         setList(data.data || []);
       } finally { setLoading(false); }
@@ -111,10 +117,14 @@ const AdminChangelogsPage = () => {
 
       const url = isEditing ? `/api/changelogs/${editingId}` : '/api/changelogs';
       const method = isEditing ? 'PUT' : 'POST';
+      const token = localStorage.getItem('authToken');
 
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(payload)
       });
 
@@ -153,7 +163,14 @@ const AdminChangelogsPage = () => {
     if (!changelogToDelete) return;
     
     try {
-      const res = await fetch(`/api/changelogs/${changelogToDelete.id}`, { method: 'DELETE' });
+      const token = localStorage.getItem('authToken');
+      const res = await fetch(`/api/changelogs/${changelogToDelete.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       if (res.ok) {
         setList(prev => prev.filter(item => item.id !== changelogToDelete.id));
         toast({ title: "Sucesso", description: "Changelog excluído com sucesso!" });
@@ -184,7 +201,8 @@ const AdminChangelogsPage = () => {
         className="flex items-center justify-between mb-6"
       >
         <div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent flex items-center gap-3">
+            <Clock className="h-8 w-8 md:h-10 md:w-10 text-primary" />
             Changelogs
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground">

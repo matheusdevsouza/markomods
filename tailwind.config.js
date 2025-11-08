@@ -51,15 +51,14 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
 				},
-				// Cores roxas personalizadas
 				purple: {
 					50: '#f5f3ff',
 					100: '#ede9fe',
 					200: '#ddd6fe',
 					300: '#c4b5fd',
 					400: '#a78bfa',
-					500: '#6A50BE', // Cor principal especificada
-					600: '#523E96', // Cor secundária especificada
+					500: '#6A50BE', 
+					600: '#523E96', 
 					700: '#4338ca',
 					800: '#3730a3',
 					900: '#312e81',
@@ -103,12 +102,11 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
-        minecraft: ['"Minecraftia"', 'ui-sans-serif', 'system-ui'], // Minecraftia as primary for this class, fallback to sans
+        minecraft: ['"Minecraftia"', 'ui-sans-serif', 'system-ui'], 
       },
 		},
 	},
 	plugins: [
-		// Importar plugins dinamicamente ou usar import
 		// require('tailwindcss-animate'), 
 		// require('@tailwindcss/line-clamp'), 
 		// require('@tailwindcss/typography')

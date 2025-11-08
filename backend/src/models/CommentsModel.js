@@ -1,8 +1,91 @@
 import { executeQuery } from '../config/database.js';
 import { logError, logInfo } from '../config/logger.js';
 import crypto from 'crypto';
+import encryptionService from '../services/EncryptionService.js';
 
 export default class CommentsModel {
+  
+  static decryptCommentUserData(comment) {
+    if (!comment) return comment;
+    
+    const decryptedComment = { ...comment };
+    
+    if (comment.username) {
+      try {
+        decryptedComment.username = encryptionService.isEncrypted(comment.username) 
+          ? encryptionService.decrypt(comment.username) 
+          : comment.username;
+      } catch (error) {
+        console.error('❌ Erro ao descriptografar username em comentário:', error);
+        decryptedComment.username = comment.username;
+      }
+    }
+    
+    if (comment.display_name) {
+      try {
+        decryptedComment.display_name = encryptionService.isEncrypted(comment.display_name) 
+          ? encryptionService.decrypt(comment.display_name) 
+          : comment.display_name;
+      } catch (error) {
+        console.error('❌ Erro ao descriptografar display_name em comentário:', error);
+        decryptedComment.display_name = comment.display_name;
+      }
+    }
+    
+    if (comment.reply_to_username) {
+      try {
+        decryptedComment.reply_to_username = encryptionService.isEncrypted(comment.reply_to_username) 
+          ? encryptionService.decrypt(comment.reply_to_username) 
+          : comment.reply_to_username;
+      } catch (error) {
+        console.error('❌ Erro ao descriptografar reply_to_username:', error);
+        decryptedComment.reply_to_username = comment.reply_to_username;
+      }
+    }
+    
+    if (comment.reply_to_display_name) {
+      try {
+        decryptedComment.reply_to_display_name = encryptionService.isEncrypted(comment.reply_to_display_name) 
+          ? encryptionService.decrypt(comment.reply_to_display_name) 
+          : comment.reply_to_display_name;
+      } catch (error) {
+        console.error('❌ Erro ao descriptografar reply_to_display_name:', error);
+        decryptedComment.reply_to_display_name = comment.reply_to_display_name;
+      }
+    }
+    
+    if (comment.rejected_by_username) {
+      try {
+        decryptedComment.rejected_by_username = encryptionService.isEncrypted(comment.rejected_by_username) 
+          ? encryptionService.decrypt(comment.rejected_by_username) 
+          : comment.rejected_by_username;
+      } catch (error) {
+        console.error('❌ Erro ao descriptografar rejected_by_username:', error);
+        decryptedComment.rejected_by_username = comment.rejected_by_username;
+      }
+    }
+    
+    if (comment.rejected_by_display_name) {
+      try {
+        decryptedComment.rejected_by_display_name = encryptionService.isEncrypted(comment.rejected_by_display_name) 
+          ? encryptionService.decrypt(comment.rejected_by_display_name) 
+          : comment.rejected_by_display_name;
+      } catch (error) {
+        console.error('❌ Erro ao descriptografar rejected_by_display_name:', error);
+        decryptedComment.rejected_by_display_name = comment.rejected_by_display_name;
+      }
+    }
+    
+    return decryptedComment;
+  }
+  
+  static decryptCommentsUserData(comments) {
+    if (!Array.isArray(comments)) {
+      return comments;
+    }
+    
+    return comments.map(comment => this.decryptCommentUserData(comment));
+  }
   static async ensureTables() {
 
     // tabela de comentários
@@ -178,12 +261,14 @@ export default class CommentsModel {
       
       const result = await executeQuery(sql, params);
       
-      return result.map(comment => ({
+      const comments = result.map(comment => ({
         ...comment,
         is_pending: !comment.is_approved,
         is_rejected: comment.rejection_reason !== null,
-        can_delete: userId === comment.user_id || (comment.role && ['admin', 'super_admin'].includes(comment.role))
+        can_delete: userId === comment.user_id || (comment.role && ['supervisor', 'admin'].includes(comment.role))
       }));
+      
+      return this.decryptCommentsUserData(comments);
     } catch (error) {
       logError('Erro ao buscar comentários por mod', error, { modId, userId });
       throw error;
@@ -208,11 +293,13 @@ export default class CommentsModel {
       
       const result = await executeQuery(sql, [limit, offset]);
       
-      return result.map(comment => ({
+      const comments = result.map(comment => ({
         ...comment,
         status: 'pending',
         can_moderate: !comment.is_banned
       }));
+      
+      return this.decryptCommentsUserData(comments);
     } catch (error) {
       logError('Erro ao buscar comentários pendentes', error);
       throw error;
@@ -238,10 +325,12 @@ export default class CommentsModel {
       
       const result = await executeQuery(sql, [limit, offset]);
       
-      return result.map(comment => ({
+      const comments = result.map(comment => ({
         ...comment,
         status: 'rejected'
       }));
+      
+      return this.decryptCommentsUserData(comments);
     } catch (error) {
       logError('Erro ao buscar comentários rejeitados', error);
       throw error;
@@ -292,7 +381,7 @@ export default class CommentsModel {
         throw new Error('Comentário não encontrado');
       }
       
-      const canDelete = userId === comment.user_id || ['admin', 'super_admin'].includes(userRole);
+      const canDelete = userId === comment.user_id || ['supervisor', 'admin'].includes(userRole);
       if (!canDelete) {
         throw new Error('Sem permissão para deletar este comentário');
       }
@@ -327,8 +416,9 @@ export default class CommentsModel {
       JOIN users u ON u.id = c.user_id
       WHERE c.id = ?
     `;
-    const rows = await executeQuery(sql, [id]);
-    return rows.length > 0 ? rows[0] : null;
+      const rows = await executeQuery(sql, [id]);
+      const comment = rows.length > 0 ? rows[0] : null;
+      return comment ? this.decryptCommentUserData(comment) : null;
   }
 
   static async listByMod(modId, limit = 100) {
@@ -343,7 +433,8 @@ export default class CommentsModel {
       ORDER BY c.created_at DESC
       LIMIT ${Number(limit)}
     `;
-    return executeQuery(sql, [modId, parseInt(limit)]);
+    const comments = await executeQuery(sql, [modId, parseInt(limit)]);
+    return this.decryptCommentsUserData(comments);
   }
 
   static async listByUser(userId, limit = 50) {
@@ -572,7 +663,7 @@ export default class CommentsModel {
         }
       }
       
-      return comments;
+      return this.decryptCommentsUserData(comments);
     } catch (error) {
       logError('Erro ao listar comentários com votos', error, { modId, userId });
       throw error;
@@ -626,7 +717,7 @@ export default class CommentsModel {
           u.username,
           u.display_name,
           u.avatar_url,
-          u.role as user_role,
+          u.role,
           ru.username as reply_to_username,
           ru.display_name as reply_to_display_name
         FROM comments c
@@ -637,7 +728,7 @@ export default class CommentsModel {
       `;
 
       const replies = await executeQuery(sql, [parentId]);
-      return replies;
+      return this.decryptCommentsUserData(replies);
     } catch (error) {
       logError('Erro ao buscar respostas de comentário', error, { parentId });
       throw error;
@@ -665,8 +756,9 @@ export default class CommentsModel {
       
       const params = [userId, modId];
       const allComments = await executeQuery(sql, params);
+      const decryptedComments = this.decryptCommentsUserData(allComments);
       
-      return this.organizeCommentsHierarchy(allComments);
+      return this.organizeCommentsHierarchy(decryptedComments);
     } catch (error) {
       logError('Erro ao buscar comentários com respostas', error, { modId, userId });
       throw error;
@@ -714,7 +806,7 @@ export default class CommentsModel {
       `;
       
       const comments = await executeQuery(sql, [parseInt(limit), parseInt(offset)]);
-      return comments;
+      return this.decryptCommentsUserData(comments);
     } catch (error) {
       logError('Erro ao buscar comentários recentes aprovados', error, { limit, offset });
       throw error;
@@ -751,7 +843,7 @@ export default class CommentsModel {
       `;
       
       const comments = await executeQuery(sql, params);
-      return comments;
+      return this.decryptCommentsUserData(comments);
     } catch (error) {
       logError('Erro ao buscar comentários do usuário', error, { userId, offset, limit, search });
       throw error;

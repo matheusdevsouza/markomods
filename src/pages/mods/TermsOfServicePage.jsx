@@ -113,7 +113,7 @@ const TermsOfServicePage = () => {
           >
             <div className="w-20 h-20 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center">
               <FileText className="h-10 w-10 text-white" />
-            </div>
+      </div>
           </motion.div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             {t('terms.title')}

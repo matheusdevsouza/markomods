@@ -64,7 +64,7 @@ const PrivacyPolicyPage = () => {
           >
             <div className="w-20 h-20 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center">
               <Shield className="h-10 w-10 text-white" />
-            </div>
+          </div>
           </motion.div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             {t('privacy.title')}
@@ -103,10 +103,10 @@ const PrivacyPolicyPage = () => {
                   <div className="space-y-2">
                     {(t('privacy.section1.subsection1.items', { returnObjects: true }) || []).map((item, index) => (
                       <div key={index} className="flex items-start gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <div>
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <div>
                           <span className="font-medium">{item.label}:</span> {item.description}
-                        </div>
+                    </div>
                       </div>
                     ))}
                   </div>
@@ -120,10 +120,10 @@ const PrivacyPolicyPage = () => {
                   <div className="space-y-2">
                     {(t('privacy.section1.subsection2.items', { returnObjects: true }) || []).map((item, index) => (
                       <div key={index} className="flex items-start gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <div>
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <div>
                           <span className="font-medium">{item.label}:</span> {item.description}
-                        </div>
+                    </div>
                       </div>
                     ))}
                   </div>
@@ -177,7 +177,7 @@ const PrivacyPolicyPage = () => {
                         <Icon className="w-8 h-8 text-primary mx-auto mb-2" />
                         <h3 className="font-semibold mb-1">{item.title}</h3>
                         <p className="text-xs text-muted-foreground">{item.description}</p>
-                      </div>
+                  </div>
                     );
                   })}
                 </div>

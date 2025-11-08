@@ -4,16 +4,18 @@ import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useThemeMods } from '@/contexts/ThemeContextMods';
 import { useAuth } from '@/contexts/AuthContextMods';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useTranslation } from '@/hooks/useTranslation';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import LanguageSelector from '@/components/ui/LanguageSelector';
-import { 
-  Search, 
-  Sun, 
-  Moon, 
-  User, 
-  LogOut, 
+import {
+  Search,
+  Sun,
+  Moon,
+  User,
+  LogOut,
   Shield,
   LogIn,
   Heart,
@@ -24,7 +26,10 @@ import {
   BookOpen,
   MessageSquare,
   Calendar,
-  Activity
+  Activity,
+  Crown,
+  UserCog,
+  UserPlus
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -37,16 +42,46 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import Footer from '@/components/Footer';
 
 const Header = React.memo(() => {
   const { theme, changeTheme } = useThemeMods();
   const { currentUser, logout, isAuthenticated } = useAuth();
-  const { t } = useTranslation();
+  const { hasPermission, loading: permissionsLoading } = usePermissions();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { scrollY } = useScroll();
+
+  const handleAdminClick = (e) => {
+    if (permissionsLoading) {
+      e.preventDefault();
+      return;
+    }
+
+    if (!currentUser) {
+      e.preventDefault();
+      navigate('/login');
+      return;
+    }
+
+    if (currentUser.role === 'admin') {
+      return;
+    }
+
+    if (!hasPermission('access_admin_panel')) {
+      e.preventDefault();
+      navigate('/dashboard', { replace: true });
+      setTimeout(() => {
+        toast.error('Acesso Negado', {
+          description: 'Você não tem permissão para acessar o Painel Administrativo. Entre em contato com um administrador se precisar desta funcionalidade.',
+          duration: 5000,
+        });
+      }, 100);
+    }
+  };
   
   useEffect(() => {
     const checkMobile = () => {
@@ -170,15 +205,15 @@ const Header = React.memo(() => {
               }}
               className="flex-shrink-0"
             >
-              <Link to="/" className="flex items-center flex-shrink-0">
+          <Link to="/" className="flex items-center flex-shrink-0">
                 <motion.img 
-                  src="/markomods-logo2.png" 
+              src="/markomods-logo2.png" 
                   alt="MarkoMods Logo" 
                   className={`h-7 sm:h-8 md:h-9 lg:h-10 w-auto transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer ${
-                    theme === 'dark' 
-                      ? 'brightness-75 contrast-125' 
-                      : 'brightness-100 contrast-100'
-                  }`}
+                theme === 'dark' 
+                  ? 'brightness-75 contrast-125' 
+                  : 'brightness-100 contrast-100'
+              }`} 
                   animate={{
                     filter: isScrolled ? 'brightness(0.9)' : 'brightness(1)',
                   }}
@@ -187,10 +222,10 @@ const Header = React.memo(() => {
                     stiffness: 300,
                     damping: 30,
                   }}
-                />
-              </Link>
+            />
+          </Link>
             </motion.div>
-            
+          
             {/* barra de busca - visível apenas em desktop, centralizada */}
             <motion.div 
               className="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8"
@@ -204,32 +239,32 @@ const Header = React.memo(() => {
                 damping: 30,
               }}
             >
-              <div className="w-full">
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  const searchTerm = e.target.search.value.trim();
-                  if (searchTerm) {
-                    navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
-                  }
-                }} className="relative flex items-center">
+            <div className="w-full">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const searchTerm = e.target.search.value.trim();
+                if (searchTerm) {
+                  navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+                }
+              }} className="relative flex items-center">
                   <Search className="absolute left-3 text-muted-foreground h-4 w-4 pointer-events-none z-10" />
-                  <Input
-                    name="search"
-                    type="text"
-                    placeholder={t('mods.search.placeholder')}
+                <Input
+                  name="search"
+                  type="text"
+                  placeholder={t('mods.search.placeholder')}
                     className="pl-10 pr-12 w-full minecraft-input bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground/70 !rounded-lg text-sm md:text-base h-9 md:h-10"
-                  />
-                  <Button 
-                    type="submit"
+                />
+                <Button 
+                  type="submit"
                     className="absolute right-0 h-full px-3 bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-l border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm rounded-r-lg"
-                    size="sm"
-                  >
-                    <Search className="h-4 w-4" />
-                  </Button>
-                </form>
-              </div>
+                  size="sm"
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+              </form>
+            </div>
             </motion.div>
-            
+
             {/* botões da direita - sempre visíveis */}
             <motion.div 
               className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 lg:space-x-3 flex-shrink-0"
@@ -269,19 +304,28 @@ const Header = React.memo(() => {
               {/* menu do usuário */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-7 px-1.5 sm:h-8 sm:px-2 md:h-9 md:px-2.5 lg:h-10 lg:px-3 hover:bg-primary/10 transition-all duration-300 group">
-                    <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2">
-                      <Avatar className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 border-2 border-primary/20">
+                  <Button variant="ghost" className="h-9 px-2 sm:h-8 sm:px-2 md:h-9 md:px-2.5 lg:h-10 lg:px-3 hover:bg-primary/10 transition-all duration-300 group">
+                    <div className="flex items-center space-x-2 sm:space-x-1.5 md:space-x-2">
+                      <Avatar className="h-8 w-8 sm:h-6 sm:w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 border-2 border-primary/20">
                         <AvatarImage 
                           src={currentUser.avatar_url ? `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001'}${currentUser.avatar_url}` : undefined} 
                           alt={currentUser.display_name || currentUser.username} 
                         />
-                        <AvatarFallback className="text-[10px] sm:text-xs md:text-sm bg-primary/10 text-primary font-medium">
+                        <AvatarFallback className="text-xs sm:text-xs md:text-sm bg-primary/10 text-primary font-medium">
                           {currentUser.display_name?.substring(0, 2).toUpperCase() || currentUser.username?.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <span className="hidden lg:block text-xs md:text-sm font-medium group-hover:text-white transition-colors duration-200">{currentUser.display_name || currentUser.username}</span>
-                      {currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && <Shield className="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 lg:h-4 lg:w-4 text-primary" />}
+                      {currentUser?.role && ['supervisor', 'admin', 'moderator'].includes(currentUser.role) && (() => {
+                        const roleConfig = {
+                          'admin': { icon: Crown, color: 'text-purple-400' },
+                          'supervisor': { icon: Shield, color: 'text-blue-400' },
+                          'moderator': { icon: UserCog, color: 'text-green-400' }
+                        };
+                        const config = roleConfig[currentUser.role] || roleConfig.moderator;
+                        const RoleIcon = config.icon;
+                        return <RoleIcon className={cn("h-3.5 w-3.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 lg:h-4 lg:w-4", config.color)} />;
+                      })()}
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
@@ -302,13 +346,36 @@ const Header = React.memo(() => {
                         <p className="text-sm font-semibold leading-none text-foreground">{currentUser.display_name || currentUser.username}</p>
                         <p className="text-xs leading-none text-muted-foreground truncate">{currentUser.email}</p>
                         <div className="flex items-center space-x-2 mt-2">
-                          {currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && (
-                            <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 text-xs">
-                              <Shield className="h-3 w-3 mr-1" />
-                              {currentUser.role === 'super_admin' ? 'Super Admin' : 
-                               currentUser.role === 'admin' ? 'Admin' : 'Moderador'}
-                            </Badge>
-                          )}
+                          {currentUser?.role && ['supervisor', 'admin', 'moderator'].includes(currentUser.role) && (() => {
+                            const roleConfig = {
+                              'admin': { 
+                                icon: Crown, 
+                                label: 'Admin',
+                                badgeClass: 'bg-purple-500/20 text-purple-400 border-purple-500/50',
+                                iconColor: 'text-purple-400'
+                              },
+                              'supervisor': { 
+                                icon: Shield, 
+                                label: 'Supervisor',
+                                badgeClass: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
+                                iconColor: 'text-blue-400'
+                              },
+                              'moderator': { 
+                                icon: UserCog, 
+                                label: 'Moderador',
+                                badgeClass: 'bg-green-500/20 text-green-400 border-green-500/50',
+                                iconColor: 'text-green-400'
+                              }
+                            };
+                            const config = roleConfig[currentUser.role] || roleConfig.moderator;
+                            const RoleIcon = config.icon;
+                            return (
+                              <Badge variant="outline" className={`${config.badgeClass} text-xs border flex items-center gap-1`}>
+                                <RoleIcon className={`h-3 w-3 ${config.iconColor}`} />
+                                {config.label}
+                              </Badge>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>
@@ -353,12 +420,26 @@ const Header = React.memo(() => {
                   <DropdownMenuSeparator />
                   
                   {/* seção admin */}
-                  {currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && (
+                  {currentUser?.role && ['supervisor', 'admin', 'moderator'].includes(currentUser.role) && (
                     <>
                       <DropdownMenuGroup>
                         <DropdownMenuItem asChild className="hover:text-white focus:text-white">
-                          <Link to="/admin" className="cursor-pointer text-primary">
-                            <Shield className="mr-3 h-4 w-4" />
+                          <Link 
+                            to="/admin" 
+                            onClick={handleAdminClick} 
+                            className={cn(
+                              "cursor-pointer",
+                              currentUser.role === 'admin' && "text-purple-400",
+                              currentUser.role === 'supervisor' && "text-blue-400",
+                              currentUser.role === 'moderator' && "text-green-400"
+                            )}
+                          >
+                            <Shield className={cn(
+                              "mr-3 h-4 w-4",
+                              currentUser.role === 'admin' && "text-purple-400",
+                              currentUser.role === 'supervisor' && "text-blue-400",
+                              currentUser.role === 'moderator' && "text-green-400"
+                            )} />
                             <div className="flex-1">
                               <span>{t('nav.adminPanel')}</span>
                               <p className="text-xs text-muted-foreground">{t('nav.adminPanelDesc')}</p>
@@ -435,40 +516,40 @@ const Header = React.memo(() => {
               {/* botões à esquerda: tema e idioma */}
               <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2">
                 {/* botão de tema */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => changeTheme(theme === 'dark' ? 'light' : 'dark')}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => changeTheme(theme === 'dark' ? 'light' : 'dark')}
                   className="h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 lg:h-10 lg:w-10 text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-300"
-                >
-                  {theme === 'dark' ? (
+              >
+                {theme === 'dark' ? (
                     <Sun className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 lg:h-5 lg:w-5" />
-                  ) : (
+                ) : (
                     <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5 lg:h-5 lg:w-5" />
-                  )}
-                </Button>
-                
+                )}
+              </Button>
+              
                 {/* seletor de idioma - visível em todas as telas */}
-                <LanguageSelector />
+              <LanguageSelector />
               </div>
               
               {/* botões à direita: login e registro */}
-              <div className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 {/* botão de login */}
-                <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg h-8 sm:h-9 md:h-10" title="Login">
-                  <Link to="/login" className="flex items-center justify-center">
-                    <LogIn size={14} className="sm:size-4 md:size-5 mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
-                    <span className="font-bold text-xs sm:text-sm md:text-base tracking-wide">Login</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary to-purple-500 hover:from-primary hover:to-purple-600 text-white text-sm sm:text-base shadow-lg hover:shadow-[0_0_25px_rgba(139,92,246,0.6),0_0_50px_rgba(139,92,246,0.3)] transition-all duration-300 hover:scale-105">
+                  <Link to="/login" className="flex items-center relative z-10">
+                    <LogIn className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="relative z-10">Login</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                   </Link>
                 </Button>
                 
-                {/* botão de registro - apenas desktop */}
-                <Button asChild className="hidden md:flex group relative overflow-hidden bg-gradient-to-r from-primary via-primary to-purple-600 hover:from-primary/90 hover:via-purple-600 hover:to-purple-700 text-white border-2 border-primary/50 hover:border-primary shadow-lg hover:shadow-primary/30 transition-all duration-300 hover:scale-105 transform backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg h-8 sm:h-9 md:h-10" title="Registro">
-                  <Link to="/register" className="flex items-center justify-center">
-                    <User size={14} className="sm:size-4 md:size-5 mr-1 sm:mr-1.5 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-1" />
-                    <span className="font-bold text-xs sm:text-sm md:text-base tracking-wide">Registro</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                {/* botão de registro */}
+                <Button asChild className="group relative overflow-hidden bg-gradient-to-r from-primary to-purple-500 hover:from-primary hover:to-purple-600 text-white text-sm sm:text-base shadow-lg hover:shadow-[0_0_25px_rgba(139,92,246,0.6),0_0_50px_rgba(139,92,246,0.3)] transition-all duration-300 hover:scale-105">
+                  <Link to="/register" className="flex items-center relative z-10">
+                    <UserPlus className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:scale-110" />
+                    <span className="relative z-10">Registro</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                   </Link>
                 </Button>
               </div>
@@ -478,7 +559,7 @@ const Header = React.memo(() => {
           </div>
         </motion.div>
       </motion.div>
-      
+
       {/* barra de busca mobile - linha separada abaixo do header, entre os divisores */}
       <motion.div 
         className="md:hidden border-t border-border/40"
@@ -546,9 +627,76 @@ const Header = React.memo(() => {
 
 const MainLayout = () => {
   const location = useLocation();
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
   
   const pagesWithoutFooter = ['/mods', '/addons'];
   const shouldShowFooter = !pagesWithoutFooter.some(page => location.pathname.startsWith(page));
+  
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    
+    return () => {
+      window.removeEventListener('resize', checkDesktop);
+    };
+  }, []);
+  
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      const header = document.querySelector('header');
+      if (header) {
+        const height = header.offsetHeight;
+        setHeaderHeight(height);
+      }
+    };
+    
+    const handleScroll = () => {
+      requestAnimationFrame(updateHeaderHeight);
+    };
+    
+    const handleResize = () => {
+      requestAnimationFrame(updateHeaderHeight);
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    
+    updateHeaderHeight();
+    
+    const resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(updateHeaderHeight);
+    });
+    
+    const mutationObserver = new MutationObserver(() => {
+      requestAnimationFrame(updateHeaderHeight);
+    });
+    
+    setTimeout(() => {
+      const header = document.querySelector('header');
+      if (header) {
+        resizeObserver.observe(header);
+        mutationObserver.observe(header, {
+          attributes: true,
+          attributeFilter: ['style', 'class'],
+          childList: true,
+          subtree: true
+        });
+      }
+    }, 100);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [location]);
   
   return (
     <div className="flex min-h-screen flex-col relative overflow-hidden">
@@ -621,8 +769,19 @@ const MainLayout = () => {
       </div>
       
       <Header />
-      <main className="flex-1 max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 w-full relative z-10 pt-20 sm:pt-24 md:pt-28 lg:pt-32">
-        <Outlet />
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 pb-8">
+        <div 
+          style={{
+            paddingTop: headerHeight > 0 
+              ? isDesktop
+                ? `${headerHeight + 32}px`
+                : `${headerHeight}px`
+              : undefined
+          }}
+          className={`transition-all duration-200 ${headerHeight === 0 ? 'pt-[8.25rem] sm:pt-[8.75rem] md:pt-36 lg:pt-40' : ''}`}
+        >
+          <Outlet />
+        </div>
       </main>
       {shouldShowFooter && <Footer />}
     </div>

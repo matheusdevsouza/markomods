@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import CommentsModel from '../models/CommentsModel.js';
+import ModsModel from '../models/ModsModel.js';
 import { LogService } from '../services/LogService.js';
 import { logError } from '../config/logger.js';
 import { sanitizeText, isMalicious } from '../utils/sanitizer.js';
@@ -113,13 +114,34 @@ export const createComment = async (req, res) => {
     const id = uuidv4();
     const comment = await CommentsModel.create({ id, modId, userId, content: sanitizedContent, rating });
 
-    await LogService.logComments(userId, 'Novo comentário', `Comentou no mod ${modId}`, req.ip, req.headers['user-agent'], id, modId);
+    const mod = await ModsModel.findById(modId);
 
-    // buscar o comentario criado com os dados do usuario
+    try {
+      console.log('📝 Criando log de comentário...');
+      await LogService.logComments(
+        userId, 
+        'Novo comentário criado', 
+        `Usuário comentou no mod: ${mod?.title || mod?.name || modId}${rating ? ` (Avaliação: ${rating} estrelas)` : ''}`, 
+        req.ip || 'N/A', 
+        req.get('User-Agent') || req.headers['user-agent'] || 'N/A', 
+        id, 
+        modId,
+        {
+          mod_title: mod?.title || mod?.name,
+          mod_id: modId,
+          comment_id: id,
+          rating: rating || null,
+          comment_length: sanitizedContent.length
+        }
+      );
+      console.log('✅ Log de comentário criado com sucesso');
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de comentário:', logErr);
+      logError('Erro ao criar log de comentário', logErr, { userId, modId, commentId: id });
+    }
+
     const createdComment = await CommentsModel.findById(id);
     
-    
-    // verificar se o comentario esta pendente
     if (!createdComment.is_approved) {
       return res.json({ 
         success: true, 
@@ -177,11 +199,6 @@ export const listCommentsByMod = async (req, res) => {
 export const getPendingComments = async (req, res) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
-    
-    // verificar se o usuario é admin
-    if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
-      return res.status(403).json({ success: false, message: 'Acesso negado' });
-    }
 
     const comments = await CommentsModel.findPendingForModeration(parseInt(limit), parseInt(offset));
     
@@ -200,11 +217,6 @@ export const getPendingComments = async (req, res) => {
 export const getRejectedComments = async (req, res) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
-    
-    // verificar se o usuario é admin
-    if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
-      return res.status(403).json({ success: false, message: 'Acesso negado' });
-    }
 
     const comments = await CommentsModel.findRejectedComments(parseInt(limit), parseInt(offset));
     
@@ -223,11 +235,6 @@ export const getRejectedComments = async (req, res) => {
 export const getRecentComments = async (req, res) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
-    
-    // verificar se o usuario é admin
-    if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
-      return res.status(403).json({ success: false, message: 'Acesso negado' });
-    }
 
     const comments = await CommentsModel.findRecentApprovedComments(parseInt(limit), parseInt(offset));
     
@@ -247,11 +254,6 @@ export const approveComment = async (req, res) => {
   try {
     const { commentId } = req.params;
     const moderatorId = req.user?.id;
-    
-    // verificar se o usuario é admin
-    if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
-      return res.status(403).json({ success: false, message: 'Acesso negado' });
-    }
 
     await CommentsModel.approveComment(commentId, moderatorId);
     
@@ -284,11 +286,6 @@ export const rejectComment = async (req, res) => {
     
     if (!reason || !reason.trim()) {
       return res.status(400).json({ success: false, message: 'Motivo da rejeição é obrigatório' });
-    }
-    
-    // verificar se o usuario é admin
-    if (!['admin', 'super_admin', 'moderator'].includes(req.user?.role)) {
-      return res.status(403).json({ success: false, message: 'Acesso negado' });
     }
 
     await CommentsModel.rejectComment(commentId, moderatorId, reason.trim());

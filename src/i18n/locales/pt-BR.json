@@ -721,40 +721,40 @@
         "technical": "Técnico"
       },
       "whatIsEuMarkoMods": {
-        "title": "O que é o Eu, Marko!?",
-        "content": "O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores."
+        "title": "O que é esta plataforma?",
+        "content": "Esta é uma plataforma dedicada a mods para Minecraft, onde você pode descobrir, baixar e compartilhar mods incríveis. Nossa missão é facilitar o acesso a mods de qualidade e criar uma comunidade vibrante de jogadores e desenvolvedores."
       },
       "howToRegister": {
         "title": "Como me registrar?",
-        "content": "Para se registrar, clique no botão \"Registrar\" no canto superior direito da página. Preencha o formulário com seu nome de usuário, email e senha. Após confirmar seu email, você terá acesso completo à plataforma."
+        "content": "Clique no botão \"Registrar\" localizado no canto superior direito da página. Preencha o formulário com seu nome de usuário, email e senha. Após confirmar seu email através do link enviado, você terá acesso completo a todas as funcionalidades da plataforma."
       },
       "howToDownload": {
         "title": "Como baixar mods?",
-        "content": "Navegue pela nossa biblioteca de mods, encontre o que você gosta e clique no botão \"Baixar\". Você precisa estar logado para baixar mods. Após o download, siga as instruções de instalação específicas de cada mod."
+        "content": "Navegue pela nossa biblioteca de mods, encontre os que te interessam e clique no botão \"Baixar\". É necessário estar logado para realizar downloads. Após o download, siga as instruções de instalação específicas de cada mod."
       },
       "howToInstall": {
         "title": "Como instalar mods?",
-        "content": "A instalação varia dependendo do mod e do mod loader (Forge, Fabric, etc.). Geralmente, você precisa: 1) Instalar o mod loader apropriado, 2) Baixar o mod, 3) Colocar o arquivo .jar na pasta \"mods\" do seu Minecraft."
+        "content": "A instalação varia dependendo do mod e do mod loader utilizado (Forge, Fabric, etc.).\n\nPassos gerais:\n\n1) Instale o mod loader apropriado\n2) Baixe o mod desejado\n3) Coloque o arquivo .jar na pasta \"mods\" do seu Minecraft\n\nCada mod pode ter instruções específicas na sua página de detalhes."
       },
       "favoriteMods": {
         "title": "Como favoritar mods?",
-        "content": "Para favoritar um mod, clique no ícone de coração no card do mod ou na página de detalhes. Mods favoritados aparecem na sua seção \"Favoritos\" no dashboard, facilitando o acesso posterior."
+        "content": "Clique no ícone de coração no card do mod ou na página de detalhes. Os mods favoritados aparecerão automaticamente na sua seção \"Favoritos\" no dashboard, facilitando o acesso posterior."
       },
       "resetPassword": {
         "title": "Como redefinir minha senha?",
-        "content": "Na página de login, clique em \"Esqueci minha senha\". Digite seu email e você receberá um link para redefinir sua senha. Siga as instruções no email para criar uma nova senha segura."
+        "content": "Na página de login, clique em \"Esqueci minha senha\". Digite seu email cadastrado e você receberá um link para redefinir sua senha. Siga as instruções enviadas por email para criar uma nova senha segura."
       },
       "modCompatibility": {
         "title": "Como verificar compatibilidade de mods?",
-        "content": "Cada mod tem informações detalhadas sobre compatibilidade, incluindo versão do Minecraft, mod loader necessário e dependências. Sempre verifique essas informações antes de instalar para evitar conflitos."
+        "content": "Cada mod possui informações detalhadas sobre compatibilidade na sua página de detalhes, incluindo versão do Minecraft necessária, mod loader requerido e dependências. Sempre verifique essas informações antes de instalar para evitar conflitos."
       },
       "systemRequirements": {
         "title": "Quais são os requisitos do sistema?",
-        "content": "Para usar o Eu, Marko!, você precisa de: Minecraft Java Edition, Java 8 ou superior, conexão com internet e um navegador moderno. Para mods específicos, consulte os requisitos individuais de cada mod."
+        "content": "Para usar nossa plataforma, você precisa de: Minecraft Java Edition, Java 8 ou superior, conexão com internet e um navegador moderno. Para mods específicos, consulte os requisitos individuais de cada mod."
       },
       "modIssues": {
         "title": "O que fazer se um mod não funcionar?",
-        "content": "Primeiro, verifique se você tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte a seção de comentários do mod ou entre em contato conosco."
+        "content": "Primeiro, verifique se você possui a versão correta do mod loader e do Minecraft. Confirme se todas as dependências necessárias estão instaladas. Se o problema persistir, consulte a seção de comentários do mod onde outros usuários podem ter encontrado soluções, ou entre em contato conosco para obter suporte."
       },
       "communityGuidelines": {
         "title": "Quais são as diretrizes da comunidade?",
@@ -770,7 +770,7 @@
   },
   "faq": {
     "title": "Perguntas Frequentes",
-    "subtitle": "Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko!",
+    "subtitle": "Encontre respostas para as dúvidas mais comuns sobre nossa plataforma",
     "searchPlaceholder": "Pesquisar nas perguntas frequentes...",
     "categories": {
       "all": "Todas",
@@ -789,60 +789,60 @@
       }
     },
     "whatIsMarkoMods": {
-      "title": "O que é o Eu, Marko!?",
-      "content": "O Eu, Marko! é uma plataforma dedicada a mods para Minecraft, onde você pode descobrir, baixar e compartilhar mods incríveis. Nossa missão é facilitar o acesso a mods de qualidade e criar uma comunidade vibrante de jogadores e desenvolvedores."
+      "title": "O que é esta plataforma?",
+      "content": "Esta é uma plataforma dedicada a mods para Minecraft, onde você pode descobrir, baixar e compartilhar mods incríveis. Nossa missão é facilitar o acesso a mods de qualidade e criar uma comunidade vibrante de jogadores e desenvolvedores."
     },
     "howToStart": {
-      "title": "Como começar a usar o Eu, Marko!?",
-      "content": "Para começar:\n\n1) Crie uma conta gratuita\n2) Explore nossa biblioteca de mods\n3) Baixe mods que te interessam\n4) Instale seguindo nossas instruções\n\nÉ simples e gratuito!"
+      "title": "Como começar a usar a plataforma?",
+      "content": "Para começar é muito simples:\n\n1) Crie uma conta gratuita\n2) Explore nossa biblioteca de mods\n3) Baixe os mods que te interessam\n4) Instale seguindo nossas instruções\n\nTudo é gratuito e fácil de usar!"
     },
     "isFree": {
-      "title": "O Eu, Marko! é gratuito?",
-      "content": "Sim! O Eu, Marko! é completamente gratuito. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum."
+      "title": "A plataforma é gratuita?",
+      "content": "Sim! Nossa plataforma é completamente gratuita. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum."
     },
     "howToRegister": {
       "title": "Como me registrar?",
-      "content": "Clique em \"Registrar\" no canto superior direito, preencha o formulário com seu nome, email e senha. Após confirmar seu email, você terá acesso completo à plataforma."
+      "content": "Clique no botão \"Registrar\" localizado no canto superior direito da página. Preencha o formulário com seu nome de usuário, email e senha. Após confirmar seu email através do link enviado, você terá acesso completo a todas as funcionalidades da plataforma."
     },
     "resetPassword": {
       "title": "Como redefinir minha senha?",
-      "content": "Na página de login, clique em \"Esqueci minha senha\". Digite seu email e você receberá um link para redefinir sua senha. Siga as instruções no email."
+      "content": "Na página de login, clique em \"Esqueci minha senha\". Digite seu email cadastrado e você receberá um link para redefinir sua senha. Siga as instruções enviadas por email para criar uma nova senha segura."
     },
     "updateProfile": {
       "title": "Como atualizar meu perfil?",
-      "content": "Acesse seu dashboard clicando no seu avatar. Na seção \"Perfil\", você pode atualizar suas informações pessoais, foto e preferências."
+      "content": "Acesse seu dashboard clicando no seu avatar no canto superior direito. Na seção \"Perfil\", você pode atualizar suas informações pessoais, foto de perfil, nome de exibição e outras preferências da sua conta."
     },
     "howToDownload": {
       "title": "Como baixar mods?",
-      "content": "Navegue pela biblioteca, encontre mods que te interessam e clique em \"Baixar\". Você precisa estar logado. Após o download, siga as instruções de instalação."
+      "content": "Navegue pela nossa biblioteca de mods, encontre os que te interessam e clique no botão \"Baixar\". É necessário estar logado para realizar downloads. Após o download, siga as instruções de instalação específicas de cada mod."
     },
     "howToInstall": {
       "title": "Como instalar mods?",
-      "content": "A instalação varia por mod e mod loader (Forge, Fabric, etc.).\n\nGeralmente:\n\n1) Instale o mod loader apropriado\n2) Baixe o mod\n3) Coloque o arquivo .jar na pasta \"mods\" do Minecraft"
+      "content": "A instalação varia dependendo do mod e do mod loader utilizado (Forge, Fabric, etc.).\n\nPassos gerais:\n\n1) Instale o mod loader apropriado\n2) Baixe o mod desejado\n3) Coloque o arquivo .jar na pasta \"mods\" do seu Minecraft\n\nCada mod pode ter instruções específicas na sua página de detalhes."
     },
     "favoriteMods": {
       "title": "Como favoritar mods?",
-      "content": "Clique no ícone de coração no card do mod ou na página de detalhes. Mods favoritados aparecem na sua seção \"Favoritos\" no dashboard."
+      "content": "Clique no ícone de coração no card do mod ou na página de detalhes. Os mods favoritados aparecerão automaticamente na sua seção \"Favoritos\" no dashboard, facilitando o acesso posterior."
     },
     "findMods": {
       "title": "Como encontrar mods específicos?",
-      "content": "Use nossa barra de pesquisa para buscar por nome, categoria ou palavras-chave. Você também pode filtrar por versão do Minecraft, mod loader ou popularidade."
+      "content": "Use a barra de pesquisa para buscar por nome, categoria ou palavras-chave. Você também pode utilizar os filtros disponíveis para refinar sua busca por versão do Minecraft, mod loader, popularidade ou outras categorias."
     },
     "modCompatibility": {
-      "title": "Como verificar compatibilidade?",
-      "content": "Cada mod tem informações detalhadas sobre compatibilidade, incluindo versão do Minecraft, mod loader necessário e dependências. Sempre verifique antes de instalar."
+      "title": "Como verificar compatibilidade de mods?",
+      "content": "Cada mod possui informações detalhadas sobre compatibilidade na sua página de detalhes, incluindo versão do Minecraft necessária, mod loader requerido e dependências. Sempre verifique essas informações antes de instalar para evitar conflitos."
     },
     "systemRequirements": {
       "title": "Quais são os requisitos do sistema?",
-      "content": "Para usar o Eu, Marko!: Minecraft Java Edition, Java 8 ou superior, conexão com internet e navegador moderno. Para mods específicos, consulte os requisitos individuais."
+      "content": "Para usar nossa plataforma, você precisa de: Minecraft Java Edition, Java 8 ou superior, conexão com internet e um navegador moderno. Para mods específicos, consulte os requisitos individuais de cada mod."
     },
     "modIssues": {
       "title": "O que fazer se um mod não funcionar?",
-      "content": "Primeiro, verifique se você tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte os comentários do mod ou entre em contato."
+      "content": "Primeiro, verifique se você possui a versão correta do mod loader e do Minecraft. Confirme se todas as dependências necessárias estão instaladas. Se o problema persistir, consulte a seção de comentários do mod onde outros usuários podem ter encontrado soluções, ou entre em contato conosco para obter suporte."
     },
     "modLoader": {
-      "title": "Qual mod loader usar?",
-      "content": "A escolha depende do mod. Forge é o mais popular e compatível com a maioria dos mods. Fabric é mais moderno e performático. Quilt é uma alternativa ao Fabric. Verifique qual o recomendado para o mod desejado."
+      "title": "Qual mod loader devo usar?",
+      "content": "A escolha do mod loader depende do mod que você deseja instalar. Forge é o mais popular e possui maior compatibilidade com a maioria dos mods. Fabric é mais moderno e oferece melhor performance. Quilt é uma alternativa moderna ao Fabric. Verifique na página de detalhes do mod qual loader é recomendado."
     },
     "communityGuidelines": {
       "title": "Quais são as diretrizes da comunidade?",
@@ -918,8 +918,8 @@
       "downloads": "downloads"
     },
     "roles": {
-      "superAdmin": "Super Admin",
-      "admin": "Admin",
+      "superAdmin": "Admin",
+      "admin": "Supervisor",
       "moderator": "Moderador"
     }
   },

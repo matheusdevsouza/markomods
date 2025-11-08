@@ -3,6 +3,7 @@ import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProviderMods } from '@/contexts/ThemeContextMods';
 import { AuthProviderMods } from '@/contexts/AuthContextMods';
+import { PermissionsProvider } from '@/contexts/PermissionsContext';
 import { ModsProvider } from '@/contexts/ModsContext';
 import { DownloadsProvider } from '@/contexts/DownloadsContext';
 import { I18nextProvider } from 'react-i18next';
@@ -15,6 +16,7 @@ import MainLayout from '@/components/mods/layout/MainLayout';
 import AdminLayout from '@/components/mods/layout/AdminLayout';
 import PublicLayout from '@/components/layout/PublicLayout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import PermissionGuard from '@/components/auth/PermissionGuard';
 import DomainValidator from '@/components/security/DomainValidator';
 const HomePage = React.lazy(() => import('@/pages/mods/HomePage'));
 const ModDetailPage = React.lazy(() => import('@/pages/mods/ModDetailPage'));
@@ -34,12 +36,14 @@ const RegisterPage = React.lazy(() => import('@/pages/mods/RegisterPage'));
 const ForgotPasswordPage = React.lazy(() => import('@/pages/mods/ForgotPasswordPage'));
 const ResetPasswordPage = React.lazy(() => import('@/pages/mods/ResetPasswordPage'));
 const VerifyEmailPage = React.lazy(() => import('@/pages/mods/VerifyEmailPage'));
+const ConfirmAccountDeletionPage = React.lazy(() => import('@/pages/mods/ConfirmAccountDeletionPage'));
 const UserDashboardPage = React.lazy(() => import('@/pages/mods/UserDashboardPage'));
 const EditProfilePage = React.lazy(() => import('@/pages/mods/EditProfilePage'));
 const FavoritesPage = React.lazy(() => import('@/pages/mods/FavoritesPage'));
 const DownloadsPage = React.lazy(() => import('@/pages/mods/DownloadsPage'));
 const AdminDashboardPage = React.lazy(() => import('@/pages/mods/admin/AdminDashboardPage'));
 const AdminUsersPage = React.lazy(() => import('@/pages/mods/admin/AdminUsersPage'));
+const AdminAdministratorsPage = React.lazy(() => import('@/pages/mods/admin/AdminAdministratorsPage'));
 const AdminModsPage = React.lazy(() => import('@/pages/mods/admin/AdminModsPage'));
 const AdminLogsPage = React.lazy(() => import('@/pages/mods/admin/AdminLogsPage'));
 const AdminCommentsModerationPage = React.lazy(() => import('@/pages/mods/admin/AdminCommentsModerationPage'));
@@ -67,9 +71,10 @@ function App() {
   return (
     <ThemeProviderMods>
       <AuthProviderMods>
-        <ModsProvider>
-          <DownloadsProvider>
-            <I18nextProvider i18n={i18n}>
+        <PermissionsProvider>
+          <ModsProvider>
+            <DownloadsProvider>
+              <I18nextProvider i18n={i18n}>
             <div className="App">
               <DomainValidator />
               <AuthModalOutlet />
@@ -114,6 +119,7 @@ function App() {
                     </ProtectedRoute>
                   } />
                   <Route path="verify-email" element={<VerifyEmailPage />} />
+                  <Route path="confirm-account-deletion" element={<ConfirmAccountDeletionPage />} />
                   {}
                   <Route path="dashboard" element={
                     <ProtectedRoute requireAuth={true}>
@@ -138,16 +144,47 @@ function App() {
                 </Route>
                 {}
                 <Route path="/admin" element={
-                  <ProtectedRoute requireAuth={true} requireSuperAdmin={true}>
-                    <AdminLayout />
+                  <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                    <PermissionGuard requiredPermission="access_admin_panel">
+                      <AdminLayout />
+                    </PermissionGuard>
                   </ProtectedRoute>
                 }>
-                  <Route index element={<AdminDashboardPage />} />
-                  <Route path="users" element={<AdminUsersPage />} />
-                  <Route path="mods" element={<AdminModsPage />} />
-                  <Route path="changelogs" element={<AdminChangelogsPage />} />
-                  <Route path="comments-moderation" element={<AdminCommentsModerationPage />} />
-                  <Route path="logs" element={<AdminLogsPage />} />
+                  <Route index element={
+                    <PermissionGuard requiredPermission="access_admin_panel">
+                      <AdminDashboardPage />
+                    </PermissionGuard>
+                  } />
+                  <Route path="users" element={
+                    <PermissionGuard requiredPermission="manage_users" requireSuperAdmin={true}>
+                      <AdminUsersPage />
+                    </PermissionGuard>
+                  } />
+                  <Route path="administrators" element={
+                    <PermissionGuard requireSuperAdmin={true}>
+                      <AdminAdministratorsPage />
+                    </PermissionGuard>
+                  } />
+                  <Route path="mods" element={
+                    <PermissionGuard requiredPermission="view_mods">
+                      <AdminModsPage />
+                    </PermissionGuard>
+                  } />
+                  <Route path="changelogs" element={
+                    <PermissionGuard requiredPermission="view_changelogs">
+                      <AdminChangelogsPage />
+                    </PermissionGuard>
+                  } />
+                  <Route path="comments-moderation" element={
+                    <PermissionGuard requiredPermission="view_comments">
+                      <AdminCommentsModerationPage />
+                    </PermissionGuard>
+                  } />
+                  <Route path="logs" element={
+                    <PermissionGuard requiredPermission="view_logs">
+                      <AdminLogsPage />
+                    </PermissionGuard>
+                  } />
                 </Route>
                 {}
                 <Route path="/public" element={<PublicLayout />}>
@@ -175,9 +212,10 @@ function App() {
               gap={12}
             />
           </div>
-          </I18nextProvider>
-          </DownloadsProvider>
-        </ModsProvider>
+              </I18nextProvider>
+            </DownloadsProvider>
+          </ModsProvider>
+        </PermissionsProvider>
       </AuthProviderMods>
     </ThemeProviderMods>
   );

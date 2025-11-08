@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import { authenticateToken, requireAdmin, optionalAuth, publicOrAuthenticated } from '../middleware/auth.js';
+import { authenticateToken, requireAdmin, requireAdminOrSuperAdmin, requirePermission, optionalAuth, publicOrAuthenticated } from '../middleware/auth.js';
 import { uploadModMedia, validateModMedia, uploadEditorImage } from '../middleware/upload.js';
 import { adminSecurityMiddleware } from '../middleware/adminSecurity.js';
 import {
@@ -35,7 +35,7 @@ router.get('/search', advancedSearch);
 router.get('/content-types', getContentTypes);
 router.get('/stats/count', getModsCount);
 
-// testes
+// testeeeeeeeeeeeeeeeeeeeeeeee !!!!!!!!!!!
 router.get('/test', (req, res) => {
   res.json({ success: true, message: 'Rota pública funcionando!' });
 });
@@ -62,29 +62,26 @@ router.post('/:id/view', registerView);
 // servir arquivos de thumbnail
 router.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-// rotas para downloads (públicas - antes do middleware publicOrAuthenticated)
+// rotas para downloads 
 router.post('/:id/download', optionalAuth, downloadMod);
 
 // middleware para permitir acesso público para GET /id
 router.use(publicOrAuthenticated);
 
-// rotas administrativas (precisa de admin e segurança)
-router.get('/admin', adminSecurityMiddleware, requireAdmin, getAllMods);
-router.get('/admin/stats', adminSecurityMiddleware, requireAdmin, getModStats);
-router.get('/admin/:id', adminSecurityMiddleware, requireAdmin, getModById);
+router.get('/admin', adminSecurityMiddleware, requirePermission('view_mods'), getAllMods);
+router.get('/admin/stats', adminSecurityMiddleware, requirePermission('view_mods'), getModStats);
+router.get('/admin/:id', adminSecurityMiddleware, requirePermission('view_mods'), getModById);
 router.get('/user/downloads/count', authenticateToken, getUserDownloadsCount);
 router.get('/user/downloads/history', authenticateToken, getUserDownloadHistory);
 
-// rotas para favoritos
 router.post('/:id/favorite', authenticateToken, toggleFavorite);
 router.get('/:id/favorite', authenticateToken, checkFavorite);
 router.get('/user/favorites', authenticateToken, getUserFavorites);
 
-// rotas de criação/edição
-router.post('/', adminSecurityMiddleware, requireAdmin, uploadModMedia, validateModMedia, createMod);
-router.put('/:id', adminSecurityMiddleware, requireAdmin, uploadModMedia, validateModMedia, updateMod);
-router.delete('/:id', adminSecurityMiddleware, requireAdmin, deleteMod);
-router.patch('/:id/status', adminSecurityMiddleware, requireAdmin, toggleModStatus);
+router.post('/', adminSecurityMiddleware, requirePermission('manage_mods'), uploadModMedia, validateModMedia, createMod);
+router.put('/:id', adminSecurityMiddleware, requirePermission('manage_mods'), uploadModMedia, validateModMedia, updateMod);
+router.delete('/:id', adminSecurityMiddleware, requirePermission('manage_mods'), deleteMod);
+router.patch('/:id/status', adminSecurityMiddleware, requirePermission('manage_mods'), toggleModStatus);
 
 // upload de imagens do editor
 router.post('/editor/upload-image', authenticateToken, uploadEditorImage, (req, res) => {

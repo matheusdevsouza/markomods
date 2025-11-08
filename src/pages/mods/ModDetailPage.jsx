@@ -6,6 +6,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { buildThumbnailUrl, buildAvatarUrl } from '../../utils/urls';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { getAvatarUrl as getAvatarUrlUtil } from '@/utils/avatarUtils';
+import RoleBadge from '@/components/mods/RoleBadge';
 import { buildVideoUrl } from '../../utils/urls';
 import VideoPlayer from '../../components/VideoPlayer';
 import { processHtmlComplete } from '../../utils/htmlProcessor';
@@ -215,16 +216,9 @@ const ModDetailPage = () => {
   };
 
   const scrollToDownloadSection = () => {
-    const downloadSection = document.getElementById('download-section');
-    if (downloadSection) {
-      const offset = 80;
-      const elementPosition = downloadSection.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+    const element = document.getElementById('download-section');
+    if (element) {
+      element.scrollIntoView();
     }
   };
   const registerView = async (modId) => {
@@ -1139,7 +1133,7 @@ const ModDetailPage = () => {
                 comments.map((comment) => (
                   <div key={comment.id} className={`rounded-lg p-3 sm:p-4 relative ${getCommentCardClasses()}`}>
                     <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
-                      {currentUser?.role === 'super_admin' && (
+                      {currentUser?.role === 'admin' && (
                         <button
                           onClick={() => handleReplyClick(comment)}
                           className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 bg-primary hover:bg-primary/80 text-white rounded transition-colors duration-200"
@@ -1148,7 +1142,7 @@ const ModDetailPage = () => {
                           <Reply className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                         </button>
                       )}
-                      {isAuthenticated && (currentUser?.id === comment.user_id || currentUser?.role === 'super_admin') && (
+                      {isAuthenticated && (currentUser?.id === comment.user_id || currentUser?.role === 'admin') && (
                         <button
                           onClick={() => handleDeleteComment(comment.id)}
                           className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 bg-red-500 hover:bg-red-600 text-white rounded transition-colors duration-200"
@@ -1169,9 +1163,14 @@ const ModDetailPage = () => {
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
-                          <span className={`text-xs sm:text-sm font-semibold ${getTextClasses()}`}>
-                            {comment.display_name || comment.username || 'Usuário'}
-                          </span>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-xs sm:text-sm font-semibold ${getTextClasses()}`}>
+                              {comment.display_name || comment.username || 'Usuário'}
+                            </span>
+                            {comment.role && ['admin', 'supervisor', 'moderator'].includes(comment.role) && (
+                              <RoleBadge role={comment.role} />
+                            )}
+                          </div>
                           <span className={`text-xs ${getSubtextClasses()}`}>
                             {new Date(comment.created_at).toLocaleDateString('pt-BR', {
                               day: '2-digit',
@@ -1297,14 +1296,16 @@ const ModDetailPage = () => {
                                     </span>
                                   </AvatarFallback>
                                 </Avatar>
-                                <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
+                                <div className="flex items-center space-x-1 sm:space-x-2 min-w-0 flex-wrap gap-1">
                                   <span className="text-xs sm:text-sm font-medium text-primary truncate">
                                     {reply.display_name || reply.username}
                                   </span>
-                                  <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
+                                  {reply.role && ['admin', 'supervisor', 'moderator'].includes(reply.role) && (
+                                    <RoleBadge role={reply.role} />
+                                  )}
                                 </div>
                               </div>
-                              {isAuthenticated && (currentUser?.id === reply.user_id || currentUser?.role === 'super_admin') && (
+                              {isAuthenticated && (currentUser?.id === reply.user_id || currentUser?.role === 'admin') && (
                                 <button
                                   onClick={() => handleDeleteComment(reply.id)}
                                   className="w-4 h-4 sm:w-5 sm:h-5 bg-red-500 hover:bg-red-600 text-white rounded flex items-center justify-center transition-colors flex-shrink-0"
@@ -1389,7 +1390,7 @@ const ModDetailPage = () => {
                     <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white">
                       <span className="font-bold text-lg">
                         {getInitials(commentToDelete.display_name || commentToDelete.username)}
-                      </span>
+                        </span>
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
@@ -1531,7 +1532,7 @@ const ModDetailPage = () => {
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="w-4 h-4 text-primary" />
                 <p className="text-xs text-primary">
-                  Apenas super administradores podem responder comentários. Sua resposta será marcada como oficial.
+                  Apenas administradores podem responder comentários. Sua resposta será marcada como oficial.
                 </p>
               </div>
             </div>

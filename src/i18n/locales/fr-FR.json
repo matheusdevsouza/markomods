@@ -436,8 +436,8 @@
       "downloads": "téléchargements"
     },
     "roles": {
-      "superAdmin": "Super Admin",
-      "admin": "Admin",
+      "superAdmin": "Admin",
+      "admin": "Superviseur",
       "moderator": "Modérateur"
     }
   },

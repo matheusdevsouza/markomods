@@ -438,8 +438,8 @@
       "downloads": "下载"
     },
     "roles": {
-      "superAdmin": "超级管理员",
-      "admin": "管理员",
+      "superAdmin": "管理员",
+      "admin": "主管",
       "moderator": "版主"
     }
   },

@@ -49,7 +49,7 @@ const ensureUploadDir = async () => {
 };
 
 // upload de banner
-router.post('/banner/upload', authenticateToken, requireRole(['super_admin']), async (req, res) => {
+router.post('/banner/upload', authenticateToken, requireRole(['admin']), async (req, res) => {
   try {
     await ensureUploadDir();
     
@@ -88,7 +88,7 @@ router.post('/banner/upload', authenticateToken, requireRole(['super_admin']), a
 });
 
 // atualizar URL do banner
-router.post('/banner/update', authenticateToken, requireRole(['super_admin']), async (req, res) => {
+router.post('/banner/update', authenticateToken, requireRole(['admin']), async (req, res) => {
   try {
     const { banner_url, banner_link } = req.body;
 
@@ -125,7 +125,7 @@ router.post('/banner/update', authenticateToken, requireRole(['super_admin']), a
 });
 
 // obter configurações do banner
-router.get('/banner/config', authenticateToken, requireRole(['super_admin']), async (req, res) => {
+router.get('/banner/config', authenticateToken, requireRole(['admin']), async (req, res) => {
   try {
     const configPath = path.join(__dirname, '../../config/banner.json');
     

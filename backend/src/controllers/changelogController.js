@@ -61,7 +61,7 @@ export const getChangelogBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
     const item = await ChangelogModel.findBySlug(slug);
-    if (!item || (!item.is_published && !['admin', 'super_admin', 'moderator'].includes(req.user?.role))) {
+    if (!item || (!item.is_published && !['supervisor', 'admin', 'moderator'].includes(req.user?.role))) {
       return res.status(404).json({ success: false, message: 'Changelog não encontrado' });
     }
     res.json({ success: true, data: item });

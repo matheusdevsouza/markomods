@@ -15,6 +15,7 @@ import { requestLogger } from './config/logger.js';
 import { securityMiddleware } from './services/SecurityService.js';
 import { adminSecurityMiddleware } from './middleware/adminSecurity.js';
 import { validateDomain, logSuspiciousActivity } from './middleware/domainValidation.js';
+import { securityScanningMiddleware, logProtectedRouteAccess } from './middleware/securityLogging.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/user.js';
 import logRoutes from './routes/logs.js';
@@ -23,8 +24,11 @@ import commentsRoutes from './routes/comments.js';
 import userSettingsRoutes from './routes/userSettings.js';
 import securityRoutes from './routes/security.js';
 import adminRoutes from './routes/admin.js';
+import administratorRoutes from './routes/administrators.js';
 import changelogRoutes from './routes/changelogs.js';
 import ChangelogModel from './models/ChangelogModel.js';
+import { LogService } from './services/LogService.js';
+import statsService from './services/StatsService.js';
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: './production.env' });
 } else {
@@ -206,11 +210,13 @@ const commentLimiter = rateLimit({
 });
 app.use(limiter);
 app.use(securityMiddleware());
+app.use(securityScanningMiddleware);
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('combined'));
 app.use(requestLogger);
+app.use(logProtectedRouteAccess);
 app.get('/health', (req, res) => {
   res.json({
     success: true,
@@ -228,6 +234,7 @@ app.use('/api/mods', publicModsLimiter, modsRoutes);
 app.use('/api/comments', commentLimiter, commentsRoutes);
 app.use('/api/security', adminSecurityMiddleware, securityRoutes);
 app.use('/api/admin', adminSecurityMiddleware, adminRoutes);
+app.use('/api/administrators', adminSecurityMiddleware, administratorRoutes);
 app.use('/api/changelogs', changelogRoutes);
 app.post('/api/mods/editor/upload-image', authenticateToken, uploadEditorImage, (req, res) => {
   try {
@@ -390,6 +397,25 @@ const startServer = async () => {
     }
     console.log('✅ Conexão com banco estabelecida. Iniciando servidor HTTP...');
     try { await ChangelogModel.ensureTable(); } catch (e) { console.error('Erro ao garantir tabela changelogs', e); }
+    try { 
+      await LogService.ensureTable(); 
+      console.log('✅ Tabela activity_logs verificada/criada');
+      try {
+        await LogService.logSystem(
+          'Sistema inicializado',
+          'Servidor iniciado com sucesso',
+          'info',
+          { timestamp: new Date().toISOString(), environment: process.env.NODE_ENV || 'development' }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de inicialização:', logErr);
+      }
+    } catch (e) { console.error('Erro ao garantir tabela activity_logs', e); }
+    try { await statsService.initialize(); } catch (e) { console.error('Erro ao inicializar StatsService', e); }
+    try { 
+      const { AccountDeletionTokenModel } = await import('./models/AccountDeletionTokenModel.js');
+      await AccountDeletionTokenModel.ensureTable(); 
+    } catch (e) { console.error('Erro ao garantir tabela account_deletion_tokens', e); }
     app.listen(PORT, () => {
       console.log('🚀 Servidor iniciado com sucesso!');
       console.log(`📡 Porta: ${PORT}`);

@@ -35,11 +35,11 @@ const ProtectedRoute = React.memo(({
     return <Navigate to="/banned" replace />;
   }
 
-  if (requireAdmin && (!currentUser || !['admin', 'super_admin', 'moderator'].includes(currentUser.role))) {
-    return <Navigate to="/" replace />;
+  if (requireAdmin && (!currentUser || !['supervisor', 'admin', 'moderator'].includes(currentUser.role))) {
+    return <Navigate to="/dashboard" replace />;
   }
 
-  if (requireSuperAdmin && (!currentUser || currentUser.role !== 'super_admin')) {
+  if (requireSuperAdmin && (!currentUser || currentUser.role !== 'admin')) {
     return <Navigate to="/dashboard" replace />;
   }
 

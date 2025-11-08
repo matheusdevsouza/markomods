@@ -14,13 +14,12 @@ import {
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/hooks/useTranslation";
-
 const Footer = React.memo(() => {
   const { t } = useTranslation();
   const year = new Date().getFullYear();
   
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0 });
   };
   
   return (
@@ -316,15 +315,14 @@ const Footer = React.memo(() => {
             <span className="text-xs md:text-sm text-muted-foreground text-center sm:text-left">© {year} {t('footer.allRightsReserved')}</span>
           </div>
 
-          {/* botão voltar ao topo */}
           <Button
             variant="ghost"
             size="sm"
-            onClick={scrollToTop}
+            onClick={handleScrollToTop}
             className="h-9 md:h-8 px-3 md:px-3 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200 touch-manipulation"
+            aria-label={t('footer.backToTop')}
           >
-            <ArrowUp className="h-4 w-4 mr-1" />
-            <span className="text-xs md:text-sm">{t('footer.backToTop')}</span>
+            <ArrowUp className="h-4 w-4" />
           </Button>
         </div>
       </div>

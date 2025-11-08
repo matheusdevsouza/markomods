@@ -157,8 +157,8 @@ export const AuthProviderMods = ({ children }) => {
   const getRedirectPath = (user) => {
     if (!user || !user.role) return '/dashboard';
     switch (user.role) {
-      case 'super_admin':
       case 'admin':
+      case 'supervisor':
         return '/admin';
       case 'moderator':
         return '/admin';

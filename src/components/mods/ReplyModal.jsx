@@ -120,7 +120,7 @@ const ReplyModal = ({
           <div className="flex items-center space-x-2">
             <Shield className="w-4 h-4 text-blue-400" />
             <p className="text-xs text-blue-300">
-              Apenas super administradores podem responder comentários. Sua resposta será marcada como oficial.
+              Apenas administradores podem responder comentários. Sua resposta será marcada como oficial.
             </p>
           </div>
         </div>

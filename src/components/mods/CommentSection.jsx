@@ -8,8 +8,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MessageCircle, Send, User, CalendarDays, ThumbsUp, ThumbsDown, AlertTriangle, Clock, XCircle, Trash2, Reply } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContextMods';
+import { useTranslation } from '@/hooks/useTranslation';
 import CommentReply from './CommentReply';
 import ReplyModal from './ReplyModal';
+import RoleBadge from './RoleBadge';
 import { getAvatarUrl } from '@/utils/avatarUtils';
 
 const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
@@ -25,6 +27,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
   const { toast } = useToast();
   const { isAuthenticated, currentUser } = useAuth();
+  const { t } = useTranslation();
   const isUserBanned = currentUser && currentUser.is_banned;
 
 
@@ -342,10 +345,15 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                       
                       <div className="flex-1 space-y-3">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-medium text-foreground">
                               {comment.display_name || comment.username}
                             </span>
+                            
+                            {/* Badge de role do administrador */}
+                            {comment.role && ['admin', 'supervisor', 'moderator'].includes(comment.role) && (
+                              <RoleBadge role={comment.role} />
+                            )}
                             
                             {/* status do comentário */}
                             {comment.is_pending && (
@@ -419,7 +427,7 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                             )}
                             
                             {/* botão de resposta */}
-                            {currentUser?.role === 'super_admin' && !comment.is_pending && (
+                            {currentUser?.role === 'admin' && !comment.is_pending && (
                               <button
                                 onClick={() => handleReplyClick(comment)}
                                 className="flex items-center justify-center w-6 h-6 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
@@ -613,10 +621,15 @@ const CommentSection = ({ modId, initialComments = [], onCommentPosted }) => {
                     
                     <div className="flex-1 space-y-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-medium text-foreground">
                             {comment.display_name || comment.username}
                           </span>
+                          
+                          {/* Badge de role do administrador */}
+                          {comment.role && ['admin', 'supervisor', 'moderator'].includes(comment.role) && (
+                            <RoleBadge role={comment.role} />
+                          )}
                           
                           {/* status do comentário */}
                           {comment.is_pending && (

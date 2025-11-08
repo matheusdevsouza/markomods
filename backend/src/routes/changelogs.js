@@ -1,6 +1,6 @@
 import express from 'express';
 import { adminSecurityMiddleware } from '../middleware/adminSecurity.js';
-import { optionalAuth } from '../middleware/auth.js';
+import { optionalAuth, requireAdmin, requirePermission, authenticateToken } from '../middleware/auth.js';
 import {
   createChangelog,
   updateChangelog,
@@ -12,15 +12,13 @@ import {
 
 const router = express.Router();
 
-// público
 router.get('/public', listPublicChangelogs);
 router.get('/public/:slug', optionalAuth, getChangelogBySlug);
 
-// admin
-router.get('/', adminSecurityMiddleware, listAllChangelogs);
-router.post('/', adminSecurityMiddleware, createChangelog);
-router.put('/:id', adminSecurityMiddleware, updateChangelog);
-router.delete('/:id', adminSecurityMiddleware, deleteChangelog);
+router.get('/', authenticateToken, adminSecurityMiddleware, requirePermission('view_changelogs'), listAllChangelogs);
+router.post('/', authenticateToken, adminSecurityMiddleware, requirePermission('manage_changelogs'), createChangelog);
+router.put('/:id', authenticateToken, adminSecurityMiddleware, requirePermission('manage_changelogs'), updateChangelog);
+router.delete('/:id', authenticateToken, adminSecurityMiddleware, requirePermission('manage_changelogs'), deleteChangelog);
 
 export default router;
 

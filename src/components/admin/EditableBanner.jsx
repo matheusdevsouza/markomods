@@ -9,7 +9,7 @@ const EditableBanner = ({ bannerUrl, bannerLink, onBannerUpdate, children, class
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { currentUser } = useAuth();
 
-  const isSuperAdmin = currentUser?.role === 'super_admin';
+  const isSuperAdmin = currentUser?.role === 'admin';
 
   const handleEditClick = (e) => {
     e.preventDefault();

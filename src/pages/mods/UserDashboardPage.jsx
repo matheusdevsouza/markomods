@@ -23,6 +23,9 @@ import {
   Sparkles,
   Eye,
   Calendar,
+  Crown,
+  Shield,
+  UserCog,
   MapPin,
   Edit3,
   RefreshCw,
@@ -137,7 +140,6 @@ const UserDashboardPage = React.memo(() => {
         return;
       }
 
-      // Buscar favoritos do usuário
       const favoritesResponse = await fetch('/api/mods/user/favorites', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -232,10 +234,8 @@ const UserDashboardPage = React.memo(() => {
           title: 'Comentário excluído!',
           description: 'Seu comentário foi removido com sucesso.'
         });
-        // Recarregar comentários e estatísticas
         fetchUserComments();
         fetchUserStats();
-        // Disparar evento para atualizar contagem
         window.dispatchEvent(new CustomEvent('commentsUpdated'));
       } else {
         const data = await response.json();
@@ -358,13 +358,39 @@ const UserDashboardPage = React.memo(() => {
   }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-8"
-    >
-      <div className="bg-gradient-to-br from-primary/20 via-primary/10 to-background rounded-2xl p-8 border border-primary/30 shadow-xl">
+    <div className="min-h-screen pt-32">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8"
+          >
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+        <div className="flex-1">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent flex items-center gap-3">
+            <User className="h-8 w-8 md:h-10 md:w-10 text-primary" />
+            Seu Perfil
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground mb-8">
+            Bem-vindo, <strong>{currentUser?.display_name || currentUser?.username}</strong>!
+          </p>
+        </div>
+        <Button asChild variant="outline" className="text-primary hover:!text-primary hover:bg-primary/10 hover:border-primary/50 text-sm sm:text-base w-full sm:w-auto">
+          <Link to="/mods">
+            <Gamepad2 className="h-4 w-4 mr-2" />
+            Explorar Mods
+          </Link>
+        </Button>
+      </div>
+
+      <div className="flex items-center gap-3 mb-6 mt-8">
+        <span className="text-[10px] font-normal text-muted-foreground/50 uppercase tracking-widest whitespace-nowrap">Perfil</span>
+        <div className="flex-1 h-[1px] bg-gradient-to-r from-border/30 via-border/15 to-transparent"></div>
+      </div>
+
+      <div className="bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 rounded-2xl p-8 border border-primary/20 shadow-xl">
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-blue-500 rounded-full p-1 animate-pulse"></div>
@@ -382,20 +408,24 @@ const UserDashboardPage = React.memo(() => {
           
           <div className="flex-1 space-y-4">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-4xl font-minecraft text-primary hover:text-white transition-colors duration-300">
+              <h1 className="text-4xl font-minecraft text-primary">
                 {currentUser.display_name || currentUser.username || 'Usuário'}
               </h1>
-              {currentUser.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role) && (
-                <Badge variant="secondary" className={`px-3 py-1 ${
-                  currentUser.role === 'super_admin' || currentUser.role === 'admin' 
-                    ? 'bg-gradient-to-r from-purple-500/20 to-purple-600/20 text-purple-600 border-purple-500/30' 
-                    : 'bg-gradient-to-r from-blue-500/20 to-blue-600/20 text-blue-600 border-blue-500/30'
-                }`}>
-                  <Sparkles size={14} className="mr-1" />
-                  {currentUser.role === 'super_admin' ? t('dashboard.roles.superAdmin') : 
-                   currentUser.role === 'admin' ? t('dashboard.roles.admin') : t('dashboard.roles.moderator')}
-                </Badge>
-              )}
+              {currentUser.role && ['supervisor', 'admin', 'moderator'].includes(currentUser.role) && (() => {
+                const roleConfig = {
+                  'admin': { icon: Crown, label: 'Admin' },
+                  'supervisor': { icon: Shield, label: 'Supervisor' },
+                  'moderator': { icon: UserCog, label: 'Moderador' }
+                };
+                const config = roleConfig[currentUser.role] || roleConfig.moderator;
+                const RoleIcon = config.icon;
+                return (
+                  <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 text-xs">
+                    <RoleIcon className="h-3 w-3 mr-1" />
+                    {config.label}
+                  </Badge>
+                );
+              })()}
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -450,60 +480,68 @@ const UserDashboardPage = React.memo(() => {
             )}
             
             <Button 
-              variant="outline" 
               size="sm" 
               onClick={() => navigate('/edit-profile')}
-              className="group relative overflow-hidden bg-gradient-to-r from-primary/10 via-purple-500/10 to-blue-500/10 border border-primary/40 text-primary hover:from-primary/20 hover:via-purple-500/20 hover:to-blue-500/20 hover:border-primary/60 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:scale-105 px-6 py-2.5 font-medium"
+              className="bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white px-6 py-2.5 font-medium transition-all duration-300 hover:scale-105"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <Edit3 size={16} className="mr-2 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-              <span className="relative z-10">{t('dashboard.editProfile')}</span>
+              <Edit3 size={16} className="mr-2" />
+              {t('dashboard.editProfile')}
             </Button>
           </div>
         </div>
       </div>
 
+      <div className="flex items-center gap-3 mb-6 mt-8">
+        <span className="text-[10px] font-normal text-muted-foreground/50 uppercase tracking-widest whitespace-nowrap">Estatísticas</span>
+        <div className="flex-1 h-[1px] bg-gradient-to-r from-border/30 via-border/15 to-transparent"></div>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="minecraft-card hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
+        <Card className="!bg-transparent bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 border border-primary/20 shadow-xl rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-minecraft uppercase text-blue-600">{t('dashboard.stats.totalDownloads')}</CardTitle>
-            <Download className="h-5 w-5 text-blue-500" />
+            <CardTitle className="text-sm font-minecraft uppercase text-primary">{t('dashboard.stats.totalDownloads')}</CardTitle>
+            <Download className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-blue-600">{totalDownloads}</div>
+            <div className="text-3xl font-bold text-primary">{totalDownloads}</div>
             <p className="text-xs text-muted-foreground pt-1">{t('dashboard.stats.downloadsPerformed')}</p>
           </CardContent>
         </Card>
 
-        <Card className="minecraft-card hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-red-500/10 to-red-600/5 border-red-500/20">
+        <Card className="!bg-transparent bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 border border-primary/20 shadow-xl rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-minecraft uppercase text-red-600">{t('dashboard.stats.favoriteMods')}</CardTitle>
-            <Heart className="h-5 w-5 text-red-500" />
+            <CardTitle className="text-sm font-minecraft uppercase text-primary">{t('dashboard.stats.favoriteMods')}</CardTitle>
+            <Heart className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-red-600">{userStats.favoriteMods.length}</div>
+            <div className="text-3xl font-bold text-primary">{userStats.favoriteMods.length}</div>
             <p className="text-xs text-muted-foreground pt-1">{t('dashboard.stats.modsSaved')}</p>
           </CardContent>
         </Card>
 
-        <Card className="minecraft-card hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/20">
+        <Card className="!bg-transparent bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 border border-primary/20 shadow-xl rounded-2xl hover:shadow-xl transition-all duration-300 hover:scale-105">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-minecraft uppercase text-green-600">{t('modDetail.comments')}</CardTitle>
-            <MessageSquare className="h-5 w-5 text-green-500" />
+            <CardTitle className="text-sm font-minecraft uppercase text-primary">{t('modDetail.comments')}</CardTitle>
+            <MessageSquare className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-600">{userStats.userCommentsCount}</div>
+            <div className="text-3xl font-bold text-primary">{userStats.userCommentsCount}</div>
             <p className="text-xs text-muted-foreground pt-1">Comentários feitos</p>
           </CardContent>
         </Card>
       </div>
 
-      <Card className="minecraft-card border-red-500/20 bg-gradient-to-br from-red-500/5 to-red-600/5">
+      <div className="flex items-center gap-3 mb-6 mt-8">
+        <span className="text-[10px] font-normal text-muted-foreground/50 uppercase tracking-widest whitespace-nowrap">Mods Favoritos</span>
+        <div className="flex-1 h-[1px] bg-gradient-to-r from-border/30 via-border/15 to-transparent"></div>
+      </div>
+
+      <Card className="!bg-transparent border border-primary/20 bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 shadow-xl rounded-2xl">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-xl font-minecraft text-primary flex items-center">
-                <Heart size={22} className="mr-2 text-red-500" /> 
+                <Heart size={22} className="mr-2 text-primary" /> 
                 {t('dashboard.favoriteMods.title')}
               </CardTitle>
               <CardDescription>{t('dashboard.favoriteMods.description')}</CardDescription>
@@ -512,9 +550,9 @@ const UserDashboardPage = React.memo(() => {
               variant="outline" 
               size="sm" 
               onClick={handleFavoriteUpdate}
-              className="hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-500 group"
+              className="hover:bg-primary/10 hover:border-primary/50 hover:text-primary group"
             >
-              <RefreshCw size={16} className="mr-2 group-hover:text-red-500" />
+              <RefreshCw size={16} className="mr-2 group-hover:text-primary" />
               Atualizar
             </Button>
           </div>
@@ -550,8 +588,8 @@ const UserDashboardPage = React.memo(() => {
           ) : (
             <div className="text-center py-16">
               <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-full flex items-center justify-center shadow-lg">
-                  <Heart size={64} className="text-red-500" />
+                <div className="w-32 h-32 mx-auto bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 rounded-full flex items-center justify-center shadow-lg border border-primary/20">
+                  <Heart size={64} className="text-primary" />
                 </div>
               </div>
               <h3 className="text-2xl font-semibold text-foreground mb-4">{t('dashboard.favoriteMods.noFavorites')}</h3>
@@ -569,10 +607,15 @@ const UserDashboardPage = React.memo(() => {
         </CardContent>
       </Card>
 
-      <Card className="minecraft-card border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-blue-600/5">
+      <div className="flex items-center gap-3 mb-6 mt-8">
+        <span className="text-[10px] font-normal text-muted-foreground/50 uppercase tracking-widest whitespace-nowrap">Histórico de Downloads</span>
+        <div className="flex-1 h-[1px] bg-gradient-to-r from-border/30 via-border/15 to-transparent"></div>
+      </div>
+
+      <Card className="!bg-transparent border border-primary/20 bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="text-xl font-minecraft text-primary flex items-center">
-            <Download size={22} className="mr-2 text-blue-500" /> 
+            <Download size={22} className="mr-2 text-primary" /> 
             {t('dashboard.downloadHistory.title')}
           </CardTitle>
           <CardDescription>{t('dashboard.downloadHistory.description')}</CardDescription>
@@ -610,14 +653,14 @@ const UserDashboardPage = React.memo(() => {
             </>
           ) : (
             <div className="text-center py-12">
-              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-full flex items-center justify-center mb-6">
-                <Download size={48} className="text-blue-500" />
+              <div className="w-24 h-24 mx-auto bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 rounded-full flex items-center justify-center mb-6 border border-primary/20">
+                <Download size={48} className="text-primary" />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-3">{t('dashboard.downloadHistory.noDownloads')}</h3>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                 {t('dashboard.downloadHistory.noDownloadsDescription')}
               </p>
-              <Button asChild className="minecraft-btn bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-500/90 hover:to-blue-600/90">
+              <Button asChild className="minecraft-btn bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90">
                 <Link to="/mods">
                   <Gamepad2 size={16} className="mr-2" />
                   {t('dashboard.downloadHistory.exploreMods')}
@@ -628,12 +671,17 @@ const UserDashboardPage = React.memo(() => {
         </CardContent>
       </Card>
 
-      <Card className="minecraft-card border-green-500/20 bg-gradient-to-br from-green-500/5 to-green-600/5">
+      <div className="flex items-center gap-3 mb-6 mt-8">
+        <span className="text-[10px] font-normal text-muted-foreground/50 uppercase tracking-widest whitespace-nowrap">Comentários</span>
+        <div className="flex-1 h-[1px] bg-gradient-to-r from-border/30 via-border/15 to-transparent"></div>
+      </div>
+
+      <Card className="!bg-transparent border border-primary/20 bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 shadow-xl rounded-2xl">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-xl font-minecraft text-primary flex items-center">
-                <MessageSquare size={22} className="mr-2 text-green-500" /> 
+                <MessageSquare size={22} className="mr-2 text-primary" /> 
                 {t('modDetail.comments')}
               </CardTitle>
               <CardDescription>Gerencie todos os seus comentários</CardDescription>
@@ -642,9 +690,9 @@ const UserDashboardPage = React.memo(() => {
               variant="outline" 
               size="sm" 
               onClick={() => fetchUserComments()}
-              className="hover:bg-green-500/10 hover:border-green-500/50 hover:text-green-500 group"
+              className="hover:bg-primary/10 hover:border-primary/50 hover:text-primary group"
             >
-              <RefreshCw size={16} className="mr-2 group-hover:text-green-500" />
+              <RefreshCw size={16} className="mr-2 group-hover:text-primary" />
               Atualizar
             </Button>
           </div>
@@ -682,7 +730,7 @@ const UserDashboardPage = React.memo(() => {
                 variant="outline"
                 size="sm"
                 onClick={resetFilters}
-                className="hover:bg-green-500/10 hover:border-green-500/50 hover:text-green-500 group"
+                className="hover:bg-primary/10 hover:border-primary/50 hover:text-primary"
               >
                 Limpar
               </Button>
@@ -691,12 +739,12 @@ const UserDashboardPage = React.memo(() => {
 
           {commentsLoading ? (
             <div className="flex justify-center items-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
           ) : commentsData && commentsData.length > 0 ? (
             <div className="space-y-4">
               {paginatedComments.map((comment) => (
-                <div key={comment.id} className="p-4 rounded-lg border border-green-500/20 bg-background/50">
+                <div key={comment.id} className="p-4 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 pr-4">
                       <div className="flex items-center gap-2 mb-2">
@@ -721,9 +769,9 @@ const UserDashboardPage = React.memo(() => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button asChild variant="outline" size="sm" className="hover:bg-green-500/10 hover:border-green-500/50 hover:text-green-500 group">
+                      <Button asChild variant="outline" size="sm" className="hover:bg-primary/10 hover:border-primary/50 hover:text-primary group">
                         <Link to={`/mods/${comment.mod_slug}`}>
-                          <Eye size={14} className="mr-1 group-hover:text-green-500" />
+                          <Eye size={14} className="mr-1 group-hover:text-primary" />
                           Ver
                         </Link>
                       </Button>
@@ -759,8 +807,8 @@ const UserDashboardPage = React.memo(() => {
           ) : (
             <div className="text-center py-16">
               <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-full flex items-center justify-center shadow-lg">
-                  <MessageSquare size={64} className="text-green-500" />
+                <div className="w-32 h-32 mx-auto bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 rounded-full flex items-center justify-center shadow-lg border border-primary/20">
+                  <MessageSquare size={64} className="text-primary" />
                 </div>
               </div>
               <h3 className="text-2xl font-semibold text-foreground mb-4">
@@ -772,7 +820,7 @@ const UserDashboardPage = React.memo(() => {
                   : 'Explore nossa biblioteca de mods e deixe seus comentários para encontrá-los facilmente aqui'
                 }
               </p>
-              <Button asChild className="minecraft-btn bg-gradient-to-r from-green-500 to-green-600 hover:from-green-500/90 hover:to-green-600/90 text-lg px-8 py-3">
+              <Button asChild className="minecraft-btn bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-lg px-8 py-3">
                 <Link to="/mods">
                   <Gamepad2 size={20} className="mr-3" />
                   Explorar Mods
@@ -821,7 +869,10 @@ const UserDashboardPage = React.memo(() => {
         </div>
       )}
 
-    </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </div>
   );
 });
 

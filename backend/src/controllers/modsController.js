@@ -4,6 +4,7 @@ import path from 'path';
 import { logError } from '../config/logger.js';
 import { LogService } from '../services/LogService.js';
 import { trackActivity, untrackActivity } from '../services/ActivityService.js';
+import encryptionService from '../services/EncryptionService.js';
 
 // criar novo mod
 export const createMod = async (req, res) => {
@@ -74,13 +75,20 @@ export const createMod = async (req, res) => {
 
     const newMod = await ModsModel.create(modData);
 
+    try {
+      const decryptedUser = encryptionService.decryptUserData(req.user, true);
     await LogService.logMods(
       req.user.id,
       'Mod criado',
-      `Mod "${name}" criado por ${req.user.username}`,
-      req.ip,
-      req.get('User-Agent')
-    );
+        `Mod "${name}" criado por ${decryptedUser.username}`,
+        req.ip || 'N/A',
+        req.get('User-Agent') || 'N/A',
+        newMod.id,
+        { modTitle: name, modId: newMod.id }
+      );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de criação de mod:', logErr);
+    }
 
     res.status(201).json({
       success: true,
@@ -160,7 +168,7 @@ export const getModById = async (req, res) => {
     const { id } = req.params;
 
     let mod;
-    if (req.user && req.user.role === 'super_admin') {
+    if (req.user && req.user.role === 'admin') {
 
       mod = await ModsModel.findByIdAdmin(id);
     } else {
@@ -195,7 +203,7 @@ export const getModBySlug = async (req, res) => {
     const { slug } = req.params;
 
     let mod;
-    if (req.user && req.user.role === 'super_admin') {
+    if (req.user && req.user.role === 'admin') {
 
       mod = await ModsModel.findBySlugAdmin(slug);
     } else {
@@ -210,7 +218,7 @@ export const getModBySlug = async (req, res) => {
       });
     }
 
-    if (!req.user || req.user.role !== 'super_admin') {
+    if (!req.user || req.user.role !== 'admin') {
       if (!mod.is_published || mod.is_archived) {
         return res.status(404).json({
           success: false,
@@ -248,7 +256,7 @@ export const updateMod = async (req, res) => {
       });
     }
 
-    if (existingMod.author_id !== req.user.id && req.user.role !== 'super_admin') {
+      if (existingMod.author_id !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,
         message: 'Você não tem permissão para editar este mod'
@@ -327,13 +335,20 @@ export const updateMod = async (req, res) => {
 
     const updatedMod = await ModsModel.update(id, updateData);
 
+    try {
+      const decryptedUser = encryptionService.decryptUserData(req.user, true);
     await LogService.logMods(
       req.user.id,
       'Mod atualizado',
-      `Mod "${updatedMod.title}" atualizado por ${req.user.username}`,
-      req.ip,
-      req.get('User-Agent')
-    );
+        `Mod "${updatedMod.title}" atualizado por ${decryptedUser.username}`,
+        req.ip || 'N/A',
+        req.get('User-Agent') || 'N/A',
+        id,
+        { modTitle: updatedMod.title, modId: id }
+      );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de atualização de mod:', logErr);
+    }
 
     res.json({
       success: true,
@@ -362,7 +377,7 @@ export const deleteMod = async (req, res) => {
       });
     }
 
-    if (existingMod.author_id !== req.user.id && req.user.role !== 'super_admin') {
+      if (existingMod.author_id !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,
         message: 'Você não tem permissão para deletar este mod'
@@ -371,13 +386,21 @@ export const deleteMod = async (req, res) => {
 
     await ModsModel.delete(id);
 
-    await LogService.logMods(
+    try {
+      const decryptedUser = encryptionService.decryptUserData(req.user, true);
+      await LogService.logDelete(
       req.user.id,
       'Mod deletado',
-      `Mod "${existingMod.title}" deletado por ${req.user.username}`,
-      req.ip,
-      req.get('User-Agent')
-    );
+        `Mod "${existingMod.title}" deletado por ${decryptedUser.username}`,
+        req.ip || 'N/A',
+        req.get('User-Agent') || 'N/A',
+        id,
+        'mod',
+        { modTitle: existingMod.title, modId: id }
+      );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de exclusão de mod:', logErr);
+    }
 
     res.json({
       success: true,
@@ -415,7 +438,7 @@ export const toggleModStatus = async (req, res) => {
       });
     }
 
-    if (existingMod.author_id !== req.user.id && req.user.role !== 'super_admin') {
+      if (existingMod.author_id !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,
         message: 'Você não tem permissão para alterar este mod'
@@ -426,13 +449,20 @@ export const toggleModStatus = async (req, res) => {
 
     const action = field === 'is_published' ? 'publicação' : 
                    field === 'is_archived' ? 'arquivamento' : 'destaque';
+    try {
+      const decryptedUser = encryptionService.decryptUserData(req.user, true);
     await LogService.logMods(
       req.user.id,
       `Status do mod alterado`,
-              `Status de ${action} do mod "${updatedMod.title}" alterado por ${req.user.username}`,
-      req.ip,
-      req.get('User-Agent')
-    );
+        `Status de ${action} do mod "${updatedMod.title}" alterado por ${decryptedUser.username}`,
+        req.ip || 'N/A',
+        req.get('User-Agent') || 'N/A',
+        id,
+        { modTitle: updatedMod.title, modId: id, field, action }
+      );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de alteração de status:', logErr);
+    }
 
     res.json({
       success: true,
@@ -493,7 +523,7 @@ export const downloadMod = async (req, res) => {
     const { id } = req.params;
 
     let mod;
-    if (req.user && req.user.role === 'super_admin') {
+    if (req.user && req.user.role === 'admin') {
 
       mod = await ModsModel.findByIdAdmin(id);
     } else {
@@ -530,6 +560,31 @@ export const downloadMod = async (req, res) => {
       const minecraftVersion = encodeURIComponent(mod.minecraft_version || '');
       const modVersion = encodeURIComponent(mod.version || '');
       directDownloadUrl = `/download/${filename}?modName=${modName}&modLoader=${modLoader}&minecraftVersion=${minecraftVersion}&modVersion=${modVersion}`;
+    }
+
+    if (req.user?.id) {
+      try {
+        console.log('📝 Criando log de download...');
+        await LogService.logDownloads(
+          req.user.id,
+          'Mod baixado',
+          `Usuário baixou o mod: ${mod.name || mod.title || id}`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          id,
+          {
+            mod_title: mod.name || mod.title,
+            mod_id: id,
+            mod_version: mod.version,
+            minecraft_version: mod.minecraft_version,
+            mod_loader: mod.mod_loader
+          }
+        );
+        console.log('✅ Log de download criado com sucesso');
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de download:', logErr);
+        logError('Erro ao criar log de download', logErr, { userId: req.user.id, modId: id });
+      }
     }
 
     res.json({
@@ -627,10 +682,19 @@ export const getContentTypes = async (req, res) => {
 export const getModsCount = async (req, res) => {
   try {
     const counts = await ModsModel.getModsCount();
+    const statsService = (await import('../services/StatsService.js')).default;
+    const stats = statsService.getAllStats();
+    
+    const result = {
+      ...counts,
+      totalDownloads: stats.totalDownloads !== null && stats.totalDownloads !== undefined ? parseInt(stats.totalDownloads) : 0,
+      avgDownloadsPerMod: stats.avgDownloadsPerMod !== null && stats.avgDownloadsPerMod !== undefined ? parseFloat(stats.avgDownloadsPerMod) : 0,
+      statsLastUpdated: stats.lastUpdated
+    };
 
     res.json({
       success: true,
-      data: counts
+      data: result
     });
   } catch (error) {
     logError('Erro ao buscar contagem de mods', error);
@@ -805,9 +869,16 @@ export const toggleFavorite = async (req, res) => {
       });
     }
 
+    console.log('🔍 toggleFavorite - Iniciando:', { modId: id, userId });
+
     const result = await ModsModel.toggleFavorite(id, userId);
+    console.log('✅ toggleFavorite - Resultado:', result);
+    
+    const mod = await ModsModel.findById(id);
+    console.log('📦 Mod encontrado:', { id: mod?.id, title: mod?.title || mod?.name });
 
     if (result.isFavorite) {
+      try {
       await trackActivity({
         userId,
         modId: id,
@@ -816,12 +887,59 @@ export const toggleFavorite = async (req, res) => {
           category: result.mod?.category || 'Geral'
         }
       });
+      } catch (activityError) {
+        console.error('⚠️ Erro ao trackActivity:', activityError);
+      }
+      
+      try {
+        console.log('📝 Criando log de favorito...');
+        const logResult = await LogService.logFavorites(
+          userId,
+          'Mod favoritado',
+          `Usuário favoritou o mod: ${mod?.title || mod?.name || id}`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          id,
+          {
+            mod_title: mod?.title || mod?.name,
+            mod_id: id
+          }
+        );
+        console.log('✅ Log de favorito criado:', logResult);
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de favorito:', logErr);
+        logError('Erro ao criar log de favorito', logErr, { userId, modId: id });
+      }
     } else {
+      try {
       await untrackActivity({
         userId,
         modId: id,
         activityType: 'favorite'
       });
+      } catch (activityError) {
+        console.error('⚠️ Erro ao untrackActivity:', activityError);
+      }
+      
+      try {
+        console.log('📝 Criando log de desfavorito...');
+        const logResult = await LogService.logFavorites(
+          userId,
+          'Mod desfavoritado',
+          `Usuário removeu dos favoritos o mod: ${mod?.title || mod?.name || id}`,
+          req.ip || 'N/A',
+          req.get('User-Agent') || 'N/A',
+          id,
+          {
+            mod_title: mod?.title || mod?.name,
+            mod_id: id
+          }
+        );
+        console.log('✅ Log de desfavorito criado:', logResult);
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de desfavorito:', logErr);
+        logError('Erro ao criar log de desfavorito', logErr, { userId, modId: id });
+      }
     }
 
     res.json({
@@ -830,6 +948,7 @@ export const toggleFavorite = async (req, res) => {
       data: result
     });
   } catch (error) { 
+    console.error('❌ Erro geral em toggleFavorite:', error);
     logError('Erro ao alternar favorito', error, { modId: req.params.id, userId: req.user?.id });
     res.status(500).json({
       success: false,

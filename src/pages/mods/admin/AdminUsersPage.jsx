@@ -48,9 +48,15 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContextMods';
+import { usePermissions } from '../../../hooks/usePermissions';
 
 const AdminUsersPage = () => {
   const { theme } = useThemeMods();
+  const { currentUser } = useAuth();
+  const { hasPermission, loading: permissionsLoading } = usePermissions();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -73,6 +79,19 @@ const AdminUsersPage = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!permissionsLoading && currentUser) {
+      if (currentUser.role !== 'admin' && !hasPermission('view_users')) {
+        toast({
+          title: 'Acesso Negado',
+          description: 'Você não tem permissão para acessar esta página. Entre em contato com um administrador se precisar desta funcionalidade.',
+          variant: 'destructive'
+        });
+        navigate('/admin');
+      }
+    }
+  }, [currentUser, hasPermission, permissionsLoading, navigate, toast]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -141,23 +160,23 @@ const AdminUsersPage = () => {
 
   const getRoleConfig = (role) => {
     const roleConfigs = {
-      'super_admin': { 
-        label: 'Super Admin', 
+      'admin': { 
+        label: 'Admin', 
         icon: Crown, 
         className: 'bg-gradient-to-r from-purple-600 to-purple-700 text-white border-purple-600',
         iconColor: 'text-purple-400'
       },
-      'admin': { 
-        label: 'Admin', 
-        icon: ShieldCheck, 
+      'supervisor': { 
+        label: 'Supervisor', 
+        icon: Shield, 
         className: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white border-blue-600',
         iconColor: 'text-blue-400'
       },
       'moderator': { 
         label: 'Moderador', 
-        icon: Shield, 
-        className: 'bg-gradient-to-r from-purple-600 to-purple-700 text-white border-purple-600',
-        iconColor: 'text-purple-400'
+        icon: UserCog, 
+        className: 'bg-gradient-to-r from-green-700 to-green-800 text-white border-green-700',
+        iconColor: 'text-green-300'
       },
       'member': { 
         label: 'Membro', 
@@ -309,7 +328,7 @@ const AdminUsersPage = () => {
   };
 
   const openBanModal = (user) => {
-    if (user.role === 'admin' || user.role === 'super_admin') {
+    if (user.role === 'supervisor' || user.role === 'admin') {
       toast({
         title: 'Ação não permitida',
         description: 'Não é possível banir administradores',
@@ -330,7 +349,7 @@ const AdminUsersPage = () => {
       display_name: user.display_name || '',
       email: user.email || '',
       role: user.role || 'member',
-      is_verified: user.is_verified || false
+      is_verified: user.is_verified === 1 || user.is_verified === true || user.is_verified === '1' || user.is_verified === 'true'
     });
     setEditModalOpen(true);
   };
@@ -342,7 +361,7 @@ const AdminUsersPage = () => {
   };
 
   const handleUnban = (user) => {
-    if (user.role === 'admin' || user.role === 'super_admin') {
+    if (user.role === 'supervisor' || user.role === 'admin') {
       toast({
         title: 'Ação não permitida',
         description: 'Não é possível alterar status de administradores',
@@ -399,7 +418,7 @@ const AdminUsersPage = () => {
   };
 
   const openDeleteModal = (user) => {
-    if (user.role === 'admin' || user.role === 'super_admin') {
+    if (user.role === 'supervisor' || user.role === 'admin') {
       toast({
         title: 'Ação não permitida',
         description: 'Não é possível deletar contas de administradores',
@@ -432,7 +451,8 @@ const AdminUsersPage = () => {
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent flex items-center gap-3">
+            <Users className="h-8 w-8 md:h-10 md:w-10 text-primary" />
             Gerenciar Usuários
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground">
@@ -479,8 +499,8 @@ const AdminUsersPage = () => {
                 className="w-full p-2 border border-input rounded-md bg-background text-sm sm:text-base"
               >
                 <option value="all">Todos os Cargos</option>
-                <option value="super_admin">Super Admin</option>
                 <option value="admin">Admin</option>
+                <option value="supervisor">Supervisor</option>
                 <option value="moderator">Moderador</option>
                 <option value="member">Membro</option>
               </select>
@@ -508,21 +528,21 @@ const AdminUsersPage = () => {
         </CardContent>
       </Card>
 
-      <Card className="minecraft-card">
-        <CardHeader>
+      <Card className="minecraft-card w-full max-w-full overflow-hidden sm:overflow-visible">
+        <CardHeader className="w-full max-w-full">
           <CardTitle className="flex items-center text-lg sm:text-xl">
             <Users className="h-4 w-4 sm:h-5 sm:w-5 mr-2 text-green-500" />
             Usuários da Plataforma
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-hidden sm:overflow-visible w-full max-w-full">
           {filteredUsers.length === 0 ? (
             <div className="text-center py-8 sm:py-12 text-muted-foreground">
               <Users className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 opacity-50" />
               <p className="text-sm sm:text-lg">Nenhum usuário encontrado com os filtros atuais</p>
             </div>
           ) : (
-            <div className="grid gap-4">
+            <div className="grid gap-4 overflow-x-hidden sm:overflow-visible">
               {filteredUsers.map((user) => {
                 const roleConfig = getRoleConfig(user.role);
                 const statusConfig = getStatusConfig(user);
@@ -534,10 +554,10 @@ const AdminUsersPage = () => {
                     key={user.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="group relative p-4 sm:p-6 bg-gradient-to-r from-muted/30 to-muted/10 rounded-xl border border-border/50 hover:border-border hover:shadow-lg transition-all duration-300"
+                    className="group relative p-4 sm:p-6 bg-gradient-to-r from-muted/30 to-muted/10 rounded-xl border border-border/50 hover:border-border hover:shadow-lg transition-all duration-300 w-full max-w-full overflow-hidden"
                   >
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                      <div className="flex items-center space-x-3 sm:space-x-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 w-full min-w-0">
+                      <div className="flex items-center space-x-3 sm:space-x-4 w-full min-w-0 flex-1">
                         <Avatar className="w-12 h-12 sm:w-14 sm:h-14 ring-2 ring-border/50 group-hover:ring-primary/50 transition-all duration-300">
                           <AvatarImage src={user.avatar_url} />
                           <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary text-base sm:text-lg font-bold">
@@ -570,73 +590,75 @@ const AdminUsersPage = () => {
                             </p>
                           )}
                           
-                          <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-6 text-xs sm:text-sm text-muted-foreground">
-                            <span className="flex items-center">
+                          <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-6 text-xs sm:text-sm text-muted-foreground w-full min-w-0">
+                            <span className="flex items-center min-w-0 flex-1 sm:flex-initial">
                               <User className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
-                              <span className="truncate">{user.username}</span>
+                              <span className="truncate min-w-0">{user.username}</span>
                             </span>
-                            <span className="flex items-center">
+                            <span className="flex items-center min-w-0 flex-1 sm:flex-initial">
                               <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
-                              {user.email}
+                              <span className="truncate min-w-0">{user.email}</span>
                             </span>
-                            <span className="flex items-center">
+                            <span className="flex items-center min-w-0 flex-1 sm:flex-initial">
                               <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
-                              <span className="truncate">{formatDate(user.created_at)}</span>
+                              <span className="truncate min-w-0">{formatDate(user.created_at)}</span>
                             </span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="flex items-center justify-end sm:justify-start space-x-2">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => openEditModal(user)}>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Editar Usuário
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" />
-                              Ver Detalhes
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            {user.is_banned ? (
-                              <DropdownMenuItem 
-                                onClick={() => handleUnban(user)}
-                                disabled={user.role === 'admin' || user.role === 'super_admin'}
-                                className="text-green-600 focus:text-green-600"
-                              >
-                                <CheckCircle className="h-4 w-4 mr-2" />
-                                Desbanir Usuário
+                      {(currentUser?.role === 'admin' || hasPermission('manage_users')) && (
+                        <div className="flex items-center justify-end sm:justify-start space-x-2 flex-shrink-0 mt-4 sm:mt-0">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48">
+                              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => openEditModal(user)}>
+                                <Edit className="h-4 w-4 mr-2" />
+                                Editar Usuário
                               </DropdownMenuItem>
-                            ) : (
+                              <DropdownMenuItem>
+                                <Eye className="h-4 w-4 mr-2" />
+                                Ver Detalhes
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              {user.is_banned ? (
+                                <DropdownMenuItem 
+                                  onClick={() => handleUnban(user)}
+                                  disabled={user.role === 'supervisor' || user.role === 'admin'}
+                                  className="text-green-600 focus:text-green-600"
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-2" />
+                                  Desbanir Usuário
+                                </DropdownMenuItem>
+                              ) : (
+                                <DropdownMenuItem 
+                                  onClick={() => openBanModal(user)}
+                                  disabled={user.role === 'supervisor' || user.role === 'admin'}
+                                  className="text-red-600 focus:text-red-600"
+                                >
+                                  <Ban className="h-4 w-4 mr-2" />
+                                  Banir Usuário
+                                </DropdownMenuItem>
+                              )}
+                              <DropdownMenuSeparator />
                               <DropdownMenuItem 
-                                onClick={() => openBanModal(user)}
-                                disabled={user.role === 'admin' || user.role === 'super_admin'}
+                                onClick={() => openDeleteModal(user)}
+                                disabled={user.role === 'supervisor' || user.role === 'admin'}
                                 className="text-red-600 focus:text-red-600"
                               >
-                                <Ban className="h-4 w-4 mr-2" />
-                                Banir Usuário
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Excluir Usuário
                               </DropdownMenuItem>
-                            )}
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem 
-                              onClick={() => openDeleteModal(user)}
-                              disabled={user.role === 'admin' || user.role === 'super_admin'}
-                              className="text-red-600 focus:text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Excluir Usuário
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 );
@@ -754,8 +776,8 @@ const AdminUsersPage = () => {
               >
                 <option value="member">Membro</option>
                 <option value="moderator">Moderador</option>
+                <option value="supervisor">Supervisor</option>
                 <option value="admin">Admin</option>
-                <option value="super_admin">Super Admin</option>
               </select>
             </div>
             
@@ -787,7 +809,7 @@ const AdminUsersPage = () => {
             <Button
               onClick={handleEditUser}
               disabled={isEditing}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
+              className="bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white transition-all duration-200 hover:shadow-md hover:shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isEditing ? (
                 <>

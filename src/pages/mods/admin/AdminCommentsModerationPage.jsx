@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/AuthContextMods';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useTranslation } from '../../../hooks/useTranslation';
+import { useNavigate } from 'react-router-dom';
 import { 
   MessageSquare, 
   Clock, 
@@ -31,6 +33,8 @@ const AdminCommentsModerationPage = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { currentUser } = useAuth();
+  const { hasPermission, loading: permissionsLoading } = usePermissions();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pending');
   const [pendingComments, setPendingComments] = useState([]);
   const [rejectedComments, setRejectedComments] = useState([]);
@@ -43,13 +47,8 @@ const AdminCommentsModerationPage = () => {
   const [banReason, setBanReason] = useState('');
   const [processing, setProcessing] = useState(false);
 
-  useEffect(() => {
-    if (currentUser?.role && ['admin', 'super_admin', 'moderator'].includes(currentUser.role)) {
-      fetchComments();
-    }
-  }, [currentUser, activeTab]);
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('authToken');
@@ -89,7 +88,19 @@ const AdminCommentsModerationPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, toast]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    
+    if (permissionsLoading) {
+      return;
+    }
+    
+    if (currentUser.role === 'admin' || hasPermission('view_comments')) {
+      fetchComments();
+    }
+  }, [currentUser, activeTab, hasPermission, permissionsLoading, fetchComments]);
 
   const handleApproveComment = async (commentId) => {
     try {
@@ -241,7 +252,36 @@ const AdminCommentsModerationPage = () => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   };
 
-  if (!currentUser?.role || !['admin', 'super_admin', 'moderator'].includes(currentUser.role)) {
+  if (!currentUser?.role || !['supervisor', 'admin', 'moderator'].includes(currentUser.role)) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="minecraft-card">
+          <CardContent className="p-8 text-center">
+            <Shield className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-foreground mb-2">Acesso Negado</h1>
+            <p className="text-muted-foreground">
+              Você não tem permissão para acessar esta página.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (permissionsLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="minecraft-card">
+          <CardContent className="p-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Carregando permissões...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (currentUser.role !== 'admin' && !hasPermission('view_comments')) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="minecraft-card">
@@ -265,7 +305,8 @@ const AdminCommentsModerationPage = () => {
         transition={{ duration: 0.5 }}
       >
         <CardHeader className="px-0 pt-0">
-          <CardTitle className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+          <CardTitle className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent flex items-center gap-3">
+            <MessageSquare className="h-8 w-8 md:h-10 md:w-10 text-primary" />
             {t('modDetail.comments')}
           </CardTitle>
           <p className="text-lg md:text-xl text-muted-foreground">
@@ -402,25 +443,27 @@ const AdminCommentsModerationPage = () => {
                                 </div>
                               </div>
                               
-                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
-                                <Button
-                                  onClick={() => handleApproveComment(comment.id)}
-                                  disabled={processing}
-                                  className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-green-500/25 hover:scale-105 text-sm"
-                                >
-                                  <CheckCircle size={16} className="mr-2" />
-                                  Aprovar
-                                </Button>
-                                
-                                <Button
-                                  onClick={() => openRejectModal(comment)}
-                                  disabled={processing}
-                                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/25 hover:scale-105 text-sm"
-                                >
-                                  <XCircle size={16} className="mr-2" />
-                                  Rejeitar
-                                </Button>
-                              </div>
+                              {(currentUser?.role === 'admin' || hasPermission('manage_comments')) && (
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                                  <Button
+                                    onClick={() => handleApproveComment(comment.id)}
+                                    disabled={processing}
+                                    className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-green-500/25 hover:scale-105 text-sm"
+                                  >
+                                    <CheckCircle size={16} className="mr-2" />
+                                    Aprovar
+                                  </Button>
+                                  
+                                  <Button
+                                    onClick={() => openRejectModal(comment)}
+                                    disabled={processing}
+                                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/25 hover:scale-105 text-sm"
+                                  >
+                                    <XCircle size={16} className="mr-2" />
+                                    Rejeitar
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -662,16 +705,18 @@ const AdminCommentsModerationPage = () => {
                                 </div>
                               </div>
                               
-                              <div className="flex items-center gap-3 flex-wrap">
-                                <Button
-                                  onClick={() => handleApproveComment(comment.id)}
-                                  disabled={processing}
-                                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-green-500/25 hover:scale-105"
-                                >
-                                  <CheckCircle size={18} className="mr-2" />
-                                  Aprovar
-                                </Button>
-                              </div>
+                              {(currentUser?.role === 'admin' || hasPermission('manage_comments')) && (
+                                <div className="flex items-center gap-3 flex-wrap">
+                                  <Button
+                                    onClick={() => handleApproveComment(comment.id)}
+                                    disabled={processing}
+                                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:shadow-green-500/25 hover:scale-105"
+                                  >
+                                    <CheckCircle size={18} className="mr-2" />
+                                    Aprovar
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>

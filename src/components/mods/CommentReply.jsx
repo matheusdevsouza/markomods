@@ -2,6 +2,7 @@ import React from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Clock, MessageSquare, Shield } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
+import RoleBadge from './RoleBadge';
 import { getAvatarUrl } from '@/utils/avatarUtils';
 
 const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
@@ -19,7 +20,7 @@ const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
 
   const canDelete = currentUser && (
     currentUser.id === reply.user_id || 
-    ['admin', 'super_admin'].includes(currentUser.role)
+    ['supervisor', 'admin'].includes(currentUser.role)
   );
 
   const getInitials = (username) => {
@@ -50,14 +51,13 @@ const CommentReply = ({ reply, modId, currentUser, onDelete }) => {
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 flex-wrap">
               <span className="text-sm font-medium text-blue-300">
                 {reply.display_name || reply.username}
               </span>
-              <div className="flex items-center space-x-1">
-                <Shield className="w-3 h-3 text-yellow-400" />
-                <span className="text-xs text-yellow-400 font-medium">Admin</span>
-              </div>
+              {reply.role && ['admin', 'supervisor', 'moderator'].includes(reply.role) && (
+                <RoleBadge role={reply.role} />
+              )}
             </div>
             <div className="flex items-center space-x-1 text-xs text-gray-400">
               <Clock className="w-3 h-3" />

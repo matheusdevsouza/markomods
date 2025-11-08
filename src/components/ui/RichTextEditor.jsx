@@ -134,12 +134,10 @@ const ResizableImage = Image.extend({
       container.appendChild(resizable);
       dom.appendChild(container);
 
-      // React-like mount for re-resizable is not straightforward in nodeViews; use contentEditable false wrapper
       resizable.contentEditable = 'false';
 
       const updateAttrs = (newWidth) => {
         try {
-          // Encontrar a posição exata da imagem no documento
           const pos = getPos();
           
           if (pos !== undefined && pos !== null) {
@@ -156,7 +154,6 @@ const ResizableImage = Image.extend({
       };
 
       const mountResizable = () => {
-        // Fallback simple handle for width resizing if re-resizable is not available in SSR
         resizable.innerHTML = '';
         const wrapper = document.createElement('div');
         wrapper.style.display = 'inline-block';
@@ -166,18 +163,15 @@ const ResizableImage = Image.extend({
         wrapper.onmouseenter = () => { wrapper.style.border = '1px dashed var(--border)'; };
         wrapper.onmouseleave = () => { wrapper.style.border = '1px dashed transparent'; };
         
-        // Add click handler to open image options modal
         wrapper.onclick = (e) => {
           e.preventDefault();
           e.stopPropagation();
-          // Dispatch custom event to open modal
           const event = new CustomEvent('imageClick', {
             detail: { node, pos: getPos() }
           });
           document.dispatchEvent(event);
         };
-        
-        // Botão de exclusão
+
         const deleteButton = document.createElement('div');
         deleteButton.style.position = 'absolute';
         deleteButton.style.top = '8px';
@@ -199,8 +193,7 @@ const ResizableImage = Image.extend({
         deleteButton.style.opacity = '0';
         deleteButton.style.transition = 'all 0.2s ease';
         deleteButton.style.transform = 'scale(0.8)';
-        
-        // Ícone de lixeira SVG
+
         deleteButton.innerHTML = `
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="3,6 5,6 21,6"></polyline>
@@ -210,7 +203,6 @@ const ResizableImage = Image.extend({
           </svg>
         `;
         
-        // Mostrar botão no hover
         wrapper.onmouseenter = () => { 
           wrapper.style.border = '1px dashed var(--border)';
           deleteButton.style.opacity = '1';
@@ -221,8 +213,7 @@ const ResizableImage = Image.extend({
           deleteButton.style.opacity = '0';
           deleteButton.style.transform = 'scale(0.8)';
         };
-        
-        // Efeito de hover no botão
+
         deleteButton.onmouseenter = () => {
           deleteButton.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
           deleteButton.style.transform = 'scale(1.1)';
@@ -234,8 +225,7 @@ const ResizableImage = Image.extend({
           deleteButton.style.transform = 'scale(1)';
           deleteButton.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2)';
         };
-        
-        // Handler para exclusão
+
         deleteButton.onclick = (e) => {
           e.preventDefault();
           e.stopPropagation();

@@ -53,7 +53,7 @@ const AdminPage = ({ onAddMod, mods, onDeleteMod }) => {
     setDownloadUrl(mod.downloadUrl);
     setEditingModId(mod.id);
     setShowForm(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0 });
   };
 
 

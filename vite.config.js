@@ -31,8 +31,8 @@ export default defineConfig(({ mode }) => {
 		build: {
 			outDir: 'dist',
 			assetsDir: 'assets',
-			sourcemap: !isProduction, // Desabilitar source maps em produção
-			minify: isProduction, // Habilitar minificação em produção
+			sourcemap: !isProduction, 
+			minify: isProduction, 
 			rollupOptions: {
 				output: {
 					manualChunks: {
@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
 		postcss: './postcss.config.js',
 		devSourcemap: false,
 	},
-	// Configurações de otimização
+
 	optimizeDeps: {
 		include: ['react', 'react-dom', 'react-router-dom'],
 	},

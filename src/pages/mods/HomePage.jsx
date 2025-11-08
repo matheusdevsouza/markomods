@@ -38,14 +38,17 @@ const SectionTitle = ({ title, icon: Icon, viewAllLink }) => {
   const { t } = useTranslation();
   
   return (
-    <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
-      <h2 className="text-3xl font-minecraft text-primary flex items-center">
-        {Icon && <Icon size={28} className="mr-3 text-accent" />}
-        {title}
+    <motion.div variants={itemVariants} className="flex items-center justify-between gap-2 sm:gap-4 mb-6">
+      <h2 className="text-xl sm:text-3xl font-minecraft text-primary flex items-center flex-1 min-w-0">
+        {Icon && <Icon className="h-5 w-5 sm:h-7 sm:w-7 mr-2 sm:mr-3 text-accent flex-shrink-0" />}
+        <span className="break-words leading-tight">{title}</span>
       </h2>
       {viewAllLink && (
-        <Button variant="link" asChild className="text-primary hover:underline font-minecraft text-sm">
-          <Link to={viewAllLink}>{t('home.viewAll')} <ArrowRight size={16} className="ml-1" /></Link>
+        <Button variant="link" asChild className="text-primary hover:text-primary/80 hover:underline font-minecraft text-xs sm:text-base flex-shrink-0 h-auto p-0 hover:bg-transparent whitespace-nowrap">
+          <Link to={viewAllLink} className="flex items-center gap-1 sm:gap-2">
+            <span className="whitespace-nowrap">{t('home.viewAll')}</span>
+            <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+          </Link>
         </Button>
       )}
     </motion.div>

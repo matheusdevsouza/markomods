@@ -3,6 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* estilos customizados para notificações */
 [data-sonner-toaster] {
   position: fixed !important;

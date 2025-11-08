@@ -14,7 +14,7 @@ export const ModsProvider = ({ children }) => {
   const [loadingMods, setLoadingMods] = useState(true);
   const { currentUser } = useAuth();
   useEffect(() => {
-    const isAdmin = currentUser?.role === 'super_admin';
+    const isAdmin = currentUser?.role === 'admin';
     fetchMods(isAdmin);
   }, [currentUser]);
   const fetchMods = useCallback(async (isAdmin = false) => {

@@ -39,22 +39,22 @@ const FAQPage = () => {
   const faqItems = [
     {
       id: 'what-is-markomods',
-      title: getTranslation('faq.whatIsMarkoMods.title', 'O que é o Eu, Marko!?'),
-      content: getTranslation('faq.whatIsMarkoMods.content', 'O Eu, Marko! é nossa plataforma dedicada nossos mods para Minecraft, onde você pode descobrir, baixar e compartilhar todos nossos mods já feitos. Nossa missão é facilitar o seu acesso aos nossos mods e criar uma comunidade vibrante de jogadores.'),
+      title: getTranslation('faq.whatIsMarkoMods.title', 'O que é esta plataforma?'),
+      content: getTranslation('faq.whatIsMarkoMods.content', 'Esta é uma plataforma dedicada a mods para Minecraft, onde você pode descobrir, baixar e compartilhar mods incríveis. Nossa missão é facilitar o acesso a mods de qualidade e criar uma comunidade vibrante de jogadores e desenvolvedores.'),
       category: 'geral',
       icon: HelpCircle
     },
     {
       id: 'how-to-start',
-      title: getTranslation('faq.howToStart.title', 'Como começar a usar o Eu, Marko!?'),
-      content: getTranslation('faq.howToStart.content', 'Para começar:\n\n1) Crie uma conta gratuita\n2) Explore nossa biblioteca de mods\n3) Baixe mods que te interessam\n4) Instale seguindo nossas instruções\n\nÉ simples e gratuito!'),
+      title: getTranslation('faq.howToStart.title', 'Como começar a usar a plataforma?'),
+      content: getTranslation('faq.howToStart.content', 'Para começar é muito simples:\n\n1) Crie uma conta gratuita\n2) Explore nossa biblioteca de mods\n3) Baixe os mods que te interessam\n4) Instale seguindo nossas instruções\n\nTudo é gratuito e fácil de usar!'),
       category: 'geral',
       icon: Zap
     },
     {
       id: 'is-free',
-      title: getTranslation('faq.isFree.title', 'O Eu, Marko! é gratuito?'),
-      content: getTranslation('faq.isFree.content', 'Sim! O Eu, Marko! é completamente gratuito. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum.'),
+      title: getTranslation('faq.isFree.title', 'A plataforma é gratuita?'),
+      content: getTranslation('faq.isFree.content', 'Sim! Nossa plataforma é completamente gratuita. Você pode criar uma conta, baixar mods, favoritar e usar todas as funcionalidades sem custo algum.'),
       category: 'geral',
       icon: Shield
     },
@@ -62,21 +62,21 @@ const FAQPage = () => {
     {
       id: 'how-to-register',
       title: getTranslation('faq.howToRegister.title', 'Como me registrar?'),
-      content: getTranslation('faq.howToRegister.content', 'Clique em "Registrar" no canto superior direito, preencha o formulário com seu nome, email e senha. Após confirmar seu email, você terá acesso completo à plataforma.'),
+      content: getTranslation('faq.howToRegister.content', 'Clique no botão "Registrar" localizado no canto superior direito da página. Preencha o formulário com seu nome de usuário, email e senha. Após confirmar seu email através do link enviado, você terá acesso completo a todas as funcionalidades da plataforma.'),
       category: 'conta',
       icon: User
     },
     {
       id: 'reset-password',
       title: getTranslation('faq.resetPassword.title', 'Como redefinir minha senha?'),
-      content: getTranslation('faq.resetPassword.content', 'Na página de login, clique em "Esqueci minha senha". Digite seu email e você receberá um link para redefinir sua senha. Siga as instruções no email.'),
+      content: getTranslation('faq.resetPassword.content', 'Na página de login, clique em "Esqueci minha senha". Digite seu email cadastrado e você receberá um link para redefinir sua senha. Siga as instruções enviadas por email para criar uma nova senha segura.'),
       category: 'conta',
       icon: Settings
     },
     {
       id: 'update-profile',
       title: getTranslation('faq.updateProfile.title', 'Como atualizar meu perfil?'),
-      content: getTranslation('faq.updateProfile.content', 'Acesse seu dashboard clicando no seu avatar. Na seção "Perfil", você pode atualizar suas informações pessoais, foto e preferências.'),
+      content: getTranslation('faq.updateProfile.content', 'Acesse seu dashboard clicando no seu avatar no canto superior direito. Na seção "Perfil", você pode atualizar suas informações pessoais, foto de perfil, nome de exibição e outras preferências da sua conta.'),
       category: 'conta',
       icon: User
     },
@@ -84,57 +84,57 @@ const FAQPage = () => {
     {
       id: 'how-to-download',
       title: getTranslation('faq.howToDownload.title', 'Como baixar mods?'),
-      content: getTranslation('faq.howToDownload.content', 'Navegue pela biblioteca, encontre mods que te interessam e clique em "Baixar". Você precisa estar logado. Após o download, siga as instruções de instalação.'),
+      content: getTranslation('faq.howToDownload.content', 'Navegue pela nossa biblioteca de mods, encontre os que te interessam e clique no botão "Baixar". É necessário estar logado para realizar downloads. Após o download, siga as instruções de instalação específicas de cada mod.'),
       category: 'mods',
       icon: Download
     },
     {
       id: 'how-to-install',
       title: getTranslation('faq.howToInstall.title', 'Como instalar mods?'),
-      content: getTranslation('faq.howToInstall.content', 'A instalação varia por mod e mod loader (Forge, Fabric, etc.).\n\nGeralmente:\n\n1) Instale o mod loader apropriado\n2) Baixe o mod\n3) Coloque o arquivo .jar na pasta "mods" do Minecraft'),
+      content: getTranslation('faq.howToInstall.content', 'A instalação varia dependendo do mod e do mod loader utilizado (Forge, Fabric, etc.).\n\nPassos gerais:\n\n1) Instale o mod loader apropriado\n2) Baixe o mod desejado\n3) Coloque o arquivo .jar na pasta "mods" do seu Minecraft\n\nCada mod pode ter instruções específicas na sua página de detalhes.'),
       category: 'mods',
       icon: Package
     },
     {
       id: 'favorite-mods',
       title: getTranslation('faq.favoriteMods.title', 'Como favoritar mods?'),
-      content: getTranslation('faq.favoriteMods.content', 'Clique no ícone de coração no card do mod ou na página de detalhes. Mods favoritados aparecem na sua seção "Favoritos" no dashboard.'),
+      content: getTranslation('faq.favoriteMods.content', 'Clique no ícone de coração no card do mod ou na página de detalhes. Os mods favoritados aparecerão automaticamente na sua seção "Favoritos" no dashboard, facilitando o acesso posterior.'),
       category: 'mods',
       icon: Download
     },
     {
       id: 'find-mods',
       title: getTranslation('faq.findMods.title', 'Como encontrar mods específicos?'),
-      content: getTranslation('faq.findMods.content', 'Use nossa barra de pesquisa para buscar por nome, categoria ou palavras-chave. Você também pode filtrar por versão do Minecraft, mod loader ou popularidade.'),
+      content: getTranslation('faq.findMods.content', 'Use a barra de pesquisa para buscar por nome, categoria ou palavras-chave. Você também pode utilizar os filtros disponíveis para refinar sua busca por versão do Minecraft, mod loader, popularidade ou outras categorias.'),
       category: 'mods',
       icon: Search
     },
 
     {
       id: 'mod-compatibility',
-      title: getTranslation('faq.modCompatibility.title', 'Como verificar compatibilidade?'),
-      content: getTranslation('faq.modCompatibility.content', 'Cada mod tem informações detalhadas sobre compatibilidade, incluindo versão do Minecraft, mod loader necessário e dependências. Sempre verifique antes de instalar.'),
+      title: getTranslation('faq.modCompatibility.title', 'Como verificar compatibilidade de mods?'),
+      content: getTranslation('faq.modCompatibility.content', 'Cada mod possui informações detalhadas sobre compatibilidade na sua página de detalhes, incluindo versão do Minecraft necessária, mod loader requerido e dependências. Sempre verifique essas informações antes de instalar para evitar conflitos.'),
       category: 'tecnico',
       icon: Settings
     },
     {
       id: 'system-requirements',
       title: getTranslation('faq.systemRequirements.title', 'Quais são os requisitos do sistema?'),
-      content: getTranslation('faq.systemRequirements.content', 'Para usar o Eu, Marko!: Minecraft Java Edition, Java 8 ou superior, conexão com internet e navegador moderno. Para mods específicos, consulte os requisitos individuais.'),
+      content: getTranslation('faq.systemRequirements.content', 'Para usar nossa plataforma, você precisa de: Minecraft Java Edition, Java 8 ou superior, conexão com internet e um navegador moderno. Para mods específicos, consulte os requisitos individuais de cada mod.'),
       category: 'tecnico',
       icon: Settings
     },
     {
       id: 'mod-issues',
       title: getTranslation('faq.modIssues.title', 'O que fazer se um mod não funcionar?'),
-      content: getTranslation('faq.modIssues.content', 'Primeiro, verifique se você tem a versão correta do mod loader e do Minecraft. Confirme se todas as dependências estão instaladas. Se o problema persistir, consulte os comentários do mod ou entre em contato.'),
+      content: getTranslation('faq.modIssues.content', 'Primeiro, verifique se você possui a versão correta do mod loader e do Minecraft. Confirme se todas as dependências necessárias estão instaladas. Se o problema persistir, consulte a seção de comentários do mod onde outros usuários podem ter encontrado soluções, ou entre em contato conosco para obter suporte.'),
       category: 'tecnico',
       icon: Bug
     },
     {
       id: 'mod-loader',
-      title: getTranslation('faq.modLoader.title', 'Qual mod loader usar?'),
-      content: getTranslation('faq.modLoader.content', 'A escolha depende do mod. Forge é o mais popular e compatível com a maioria dos mods. Fabric é mais moderno e performático. Quilt é uma alternativa ao Fabric. Verifique qual o recomendado para o mod desejado.'),
+      title: getTranslation('faq.modLoader.title', 'Qual mod loader devo usar?'),
+      content: getTranslation('faq.modLoader.content', 'A escolha do mod loader depende do mod que você deseja instalar. Forge é o mais popular e possui maior compatibilidade com a maioria dos mods. Fabric é mais moderno e oferece melhor performance. Quilt é uma alternativa moderna ao Fabric. Verifique na página de detalhes do mod qual loader é recomendado.'),
       category: 'tecnico',
       icon: Package
     },
@@ -214,7 +214,7 @@ const FAQPage = () => {
             {getTranslation('faq.title', 'Perguntas Frequentes')}
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            {getTranslation('faq.subtitle', 'Encontre respostas para as dúvidas mais comuns sobre o Eu, Marko!')}
+            {getTranslation('faq.subtitle', 'Encontre respostas para as dúvidas mais comuns sobre nossa plataforma')}
           </p>
         </div>
 

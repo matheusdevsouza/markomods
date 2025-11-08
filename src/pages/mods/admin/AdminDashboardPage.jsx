@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
   Users, 
   Package, 
   DownloadCloud, 
   BarChart3, 
   AlertCircle, 
-  Shield, 
   Activity,
   TrendingUp,
   Eye,
@@ -23,6 +21,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContextMods';
 import { useNavigate } from 'react-router-dom';
+import { usePermissions } from '@/hooks/usePermissions';
+import { toast } from 'sonner';
+import RoleBadge from '@/components/mods/RoleBadge';
 
 const StatCard = ({ title, value, icon: Icon, color, description }) => (
   <motion.div
@@ -69,6 +70,7 @@ const QuickActionCard = ({ title, description, icon: Icon, action, variant = "de
 const AdminDashboardPage = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const { hasPermission } = usePermissions();
   const [mods, setMods] = useState([]);
   const [loadingMods, setLoadingMods] = useState(true);
   const [recentActivity, setRecentActivity] = useState([]);
@@ -79,30 +81,28 @@ const AdminDashboardPage = () => {
       try {
         setLoadingMods(true);
         
-        console.log('🔍 AdminDashboard: Iniciando busca de contagem de mods...');
-        
         const response = await fetch('/api/mods/stats/count');
-        
-        console.log('🔍 AdminDashboard: Resposta da rota /stats/count:', response.status, response.statusText);
 
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ AdminDashboard: Contagem carregada:', data.data);
+          const counts = data.data || {};
+          const avgDownloads = counts.avgDownloadsPerMod !== null && counts.avgDownloadsPerMod !== undefined
+            ? parseFloat(counts.avgDownloadsPerMod)
+            : 0;
           
-          const counts = data.data;
           setMods([{
-            total: counts.total,
-            published: counts.published,
-            featured: counts.featured,
-            draft: counts.draft,
-            archived: counts.archived
+            total: counts.total || 0,
+            published: counts.published || 0,
+            featured: counts.featured || 0,
+            draft: counts.draft || 0,
+            archived: counts.archived || 0,
+            totalDownloads: counts.totalDownloads || 0,
+            avgDownloadsPerMod: avgDownloads
           }]);
         } else {
-          console.error('❌ AdminDashboard: Erro ao buscar contagem:', response.status);
           setMods([]);
         }
       } catch (error) {
-        console.error('❌ AdminDashboard: Erro na busca da contagem:', error);
         setMods([]);
       } finally {
         setLoadingMods(false);
@@ -116,7 +116,7 @@ const AdminDashboardPage = () => {
     const fetchRecentActivity = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await fetch('/api/logs/recent', {
+        const response = await fetch('/api/logs/recent?roleFilter=admin', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -128,7 +128,6 @@ const AdminDashboardPage = () => {
           setRecentActivity(data.data || []);
         }
       } catch (error) {
-        console.error('Erro ao buscar atividade recente:', error);
       } finally {
         setLoadingActivity(false);
       }
@@ -168,43 +167,89 @@ const AdminDashboardPage = () => {
   const archivedMods = counts.archived || 0;
   const pendingMods = draftMods;
   
-  const totalDownloads = 0;
-  const avgDownloadsPerMod = totalMods > 0 ? (totalDownloads / totalMods).toFixed(1) : 0;
-
-  console.log('🔍 AdminDashboard: Estatísticas calculadas:', {
-    totalMods,
-    totalDownloads,
-    featuredMods,
-    publishedMods,
-    pendingMods,
-    draftMods,
-    archivedMods,
-    avgDownloadsPerMod,
-    counts
-  });
-
+  const totalDownloads = counts.totalDownloads !== null && counts.totalDownloads !== undefined 
+    ? parseInt(counts.totalDownloads) 
+    : 0;
+  const avgDownloadsPerMod = counts.avgDownloadsPerMod !== null && counts.avgDownloadsPerMod !== undefined 
+    ? parseFloat(counts.avgDownloadsPerMod).toFixed(1) 
+    : '0.0';
 
   const handleLogs = () => {
+    if (!hasPermission('view_logs')) {
+      toast.error('Acesso Negado', {
+        description: 'Você não tem permissão para acessar "Visualizar Logs". Entre em contato com um administrador se precisar desta funcionalidade.',
+        duration: 5000,
+      });
+      return;
+    }
     navigate('/admin/logs');
   };
 
   const handleManageUsers = () => {
+    if (!hasPermission('manage_users')) {
+      toast.error('Acesso Negado', {
+        description: 'Você não tem permissão para acessar "Gerenciar Usuários". Entre em contato com um administrador se precisar desta funcionalidade.',
+        duration: 5000,
+      });
+      return;
+    }
     navigate('/admin/users');
   };
 
   const handleManageMods = () => {
+    if (!hasPermission('view_mods')) {
+      toast.error('Acesso Negado', {
+        description: 'Você não tem permissão para acessar "Visualizar Mods". Entre em contato com um administrador se precisar desta funcionalidade.',
+        duration: 5000,
+      });
+      return;
+    }
     navigate('/admin/mods');
   };
 
   const formatTimestamp = (timestamp) => {
+    if (!timestamp) return 'Data inválida';
+    
     const now = new Date();
-    const logTime = new Date(timestamp);
-    const diff = now - logTime;
+    let logTime;
+    
+    if (typeof timestamp === 'string') {
+      if (timestamp.includes('T') && !timestamp.includes('Z') && !timestamp.includes('+')) {
+        logTime = new Date(timestamp + 'Z');
+      } else {
+        logTime = new Date(timestamp);
+      }
+    } else {
+      logTime = new Date(timestamp);
+    }
+    
+    if (isNaN(logTime.getTime())) {
+      return 'Data inválida';
+    }
+    
+    const diff = now.getTime() - logTime.getTime();
     
     if (diff < 60000) return 'Agora mesmo';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)} min atrás`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)} horas atrás`;
-    return logTime.toLocaleDateString('pt-BR');
+    if (diff < 3600000) {
+      const minutes = Math.floor(diff / 60000);
+      return `${minutes} min atrás`;
+    }
+    if (diff < 86400000) {
+      const hours = Math.floor(diff / 3600000);
+      return `${hours} ${hours === 1 ? 'hora' : 'horas'} atrás`;
+    }
+    if (diff < 604800000) {
+      const days = Math.floor(diff / 86400000);
+      return `${days} ${days === 1 ? 'dia' : 'dias'} atrás`;
+    }
+    
+    return logTime.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   const getLevelIcon = (level) => {
@@ -231,17 +276,19 @@ const AdminDashboardPage = () => {
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent flex items-center gap-3">
+            <BarChart3 className="h-8 w-8 md:h-10 md:w-10 text-primary" />
             Dashboard Administrativo
           </h1>
           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
             <p className="text-lg md:text-xl text-muted-foreground">
-              Bem-vindo, {currentUser?.display_name || currentUser?.username}!
+              Bem-vindo, <strong>{currentUser?.display_name || currentUser?.username}</strong>!
             </p>
-            <Badge variant="outline" className="w-fit sm:ml-2">
-              <Shield className="h-3 w-3 mr-1" />
-              {currentUser?.role === 'super_admin' ? 'Super Administrador' : 'Administrador'}
-            </Badge>
+            {currentUser?.role && ['admin', 'supervisor', 'moderator'].includes(currentUser.role) && (
+              <div className="w-fit sm:ml-2">
+                <RoleBadge role={currentUser.role} className="w-fit" />
+              </div>
+            )}
           </div>
         </div>
         <div className="flex space-x-2">
@@ -273,14 +320,14 @@ const AdminDashboardPage = () => {
           description="Downloads de todos os mods"
         />
         <StatCard 
-          title="Mods Publicados" 
+          title="MODS PUBLICADOS" 
           value={publishedMods} 
           icon={Eye} 
           color="text-green-500" 
           description={`${pendingMods} pendentes`}
         />
         <StatCard 
-          title="Média Downloads/Mod" 
+          title="MÉDIA DOWNLOADS/MOD" 
           value={avgDownloadsPerMod} 
           icon={BarChart3} 
           color="text-yellow-500" 

@@ -120,13 +120,12 @@ class SecurityService {
     }
   }
 
-  // detectar atividade suspeita
-  detectSuspiciousActivity(req, activity) {
+  async detectSuspiciousActivity(req, activity) {
     const ip = req.ip;
-    const userAgent = req.get('User-Agent');
-    const userId = req.user?.id;
+    const userAgent = req.get('User-Agent') || 'unknown';
+    const userId = req.user?.id || null;
+    const userRole = req.user?.role || 'anonymous';
     
-    // padrões suspeitos
     const suspiciousPatterns = [
       /script/i,
       /<script/i,
@@ -143,11 +142,31 @@ class SecurityService {
       /delete.*from/i
     ];
     
-    // verificar se a atividade contém padrões suspeitos
     const activityString = JSON.stringify(activity);
     const suspiciousPattern = suspiciousPatterns.find(pattern => pattern.test(activityString));
     
     if (suspiciousPattern) {
+      try {
+        await LogService.logSecurity(
+          userId,
+          'Atividade suspeita detectada',
+          `Padrão suspeito detectado: ${suspiciousPattern.source}. Atividade: ${activityString.substring(0, 200)}. Rota: ${req.method} ${req.path}`,
+          ip,
+          userAgent,
+          'error',
+          {
+            pattern: suspiciousPattern.source,
+            activity: activityString.substring(0, 500),
+            path: req.path,
+            method: req.method,
+            userRole,
+            threatType: 'suspicious_activity'
+          }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de atividade suspeita:', logErr);
+      }
+      
       logWarn('🚨 Atividade suspeita detectada', {
         ip,
         userId,
@@ -156,17 +175,7 @@ class SecurityService {
         userAgent
       });
       
-      // marcar IP como suspeito
       this.suspiciousIPs.add(ip);
-      
-      // log de segurança
-      LogService.logSecurity(
-        userId,
-        'Atividade suspeita detectada',
-        `Padrão suspeito detectado: ${suspiciousPattern.source}. Atividade: ${activityString.substring(0, 200)}`,
-        ip,
-        userAgent
-      );
       
       return true;
     }
@@ -180,7 +189,6 @@ class SecurityService {
     logInfo('🔍 Analisando padrões de ataque...');
   }
 
-  // gerar relatório de segurança
   generateSecurityReport() {
     const report = {
       timestamp: new Date().toISOString(),
@@ -200,7 +208,6 @@ class SecurityService {
     return report;
   }
 
-  // limpar dados antigos
   cleanupOldData() {
     const now = Date.now();
     const cleanupThreshold = 60 * 60 * 1000;
@@ -224,7 +231,6 @@ class SecurityService {
     logInfo('🧹 Dados de segurança antigos limpos');
   }
 
-  // middleware para verificar segurança
   securityMiddleware() {
     return (req, res, next) => {
       const ip = req.ip;

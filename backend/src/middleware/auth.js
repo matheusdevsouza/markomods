@@ -1,24 +1,60 @@
 import { JWTService } from '../services/JWTService.js';
 import { UserModel } from '../models/UserModel.js';
-import { logError, logWarn } from '../config/logger.js';
+import { RolePermissionsModel } from '../models/RolePermissionsModel.js';
+import { logError, logWarn, logInfo } from '../config/logger.js';
+import { LogService } from '../services/LogService.js';
+import encryptionService from '../services/EncryptionService.js';
 
-// middleware de autenticação básica
 export const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1]; 
+    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    const userAgent = req.get('User-Agent') || 'unknown';
     
     if (!token) {
+      try {
+        await LogService.logUnauthorizedAccess(
+          ip,
+          userAgent,
+          'Token de acesso não fornecido',
+          `Tentativa de acesso à rota protegida ${req.method} ${req.path} sem token de autenticação`,
+          {
+            path: req.path,
+            method: req.method,
+            reason: 'no_token'
+          }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de acesso não autorizado:', logErr);
+      }
+      
       return res.status(401).json({
         success: false,
         message: 'Token de acesso não fornecido'
       });
     }
     
-    // verificar token
     const verification = JWTService.verifyAccessToken(token);
     
     if (!verification.valid) {
+      try {
+        await LogService.logUnauthorizedAccess(
+          ip,
+          userAgent,
+          verification.error === 'TOKEN_EXPIRED' ? 'Token expirado' : 'Token inválido',
+          `Tentativa de acesso à rota protegida ${req.method} ${req.path} com token inválido. Erro: ${verification.error || 'invalid_token'}`,
+          {
+            path: req.path,
+            method: req.method,
+            reason: verification.error || 'invalid_token',
+            tokenPreview: token.substring(0, 20) + '...'
+          }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de token inválido:', logErr);
+      }
+      
       if (verification.error === 'TOKEN_EXPIRED') {
         return res.status(401).json({
           success: false,
@@ -33,10 +69,28 @@ export const authenticateToken = async (req, res, next) => {
       });
     }
     
-    // buscar usuário no banco
     const user = await UserModel.findById(verification.payload.id);
     
     if (!user) {
+      try {
+        await LogService.logSecurity(
+          verification.payload.id,
+          'Tentativa de acesso com usuário inexistente',
+          `Token válido para usuário ${verification.payload.id} mas usuário não encontrado no banco de dados. Rota: ${req.method} ${req.path}`,
+          ip,
+          userAgent,
+          'error',
+          {
+            path: req.path,
+            method: req.method,
+            userId: verification.payload.id,
+            reason: 'user_not_found'
+          }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de usuário não encontrado:', logErr);
+      }
+      
       return res.status(401).json({
         success: false,
         message: 'Usuário não encontrado'
@@ -44,13 +98,34 @@ export const authenticateToken = async (req, res, next) => {
     }
     
     if (user.is_banned) {
+      const decryptedUser = encryptionService.decryptUserData(user, true);
+      try {
+        await LogService.logSecurity(
+          user.id,
+          'Tentativa de acesso com conta banida',
+          `Usuário banido tentou acessar rota protegida: ${req.method} ${req.path}. Motivo do banimento: ${user.ban_reason || 'Não especificado'}`,
+          ip,
+          userAgent,
+          'warning',
+          {
+            path: req.path,
+            method: req.method,
+            userId: user.id,
+            username: decryptedUser.username,
+            banReason: user.ban_reason,
+            reason: 'account_banned'
+          }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de conta banida:', logErr);
+      }
+      
       return res.status(403).json({
         success: false,
         message: 'Conta suspensa ou banida'
       });
     }
     
-    // adicionar usuário ao request
     req.user = user;
     req.token = token;
     
@@ -64,7 +139,6 @@ export const authenticateToken = async (req, res, next) => {
   }
 };
 
-// middleware para verificar se usuário está autenticado
 export const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -94,8 +168,7 @@ export const optionalAuth = async (req, res, next) => {
   }
 };
 
-// middleware para verificar permissões de admin
-export const requireAdmin = (req, res, next) => {
+export const requireAdmin = async (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
       success: false,
@@ -103,9 +176,32 @@ export const requireAdmin = (req, res, next) => {
     });
   }
   
-  const allowedRoles = ['admin', 'super_admin', 'moderator'];
+  const allowedRoles = ['supervisor', 'admin', 'moderator'];
   
   if (!allowedRoles.includes(req.user.role)) {
+    const decryptedUser = encryptionService.decryptUserData(req.user, true);
+    try {
+      await LogService.logSecurity(
+        req.user.id,
+        'Tentativa de acesso sem permissão de administrador',
+        `Usuário com role '${req.user.role}' tentou acessar rota administrativa: ${req.method} ${req.originalUrl}. Roles permitidos: ${allowedRoles.join(', ')}`,
+        req.ip || 'unknown',
+        req.get('User-Agent') || 'unknown',
+        'warning',
+        {
+          path: req.originalUrl,
+          method: req.method,
+          userId: req.user.id,
+          username: decryptedUser.username,
+          userRole: req.user.role,
+          requiredRoles: allowedRoles,
+          reason: 'insufficient_permissions'
+        }
+      );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de acesso sem permissão:', logErr);
+    }
+    
     logWarn('Tentativa de acesso não autorizado', {
       userId: req.user.id,
       userRole: req.user.role,
@@ -122,8 +218,7 @@ export const requireAdmin = (req, res, next) => {
   next();
 };
 
-// middleware para verificar permissões de super admin
-export const requireSuperAdmin = (req, res, next) => {
+export const requireAdminOrSuperAdmin = async (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
       success: false,
@@ -131,8 +226,81 @@ export const requireSuperAdmin = (req, res, next) => {
     });
   }
   
-  if (req.user.role !== 'super_admin') {
-    logWarn('Tentativa de acesso não autorizado (Super Admin)', {
+  const allowedRoles = ['supervisor', 'admin'];
+  
+  if (!allowedRoles.includes(req.user.role)) {
+    const decryptedUser = encryptionService.decryptUserData(req.user, true);
+    try {
+      await LogService.logSecurity(
+        req.user.id,
+        'Tentativa de acesso de moderador a rota restrita',
+        `Moderador tentou acessar rota restrita apenas para admin/supervisor: ${req.method} ${req.originalUrl}`,
+        req.ip || 'unknown',
+        req.get('User-Agent') || 'unknown',
+        'warning',
+        {
+          path: req.originalUrl,
+          method: req.method,
+          userId: req.user.id,
+          username: decryptedUser.username,
+          userRole: req.user.role,
+          requiredRoles: allowedRoles,
+          reason: 'moderator_blocked'
+        }
+      );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de moderador bloqueado:', logErr);
+    }
+    
+    logWarn('Tentativa de acesso não autorizado (Moderador bloqueado)', {
+      userId: req.user.id,
+      userRole: req.user.role,
+      requiredRoles: allowedRoles,
+      endpoint: req.originalUrl
+    });
+    
+    return res.status(403).json({
+      success: false,
+      message: 'Acesso negado. Apenas administradores têm acesso a esta funcionalidade.'
+    });
+  }
+  
+  next();
+};
+
+export const requireSuperAdmin = async (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: 'Autenticação necessária'
+    });
+  }
+  
+  if (req.user.role !== 'admin') {
+    const decryptedUser = encryptionService.decryptUserData(req.user, true);
+    try {
+      await LogService.logSecurity(
+        req.user.id,
+        'Tentativa de acesso a rota de super administrador',
+        `Usuário com role '${req.user.role}' tentou acessar rota restrita apenas para admin: ${req.method} ${req.originalUrl}`,
+        req.ip || 'unknown',
+        req.get('User-Agent') || 'unknown',
+        'error',
+        {
+          path: req.originalUrl,
+          method: req.method,
+          userId: req.user.id,
+          username: decryptedUser.username,
+          userRole: req.user.role,
+          requiredRole: 'admin',
+          reason: 'super_admin_only'
+        }
+      );
+    } catch (logErr) {
+      console.error('❌ Erro ao criar log de super admin:', logErr);
+    }
+    
+    logWarn('Tentativa de acesso não autorizado (Apenas Admin)', {
       userId: req.user.id,
       userRole: req.user.role,
       endpoint: req.originalUrl
@@ -140,14 +308,13 @@ export const requireSuperAdmin = (req, res, next) => {
     
     return res.status(403).json({
       success: false,
-      message: 'Acesso negado. Apenas super administradores.'
+      message: 'Acesso negado. Apenas administradores.'
     });
   }
   
   next();
 };
 
-// middleware para verificar permissões de moderador
 export const requireModerator = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
@@ -156,7 +323,7 @@ export const requireModerator = (req, res, next) => {
     });
   }
   
-  if (!['moderator', 'admin', 'super_admin'].includes(req.user.role)) {
+      if (!['moderator', 'supervisor', 'admin'].includes(req.user.role)) {
     return res.status(403).json({
       success: false,
       message: 'Acesso negado. Apenas moderadores.'
@@ -166,9 +333,8 @@ export const requireModerator = (req, res, next) => {
   next();
 };
 
-// middleware para verificar cargos específicos
 export const requireRole = (allowedRoles) => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({
         success: false,
@@ -176,7 +342,30 @@ export const requireRole = (allowedRoles) => {
       });
     }
     
-    if (!allowedRoles.includes(req.user.role)) {
+      if (!allowedRoles.includes(req.user.role)) {
+      const decryptedUser = encryptionService.decryptUserData(req.user, true);
+      try {
+        await LogService.logSecurity(
+          req.user.id,
+          'Tentativa de acesso sem role adequada',
+          `Usuário com role '${req.user.role}' tentou acessar rota que requer roles: ${allowedRoles.join(', ')}. Rota: ${req.method} ${req.originalUrl}`,
+          req.ip || 'unknown',
+          req.get('User-Agent') || 'unknown',
+          'warning',
+          {
+            path: req.originalUrl,
+            method: req.method,
+            userId: req.user.id,
+            username: decryptedUser.username,
+            userRole: req.user.role,
+            requiredRoles: allowedRoles,
+            reason: 'insufficient_role'
+          }
+        );
+      } catch (logErr) {
+        console.error('❌ Erro ao criar log de role insuficiente:', logErr);
+      }
+      
       logWarn('Tentativa de acesso não autorizado', {
         userId: req.user.id,
         userRole: req.user.role,
@@ -204,7 +393,7 @@ export const requireOwnership = (resourceType) => {
         });
       }
       
-      if (['admin', 'super_admin', 'moderator'].includes(req.user.role)) {
+      if (['supervisor', 'admin', 'moderator'].includes(req.user.role)) {
         return next();
       }
       
@@ -250,7 +439,6 @@ export const requireOwnership = (resourceType) => {
   };
 };
 
-// middleware para verificar se usuário está verificado
 export const requireVerified = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
@@ -269,7 +457,6 @@ export const requireVerified = (req, res, next) => {
   next();
 };
 
-// middleware que permite acesso público para requests especificoas
 export const publicOrAuthenticated = async (req, res, next) => {
   try {
     if (req.method === 'GET' && req.params.id && !isNaN(req.params.id)) {
@@ -290,7 +477,6 @@ export const publicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // verificar token
     const verification = JWTService.verifyAccessToken(token);
     
     if (!verification.valid) {
@@ -308,7 +494,6 @@ export const publicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // buscar usuário no banco
     const user = await UserModel.findById(verification.payload.id);
     
     if (!user) {
@@ -325,7 +510,6 @@ export const publicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // adicionar usuário ao request
     req.user = user;
     req.token = token;
     
@@ -339,7 +523,6 @@ export const publicOrAuthenticated = async (req, res, next) => {
   }
 };
 
-// middleware para comentários
 export const commentsPublicOrAuthenticated = async (req, res, next) => {
   try {
     if (req.method === 'GET') {
@@ -375,7 +558,6 @@ export const commentsPublicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // verificar token
     const verification = JWTService.verifyAccessToken(token);
     
     if (!verification.valid) {
@@ -393,7 +575,6 @@ export const commentsPublicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // buscar usuário no banco
     const user = await UserModel.findById(verification.payload.id);
     
     if (!user) {
@@ -410,7 +591,6 @@ export const commentsPublicOrAuthenticated = async (req, res, next) => {
       });
     }
     
-    // adicionar usuário ao request
     req.user = user;
     req.token = token;
     
@@ -422,5 +602,75 @@ export const commentsPublicOrAuthenticated = async (req, res, next) => {
       message: 'Erro interno do servidor'
     });
   }
+};
+
+export const requirePermission = (permission) => {
+  return async (req, res, next) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Autenticação necessária'
+        });
+      }
+
+      const userRole = req.user.role;
+
+      if (userRole === 'admin') {
+        return next();
+      }
+
+      const hasPermission = await RolePermissionsModel.hasPermission(userRole, permission);
+
+      if (!hasPermission) { 
+        const decryptedUser = encryptionService.decryptUserData(req.user, true);
+        try {
+          await LogService.logSecurity(
+            req.user.id,
+            'Tentativa de acesso sem permissão específica',
+            `Usuário com role '${userRole}' tentou acessar rota que requer permissão '${permission}'. Rota: ${req.method} ${req.originalUrl}`,
+            req.ip || 'unknown',
+            req.get('User-Agent') || 'unknown',
+            'warning',
+            {
+              path: req.originalUrl,
+              method: req.method,
+              userId: req.user.id,
+              username: decryptedUser.username,
+              userRole: userRole,
+              requiredPermission: permission,
+              reason: 'insufficient_permission'
+            }
+          );
+        } catch (logErr) {
+          console.error('❌ Erro ao criar log de permissão insuficiente:', logErr);
+        }
+        
+        logWarn('Tentativa de acesso sem permissão', {
+          userId: req.user.id,
+          userRole: userRole,
+          requiredPermission: permission,
+          endpoint: req.originalUrl
+        });
+
+        return res.status(403).json({
+          success: false,
+          message: 'Acesso negado. Você não tem permissão para realizar esta ação.'
+        });
+      }
+
+      next();
+    } catch (error) {
+      logError('Erro ao verificar permissão', error, {
+        userId: req.user?.id,
+        permission: permission
+      });
+
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao verificar permissões'
+      });
+    }
+  };
 };
 

@@ -227,10 +227,11 @@ const FavoritesPage = () => {
           >
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent flex items-center gap-3">
+                  <Heart className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                   {t('favorites.title')}
                 </h1>
-                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-8">
                   {favorites.length === 0 
                     ? t('favorites.subtitle.empty')
                     : favorites.length === 1
@@ -247,7 +248,7 @@ const FavoritesPage = () => {
               </Button>
             </div>
 
-            <div className="bg-card/40 border border-border/40 rounded-lg p-3 sm:p-4">
+            <div className="!bg-transparent bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 border border-primary/20 shadow-xl rounded-2xl p-3 sm:p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div className="sm:col-span-2 lg:col-span-1">
                   <input
@@ -323,26 +324,23 @@ const FavoritesPage = () => {
             </div>
 
             {favorites.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-center py-8 sm:py-16"
-              >
-                <Heart className="h-16 w-16 sm:h-24 sm:w-24 text-muted-foreground/30 mx-auto mb-4 sm:mb-6" />
-                <h3 className="text-xl sm:text-2xl font-semibold text-white mb-3 sm:mb-4">
-                  {t('favorites.empty.title')}
-                </h3>
-                <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 max-w-md mx-auto px-4">
-                  {t('favorites.empty.description')}
-                </p>
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-sm sm:text-base w-full sm:w-auto">
-                  <Link to="/mods">
-                    <Package className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                    {t('favorites.empty.exploreMods')}
-                  </Link>
-                </Button>
-              </motion.div>
+              <Card className="!bg-transparent bg-gradient-to-r from-primary/10 via-purple-600/10 to-primary/10 border border-primary/20 shadow-xl rounded-2xl">
+                <CardContent className="text-center py-8 sm:py-16">
+                  <Heart className="h-16 w-16 sm:h-24 sm:w-24 text-primary/30 mx-auto mb-4 sm:mb-6" />
+                  <h3 className="text-xl sm:text-2xl font-semibold text-foreground mb-3 sm:mb-4">
+                    {t('favorites.empty.title')}
+                  </h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 max-w-md mx-auto px-4">
+                    {t('favorites.empty.description')}
+                  </p>
+                  <Button asChild size="lg" className="bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white text-sm sm:text-base w-full sm:w-auto">
+                    <Link to="/mods">
+                      <Package className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                      {t('favorites.empty.exploreMods')}
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
             ) : (
               <>
                 <motion.div

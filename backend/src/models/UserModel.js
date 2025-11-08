@@ -1,11 +1,12 @@
 import { executeQuery, executeTransaction, getConnection } from '../config/database.js';
-import { logError, logInfo } from '../config/logger.js';
+import { logError, logInfo, logWarn } from '../config/logger.js';
 import bcrypt from 'bcryptjs';
+import encryptionService from '../services/EncryptionService.js';
 
 export class UserModel {
 
-  // buscar o usuário por ID
-  static async findById(id) {
+  // buscar o usuário por ID 
+  static async findById(id, decryptForAdmin = false) {
     try {
       const sql = `
         SELECT id, username, email, password_hash, display_name, avatar_url,
@@ -20,6 +21,10 @@ export class UserModel {
         return null;
       }
       
+      if (decryptForAdmin) {
+        return encryptionService.decryptUserData(user, true);
+      }
+      
       return user;
     } catch (error) {
       logError('Erro ao buscar usuário por ID', error, { userId: id });
@@ -27,20 +32,30 @@ export class UserModel {
     }
   }
 
-  // buscar o usuário por email
-  static async findByEmail(email) {
+  // buscar o usuário por email 
+  static async findByEmail(email, decryptForAdmin = false) {
     try {
+      const emailHash = encryptionService.hashForSearch(email);
+      
+      if (!emailHash) {
+        return null;
+      }
+      
       const sql = `
         SELECT id, username, email, password_hash, display_name, avatar_url,
                role, is_verified, is_banned, created_at, updated_at, last_login
         FROM users 
-        WHERE email = ?
+        WHERE email_hash = ?
       `;
       
-      const [user] = await executeQuery(sql, [email]);
+      const [user] = await executeQuery(sql, [emailHash]);
       
       if (!user) {
         return null;
+      }
+      
+      if (decryptForAdmin) {
+        return encryptionService.decryptUserData(user, true);
       }
       
       return user;
@@ -50,20 +65,30 @@ export class UserModel {
     }
   }
 
-  // buscar o usuário por username
-  static async findByUsername(username) {
+  // buscar o usuário por username 
+  static async findByUsername(username, decryptForAdmin = false) {
     try {
+      const usernameHash = encryptionService.hashForSearch(username);
+      
+      if (!usernameHash) {
+        return null;
+      }
+      
       const sql = `
         SELECT id, username, email, display_name, avatar_url,
                role, is_verified, is_banned, created_at, updated_at, last_login
         FROM users 
-        WHERE username = ?
+        WHERE username_hash = ?
       `;
       
-      const [user] = await executeQuery(sql, [username]);
+      const [user] = await executeQuery(sql, [usernameHash]);
       
       if (!user) {
         return null;
+      }
+      
+      if (decryptForAdmin) {
+        return encryptionService.decryptUserData(user, true);
       }
       
       return user;
@@ -73,31 +98,45 @@ export class UserModel {
     }
   }
 
-  // criar novo usuário
+  // criar novo usuário 
   static async create(userData) {
     try {
       const { id, username, email, password, display_name } = userData;
       
       const passwordHash = await bcrypt.hash(password, 12);
       
+      const encryptedData = encryptionService.encryptUserData({
+        username,
+        email,
+        display_name: display_name || null
+      });
+      
       const sql = `
         INSERT INTO users (
           id, username, email, password_hash, display_name,
+          username_hash, email_hash,
           role, is_verified, is_banned, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `;
       
       const params = [
-        id, username, email, passwordHash, 
-        display_name || null,
-        'member', false, false
+        id, 
+        encryptedData.username || null, 
+        encryptedData.email || null, 
+        passwordHash, 
+        encryptedData.display_name || null,
+        encryptedData.username_hash || null,
+        encryptedData.email_hash || null,
+        'member', 
+        false, 
+        false
       ];
       
       await executeQuery(sql, params);
       
       const user = await this.findById(id);
       
-      logInfo('Usuário criado com sucesso', { userId: id, username, email });
+      logInfo('Usuário criado com sucesso', { userId: id });
       
       return user;
     } catch (error) {
@@ -106,7 +145,7 @@ export class UserModel {
     }
   }
 
-  // atualizar usuário
+  // atualizar usuário 
   static async update(id, updateData) {
     try {
       const allowedFields = [
@@ -116,10 +155,27 @@ export class UserModel {
       const updates = [];
       const params = [];
 
+      const fieldsToEncrypt = ['username', 'email', 'display_name'];
+      const encryptedData = {};
+
       for (const [field, value] of Object.entries(updateData)) {
         if (allowedFields.includes(field) && value !== undefined) {
-          updates.push(`${field} = ?`);
-          params.push(value);
+          if (fieldsToEncrypt.includes(field) && value !== null) {
+            encryptedData[field] = encryptionService.encrypt(value);
+            updates.push(`${field} = ?`);
+            params.push(encryptedData[field]);
+            
+            if (field === 'username') {
+              updates.push(`username_hash = ?`);
+              params.push(encryptionService.hashForSearch(value));
+            } else if (field === 'email') {
+              updates.push(`email_hash = ?`);
+              params.push(encryptionService.hashForSearch(value));
+            }
+          } else {
+            updates.push(`${field} = ?`);
+            params.push(value);
+          }
         }
       }
 
@@ -184,15 +240,72 @@ export class UserModel {
   // atualizar cargo (apenas admin)
   static async updateRole(id, newRole) {
     try {
-      const allowedRoles = ['member', 'moderator', 'admin', 'super_admin'];
+      const allowedRoles = ['member', 'moderator', 'supervisor', 'admin'];
       if (!allowedRoles.includes(newRole)) {
         throw new Error('Role inválida');
       }
 
-      const sql = `UPDATE users SET role = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
-      await executeQuery(sql, [newRole, id]);
+      const currentUserData = await executeQuery(
+        'SELECT is_verified FROM users WHERE id = ?',
+        [id]
+      );
       
-      logInfo('Role do usuário atualizada', { userId: id, newRole });
+      if (!currentUserData || currentUserData.length === 0) {
+        throw new Error('Usuário não encontrado');
+      }
+
+      const currentIsVerified = currentUserData[0].is_verified;
+      const isVerifiedValue = currentIsVerified === 1 || currentIsVerified === true || currentIsVerified === '1' ? 1 : 0;
+      
+      logInfo('Atualizando role - valores antes do update', { 
+        userId: id, 
+        newRole, 
+        currentIsVerified: currentIsVerified,
+        isVerifiedType: typeof currentIsVerified,
+        isVerifiedValue 
+      });
+
+      const sql = `UPDATE users 
+                   SET role = ?, 
+                       is_verified = ?,
+                       updated_at = CURRENT_TIMESTAMP 
+                   WHERE id = ?`;
+      
+      await executeQuery(sql, [newRole, isVerifiedValue, id]);
+      
+      const verificationCheck = await executeQuery(
+        'SELECT is_verified FROM users WHERE id = ?',
+        [id]
+      );
+      
+      const finalIsVerified = verificationCheck[0]?.is_verified;
+      
+      logInfo('Role do usuário atualizada', { 
+        userId: id, 
+        newRole, 
+        is_verified_antes: currentIsVerified,
+        is_verified_depois: finalIsVerified,
+        is_verified_depois_type: typeof finalIsVerified
+      });
+      
+      const finalValue = finalIsVerified === 1 || finalIsVerified === true || finalIsVerified === '1' ? 1 : 0;
+      const originalValue = currentIsVerified === 1 || currentIsVerified === true || currentIsVerified === '1' ? 1 : 0;
+      
+      if (finalValue !== originalValue) {
+        logWarn('ATENÇÃO: is_verified foi alterado durante updateRole! Corrigindo...', {
+          userId: id,
+          antes: currentIsVerified,
+          depois: finalIsVerified,
+          originalValue,
+          finalValue
+        });
+        
+        const correctSql = `UPDATE users SET is_verified = ? WHERE id = ?`;
+        await executeQuery(correctSql, [originalValue, id]);
+        
+        logInfo('Correção aplicada', { userId: id, originalValue });
+      }
+      
       return true;
     } catch (error) {
       logError('Erro ao atualizar role', error, { userId: id, newRole });
@@ -200,7 +313,41 @@ export class UserModel {
     }
   }
 
-  // banir/desbanir usuário
+  static async findByRoles(roles, decryptForAdmin = false) {
+    try {
+      if (!Array.isArray(roles) || roles.length === 0) {
+        return [];
+      }
+
+      const placeholders = roles.map(() => '?').join(',');
+      const sql = `
+        SELECT id, username, email, display_name, avatar_url,
+               role, is_verified, is_banned, created_at, updated_at, last_login
+        FROM users 
+        WHERE role IN (${placeholders})
+        ORDER BY 
+          CASE role
+            WHEN 'admin' THEN 1
+            WHEN 'supervisor' THEN 2
+            WHEN 'moderator' THEN 3
+            ELSE 4
+          END,
+          created_at DESC
+      `;
+      
+      const users = await executeQuery(sql, roles);
+      
+      if (decryptForAdmin && users.length > 0) {
+        return encryptionService.decryptUserArray(users, true);
+      }
+      
+      return users;
+    } catch (error) {
+      logError('Erro ao buscar usuários por roles', error, { roles });
+      throw error;
+    }
+  }
+
   static async updateBanStatus(id, isBanned, banReason = null) {
     try {
       const sql = `UPDATE users SET is_banned = ?, ban_reason = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
@@ -215,8 +362,8 @@ export class UserModel {
     }
   }
 
-  // buscar todos os usuários (filtro)
-  static async findAll(filters = {}) {
+  // buscar todos os usuários (filtro) 
+  static async findAll(filters = {}, decryptForAdmin = false) {
     try {
       let sql = `
         SELECT id, username, email, display_name, role,
@@ -229,13 +376,19 @@ export class UserModel {
       const params = [];
       
       if (filters.username) {
-        sql += ` AND username LIKE ?`;
-        params.push(`%${filters.username}%`);
+        const usernameHash = encryptionService.hashForSearch(filters.username);
+        if (usernameHash) {
+          sql += ` AND username_hash = ?`;
+          params.push(usernameHash);
+        }
       }
       
       if (filters.email) {
-        sql += ` AND email LIKE ?`;
-        params.push(`%${filters.email}%`);
+        const emailHash = encryptionService.hashForSearch(filters.email);
+        if (emailHash) {
+          sql += ` AND email_hash = ?`;
+          params.push(emailHash);
+        }
       }
       
       if (filters.role) {
@@ -256,6 +409,12 @@ export class UserModel {
       sql += ` ORDER BY created_at DESC`;
       
       const users = await executeQuery(sql, params);
+      
+      if (decryptForAdmin) {
+        const decryptedUsers = encryptionService.decryptUserArray(users, true);
+        logInfo('Usuários buscados com sucesso (descriptografados para admin)', { count: decryptedUsers.length, filters });
+        return decryptedUsers;
+      }
       
       logInfo('Usuários buscados com sucesso', { count: users.length, filters });
       return users;
@@ -279,59 +438,38 @@ export class UserModel {
     }
   }
 
-  // deletar conta completamente
-  static async deleteAccountCompletely(userId) {
-    try {
 
-      const deleteCommentsSql = `DELETE FROM comments WHERE user_id = ?`;
-      await executeQuery(deleteCommentsSql, [userId]);
-
-      const deleteDownloadsSql = `DELETE FROM downloads WHERE user_id = ?`;
-      await executeQuery(deleteDownloadsSql, [userId]);
-
-      const deleteFavoritesSql = `DELETE FROM favorites WHERE user_id = ?`;
-      await executeQuery(deleteFavoritesSql, [userId]);
-
-      try {
-        const deleteActivitiesSql = `DELETE FROM activities WHERE user_id = ?`;
-        await executeQuery(deleteActivitiesSql, [userId]);
-      } catch (activityError) {
-      }
-
-      const deleteUserSql = `DELETE FROM users WHERE id = ?`;
-      const result = await executeQuery(deleteUserSql, [userId]);
-
-      logInfo('Conta do usuário deletada completamente', { userId });
-      return true;
-
-    } catch (error) {
-      logError('Erro ao deletar conta completamente', error, { userId });
-      throw error;
-    }
-  }
-
-  // atualizar usuário (admin)
+  // atualizar usuário (admin) - com criptografia automática
   static async updateUser(userId, updateData) {
     try {
       
       const { username, display_name, email, role, is_verified } = updateData;
+      
+      const currentUser = await this.findById(userId, true);
+      if (!currentUser) {
+        throw new Error('Usuário não encontrado');
+      }
       
       const fields = [];
       const values = [];
       
       if (username !== undefined) {
         fields.push('username = ?');
-        values.push(username);
+        values.push(encryptionService.encrypt(username));
+        fields.push('username_hash = ?');
+        values.push(encryptionService.hashForSearch(username));
       }
       
       if (display_name !== undefined) {
         fields.push('display_name = ?');
-        values.push(display_name);
+        values.push(display_name ? encryptionService.encrypt(display_name) : null);
       }
       
       if (email !== undefined) {
         fields.push('email = ?');
-        values.push(email);
+        values.push(encryptionService.encrypt(email));
+        fields.push('email_hash = ?');
+        values.push(encryptionService.hashForSearch(email));
       }
       
       if (role !== undefined) {
@@ -339,10 +477,12 @@ export class UserModel {
         values.push(role);
       }
       
-      if (is_verified !== undefined) {
-        fields.push('is_verified = ?');
-        values.push(is_verified);
-      }
+      const isVerifiedValue = is_verified !== undefined 
+        ? (is_verified === true || is_verified === 'true' || is_verified === 1 || is_verified === '1' ? 1 : 0)
+        : (currentUser.is_verified === 1 || currentUser.is_verified === true || currentUser.is_verified === '1' ? 1 : 0);
+      
+      fields.push('is_verified = ?');
+      values.push(isVerifiedValue);
       
       if (fields.length === 0) {
         throw new Error('Nenhum campo para atualizar');
@@ -350,7 +490,7 @@ export class UserModel {
       
       values.push(userId);
       
-      const sql = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
+      const sql = `UPDATE users SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
       
       const result = await executeQuery(sql, values);
       
@@ -358,7 +498,7 @@ export class UserModel {
         throw new Error('Usuário não encontrado');
       }
       
-      const updatedUser = await this.findById(userId);
+      const updatedUser = await this.findById(userId, true);
       return updatedUser;
       
     } catch (error) {
@@ -367,11 +507,15 @@ export class UserModel {
     }
   }
 
-  // verificar se email existe
+  // verificar se email existe 
   static async emailExists(email) {
     try {
-      const sql = `SELECT COUNT(*) as count FROM users WHERE email = ?`;
-      const result = await executeQuery(sql, [email]);
+      const emailHash = encryptionService.hashForSearch(email);
+      if (!emailHash) {
+        return false;
+      }
+      const sql = `SELECT COUNT(*) as count FROM users WHERE email_hash = ?`;
+      const result = await executeQuery(sql, [emailHash]);
       return result[0].count > 0;
     } catch (error) {
       logError('Erro ao verificar se email existe', error, { email });
@@ -379,11 +523,15 @@ export class UserModel {
     }
   }
 
-  // verificar se username existe
+  // verificar se username existe 
   static async usernameExists(username) {
     try {
-      const sql = `SELECT COUNT(*) as count FROM users WHERE username = ?`;
-      const result = await executeQuery(sql, [username]);
+      const usernameHash = encryptionService.hashForSearch(username);
+      if (!usernameHash) {
+        return false;
+      }
+      const sql = `SELECT COUNT(*) as count FROM users WHERE username_hash = ?`;
+      const result = await executeQuery(sql, [usernameHash]);
       return result[0].count > 0;
     } catch (error) {
       logError('Erro ao verificar se username existe', error, { username });
@@ -591,23 +739,45 @@ export class UserModel {
     }
   }
 
-  // excluir conta do usuário
-  static async deleteAccount(userId) {
+  // excluir conta do usuário completamente
+  static async deleteAccountCompletely(userId) {
     try {
-      await executeTransaction(async (connection) => {
-        await connection.execute('DELETE FROM activities WHERE user_id = ?', [userId]);
-        
-        await connection.execute('DELETE FROM favorites WHERE user_id = ?', [userId]);
-        
-        await connection.execute('DELETE FROM downloads WHERE user_id = ?', [userId]);
-          
+      const connection = await getConnection();
+      await connection.beginTransaction();
+      
+      try {
+        await connection.execute('DELETE FROM activity_logs WHERE user_id = ?', [userId]);
+        await connection.execute('DELETE FROM email_verification_tokens WHERE user_id = ?', [userId]);
+        await connection.execute('DELETE FROM password_reset_tokens WHERE user_id = ?', [userId]);
+        await connection.execute('DELETE FROM account_deletion_tokens WHERE user_id = ?', [userId]);
         await connection.execute('DELETE FROM comments WHERE user_id = ?', [userId]);
-        
+        await connection.execute('DELETE FROM favorites WHERE user_id = ?', [userId]);
+        await connection.execute('DELETE FROM downloads WHERE user_id = ?', [userId]);
+        await connection.execute('UPDATE mods SET author_id = NULL WHERE author_id = ?', [userId]);
         await connection.execute('DELETE FROM users WHERE id = ?', [userId]);
-      });
+        
+        await connection.commit();
+        
+        logInfo('Conta do usuário excluída completamente', { userId });
+        return true;
+      } catch (error) {
+        await connection.rollback();
+        throw error;
+      } finally {
+        if (connection && typeof connection.release === 'function') {
+          connection.release();
+        } else if (connection && typeof connection.end === 'function') {
+          await connection.end();
+        }
+      }
     } catch (error) {
-      logError('Erro ao excluir conta', error, { userId });
+      logError('Erro ao excluir conta completamente', error, { userId });
       throw error;
     }
+  }
+
+  // excluir conta do usuário 
+  static async deleteAccount(userId) {
+    return this.deleteAccountCompletely(userId);
   }
 }

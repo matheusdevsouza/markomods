@@ -37,12 +37,18 @@ import {
 } from 'lucide-react';
 import { RichTextEditor } from '../../../components/ui/RichTextEditor';
 import { useAuth } from '../../../contexts/AuthContextMods';
+import { usePermissions } from '../../../hooks/usePermissions';
 import { processHtmlComplete, processHtmlForDatabase } from '../../../utils/htmlProcessor';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../../components/ui/use-toast';
 
 
 const AdminModsPage = () => {
   const { t } = useTranslation();
   const { currentUser } = useAuth();
+  const { hasPermission, loading: permissionsLoading } = usePermissions();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [mods, setMods] = useState([]);
   const [filteredMods, setFilteredMods] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,6 +61,19 @@ const AdminModsPage = () => {
   const [loadingActions, setLoadingActions] = useState({});
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    if (!permissionsLoading && currentUser) {
+      if (currentUser.role !== 'admin' && !hasPermission('view_mods')) {
+        toast({
+          title: 'Acesso Negado',
+          description: 'Você não tem permissão para acessar esta página. Entre em contato com um administrador se precisar desta funcionalidade.',
+          variant: 'destructive'
+        });
+        navigate('/admin');
+      }
+    }
+  }, [currentUser, hasPermission, permissionsLoading, navigate, toast]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -595,16 +614,19 @@ const AdminModsPage = () => {
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div className="flex-1">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent flex items-center gap-3">
+            <Package className="h-8 w-8 md:h-10 md:w-10 text-primary" />
             Gerenciar Conteúdo
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground">Gerencie mods para Java e addons para Bedrock</p>
         </div>
-        <Button onClick={() => setShowCreateModal(true)} className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
-          <Plus className="h-4 w-4 mr-2" />
-          <span className="hidden sm:inline">Novo Mod/Addon</span>
-          <span className="sm:hidden">Novo</span>
-        </Button>
+        {(currentUser?.role === 'admin' || hasPermission('manage_mods')) && (
+          <Button onClick={() => setShowCreateModal(true)} className="bg-primary hover:bg-primary/90 w-full sm:w-auto">
+            <Plus className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Novo Mod/Addon</span>
+            <span className="sm:hidden">Novo</span>
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -812,85 +834,87 @@ const AdminModsPage = () => {
                         </div>
                     </div>
                     
-                    <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-2">
-                      <Button
-                        onClick={() => handleToggleStatus(mod.id, 'is_published')}
-                        disabled={loadingActions[`${mod.id}-is_published`]}
-                        size="sm"
-                        className={`
-                          w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ease-out
-                          ${mod.is_published 
-                            ? 'bg-green-500/20 border-green-500 text-green-600 hover:bg-green-500/30 hover:scale-105 hover:shadow-lg hover:shadow-green-500/25' 
-                            : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-600/50 hover:border-gray-500 hover:text-gray-300 hover:scale-105'
-                          }
-                          ${loadingActions[`${mod.id}-is_published`] ? 'opacity-50 cursor-not-allowed' : ''}
-                        `}
-                        title={mod.is_published ? 'Despublicar - O mod ficará visível apenas para administradores' : 'Publicar - O mod ficará visível para todos os usuários'}
-                      >
-                        {loadingActions[`${mod.id}-is_published`] ? (
-                          <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-green-500"></div>
-                        ) : (
-                          <>
-                            {mod.is_published 
-                              ? <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" /> 
-                              : <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                    {(currentUser?.role === 'admin' || hasPermission('manage_mods')) && (
+                      <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-2">
+                        <Button
+                          onClick={() => handleToggleStatus(mod.id, 'is_published')}
+                          disabled={loadingActions[`${mod.id}-is_published`]}
+                          size="sm"
+                          className={`
+                            w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ease-out
+                            ${mod.is_published 
+                              ? 'bg-green-500/20 border-green-500 text-green-600 hover:bg-green-500/30 hover:scale-105 hover:shadow-lg hover:shadow-green-500/25' 
+                              : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-600/50 hover:border-gray-500 hover:text-gray-300 hover:scale-105'
                             }
-                          </>
-                        )}
-                      </Button>
-                      
-                      <Button
-                        onClick={() => handleToggleStatus(mod.id, 'is_featured')}
-                        disabled={loadingActions[`${mod.id}-is_featured`]}
-                        size="sm"
-                        className={`
-                          w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ease-out
-                          ${mod.is_featured 
-                            ? 'bg-yellow-500/20 border-yellow-500 text-yellow-600 hover:bg-yellow-500/30 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25' 
-                            : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-600/50 hover:border-gray-500 hover:text-gray-300 hover:scale-105'
-                          }
-                          ${loadingActions[`${mod.id}-is_featured`] ? 'opacity-50 cursor-not-allowed' : ''}
-                        `}
-                        title={mod.is_featured ? 'Remover destaque - O mod não aparecerá mais na seção de destaque' : 'Adicionar destaque - O mod aparecerá na seção de destaque da página inicial'}
-                      >
-                        {loadingActions[`${mod.id}-is_featured`] ? (
-                          <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-yellow-500"></div>
-                        ) : (
-                          <>
-                            {mod.is_featured 
-                              ? <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 fill-yellow-500" /> 
-                              : <Star className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                            ${loadingActions[`${mod.id}-is_published`] ? 'opacity-50 cursor-not-allowed' : ''}
+                          `}
+                          title={mod.is_published ? 'Despublicar - O mod ficará visível apenas para administradores' : 'Publicar - O mod ficará visível para todos os usuários'}
+                        >
+                          {loadingActions[`${mod.id}-is_published`] ? (
+                            <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-green-500"></div>
+                          ) : (
+                            <>
+                              {mod.is_published 
+                                ? <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" /> 
+                                : <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                              }
+                            </>
+                          )}
+                        </Button>
+                        
+                        <Button
+                          onClick={() => handleToggleStatus(mod.id, 'is_featured')}
+                          disabled={loadingActions[`${mod.id}-is_featured`]}
+                          size="sm"
+                          className={`
+                            w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ease-out
+                            ${mod.is_featured 
+                              ? 'bg-yellow-500/20 border-yellow-500 text-yellow-600 hover:bg-yellow-500/30 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/25' 
+                              : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-600/50 hover:border-gray-500 hover:text-gray-300 hover:scale-105'
                             }
-                          </>
-                        )}
-                      </Button>
-                      
-                      <Button
-                        onClick={() => openEditModal(mod)}
-                        size="sm"
-                        className="
-                          w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 border-blue-500/50 bg-blue-500/10 
-                          text-blue-500 hover:bg-blue-500/20 hover:border-blue-500 hover:scale-105 
-                          hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 ease-out
-                        "
-                        title="Editar mod"
-                      >
-                        <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </Button>
-                      
-                      <Button
-                        onClick={() => openDeleteModal(mod)}
-                        size="sm"
-                        className="
-                          w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 border-red-500/50 bg-red-500/10 
-                          text-red-500 hover:bg-red-500/20 hover:border-red-500 hover:scale-105 
-                          hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 ease-out
-                        "
-                        title="Deletar mod permanentemente"
-                      >
-                        <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </Button>
-                    </div>
+                            ${loadingActions[`${mod.id}-is_featured`] ? 'opacity-50 cursor-not-allowed' : ''}
+                          `}
+                          title={mod.is_featured ? 'Remover destaque - O mod não aparecerá mais na seção de destaque' : 'Adicionar destaque - O mod aparecerá na seção de destaque da página inicial'}
+                        >
+                          {loadingActions[`${mod.id}-is_featured`] ? (
+                            <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-yellow-500"></div>
+                          ) : (
+                            <>
+                              {mod.is_featured 
+                                ? <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 fill-yellow-500" /> 
+                                : <Star className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                              }
+                            </>
+                          )}
+                        </Button>
+                        
+                        <Button
+                          onClick={() => openEditModal(mod)}
+                          size="sm"
+                          className="
+                            w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 border-blue-500/50 bg-blue-500/10 
+                            text-blue-500 hover:bg-blue-500/20 hover:border-blue-500 hover:scale-105 
+                            hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 ease-out
+                          "
+                          title="Editar mod"
+                        >
+                          <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
+                        </Button>
+                        
+                        <Button
+                          onClick={() => openDeleteModal(mod)}
+                          size="sm"
+                          className="
+                            w-8 h-8 sm:w-10 sm:h-10 p-0 rounded-lg sm:rounded-xl border-2 border-red-500/50 bg-red-500/10 
+                            text-red-500 hover:bg-red-500/20 hover:border-red-500 hover:scale-105 
+                            hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 ease-out
+                          "
+                          title="Deletar mod permanentemente"
+                        >
+                          <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
