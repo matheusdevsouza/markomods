@@ -1,15 +1,10 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
-// configuraçao do dotenv mas com prioridade para o .env
-if (process.env.NODE_ENV === 'production') {
-  dotenv.config({ path: './production.env' });
-} else {
-  try {
-    dotenv.config({ path: './.env' });
-  } catch (error) {
-    dotenv.config({ path: './config.env' });
-  }
+try {
+  dotenv.config({ path: './.env' });
+} catch (error) {
+  dotenv.config({ path: './config.env' });
 }
 
 const dbConfig = {

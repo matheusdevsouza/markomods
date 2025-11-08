@@ -29,14 +29,10 @@ import changelogRoutes from './routes/changelogs.js';
 import ChangelogModel from './models/ChangelogModel.js';
 import { LogService } from './services/LogService.js';
 import statsService from './services/StatsService.js';
-if (process.env.NODE_ENV === 'production') {
-  dotenv.config({ path: './production.env' });
-} else {
-  try {
-    dotenv.config({ path: './.env' });
-  } catch (error) {
-    dotenv.config({ path: './config.env' });
-  }
+try {
+  dotenv.config({ path: './.env' });
+} catch (error) {
+  dotenv.config({ path: './config.env' });
 }
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
