@@ -367,13 +367,39 @@ app.use('/uploads', express.static(uploadsPath, {
     }
   }
 }));
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Rota não encontrada',
-    path: req.originalUrl
+
+const distPath = path.join(__dirname, '../../dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.gif') || filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.png') || filePath.endsWith('.webp') || filePath.endsWith('.svg')) {
+        res.set('Cache-Control', 'public, max-age=31536000');
+        res.set('Access-Control-Allow-Origin', '*');
+      }
+    }
+  }));
+  
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    
+    const indexPath = path.join(distPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      next();
+    }
   });
-});
+} else {
+  app.use('*', (req, res) => {
+    res.status(404).json({
+      success: false,
+      message: 'Rota não encontrada',
+      path: req.originalUrl
+    });
+  });
+}
 app.use((error, req, res, next) => {
   console.error('Erro não tratado:', error);
   res.status(error.status || 500).json({
