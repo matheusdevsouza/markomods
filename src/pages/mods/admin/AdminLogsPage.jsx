@@ -337,17 +337,6 @@ const AdminLogsPage = () => {
     setPage(1);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-sm sm:text-base text-muted-foreground">Carregando logs do sistema...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}

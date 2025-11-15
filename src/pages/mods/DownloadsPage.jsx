@@ -72,16 +72,6 @@ const DownloadsPage = () => {
     setIsFiltered(hasFilters);
   }, [downloadHistory, searchTerm, selectedPeriod, selectedType]);
 
-  if (loading || loadingMods) {
-    return (
-      <div className="flex justify-center items-center h-screen px-4 sm:px-6">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-sm sm:text-base text-muted-foreground">{t('downloads.loading')}</p>
-        </div>
-      </div>
-    );
-  }
 
   if (!isAuthenticated || !currentUser) {
     return (
@@ -361,13 +351,13 @@ const DownloadsPage = () => {
 
                               <div className="flex flex-col gap-2 flex-shrink-0">
                                 <Button asChild className="minecraft-btn bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm w-full">
-                                  <Link to={`/mods/${download.modId}`}>
+                                  <Link to={`/mods/${download.modSlug || download.mod_id || download.modId}`}>
                                     <ExternalLink size={14} className="mr-2 sm:h-4 sm:w-4" />
                                     {t('downloads.viewMod')}
                                   </Link>
                                 </Button>
                                 <Button asChild variant="outline" className="minecraft-btn text-xs sm:text-sm w-full">
-                                  <Link to={`/mods/${download.modId}`}>
+                                  <Link to={`/mods/${download.modSlug || download.mod_id || download.modId}/download`}>
                                     <Download size={14} className="mr-2 sm:h-4 sm:w-4" />
                                     {t('downloads.downloadAgain')}
                                   </Link>

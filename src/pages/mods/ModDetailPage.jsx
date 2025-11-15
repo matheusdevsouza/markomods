@@ -594,60 +594,6 @@ const ModDetailPage = () => {
       .toUpperCase()
       .slice(0, 2);
   };
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background fixed inset-0 overflow-y-auto pt-32">
-        <div className="flex w-full h-full">
-          <div className="flex-1 px-4">
-            <div className={`max-w-4xl mx-auto space-y-6 rounded-xl p-6 ${getCardClasses()}`}>
-              <div className="space-y-4 animate-pulse">
-                <Skeleton className="h-8 w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
-                <Skeleton className="h-12 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-                <Skeleton className="h-6 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
-              </div>
-              <Skeleton className="h-80 w-full rounded-lg bg-gradient-to-r from-gray-700 to-gray-600 animate-pulse" />
-              <div className="space-y-4">
-                <div className="flex space-x-2">
-                  <Skeleton className="h-10 w-24 bg-gradient-to-r from-gray-700 to-gray-600" />
-                  <Skeleton className="h-10 w-24 bg-gradient-to-r from-gray-700 to-gray-600" />
-                  <Skeleton className="h-10 w-24 bg-gradient-to-r from-gray-700 to-gray-600" />
-                </div>
-                <Skeleton className="h-32 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-              </div>
-            </div>
-          </div>
-          <div className="w-80 flex-shrink-0">
-            <div className="space-y-6 ml-8">
-              <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
-                <Skeleton className="h-6 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
-                <div className="grid grid-cols-3 gap-4">
-                  <Skeleton className="h-16 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-                  <Skeleton className="h-16 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-                  <Skeleton className="h-16 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-                </div>
-              </div>
-              <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
-                <Skeleton className="h-6 w-1/2 bg-gradient-to-r from-gray-700 to-gray-600" />
-                <div className="flex flex-wrap gap-2">
-                  <Skeleton className="h-6 w-16 bg-gradient-to-r from-gray-700 to-gray-600" />
-                  <Skeleton className="h-6 w-20 bg-gradient-to-r from-gray-700 to-gray-600" />
-                  <Skeleton className="h-6 w-14 bg-gradient-to-r from-gray-700 to-gray-600" />
-                </div>
-              </div>
-              <div className="space-y-4 p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 backdrop-blur-sm animate-pulse">
-                <Skeleton className="h-6 w-2/3 bg-gradient-to-r from-gray-700 to-gray-600" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-                  <Skeleton className="h-4 w-4/5 bg-gradient-to-r from-gray-700 to-gray-600" />
-                  <Skeleton className="h-4 w-3/4 bg-gradient-to-r from-gray-700 to-gray-600" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
   if (error || !mod) {
     return (
       <div className="min-h-screen bg-background fixed inset-0 overflow-y-auto pt-32">

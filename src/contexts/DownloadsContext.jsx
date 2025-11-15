@@ -115,6 +115,7 @@ export const DownloadsProvider = ({ children }) => {
       
       const entry = {
         modId: modData.id,
+        modSlug: modData.slug,
         id: modData.id,
         name: modData.title || modData.name,
         title: modData.title || modData.name,

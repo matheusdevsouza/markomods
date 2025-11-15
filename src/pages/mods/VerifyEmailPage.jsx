@@ -82,20 +82,7 @@ const VerifyEmailPage = () => {
     run();
   }, [token, closeVerificationModal, navigate]);
 
-  const renderLoading = () => (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <Card className="minecraft-card">
-          <CardContent className="text-center py-10">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Verificando seu e-mail...</p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-
-  if (loading) return renderLoading();
+  if (loading) return null;
 
   if (success) {
     return (

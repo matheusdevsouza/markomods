@@ -8,7 +8,6 @@ import { ModsProvider } from '@/contexts/ModsContext';
 import { DownloadsProvider } from '@/contexts/DownloadsContext';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
-import { useTranslation } from './hooks/useTranslation';
 import { Toaster } from 'sonner';
 import EmailVerificationModal from '@/components/auth/EmailVerificationModal';
 import { useAuth } from '@/contexts/AuthContextMods';
@@ -52,17 +51,6 @@ const MediaKitPage = React.lazy(() => import('@/pages/MediaKitPage'));
 const ChangelogPage = React.lazy(() => import('@/pages/ChangelogPage'));
 const ChangelogDetailPage = React.lazy(() => import('@/pages/ChangelogDetailPage'));
 const DonatePage = React.lazy(() => import('@/pages/mods/DonatePage'));
-const LoadingSpinner = () => {
-  const { t } = useTranslation();
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-        <p className="text-muted-foreground">{t('common.loading')}</p>
-      </div>
-    </div>
-  );
-};
 const AuthModalOutlet = () => {
   const { verificationModalOpen, closeVerificationModal } = useAuth();
   return <EmailVerificationModal open={verificationModalOpen} onOpenChange={closeVerificationModal} />;
@@ -78,7 +66,7 @@ function App() {
             <div className="App">
               <DomainValidator />
               <AuthModalOutlet />
-              <Suspense fallback={<LoadingSpinner />}>
+              <Suspense fallback={null}>
                 <Routes>
                 {}
                 <Route path="/" element={<MainLayout />}>

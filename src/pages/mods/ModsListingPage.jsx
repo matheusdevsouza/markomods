@@ -215,21 +215,7 @@ const ModsListingPage = () => {
     setCurrentPage(1);
   };
 
-
-
-  if (loadingMods) {
-    return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <motion.div 
-          animate={{ rotate: 360 }} 
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }} 
-          className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full" 
-        />
-      </div>
-    );
-  }
-
-          return (
+  return (
     <>
       <BackgroundEffects />
       <motion.div 

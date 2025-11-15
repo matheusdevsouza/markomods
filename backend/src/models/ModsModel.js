@@ -609,6 +609,7 @@ export default class ModsModel {
           MAX(d.id) AS id,
           MAX(d.created_at) AS created_at,
           m.id AS mod_id,
+          m.slug AS mod_slug,
           m.title AS title,
           m.thumbnail_url,
           m.minecraft_version,
@@ -617,7 +618,7 @@ export default class ModsModel {
         FROM downloads d
         INNER JOIN mods m ON d.mod_id = m.id
         ${whereClause}
-        GROUP BY m.id
+        GROUP BY m.id, m.slug, m.title, m.thumbnail_url, m.minecraft_version, m.short_description, m.tags
         ORDER BY MAX(d.created_at) DESC
         LIMIT ${Number(limit)} OFFSET ${Number(offset)}
       `;
@@ -625,7 +626,9 @@ export default class ModsModel {
       return rows.map(r => ({
         id: r.id,
         modId: r.mod_id,
-        name: r.description,
+        modSlug: r.mod_slug,
+        name: r.title,
+        title: r.title,
         thumbnail_url: r.thumbnail_url,
         minecraft_version: r.minecraft_version,
         downloaded_at: r.created_at,

@@ -444,12 +444,7 @@ const AdminChangelogsPage = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3 max-h-[70vh] overflow-auto">
-              {loading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                  <span className="ml-2 text-muted-foreground">Carregando...</span>
-                </div>
-              ) : list.length === 0 ? (
+              {list.length === 0 ? (
                 <div className="text-center py-8">
                   <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
                   <p className="text-muted-foreground">Nenhum changelog publicado ainda</p>

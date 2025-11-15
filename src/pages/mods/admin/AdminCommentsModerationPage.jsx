@@ -268,18 +268,6 @@ const AdminCommentsModerationPage = () => {
     );
   }
 
-  if (permissionsLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="minecraft-card">
-          <CardContent className="p-8 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Carregando permissões...</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   if (currentUser.role !== 'admin' && !hasPermission('view_comments')) {
     return (

@@ -10,6 +10,7 @@ import { buildThumbnailUrl } from '@/utils/urls';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/contexts/AuthContextMods';
 import EditableBanner from '@/components/admin/EditableBanner';
+import LoadingScreen from '@/components/ui/LoadingScreen';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -98,11 +99,20 @@ const HomePage = () => {
   const [popularModsPage, setPopularModsPage] = useState(1);
   const [bannerUrl, setBannerUrl] = useState('/src/assets/images/markomods-banner.png');
   const [bannerLink, setBannerLink] = useState(null);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
   const { t } = useTranslation();
   const { currentUser } = useAuth();
   
   const isAdmin = false; 
-  const hasAd = false; 
+  const hasAd = false;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoadingScreen(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []); 
 
   useEffect(() => {
     const fetchPublicMods = async () => {
@@ -146,13 +156,6 @@ const HomePage = () => {
     fetchBannerConfig();
   }, []);
 
-  if (loadingMods) {
-    return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
   
   const featuredMods = mods.filter(mod => mod.is_featured).slice(0, 1);
   
@@ -179,6 +182,10 @@ const HomePage = () => {
     setBannerUrl(newBannerUrl);
     setBannerLink(newBannerLink);
   };
+
+  if (showLoadingScreen) {
+    return <LoadingScreen />;
+  }
 
   return (
     <motion.div 

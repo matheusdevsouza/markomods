@@ -242,23 +242,6 @@ const DownloadPage = () => {
     setDownloadStarted(true);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="space-y-6">
-          <div className="space-y-4 animate-pulse">
-              <Skeleton className="h-8 w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
-              <Skeleton className="h-12 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-            </div>
-            
-            <Skeleton className="h-96 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (error || !mod) {
     return (
       <div className="min-h-screen">

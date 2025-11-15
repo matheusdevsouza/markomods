@@ -3,7 +3,6 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContextMods';
 import { usePermissions } from '@/hooks/usePermissions';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
 
 const routePermissionMap = {
   '/admin': 'access_admin_panel',
@@ -112,14 +111,7 @@ const PermissionGuard = ({ children, requiredPermission = null, requireSuperAdmi
   }, [shouldRedirect, redirectTo, navigate, permission, stableToastKey]);
 
   if (authLoading || permissionsLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p className="text-muted-foreground">Carregando permissões...</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   if (!currentUser) {

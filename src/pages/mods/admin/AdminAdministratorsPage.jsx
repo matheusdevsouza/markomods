@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -227,12 +227,20 @@ const AdminAdministratorsPage = () => {
           title: 'Sucesso',
           description: data.message || 'Cargo alterado com sucesso'
         });
-        setRoleChangeModalOpen(false);
-        setSuperAdminModalOpen(false);
-        setSuperAdminPassword('');
+        
+        // Limpar estados primeiro
         setSelectedAdmin(null);
         setNewRole('');
-        fetchAdministrators();
+        setSuperAdminPassword('');
+        
+        // Fechar modais
+        setRoleChangeModalOpen(false);
+        setSuperAdminModalOpen(false);
+        
+        // Aguardar um pouco para as animações dos modais terminarem antes de atualizar a lista
+        setTimeout(() => {
+          fetchAdministrators();
+        }, 400);
       } else {
         toast({
           title: 'Erro',
@@ -367,13 +375,6 @@ const AdminAdministratorsPage = () => {
     return labels[role] || role;
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -538,14 +539,16 @@ const AdminAdministratorsPage = () => {
       </Card>
 
       <div className="grid gap-4 w-full max-w-full overflow-x-hidden sm:overflow-visible">
-        {filteredAdministrators.map((admin) => (
-          <motion.div
-            key={admin.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="w-full max-w-full"
-          >
+        <AnimatePresence>
+          {filteredAdministrators.map((admin) => (
+            <motion.div
+              key={admin.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-full"
+            >
             <Card className="w-full max-w-full overflow-hidden sm:overflow-visible">
               <CardContent className="pt-6 w-full max-w-full">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 w-full min-w-0">
@@ -600,8 +603,9 @@ const AdminAdministratorsPage = () => {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
 
       <Dialog open={roleChangeModalOpen} onOpenChange={setRoleChangeModalOpen}>

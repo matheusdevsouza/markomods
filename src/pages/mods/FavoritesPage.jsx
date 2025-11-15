@@ -165,28 +165,6 @@ const FavoritesPage = () => {
     return null;
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-32">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="space-y-4 sm:space-y-6">
-              <div className="space-y-3 sm:space-y-4">
-                <Skeleton className="h-6 w-40 sm:h-8 sm:w-48 bg-gradient-to-r from-gray-700 to-gray-600" />
-                <Skeleton className="h-4 w-64 sm:h-6 sm:w-96 bg-gradient-to-r from-gray-700 to-gray-600" />
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                  <Skeleton key={i} className="h-64 sm:h-80 w-full bg-gradient-to-r from-gray-700 to-gray-600" />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
